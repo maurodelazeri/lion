@@ -1,6 +1,9 @@
 package producer
-//aaa
+
+// advertised.host.name=<Kafka Running Machine IP>
+// server.properties
 import (
+	"fmt"
 	"os"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -39,39 +42,8 @@ func (k *Producer) InitializeProducer() {
 	k.kafkalient = client
 }
 
-// PublishMessage send a message to kafka server
-func (k *Producer) PublishMessage(topic string, message []byte, partition int32, verbose bool) error {
-	// Optional delivery channel, if not specified the Producer object's
-	// .Events channel is used.
-	// deliveryChan := make(chan kafka.Event)
-
-	// err := k.kafkalient.Produce(&kafka.Message{
-	// 	TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: partition},
-	// 	Value:          message,
-	// }, deliveryChan)
-
-	// if err != nil {
-	// 	fmt.Printf("Produce failed: %v\n", err)
-	// }
-
-	// e := <-deliveryChan
-	// m := e.(*kafka.Message)
-
-	// if m.TopicPartition.Error != nil {
-	// 	fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
-	// 	return m.TopicPartition.Error
-	// }
-
-	// if verbose {
-	// 	fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
-	// 		*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
-	// }
-
-	// close(deliveryChan)
-	// return nil
-
-	// Produce messages to topic (asynchronously)
-
+// PublishMessageAsync send a message to kafka server (asynchronous)
+func (k *Producer) PublishMessageAsync(topic string, message []byte, partition int32, verbose bool) error {
 	err := k.kafkalient.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          message,
@@ -79,6 +51,37 @@ func (k *Producer) PublishMessage(topic string, message []byte, partition int32,
 	if err != nil {
 		logrus.Warn("Problem to publish message, ", err)
 	}
-
 	return err
+}
+
+// PublishMessageSync send a message to kafka server (synchronous)
+func (k *Producer) PublishMessageSync(topic string, message []byte, partition int32, verbose bool) error {
+	// Optional delivery channel, if not specified the Producer object's
+	// .Events channel is used.
+	deliveryChan := make(chan kafka.Event)
+
+	err := k.kafkalient.Produce(&kafka.Message{
+		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Value:          message,
+	}, deliveryChan)
+	if err != nil {
+		logrus.Warn("Problem with producer message, ", err)
+		close(deliveryChan)
+		return err
+	}
+	e := <-deliveryChan
+	m := e.(*kafka.Message)
+
+	if verbose {
+		if m.TopicPartition.Error != nil {
+			fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
+			close(deliveryChan)
+			return m.TopicPartition.Error
+		} else {
+			fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
+				*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
+		}
+	}
+	close(deliveryChan)
+	return nil
 }
