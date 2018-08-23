@@ -37,12 +37,6 @@ func ValidateToken(token string) (*jwt.StandardClaims, error) {
 		return nil, reason
 	}
 	if claims, ok := refreshToken.Claims.(*jwt.StandardClaims); ok && refreshToken.Valid {
-		// return new access token and refresh token
-		// id, _ := strconv.Atoi(claims.Subject)
-		// context.JSON(http.StatusOK, gin.H{
-		// 	"refresh_access": libs.GenerateRefreshToken(claims.Email, id),
-		// 	"access_token":   libs.GenerateAccessToken(claims.Email, id),
-		// })
 		return claims, nil
 	}
 	return nil, errors.New("Invalid token")
