@@ -10,14 +10,13 @@ import (
 )
 
 // CreateToken create a jwt token
-func CreateToken(account, userid string) (string, error) {
+func CreateToken(account, userid, container string) (string, error) {
 	now := time.Now()
-	hostname, _ := os.Hostname()
 	expTime, _ := strconv.Atoi(os.Getenv("EXPIRATION_TIME_JWT_TOKEN"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, &jwt.StandardClaims{
 		IssuedAt:  now.Unix(),
 		ExpiresAt: time.Now().Add(time.Minute * time.Duration(expTime)).Unix(),
-		Issuer:    hostname,
+		Issuer:    container,
 		Subject:   userid,
 		Id:        account,
 	})

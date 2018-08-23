@@ -40,8 +40,8 @@ func (m *Account) LoadDataFromDB() {
 
 	for i := 0; i < 1000; i++ {
 		data := &pb.Account{
-			Id:       []byte(time.Now().String()),
-			User:     []byte(time.Now().String()),
+			Id:       time.Now().String(),
+			User:     time.Now().String(),
 			Venue:    pb.Venue_BINANCE,
 			Active:   true,
 			Balances: make(map[string]*pb.Balance),
@@ -60,8 +60,8 @@ func (m *Account) LoadDataFromDB() {
 	}
 
 	data := &pb.Account{
-		Id:       []byte("XXXXXX"),
-		User:     []byte("XXXXXX"),
+		Id:       "XXXXXX",
+		User:     "XXXXXX",
 		Venue:    pb.Venue_BINANCE,
 		Active:   true,
 		Balances: make(map[string]*pb.Balance),
@@ -90,13 +90,13 @@ func (m *Account) LoadDataToMemory(data *pb.Account) {
 }
 
 // ValidateAndUpdateBalances data onto memory
-func (m *Account) ValidateAndUpdateBalances(venue pb.Venue, product pb.Product, accountID string, amount float64) (*pb.Account, error) {
+func (m *Account) ValidateAndUpdateBalances(venue pb.Venue, product pb.Product, account string, amount float64) (*pb.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
 	// Here is before trading, if things go well, this needs to update again the hold and available to the correct amount based on the execution
 	if venue, ok := m.account[venue]; ok {
-		if accountNumber, ok := venue[accountID]; ok {
+		if accountNumber, ok := venue[account]; ok {
 			transfer := func(rec *stm.TRec) interface{} {
 				account := rec.Load(accountNumber).(*pb.Account)
 				symbols := strings.Split(product.String(), "_")
