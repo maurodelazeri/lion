@@ -48,11 +48,11 @@ func (m *Account) LoadDataFromDB() {
 		}
 
 		data.Balances[pb.Symbol_BTC.String()] = &pb.Balance{
-			Available: 50000,
+			Available: 500000,
 			Hold:      300,
 		}
 		data.Balances[pb.Symbol_USD.String()] = &pb.Balance{
-			Available: 50000,
+			Available: 500000,
 			Hold:      300,
 		}
 
@@ -68,11 +68,11 @@ func (m *Account) LoadDataFromDB() {
 	}
 
 	data.Balances[pb.Symbol_BTC.String()] = &pb.Balance{
-		Available: 50000,
+		Available: 500000,
 		Hold:      300,
 	}
 	data.Balances[pb.Symbol_USD.String()] = &pb.Balance{
-		Available: 50000,
+		Available: 500000,
 		Hold:      300,
 	}
 
