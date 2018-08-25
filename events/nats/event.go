@@ -28,7 +28,7 @@ type Job struct {
 func init() {
 	pool = tunny.NewFunc(runtime.NumCPU(), worker)
 
-	conn, err := nats.Connect(os.Getenv("NATS_SERVER"))
+	conn, err := nats.Connect(os.Getenv("STREAMING_SERVER"))
 	if err != nil {
 		logrus.Info("No connection with nats server, ", err)
 		os.Exit(1)

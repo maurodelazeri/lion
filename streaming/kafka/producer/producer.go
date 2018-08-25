@@ -23,7 +23,7 @@ type Producer struct {
 
 // InitializeProducer a kafka instance
 func (k *Producer) InitializeProducer() {
-	brokers := os.Getenv("BROKERS")
+	brokers := os.Getenv("KAFKA_BROKERS")
 	client, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers":            brokers,
 		"message.max.bytes":            100857600,

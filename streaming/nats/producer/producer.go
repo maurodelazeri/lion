@@ -14,7 +14,7 @@ type Producer struct {
 
 // Initialize a kafka instance
 func (n *Producer) Initialize() {
-	nc, err := nats.Connect(os.Getenv("NATS_SERVER"))
+	nc, err := nats.Connect(os.Getenv("STREAMING_SERVER"))
 	if err != nil {
 		logrus.Error("No connection with nats server, ", err)
 		os.Exit(1)
