@@ -16,7 +16,7 @@ type Producer struct {
 func (n *Producer) Initialize() {
 	nc, err := nats.Connect(os.Getenv("NATS_SERVER"))
 	if err != nil {
-		logrus.Info("No connection with nats server, ", err)
+		logrus.Error("No connection with nats server, ", err)
 		os.Exit(1)
 	}
 	n.NatsClient = nc
