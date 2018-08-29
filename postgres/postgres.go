@@ -1,36 +1,27 @@
 package postgres
 
 import (
-	"fmt"
+	"log"
 	"os"
 
-	"github.com/go-xorm/core"
-	"github.com/go-xorm/xorm"
-	"github.com/sirupsen/logrus"
+	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 )
 
-// PostgresClient Session
-var PostgresClient *xorm.Engine
+// DB ...
+var (
+	DB *sqlx.DB
+)
 
-// GetPostgressSession start redis
-func GetPostgressSession() *xorm.Engine {
-	if PostgresClient == nil {
-		logrus.Info("Starting postgres session!")
-		Initialize()
-		return PostgresClient
-	}
-	return PostgresClient
+func init() {
+	InitEngine()
 }
 
-// Initialize a postgres instance
-func Initialize() {
-	dbstring := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s  sslmode=disable",
-		os.Getenv("PSQL_USER"), os.Getenv("PSQL_PASS"), os.Getenv("PSQL_DB"), os.Getenv("PSQL_HOST"), os.Getenv("PSQL_PORT"))
-	DB, err := xorm.NewEngine("postgres", dbstring)
+// InitEngine initializes our Database Connection
+func InitEngine() {
+	var err error
+	DB, err = sqlx.Connect("postgres", "host="+os.Getenv("PSQL_HOST")+" user="+os.Getenv("PSQL_USER")+" password="+os.Getenv("PSQL_PASS")+" dbname="+os.Getenv("PSQL_DB")+" sslmode=disable")
 	if err != nil {
-		logrus.Error("postgres", err)
-		os.Exit(1)
+		log.Fatal("Problem with database connection", err)
 	}
-	DB.SetMapper(core.GonicMapper{})
-	PostgresClient = DB
 }
