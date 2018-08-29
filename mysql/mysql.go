@@ -24,7 +24,7 @@ func GetMysqlSession() *sql.DB {
 	}
 }
 
-// Initialize a redis instance
+// Initialize a mysql instance
 func Initialize() {
 	connection := os.Getenv("DB_HOST")
 	username := os.Getenv("MYSQLUSER")
