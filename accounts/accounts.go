@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	pb "github.com/maurodelazeri/elliptor/api"
+	pb "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/sirupsen/logrus"
 
 	"github.com/decillion/go-stm"

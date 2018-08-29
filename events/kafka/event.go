@@ -7,7 +7,7 @@ import (
 
 	"github.com/Jeffail/tunny"
 	"github.com/maurodelazeri/lion/common"
-	"github.com/maurodelazeri/lion/events"
+	"github.com/maurodelazeri/lion/protobuf/events"
 	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"

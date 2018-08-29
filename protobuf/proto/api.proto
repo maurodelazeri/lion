@@ -1,0 +1,162 @@
+syntax = "proto3";
+
+package api;
+
+// The API service definition.
+service API {   
+  // Get all Order for a user with filter - A server-to-client streaming RPC.
+  rpc GetOrders(OrderFilter) returns (stream Order) {}
+  // Create a new market order - A simple RPC 
+  rpc CreateMarketOrder (OrderMarket) returns (OrderResponse) {}
+  // Create a new limit order - A simple RPC 
+  rpc CreateLimitOrder (OrderLimit) returns (OrderResponse) {}
+  // Create a new stop order - A simple RPC 
+  rpc CreateStopOrder (OrderLimit) returns (OrderResponse) {}  
+  // Cancel one or many orders by array of ids - A simple RPC 
+  rpc CancelOrders (OrdersCancel) returns (OrderResponse) {}  
+  // Get all Accounts with filter - A simple RPC   
+  rpc GetAccounts (AccountFilter) returns (stream Account) {}
+} 
+
+enum Venue{
+  DARKPOOL    =  0;
+  COINBASEPRO =  1;
+  BINANCE     =  2;
+  BITFINEX    =  3;
+  BITMEX      =  4;
+  GEMINI      =  5;
+ }
+ 
+ enum VenueType{
+   SPOT    = 0;
+   FUTURES = 1;
+ };
+ 
+ enum Symbol{
+   USD   = 0;
+   BTC   = 1;
+   ETH   = 2;
+   BCH   = 3;
+   LTC   = 4;
+   ETC   = 5;
+ }
+ 
+ enum Product{
+   BTC_USD = 0;
+   ETH_USD = 1;
+   ETH_BTC = 2;
+   LTC_USD = 3;
+   LTC_BTC = 4;   
+   BCH_USD = 5;
+   BCH_BTC = 6;
+   ETC_USD = 7;
+   ETC_BTC = 8;
+ }
+ 
+ enum AccountType{
+   LIVE     = 0;
+   DEMO     = 1;
+ };
+ 
+ enum OrderSide{
+   BUY  = 0;
+   SELL = 1;
+ };
+ 
+ enum OrderType{
+   MARKET    = 0;
+   LIMIT     = 1;
+   STOP      = 2;
+   STOPLIMIT = 3;
+   TRAILING  = 4;
+ };
+ 
+ enum OrderStatus{
+   RECEIVED          = 0;
+   ACCEPTED          = 1;
+   REJECTED          = 2;
+   WORKING           = 3;
+   PLACED            = 4;  
+   FILLED            = 5;
+   PARTIALLY_FILLED  = 6;
+   CANCELLED         = 7;
+   CHANGED           = 8;
+ };
+
+message User {
+  string           id       = 1;
+  repeated Account accounts = 2;
+}
+
+message Account {
+  string                id           = 1;
+  string                user         = 2;
+  Venue                 venue        = 3;
+  AccountType           accountType  = 4;
+  map<string, Balance>  balances     = 5;
+  bool                  active       = 6;
+}
+
+message Balance {
+  double  id         = 1;
+  double  available  = 2;
+  double  hold       = 3;
+}
+
+message AccountFilter {    
+  string       account     = 1;
+  string       active      = 2;
+  AccountType  accountType = 3; 
+}
+
+message OrderMarket {
+  Venue            venue        = 1;
+  Product          product      = 2;
+  double           amount       = 3;
+  OrderSide        side         = 4;
+}
+
+message OrderLimit {
+  Venue            venue        = 1;
+  Product          product      = 2;
+  double           price        = 3;
+  double           amount       = 4;
+  OrderSide        side         = 5;
+  int32            cancel_after = 6;
+  bool             post_only    = 7;
+}
+
+message OrdersCancel {
+  repeated Order  orders        = 1;
+}
+
+message OrderResponse {
+  string       id           = 1;
+  bool         sucess       = 2;
+  string       execution    = 3;  
+}
+
+message Order {
+  string           id           = 1;
+  Venue            venue        = 2;
+  string           account      = 3;
+  string           strategy     = 4;
+  Product          product      = 5;
+  double           amount       = 6;
+  double           price        = 7;
+  double           funds        = 8;  
+  OrderSide        side         = 9;
+  OrderType        type         = 10;
+  string           parent_order = 11;
+  int32            expepiration = 12;
+  OrderStatus      status       = 13; 
+}
+
+message OrderFilter {    
+  string       id         = 1;
+  string       account    = 2;
+  OrderStatus  status     = 3;
+  OrderType    type       = 4;
+  OrderSide    side       = 5;
+  Venue        venue      = 6;
+}

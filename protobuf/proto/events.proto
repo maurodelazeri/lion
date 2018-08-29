@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package events;
+
+message Event {
+  string       id         = 1;
+  string       event      = 2;
+  string       user       = 3; 
+  string       account    = 4;
+  string       container  = 5;
+  string       strategy   = 6;
+  int64        timestamp  = 7;
+  string       command    = 8;
+  string       message    = 9;
+  bool         error      = 10;
+  string       payload    = 11;      
+}
