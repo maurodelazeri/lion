@@ -113,6 +113,7 @@ func (orderBook *OrderBook) ProcessLimitOrder(quote map[string]string, verbose b
 }
 
 func (orderBook *OrderBook) ProcessOrder(quote map[string]string, verbose bool) ([]map[string]string, map[string]string) {
+
 	order_type := quote["type"]
 	var order_in_book map[string]string
 	var trades []map[string]string
