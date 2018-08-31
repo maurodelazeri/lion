@@ -6,6 +6,7 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+// Order ...
 type Order struct {
 	timestamp int
 	quantity  decimal.Decimal
@@ -17,6 +18,7 @@ type Order struct {
 	orderList *OrderList
 }
 
+// NewOrder ...
 func NewOrder(quote map[string]string, orderList *OrderList) *Order {
 	timestamp, _ := strconv.Atoi(quote["timestamp"])
 	quantity, _ := decimal.NewFromString(quote["quantity"])
@@ -27,16 +29,19 @@ func NewOrder(quote map[string]string, orderList *OrderList) *Order {
 		tradeID: tradeID, nextOrder: nil, prevOrder: nil, orderList: orderList}
 }
 
+// NextOrder ...
 func (o *Order) NextOrder() *Order {
 	return o.nextOrder
 }
 
+// PrevOrder ...
 func (o *Order) PrevOrder() *Order {
 	return o.prevOrder
 }
 
+// UpdateQuantity ...
 func (o *Order) UpdateQuantity(newQuantity decimal.Decimal, newTimestamp int) {
-	if newQuantity.GreaterThan(o.quantity) && o.orderList.tail_order != o {
+	if newQuantity.GreaterThan(o.quantity) && o.orderList.tailOrder != o {
 		o.orderList.MoveToTail(o)
 	}
 	o.orderList.volume = o.orderList.volume.Sub(o.quantity.Sub(newQuantity))

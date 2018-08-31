@@ -7,14 +7,16 @@ import (
 	lane "gopkg.in/oleiade/lane.v1"
 )
 
+// OrderBook ...
 type OrderBook struct {
 	deque       *lane.Deque
 	buys        *OrderTree
-	sells        *OrderTree
+	sells       *OrderTree
 	time        int
 	nextOrderID int
 }
 
+// NewOrderBook ...
 func NewOrderBook() *OrderBook {
 	deque := lane.NewDeque()
 	buys := NewOrderTree()
@@ -22,114 +24,122 @@ func NewOrderBook() *OrderBook {
 	return &OrderBook{deque, buys, sells, 0, 0}
 }
 
+// UpdateTime ...
 func (orderBook *OrderBook) UpdateTime() {
 	orderBook.time++
 }
 
+// BestBuy ...
 func (orderBook *OrderBook) BestBuy() (value decimal.Decimal) {
 	value = orderBook.buys.MaxPrice()
 	return
 }
 
+// BestSell ...
 func (orderBook *OrderBook) BestSell() (value decimal.Decimal) {
 	value = orderBook.sells.MinPrice()
 	return
 }
 
+// WorstBuy ...
 func (orderBook *OrderBook) WorstBuy() (value decimal.Decimal) {
 	value = orderBook.buys.MinPrice()
 	return
 }
 
+// WorstSell ...
 func (orderBook *OrderBook) WorstSell() (value decimal.Decimal) {
 	value = orderBook.sells.MaxPrice()
 	return
 }
 
+// ProcessMarketOrder ...
 func (orderBook *OrderBook) ProcessMarketOrder(quote map[string]string, verbose bool) []map[string]string {
 	var trades []map[string]string
-	quantity_to_trade, _ := decimal.NewFromString(quote["quantity"])
+	quantityToTrade, _ := decimal.NewFromString(quote["quantity"])
 	side := quote["side"]
-	var new_trades []map[string]string
+	var newTrades []map[string]string
 
 	if side == "BUY" {
-		for quantity_to_trade.GreaterThan(decimal.Zero) && orderBook.sells.Length() > 0 {
-			best_price_sells := orderBook.sells.MinPriceList()
-			quantity_to_trade, new_trades = orderBook.ProcessOrderList("SELL", best_price_sells, quantity_to_trade, quote, verbose)
-			trades = append(trades, new_trades...)
+		for quantityToTrade.GreaterThan(decimal.Zero) && orderBook.sells.Length() > 0 {
+			bestPriceBuys := orderBook.sells.MinPriceList()
+			quantityToTrade, newTrades = orderBook.ProcessOrderList("SELL", bestPriceBuys, quantityToTrade, quote, verbose)
+			trades = append(trades, newTrades...)
 		}
 	} else if side == "SELL" {
-		for quantity_to_trade.GreaterThan(decimal.Zero) && orderBook.buys.Length() > 0 {
-			best_price_buys := orderBook.buys.MaxPriceList()
-			quantity_to_trade, new_trades = orderBook.ProcessOrderList("BUY", best_price_buys, quantity_to_trade, quote, verbose)
-			trades = append(trades, new_trades...)
+		for quantityToTrade.GreaterThan(decimal.Zero) && orderBook.buys.Length() > 0 {
+			bestPriceBuys := orderBook.buys.MaxPriceList()
+			quantityToTrade, newTrades = orderBook.ProcessOrderList("BUY", bestPriceBuys, quantityToTrade, quote, verbose)
+			trades = append(trades, newTrades...)
 		}
 	}
 	return trades
 }
 
+// ProcessLimitOrder ...
 func (orderBook *OrderBook) ProcessLimitOrder(quote map[string]string, verbose bool) ([]map[string]string, map[string]string) {
 	var trades []map[string]string
-	quantity_to_trade, _ := decimal.NewFromString(quote["quantity"])
+	quantityToTrade, _ := decimal.NewFromString(quote["quantity"])
 	side := quote["side"]
-	price, _ := decimal.NewFromString(quote["price"])
-	var new_trades []map[string]string
-
-	var order_in_book map[string]string
+	//price, _ := decimal.NewFromString(quote["price"])
+	//var new_trades []map[string]string
+	var orderInBook map[string]string
 
 	if side == "BUY" {
-		minPrice := orderBook.sells.MinPrice()
-		for quantity_to_trade.GreaterThan(decimal.Zero) && orderBook.sells.Length() > 0 && price.GreaterThanOrEqual(minPrice) {
-			best_price_sells := orderBook.sells.MinPriceList()
-			quantity_to_trade, new_trades = orderBook.ProcessOrderList("SELL", best_price_sells, quantity_to_trade, quote, verbose)
-			trades = append(trades, new_trades...)
-			minPrice = orderBook.sells.MinPrice()
-		}
+		// minPrice := orderBook.sells.MinPrice()
+		// for quantity_to_trade.GreaterThan(decimal.Zero) && orderBook.sells.Length() > 0 && price.GreaterThanOrEqual(minPrice) {
+		// 	best_price_sells := orderBook.sells.MinPriceList()
+		// 	quantity_to_trade, new_trades = orderBook.ProcessOrderList("SELL", best_price_sells, quantity_to_trade, quote, verbose)
+		// 	trades = append(trades, new_trades...)
+		// 	minPrice = orderBook.sells.MinPrice()
+		// }
 
-		if quantity_to_trade.GreaterThan(decimal.Zero) {
+		if quantityToTrade.GreaterThan(decimal.Zero) {
 			quote["order_id"] = strconv.Itoa(orderBook.nextOrderID)
-			quote["quantity"] = quantity_to_trade.String()
+			quote["quantity"] = quantityToTrade.String()
 			orderBook.buys.InsertOrder(quote)
-			order_in_book = quote
+			orderInBook = quote
 		}
 
 	} else if side == "SELL" {
-		maxPrice := orderBook.buys.MaxPrice()
-		for quantity_to_trade.GreaterThan(decimal.Zero) && orderBook.buys.Length() > 0 && price.LessThanOrEqual(maxPrice) {
-			best_price_buys := orderBook.buys.MaxPriceList()
-			quantity_to_trade, new_trades = orderBook.ProcessOrderList("BUY", best_price_buys, quantity_to_trade, quote, verbose)
-			trades = append(trades, new_trades...)
-			maxPrice = orderBook.buys.MaxPrice()
-		}
+		// maxPrice := orderBook.buys.MaxPrice()
+		// for quantity_to_trade.GreaterThan(decimal.Zero) && orderBook.buys.Length() > 0 && price.LessThanOrEqual(maxPrice) {
+		// 	best_price_buys := orderBook.buys.MaxPriceList()
+		// 	quantity_to_trade, new_trades = orderBook.ProcessOrderList("BUY", best_price_buys, quantity_to_trade, quote, verbose)
+		// 	trades = append(trades, new_trades...)
+		// 	maxPrice = orderBook.buys.MaxPrice()
+		// }
 
-		if quantity_to_trade.GreaterThan(decimal.Zero) {
+		if quantityToTrade.GreaterThan(decimal.Zero) {
 			quote["order_id"] = strconv.Itoa(orderBook.nextOrderID)
-			quote["quantity"] = quantity_to_trade.String()
+			quote["quantity"] = quantityToTrade.String()
 			orderBook.sells.InsertOrder(quote)
-			order_in_book = quote
+			orderInBook = quote
 		}
 	}
-	return trades, order_in_book
+	return trades, orderInBook
 }
 
+// ProcessOrder ...
 func (orderBook *OrderBook) ProcessOrder(quote map[string]string, verbose bool) ([]map[string]string, map[string]string) {
 
-	order_type := quote["type"]
-	var order_in_book map[string]string
+	orderType := quote["type"]
+	var orderInBook map[string]string
 	var trades []map[string]string
 
 	orderBook.UpdateTime()
 	quote["timestamp"] = strconv.Itoa(orderBook.time)
 	orderBook.nextOrderID++
 
-	if order_type == "MARKET" {
+	if orderType == "MARKET" {
 		trades = orderBook.ProcessMarketOrder(quote, verbose)
 	} else {
-		trades, order_in_book = orderBook.ProcessLimitOrder(quote, verbose)
+		trades, orderInBook = orderBook.ProcessLimitOrder(quote, verbose)
 	}
-	return trades, order_in_book
+	return trades, orderInBook
 }
 
+// ProcessOrderList ...
 func (orderBook *OrderBook) ProcessOrderList(side string, orderList *OrderList, quantityStillToTrade decimal.Decimal, quote map[string]string, verbose bool) (decimal.Decimal, []map[string]string) {
 	quantityToTrade := quantityStillToTrade
 	var trades []map[string]string
@@ -151,18 +161,18 @@ func (orderBook *OrderBook) ProcessOrderList(side string, orderList *OrderList, 
 		} else if quantityToTrade.Equal(headOrder.quantity) {
 			tradedQuantity = quantityToTrade
 			if side == "BUY" {
-				orderBook.buys.RemoveOrderById(headOrder.orderID)
+				orderBook.buys.RemoveOrderByID(headOrder.orderID)
 			} else {
-				orderBook.sells.RemoveOrderById(headOrder.orderID)
+				orderBook.sells.RemoveOrderByID(headOrder.orderID)
 			}
 			quantityToTrade = decimal.Zero
 
 		} else {
 			tradedQuantity = headOrder.quantity
 			if side == "BUY" {
-				orderBook.buys.RemoveOrderById(headOrder.orderID)
+				orderBook.buys.RemoveOrderByID(headOrder.orderID)
 			} else {
-				orderBook.sells.RemoveOrderById(headOrder.orderID)
+				orderBook.sells.RemoveOrderByID(headOrder.orderID)
 			}
 		}
 
@@ -182,38 +192,41 @@ func (orderBook *OrderBook) ProcessOrderList(side string, orderList *OrderList, 
 	return quantityToTrade, trades
 }
 
-func (orderBook *OrderBook) CancelOrder(side string, order_id int) {
+// CancelOrder ...
+func (orderBook *OrderBook) CancelOrder(side string, orderID int) {
 	orderBook.UpdateTime()
 
 	if side == "BUY" {
-		if orderBook.buys.OrderExist(strconv.Itoa(order_id)) {
-			orderBook.buys.RemoveOrderById(strconv.Itoa(order_id))
+		if orderBook.buys.OrderExist(strconv.Itoa(orderID)) {
+			orderBook.buys.RemoveOrderByID(strconv.Itoa(orderID))
 		}
 	} else {
-		if orderBook.sells.OrderExist(strconv.Itoa(order_id)) {
-			orderBook.sells.RemoveOrderById(strconv.Itoa(order_id))
+		if orderBook.sells.OrderExist(strconv.Itoa(orderID)) {
+			orderBook.sells.RemoveOrderByID(strconv.Itoa(orderID))
 		}
 	}
 }
 
-func (orderBook *OrderBook) ModifyOrder(quoteUpdate map[string]string, order_id int) {
+// ModifyOrder ...
+func (orderBook *OrderBook) ModifyOrder(quoteUpdate map[string]string, orderID int) {
 	orderBook.UpdateTime()
 
 	side := quoteUpdate["side"]
-	quoteUpdate["order_id"] = strconv.Itoa(order_id)
+	quoteUpdate["order_id"] = strconv.Itoa(orderID)
 	quoteUpdate["timestamp"] = strconv.Itoa(orderBook.time)
 
 	if side == "BUY" {
-		if orderBook.buys.OrderExist(strconv.Itoa(order_id)) {
+		if orderBook.buys.OrderExist(strconv.Itoa(orderID)) {
 			orderBook.buys.UpdateOrder(quoteUpdate)
 		}
 	} else {
-		if orderBook.sells.OrderExist(strconv.Itoa(order_id)) {
+		if orderBook.sells.OrderExist(strconv.Itoa(orderID)) {
 			orderBook.sells.UpdateOrder(quoteUpdate)
 		}
 	}
 }
 
+// VolumeAtPrice ...
 func (orderBook *OrderBook) VolumeAtPrice(side string, price decimal.Decimal) decimal.Decimal {
 	if side == "BUY" {
 		volume := decimal.Zero
@@ -223,11 +236,10 @@ func (orderBook *OrderBook) VolumeAtPrice(side string, price decimal.Decimal) de
 
 		return volume
 
-	} else {
-		volume := decimal.Zero
-		if orderBook.sells.PriceExist(price) {
-			volume = orderBook.sells.PriceList(price).volume
-		}
-		return volume
 	}
+	volume := decimal.Zero
+	if orderBook.sells.PriceExist(price) {
+		volume = orderBook.sells.PriceList(price).volume
+	}
+	return volume
 }
