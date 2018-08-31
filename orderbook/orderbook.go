@@ -1,6 +1,7 @@
 package orderbook
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/shopspring/decimal"
@@ -53,6 +54,16 @@ func (orderBook *OrderBook) WorstSell() (value decimal.Decimal) {
 	return
 }
 
+// OrderBuyExist ...
+func (orderBook *OrderBook) OrderBuyExist(price decimal.Decimal) bool {
+	return orderBook.buys.PriceExist(price)
+}
+
+// OrderSellExist ...
+func (orderBook *OrderBook) OrderSellExist(price decimal.Decimal) bool {
+	return orderBook.sells.PriceExist(price)
+}
+
 // ProcessMarketOrder ...
 func (orderBook *OrderBook) ProcessMarketOrder(quote map[string]string, verbose bool) []map[string]string {
 	var trades []map[string]string
@@ -94,6 +105,10 @@ func (orderBook *OrderBook) ProcessLimitOrder(quote map[string]string, verbose b
 		// 	minPrice = orderBook.sells.MinPrice()
 		// }
 
+		if verbose {
+			fmt.Printf("New Order added %s", quote)
+		}
+
 		if quantityToTrade.GreaterThan(decimal.Zero) {
 			quote["order_id"] = strconv.Itoa(orderBook.nextOrderID)
 			quote["quantity"] = quantityToTrade.String()
@@ -109,6 +124,10 @@ func (orderBook *OrderBook) ProcessLimitOrder(quote map[string]string, verbose b
 		// 	trades = append(trades, new_trades...)
 		// 	maxPrice = orderBook.buys.MaxPrice()
 		// }
+
+		if verbose {
+			fmt.Printf("New Order added %s", quote)
+		}
 
 		if quantityToTrade.GreaterThan(decimal.Zero) {
 			quote["order_id"] = strconv.Itoa(orderBook.nextOrderID)

@@ -109,10 +109,8 @@ func (ordertree *OrderTree) MaxPrice() decimal.Decimal {
 			return value.(*OrderList).price
 		}
 		return decimal.Zero
-
-	} else {
-		return decimal.Zero
 	}
+	return decimal.Zero
 }
 
 // MinPrice ...
@@ -121,13 +119,10 @@ func (ordertree *OrderTree) MinPrice() decimal.Decimal {
 		value, found := ordertree.priceTree.GetMin()
 		if found {
 			return value.(*OrderList).price
-		} else {
-			return decimal.Zero
 		}
-
-	} else {
 		return decimal.Zero
 	}
+	return decimal.Zero
 }
 
 // MaxPriceList ...
@@ -137,7 +132,6 @@ func (ordertree *OrderTree) MaxPriceList() *OrderList {
 		return ordertree.priceMap[price.String()]
 	}
 	return nil
-
 }
 
 // MinPriceList ...
