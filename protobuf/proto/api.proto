@@ -7,11 +7,11 @@ service API {
   // Get all Order for a user with filter - A server-to-client streaming RPC.
   rpc GetOrders(OrderFilter) returns (stream Order) {}
   // Create a new market order - A simple RPC 
-  rpc CreateMarketOrder (OrderMarket) returns (OrderResponse) {}
+  rpc CreateMarketOrder (Order) returns (OrderResponse) {}
   // Create a new limit order - A simple RPC 
-  rpc CreateLimitOrder (OrderLimit) returns (OrderResponse) {}
+  rpc CreateLimitOrder (Order) returns (OrderResponse) {}
   // Create a new stop order - A simple RPC 
-  rpc CreateStopOrder (OrderLimit) returns (OrderResponse) {}  
+  rpc CreateStopOrder (Order) returns (OrderResponse) {}  
   // Cancel one or many orders by array of ids - A simple RPC 
   rpc CancelOrders (OrdersCancel) returns (OrderResponse) {}  
   // Get all Accounts with filter - A simple RPC   
@@ -109,54 +109,39 @@ message AccountFilter {
   AccountType  accountType = 3; 
 }
 
-message OrderMarket {
-  Venue            venue        = 1;
-  Product          product      = 2;
-  double           amount       = 3;
-  OrderSide        side         = 4;
-}
-
-message OrderLimit {
-  Venue            venue        = 1;
-  Product          product      = 2;
-  double           price        = 3;
-  double           amount       = 4;
-  OrderSide        side         = 5;
-  int32            cancel_after = 6;
-  bool             post_only    = 7;
-}
-
 message OrdersCancel {
   repeated Order  orders        = 1;
 }
 
 message OrderResponse {
-  string       id           = 1;
+  string       trade_id     = 1;
   bool         sucess       = 2;
   string       execution    = 3;  
 }
 
 message Order {
-  string           id           = 1;
-  Venue            venue        = 2;
-  string           account      = 3;
-  string           strategy     = 4;
-  Product          product      = 5;
-  double           amount       = 6;
-  double           price        = 7;
-  double           funds        = 8;  
-  OrderSide        side         = 9;
-  OrderType        type         = 10;
-  string           parent_order = 11;
-  int32            expepiration = 12;
-  OrderStatus      status       = 13; 
+  int64            id           = 1;
+  string           trade_id     = 2;
+  Venue            venue        = 3;
+  string           account      = 4;
+  string           strategy     = 5;
+  Product          product      = 6;
+  double           amount       = 7;
+  double           price        = 8;
+  double           funds        = 9;  
+  OrderSide        side         = 10;
+  OrderType        type         = 11;
+  string           parent_order = 12;
+  bool             post_only    = 13;
+  OrderStatus      status       = 14; 
 }
 
 message OrderFilter {    
-  string       id         = 1;
-  string       account    = 2;
-  OrderStatus  status     = 3;
-  OrderType    type       = 4;
-  OrderSide    side       = 5;
-  Venue        venue      = 6;
+  int64        id         = 1;
+  string       trade_id   = 2;
+  string       account    = 3;
+  OrderStatus  status     = 4;
+  OrderType    type       = 5;
+  OrderSide    side       = 6;
+  Venue        venue      = 7;
 }
