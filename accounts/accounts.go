@@ -101,6 +101,7 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 				account := rec.Load(accountNumber).(*pbAPI.Account)
 				symbols := strings.Split(product.String(), "_")
 				if balance, ok := account.Balances[symbols[1]]; ok {
+
 					if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
 						balance.Available = balance.Available - amount
 						balance.Hold = balance.Hold + amount
@@ -110,6 +111,7 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 						return new(pbAPI.Account)
 					}
 					return account
+
 				} else {
 					err = errors.New("Venue does not support this product")
 					return new(pbAPI.Account)
@@ -126,8 +128,8 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 	}
 }
 
-// RefundValues balances to the user account
-func (m *Account) RefundValues(venue pbAPI.Venue, product pbAPI.Product, account string, amount float64) (*pbAPI.Account, error) {
+// RefundAccountValues balances to the user account
+func (m *Account) RefundAccountValues(venue pbAPI.Venue, product pbAPI.Product, account string, amount float64) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
