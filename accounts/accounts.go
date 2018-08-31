@@ -62,7 +62,7 @@ func (m *Account) LoadDataFromDB() {
 	data := &pb.Account{
 		Id:       "XXXXXX",
 		User:     "XXXXXX",
-		Venue:    pb.Venue_BINANCE,
+		Venue:    pb.Venue_COINBASEPRO,
 		Active:   true,
 		Balances: make(map[string]*pb.Balance),
 	}
