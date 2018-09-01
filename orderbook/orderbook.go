@@ -1,10 +1,10 @@
 package orderbook
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/shopspring/decimal"
+	"github.com/sirupsen/logrus"
 	lane "gopkg.in/oleiade/lane.v1"
 )
 
@@ -106,7 +106,7 @@ func (orderBook *OrderBook) ProcessLimitOrder(quote map[string]string, verbose b
 		// }
 
 		if verbose {
-			fmt.Printf("New Order added %s", quote)
+			logrus.Info("New Order added ", quote)
 		}
 
 		if quantityToTrade.GreaterThan(decimal.Zero) {
@@ -126,7 +126,7 @@ func (orderBook *OrderBook) ProcessLimitOrder(quote map[string]string, verbose b
 		// }
 
 		if verbose {
-			fmt.Printf("New Order added %s", quote)
+			logrus.Info("New Order added ", quote)
 		}
 
 		if quantityToTrade.GreaterThan(decimal.Zero) {
