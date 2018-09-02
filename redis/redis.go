@@ -56,6 +56,6 @@ func Worker(item interface{}) {
 			return
 		}
 	default:
-		logrus.Error("Data is not an array")
+		logrus.Error("Data is not an array ", t)
 	}
 }

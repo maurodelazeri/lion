@@ -55,6 +55,6 @@ func Worker(item interface{}) {
 		}
 		tx.Commit()
 	default:
-		logrus.Error("Data is not an array")
+		logrus.Error("Data is not an array ", t)
 	}
 }

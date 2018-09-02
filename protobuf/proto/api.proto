@@ -5,17 +5,9 @@ package api;
 // The API service definition.
 service API {   
   // Get all Order for a user with filter - A server-to-client streaming RPC.
-  rpc GetOrders(OrderFilter) returns (stream Order) {}
-  // Create a new market order - A simple RPC 
-  rpc CreateMarketOrder (Order) returns (OrderResponse) {}
-  // Create a new limit order - A simple RPC 
-  rpc CreateLimitOrder (Order) returns (OrderResponse) {}
-  // Create a new stop order - A simple RPC 
-  rpc CreateStopOrder (Order) returns (OrderResponse) {}  
-  // Cancel one or many orders by array of ids - A simple RPC 
-  rpc CancelOrders (OrdersCancel) returns (OrderResponse) {}  
-  // Get all Accounts with filter - A simple RPC   
-  rpc GetAccounts (AccountFilter) returns (stream Account) {}
+ // rpc GetOrders(OrderFilter) returns (stream Order) {}
+  // Order request - A simple RPC 
+  rpc OrderSend(TradeRequest) returns (TradeResult) {}
 } 
 
 enum Venue{
@@ -55,34 +47,146 @@ enum Venue{
  
  enum AccountType{
    LIVE     = 0;
-   DEMO     = 1;
- };
- 
- enum OrderSide{
-   BUY  = 0;
-   SELL = 1;
- };
- 
- enum OrderType{
-   MARKET    = 0;
-   LIMIT     = 1;
-   STOP      = 2;
-   STOPLIMIT = 3;
-   TRAILING  = 4;
- };
- 
- enum OrderStatus{
-   RECEIVED          = 0;
-   ACCEPTED          = 1;
-   REJECTED          = 2;
-   WORKING           = 3;
-   PLACED            = 4;  
-   FILLED            = 5;
-   PARTIALLY_FILLED  = 6;
-   CANCELLED         = 7;
-   CHANGED           = 8;
+   HEDGE    = 1;
+   DEMO     = 2;
  };
 
+ enum OrderType {
+  BUY                = 0;
+  SELL               = 1; 
+  BUY_LIMIT          = 2;  
+  SELL_LIMIT         = 3;
+  BUY_STOP           = 4;
+  SELL_STOP          = 5;
+  BUY_STOP_LIMIT     = 6;
+  SELL_STOP_LIMIT    = 7;
+  CLOSING_BY         = 8;
+ }
+
+ enum OrderState {
+  STARTED           = 0;
+  PLACED            = 1;
+  CANCELED          = 2;
+  PARTIAL           = 3;
+  FILLED            = 4;
+  REJECTED          = 5;
+  EXPIRED           = 6;
+  REQUEST_ADD       = 7;
+  REQUEST_MODIFY    = 8;  
+  REQUEST_CANCEL    = 9;
+ }
+
+ enum OrderTypeFilling {
+  FOK           = 0;
+  IOC           = 1;
+  RETURN        = 2;
+ }
+
+ enum OrderReason {
+  CLIENT        = 0;
+  MOBILE        = 1;
+  WEB           = 2;
+  STRATEGY      = 3;
+  SL            = 4;
+  TP            = 5;
+  SO            = 6;
+ } 
+
+  enum OrderTypeTime {
+  ORDER_TIME_GTC              = 0;
+  ORDER_TIME_DAY              = 1;
+  ORDER_TIME_SPECIFIED        = 2;
+  ORDER_TIME_SPECIFIED_DAY    = 3;
+ } 
+
+ enum TradeAction {
+  DEAL        = 0;
+  PENDING     = 1;
+  SLTP        = 2;
+  MODIFY      = 3;
+  REMOVE      = 4;
+  CLOSE_BY    = 5;
+ }
+
+ enum TradeRetcode {
+  REJECTX                        = 0;
+  REJECT                         = 2;
+  CANCEL                         = 3;
+  PLACED_TRADE                   = 4;
+  DONE                           = 5;
+  DONE_PARTIAL                   = 6;
+  ERROR                          = 7;
+  TIMEOUT                        = 8;
+  INVALID                        = 9;
+  INVALID_VOLUME                 = 10;
+  INVALID_PRICE                  = 11;
+  INVALID_STOPS                  = 12;
+  TRADE_DISABLED                 = 13;
+  MARKET_CLOSED                  = 14;
+  NO_MONEY                       = 15;
+  PRICE_CHANGED                  = 16;
+  PRICE_OFF                      = 17;
+  INVALID_EXPIRATION             = 18;
+  ORDER_CHANGED                  = 19;
+  TOO_MANY_REQUESTS              = 21;
+  NO_CHANGES                     = 22;
+  SERVER_DISABLES_AT             = 23;
+  CLIENT_DISABLES_AT             = 24;
+  LOCKED                         = 25;
+  FROZEN                         = 26;
+  INVALID_FILL                   = 27;
+  CONNECTION                     = 28;
+  ONLY_REAL                      = 29;
+  LIMIT_ORDERS                   = 30;
+  LIMIT_VOLUME                   = 31;
+  INVALID_ORDER                  = 32;
+  POSITION_CLOSED                = 33;
+  CLOSE_ORDER_EXIST              = 34;
+  LIMIT_POSITIONS                = 35;
+  REJECT_CANCEL                  = 36;
+  LONG_ONLY                      = 37;
+  SHORT_ONLY                     = 38;
+  CLOSE_ONLY                     = 39;
+  REQUEST_WITH_NO_TOKEN          = 40;
+  INVALID_TOKEN                  = 41;
+  INVALID_REQUEST_CONTEXT        = 42;  
+ }
+
+ message TradeRequest { 
+   TradeAction                   action         = 1;  // Trade operation type 
+   Venue                         venue          = 2;  // Venue where the order is being send
+   Product                       product        = 3;  // Product to be traded
+   uint64                        magic          = 4;  // Expert Advisor ID (magic number) 
+   uint64                        order          = 5;  // Order ticket 
+   string                        symbol         = 6;  // Trade symbol 
+   double                        volume         = 7;  // Requested volume for a deal in lots 
+   double                        price          = 8;  // Price 
+   double                        stoplimit      = 9;  // StopLimit level of the order 
+   double                        sl             = 10; // Stop Loss level of the order 
+   double                        tp             = 11; // Take Profit level of the order 
+   uint64                        deviation      = 12; // Maximal possible deviation from the requested price 
+   OrderType                     type           = 13; // Order type 
+   OrderTypeFilling              type_filling   = 14; // Order execution type 
+   OrderTypeTime                 type_time      = 15; // Order expiration type 
+   uint64                        expiration     = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   string                        comment        = 17; // Order comment 
+   uint64                        position       = 18; // Position ticket 
+   uint64                        position_by    = 19; // The ticket of an opposite position 
+  }
+
+message TradeResult { 
+   TradeRetcode                 retcode           = 1;  // Operation return code 
+   TradeAction                  deal              = 2;  // Deal ticket, if it is performed 
+   Venue                        venue             = 3;  // Venue where the order was sent
+   Product                      product           = 4;  // Product of the trade
+   uint64                       order             = 5;  // Order ticket, if it is placed 
+   double                       volume            = 6;  // Deal volume, confirmed by broker 
+   double                       price             = 7;  // Deal price, confirmed by broker
+   string                       comment           = 8;  // Broker comment to operation (by default it is filled by description of trade server return code) 
+   uint64                       request_id        = 9;  // Request ID set by the terminal during the dispatch  
+   uint64                       retcode_external  = 10; // Return code of an external trading system 
+  }
+  
 message User {
   string           id       = 1;
   repeated Account accounts = 2;
@@ -92,7 +196,7 @@ message Account {
   string                id           = 1;
   string                user         = 2;
   Venue                 venue        = 3;
-  AccountType           accountType  = 4;
+  AccountType           account_type = 4;
   map<string, Balance>  balances     = 5;
   bool                  active       = 6;
 }
@@ -101,47 +205,4 @@ message Balance {
   double  id         = 1;
   double  available  = 2;
   double  hold       = 3;
-}
-
-message AccountFilter {    
-  string       account     = 1;
-  string       active      = 2;
-  AccountType  accountType = 3; 
-}
-
-message OrdersCancel {
-  repeated Order  orders        = 1;
-}
-
-message OrderResponse {
-  string       trade_id     = 1;
-  bool         sucess       = 2;
-  string       execution    = 3;  
-}
-
-message Order {
-  int64            id           = 1;
-  string           trade_id     = 2;
-  Venue            venue        = 3;
-  string           account      = 4;
-  string           strategy     = 5;
-  Product          product      = 6;
-  double           amount       = 7;
-  double           price        = 8;
-  double           funds        = 9;  
-  OrderSide        side         = 10;
-  OrderType        type         = 11;
-  string           parent_order = 12;
-  bool             post_only    = 13;
-  OrderStatus      status       = 14; 
-}
-
-message OrderFilter {    
-  int64        id         = 1;
-  string       trade_id   = 2;
-  string       account    = 3;
-  OrderStatus  status     = 4;
-  OrderType    type       = 5;
-  OrderSide    side       = 6;
-  Venue        venue      = 7;
 }
