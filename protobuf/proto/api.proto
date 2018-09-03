@@ -150,6 +150,7 @@ enum Venue{
   REQUEST_WITH_NO_TOKEN          = 40;
   INVALID_TOKEN                  = 41;
   INVALID_REQUEST_CONTEXT        = 42;  
+  INVALID_REQUEST                = 43;  
  }
 
  message TradeRequest { 
@@ -171,7 +172,8 @@ enum Venue{
    uint64                        expiration     = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
    string                        comment        = 17; // Order comment 
    uint64                        position       = 18; // Position ticket 
-   uint64                        position_by    = 19; // The ticket of an opposite position 
+   uint64                        position_by    = 19; // The ticket of an opposite position
+   bool                          async          = 20; // Do not wait the response, designed to high frequency
   }
 
 message TradeResult { 
