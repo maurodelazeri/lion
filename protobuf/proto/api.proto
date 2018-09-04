@@ -177,16 +177,16 @@ enum Venue{
   }
 
 message TradeResult { 
-   TradeRetcode                 retcode           = 1;  // Operation return code 
-   TradeAction                  deal              = 2;  // Deal ticket, if it is performed 
-   Venue                        venue             = 3;  // Venue where the order was sent
-   Product                      product           = 4;  // Product of the trade
-   uint64                       order             = 5;  // Order ticket, if it is placed 
-   double                       volume            = 6;  // Deal volume, confirmed by broker 
-   double                       price             = 7;  // Deal price, confirmed by broker
-   string                       comment           = 8;  // Broker comment to operation (by default it is filled by description of trade server return code) 
-   uint64                       request_id        = 9;  // Request ID set by the terminal during the dispatch  
-   uint64                       retcode_external  = 10; // Return code of an external trading system 
+   TradeRetcode                 retcode                   = 1;  // Operation return code 
+   uint64                       deal                      = 2;  // Deal ticket, if it is performed 
+   Venue                        venue                     = 3;  // Venue where the order was sent
+   Product                      product                   = 4;  // Product of the trade
+   uint64                       order                     = 5;  // Order ticket, if it is placed 
+   double                       volume                    = 6;  // Deal volume, confirmed by broker 
+   double                       price                     = 7;  // Deal price, confirmed by broker
+   string                       comment                   = 8;  // Broker comment to operation (by default it is filled by description of trade server return code) 
+   string                       request_id                = 9;  // Request ID set by the terminal during the dispatch  
+   string                       broker_execution_id       = 10; // Return code of an external trading system 
   }
   
 message User {
