@@ -153,6 +153,20 @@ enum Venue{
   INVALID_REQUEST                = 43;  
  }
 
+  // position — position ticket. Fill it when changing and closing a position for its clear identification. It usually matches the ticket of an order used to open the position.
+  // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
+
+//   [
+//     {
+//         "id": "BTC-USD",
+//         "base_currency": "BTC",
+//         "quote_currency": "USD",
+//         "base_min_size": "0.001",
+//         "base_max_size": "10000.00",
+//         "quote_increment": "0.01"
+//     }
+// ]
+
  message TradeRequest { 
    TradeAction                   action         = 1;  // Trade operation type 
    Venue                         venue          = 2;  // Venue where the order is being send
