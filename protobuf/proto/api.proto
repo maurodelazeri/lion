@@ -19,6 +19,17 @@ enum Venue{
   GEMINI      =  5;
  }
 
+ enum AccountType{
+  LIVE     = 0;
+  HEDGE    = 1;
+  DEMO     = 2;
+};
+
+enum VenueType{
+ SPOT       = 0;
+ FUTURES    = 1;
+};
+
  enum Symbol{
    BTC   = 0;
    ETH   = 1;
@@ -43,17 +54,6 @@ enum Venue{
    ETC_ETH = 11;
  }
  
- enum AccountType{
-   LIVE     = 0;
-   HEDGE    = 1;
-   DEMO     = 2;
- };
-
- enum VenueType{
-  SPOT       = 0;
-  FUTURES    = 1;
-};
-
  enum OrderType {
   BUY                = 0;
   SELL               = 1; 
