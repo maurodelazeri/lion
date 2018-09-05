@@ -18,19 +18,14 @@ enum Venue{
   BINANCE     =  4;
   GEMINI      =  5;
  }
- 
- enum VenueType{
-   SPOT    = 0;
-   FUTURES = 1;
- };
- 
+
  enum Symbol{
    BTC   = 0;
    ETH   = 1;
    USD   = 2;
    LTC   = 3;
    BCH   = 4;
-   ETC   = 4;
+   ETC   = 5;
  }
  
  enum Product{
@@ -91,13 +86,13 @@ enum Venue{
  }
 
  enum OrderReason {
-  CLIENT        = 0;
-  MOBILE        = 1;
-  WEB           = 2;
-  STRATEGY      = 3;
-  SL            = 4;
-  TP            = 5;
-  SO            = 6;
+  ORDER_CLIENT        = 0;
+  ORDER_MOBILE        = 1;
+  ORDER_WEB           = 2;
+  ORDER_STRATEGY      = 3;
+  ORDER_SL            = 4;
+  ORDER_TP            = 5;
+  ORDER_SO            = 6;
  } 
 
  enum OrderTypeTime {
@@ -108,15 +103,15 @@ enum Venue{
  } 
 
  enum PositionReason {
-  CLIENT        = 0;
-  MOBILE        = 1;
-  WEB           = 2;
-  STRATEGY      = 3;
+  POSITION_CLIENT        = 0;
+  POSITION_MOBILE        = 1;
+  POSITION_WEB           = 2;
+  POSITION_STRATEGY      = 3;
  } 
 
  enum PositioType {
-  BUY                = 0;
-  SELL               = 1; 
+  POSITION_BUY                = 0;
+  POSITION_SELL               = 1; 
  } 
   
  enum TradeAction {
