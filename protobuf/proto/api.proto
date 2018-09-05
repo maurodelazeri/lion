@@ -13,9 +13,9 @@ service API {
 enum Venue{
   DARKPOOL    =  0;
   COINBASEPRO =  1;
-  BINANCE     =  2;
+  BITMEX      =  2;
   BITFINEX    =  3;
-  BITMEX      =  4;
+  BINANCE     =  4;
   GEMINI      =  5;
  }
  
@@ -39,10 +39,13 @@ enum Venue{
    ETH_USD = 2;
    LTC_USD = 3;
    LTC_BTC = 4;   
-   LTC_USD = 5;
-   BCH_BTC = 6;
-   ETC_USD = 7;
-   ETC_BTC = 8;
+   LTC_ETH = 5;
+   BCH_USD = 6;
+   BCH_BTC = 7;
+   BCH_ETH = 8;
+   ETC_USD = 9;
+   ETC_BTC = 10;
+   ETC_ETH = 11;
  }
  
  enum AccountType{
@@ -50,6 +53,11 @@ enum Venue{
    HEDGE    = 1;
    DEMO     = 2;
  };
+
+ enum VenueType{
+  SPOT       = 0;
+  FUTURES    = 1;
+};
 
  enum OrderType {
   BUY                = 0;
@@ -92,13 +100,25 @@ enum Venue{
   SO            = 6;
  } 
 
-  enum OrderTypeTime {
-  ORDER_TIME_GTC              = 0;
-  ORDER_TIME_DAY              = 1;
-  ORDER_TIME_SPECIFIED        = 2;
-  ORDER_TIME_SPECIFIED_DAY    = 3;
+ enum OrderTypeTime {
+  GTC              = 0;
+  DAY              = 1;
+  SPECIFIED        = 2;
+  SPECIFIED_DAY    = 3;
  } 
 
+ enum PositionReason {
+  CLIENT        = 0;
+  MOBILE        = 1;
+  WEB           = 2;
+  STRATEGY      = 3;
+ } 
+
+ enum PositioType {
+  BUY                = 0;
+  SELL               = 1; 
+ } 
+  
  enum TradeAction {
   DEAL        = 0;
   PENDING     = 1;
