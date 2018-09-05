@@ -102,6 +102,41 @@ enum VenueType{
   SPECIFIED_DAY    = 3;
  } 
 
+ enum DealType {
+  DEAL_BUY                = 0;
+  DEAL_SELL               = 1; 
+  BALANCE                 = 2;  
+  CREDIT                  = 3;
+  CHARGE                  = 4;
+  CORRECTION              = 5;
+  BONUS                   = 6;
+  COMMISSION              = 7;
+  INTEREST                = 8;
+  BUY_CANCELED            = 9;
+  SELL_CANCELED           = 10;
+  DIVIDEND                = 11;
+ }
+
+  enum DealEntry {
+  IN                = 0;
+  OUT               = 1; 
+  INOUT             = 2;  
+  OUT_BY            = 3;
+ }
+
+ enum DealReason {
+  DEAL_CLIENT        = 0;
+  DEAL_MOBILE        = 1;
+  DEAL_WEB           = 2;
+  DEAL_STRATEGY      = 3;
+  DEAL_SL            = 4;
+  DEAL_TP            = 5;
+  DEAL_SO            = 6;
+  ROLLOVER           = 7;
+  VMARGIN            = 8;
+  SPLIT              = 9;
+ } 
+
  enum PositionReason {
   POSITION_CLIENT        = 0;
   POSITION_MOBILE        = 1;
@@ -114,6 +149,7 @@ enum VenueType{
   POSITION_SELL               = 1; 
  } 
   
+
  enum TradeAction {
   DEAL        = 0;
   PENDING     = 1;
