@@ -20,9 +20,10 @@ enum Venue{
  }
 
  enum AccountType{
-  LIVE     = 0;
-  HEDGE    = 1;
-  DEMO     = 2;
+  LIVE                = 0;
+  HEDGE               = 1;
+  CROSS_VENUE_NET     = 2;
+  CROSS_VENUE_HEDGE   = 3;
 };
 
 enum VenueType{
@@ -145,8 +146,8 @@ enum VenueType{
  } 
 
  enum PositioType {
-  POSITION_BUY                = 0;
-  POSITION_SELL               = 1; 
+  POSITION_BUY    = 0;
+  POSITION_SELL   = 1; 
  } 
   
 
