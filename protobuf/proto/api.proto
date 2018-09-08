@@ -136,6 +136,7 @@ enum VenueType{
   ROLLOVER           = 7;
   VMARGIN            = 8;
   SPLIT              = 9;
+  AJUST              = 10;
  } 
 
  enum PositionReason {
