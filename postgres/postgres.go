@@ -8,8 +8,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
-// RedisDB ...
-var RedisDB *sqlx.DB
+// PostgresDB ...
+var PostgresDB *sqlx.DB
 
 func init() {
 	InitEngine()
@@ -18,7 +18,7 @@ func init() {
 // InitEngine initializes our Database Connection
 func InitEngine() {
 	var err error
-	RedisDB, err = sqlx.Connect("postgres", "host="+os.Getenv("PSQL_HOST")+" user="+os.Getenv("PSQL_USER")+" password="+os.Getenv("PSQL_PASS")+" dbname="+os.Getenv("PSQL_DB")+" sslmode=disable")
+	PostgresDB, err = sqlx.Connect("postgres", "host="+os.Getenv("PSQL_HOST")+" user="+os.Getenv("PSQL_USER")+" password="+os.Getenv("PSQL_PASS")+" dbname="+os.Getenv("PSQL_DB")+" sslmode=disable")
 	if err != nil {
 		log.Fatal("Problem with database connection", err)
 	}

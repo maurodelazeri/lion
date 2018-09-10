@@ -2,14 +2,15 @@ package accounts
 
 import (
 	"errors"
+	"log"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/decillion/go-stm"
+	"github.com/maurodelazeri/lion/postgres"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/sirupsen/logrus"
-
-	"github.com/decillion/go-stm"
 )
 
 // UserAccounts holds all active accounts in memory
@@ -20,6 +21,16 @@ type Account struct {
 	mutex         sync.RWMutex
 	account       map[pbAPI.Venue]map[string]*stm.TVar
 	TotalAccounts int
+}
+
+// Balances ...
+type AccountBalances struct {
+	Symbol    string  `db:"symbol"`
+	VenueID   int     `db:"venue_id"`
+	AccountID int     `db:"account_id"`
+	UsersID   int     `db:"users_id"`
+	Hold      float64 `db:"hold"`
+	Available float64 `db:"available"`
 }
 
 //https://play.golang.org/p/ib-dfXjPDy
@@ -37,6 +48,12 @@ func init() {
 func (m *Account) LoadDataFromDB() {
 
 	logrus.Info("Loading accounts balances to memory")
+
+	balances := []AccountBalances{}
+	if err := postgres.PostgresDB.Select(&balances, "SELECT s.name as symbol,b.venue_id,b.account_id,a.users_id,b.hold,b.available FROM balance b, symbol s, account a WHERE b.symbol_id=s.symbol_id AND a.account_id=b.account_id"); err != nil {
+		log.Fatal(err)
+	}
+	logrus.Info("HERE ", balances)
 
 	for i := 0; i < 1000; i++ {
 		data := &pbAPI.Account{

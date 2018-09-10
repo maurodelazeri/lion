@@ -30,7 +30,7 @@ func InitQueue() {
 func Worker(item interface{}) {
 	switch t := item.(type) {
 	case []string:
-		tx := RedisDB.MustBegin()
+		tx := PostgresDB.MustBegin()
 		for _, value := range t {
 			tx.MustExec(value)
 		}
