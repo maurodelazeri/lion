@@ -106,7 +106,6 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
-
 	if venue, ok := m.account[venue]; ok {
 		if accountNumber, ok := venue[account]; ok {
 			transfer := func(rec *stm.TRec) interface{} {
@@ -173,12 +172,10 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 				return new(pbAPI.Account)
 			}
 			return stm.Atomically(transfer).(*pbAPI.Account), err
-		} else {
-			err = errors.New("Account was not found")
-			return new(pbAPI.Account), err
 		}
-	} else {
-		err = errors.New("Balances not found for this venue")
+		err = errors.New("Account was not found")
 		return new(pbAPI.Account), err
 	}
+	err = errors.New("Balances not found for this venue")
+	return new(pbAPI.Account), err
 }
