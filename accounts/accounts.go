@@ -117,14 +117,17 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 					if balance, ok := account.Balances[symbols[1]]; ok {
 						if balance.Available >= price && price > 0 { // we dont want users sending negative prices
 							switch mode {
-							case "transation-hold":
+							case "transaction-hold":
 								balance.Available = balance.Available - price
 								balance.Hold = balance.Hold + price
 								rec.Store(accountNumber, account)
-							case "transation-done":
+							case "transaction-done":
 								balance.Hold = balance.Hold - price
+								if balanceQuote, ok := account.Balances[symbols[0]]; ok {
+									balanceQuote.Available = balanceQuote.Available + amount
+								}
 								rec.Store(accountNumber, account)
-							case "transation-refund":
+							case "transaction-refund":
 								balance.Available = balance.Available + price
 								balance.Hold = balance.Hold - price
 								rec.Store(accountNumber, account)
@@ -146,10 +149,13 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 								balance.Available = balance.Available - amount
 								balance.Hold = balance.Hold + amount
 								rec.Store(accountNumber, account)
-							case "transation-done":
+							case "transaction-done":
 								balance.Hold = balance.Hold - amount
+								if balanceQuote, ok := account.Balances[symbols[1]]; ok {
+									balanceQuote.Available = balanceQuote.Available + price
+								}
 								rec.Store(accountNumber, account)
-							case "transation-refund":
+							case "transaction-refund":
 								balance.Available = balance.Available + amount
 								balance.Hold = balance.Hold - amount
 								rec.Store(accountNumber, account)
