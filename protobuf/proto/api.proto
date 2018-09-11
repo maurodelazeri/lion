@@ -19,8 +19,13 @@ enum Venue{
   GEMINI      =  5;
  }
 
+  enum AccountMode{
+  LIVE               = 0;
+  DEMO               = 1;
+};
+
  enum AccountType{
-  LIVE                = 0;
+  NET                 = 0;
   HEDGE               = 1;
   CROSS_VENUE_NET     = 2;
   CROSS_VENUE_HEDGE   = 3;
@@ -250,16 +255,17 @@ message User {
 }
 
 message Account {
-  string                id           = 1;
-  string                user         = 2;
+  uint32                account_id   = 1;
+  uint32                user_id      = 2;
   Venue                 venue        = 3;
   AccountType           account_type = 4;
-  map<string, Balance>  balances     = 5;
-  bool                  active       = 6;
+  AccountMode           account_mode = 5;
+  map<string, Balance>  balances     = 6;
+  bool                  active       = 7;
 }
 
 message Balance {
-  double  id         = 1;
+  double  balance_id = 1;
   double  available  = 2;
   double  hold       = 3;
 }

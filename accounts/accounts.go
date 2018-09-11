@@ -3,9 +3,10 @@ package accounts
 import (
 	"errors"
 	"log"
+	"os"
+	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/decillion/go-stm"
 	"github.com/maurodelazeri/lion/postgres"
@@ -23,14 +24,20 @@ type Account struct {
 	TotalAccounts int
 }
 
-// Balances ...
+// AccountBalances ...
 type AccountBalances struct {
-	Symbol    string  `db:"symbol"`
-	VenueID   int     `db:"venue_id"`
-	AccountID int     `db:"account_id"`
-	UsersID   int     `db:"users_id"`
+	Symbol    uint32  `db:"symbol_id"`
+	VenueID   uint32  `db:"venue_id"`
+	AccountID uint32  `db:"account_id"`
 	Hold      float64 `db:"hold"`
 	Available float64 `db:"available"`
+}
+
+// UserAccount ...
+type UserAccount struct {
+	Active    bool   `db:"active"`
+	AccountID uint32 `db:"account_id"`
+	UsersID   uint32 `db:"users_id"`
 }
 
 //https://play.golang.org/p/ib-dfXjPDy
@@ -49,51 +56,32 @@ func (m *Account) LoadDataFromDB() {
 
 	logrus.Info("Loading accounts balances to memory")
 
-	balances := []AccountBalances{}
-	if err := postgres.PostgresDB.Select(&balances, "SELECT s.name as symbol,b.venue_id,b.account_id,a.users_id,b.hold,b.available FROM balance b, symbol s, account a WHERE b.symbol_id=s.symbol_id AND a.account_id=b.account_id"); err != nil {
+	accounts := []UserAccount{}
+	if err := postgres.PostgresDB.Select(&accounts, "SELECT account_id,users_id,active FROM account WHERE active=true AND account_mode_id="+strconv.FormatInt(int64(pbAPI.AccountMode_value[os.Getenv("MODE")]), 10)); err != nil {
 		log.Fatal(err)
 	}
-	logrus.Info("HERE ", balances)
-
-	for i := 0; i < 1000; i++ {
+	balances := []AccountBalances{}
+	if err := postgres.PostgresDB.Select(&balances, "SELECT b.symbol_id,b.venue_id,b.account_id,b.hold,b.available FROM balance b,account a WHERE a.account_id=b.account_id AND a.active=true ORDER BY account_id ASC"); err != nil {
+		log.Fatal(err)
+	}
+	for _, account := range accounts {
 		data := &pbAPI.Account{
-			Id:       time.Now().String(),
-			User:     time.Now().String(),
-			Venue:    pbAPI.Venue_BINANCE,
-			Active:   true,
-			Balances: make(map[string]*pbAPI.Balance),
+			AccountId: account.AccountID,
+			UserId:    account.UsersID,
+			Active:    account.Active,
+			Balances:  make(map[string]*pbAPI.Balance),
 		}
-
-		data.Balances[pbAPI.Symbol_BTC.String()] = &pbAPI.Balance{
-			Available: 500000,
-			Hold:      300,
+		for i := 0; i < len(balances); i++ {
+			if balances[i].AccountID == account.AccountID {
+				data.Venue = pbAPI.Venue(balances[i].VenueID)
+				data.Balances[pbAPI.Symbol(balances[i].Symbol).String()] = &pbAPI.Balance{
+					Available: balances[i].Available,
+					Hold:      balances[i].Hold,
+				}
+			}
 		}
-		data.Balances[pbAPI.Symbol_USD.String()] = &pbAPI.Balance{
-			Available: 500000,
-			Hold:      300,
-		}
-
 		m.LoadDataToMemory(data)
 	}
-
-	data := &pbAPI.Account{
-		Id:       "XXXXXX",
-		User:     "XXXXXX",
-		Venue:    pbAPI.Venue_COINBASEPRO,
-		Active:   true,
-		Balances: make(map[string]*pbAPI.Balance),
-	}
-
-	data.Balances[pbAPI.Symbol_BTC.String()] = &pbAPI.Balance{
-		Available: 500000,
-		Hold:      300,
-	}
-	data.Balances[pbAPI.Symbol_USD.String()] = &pbAPI.Balance{
-		Available: 500000,
-		Hold:      300,
-	}
-
-	m.LoadDataToMemory(data)
 }
 
 // LoadDataToMemory data onto memory
@@ -102,7 +90,7 @@ func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 	defer m.mutex.RUnlock()
 	m.account[data.GetVenue()] = make(map[string]*stm.TVar)
 	newAccount := stm.New(data)
-	m.account[data.GetVenue()][string(data.GetId())] = newAccount
+	m.account[data.GetVenue()][string(data.GetAccountId())] = newAccount
 	m.TotalAccounts++
 }
 
