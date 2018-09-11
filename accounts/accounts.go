@@ -24,6 +24,13 @@ type Account struct {
 	TotalAccounts int
 }
 
+// UserAccount ...
+type UserAccount struct {
+	Active    bool   `db:"active"`
+	AccountID uint32 `db:"account_id"`
+	UsersID   uint32 `db:"users_id"`
+}
+
 // AccountBalances ...
 type AccountBalances struct {
 	Symbol    uint32  `db:"symbol_id"`
@@ -31,13 +38,6 @@ type AccountBalances struct {
 	AccountID uint32  `db:"account_id"`
 	Hold      float64 `db:"hold"`
 	Available float64 `db:"available"`
-}
-
-// UserAccount ...
-type UserAccount struct {
-	Active    bool   `db:"active"`
-	AccountID uint32 `db:"account_id"`
-	UsersID   uint32 `db:"users_id"`
 }
 
 //https://play.golang.org/p/ib-dfXjPDy
