@@ -20,7 +20,7 @@ var UserAccounts *Account
 // Account ...
 type Account struct {
 	mutex         sync.RWMutex
-	account       map[pbAPI.Venue]map[string]*stm.TVar
+	account       map[pbAPI.Venue]map[uint32]*stm.TVar
 	TotalAccounts int
 }
 
@@ -47,7 +47,7 @@ func init() {
 	UserAccounts = new(Account)
 	UserAccounts.mutex.RLock()
 	defer UserAccounts.mutex.RUnlock()
-	UserAccounts.account = make(map[pbAPI.Venue]map[string]*stm.TVar)
+	UserAccounts.account = make(map[pbAPI.Venue]map[uint32]*stm.TVar)
 	UserAccounts.LoadDataFromDB()
 }
 
@@ -88,14 +88,14 @@ func (m *Account) LoadDataFromDB() {
 func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
-	m.account[data.GetVenue()] = make(map[string]*stm.TVar)
+	m.account[data.GetVenue()] = make(map[uint32]*stm.TVar)
 	newAccount := stm.New(data)
-	m.account[data.GetVenue()][string(data.GetAccountId())] = newAccount
+	m.account[data.GetVenue()][data.GetAccountId()] = newAccount
 	m.TotalAccounts++
 }
 
 // ValidateAndUpdateBalances data onto memory
-func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Product, account string, amount float64) (*pbAPI.Account, error) {
+func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
@@ -134,7 +134,7 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 }
 
 // ManageAccountBalances balances to the user account
-func (m *Account) ManageAccountBalances(venue pbAPI.Venue, product pbAPI.Product, account string, amount float64, mode string) (*pbAPI.Account, error) {
+func (m *Account) ManageAccountBalances(venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64, mode string) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
