@@ -102,7 +102,7 @@ func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 // Sell 1 3 5 7
 
 // ValidateAndUpdateBalances data onto memory
-func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64, price float64) (*pbAPI.Account, error) {
+func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64, price float64, mode string) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
@@ -112,14 +112,20 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 			transfer := func(rec *stm.TRec) interface{} {
 				account := rec.Load(accountNumber).(*pbAPI.Account)
 				symbols := strings.Split(product.String(), "_")
-
 				if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
 					// Buying
 					if balance, ok := account.Balances[symbols[1]]; ok {
 						if balance.Available >= price && price > 0 { // we dont want users sending negative amounts
-							balance.Available = balance.Available - price
-							balance.Hold = balance.Hold + price
-							rec.Store(accountNumber, account)
+							switch mode {
+							case "hold-transaction":
+								balance.Available = balance.Available - price
+								balance.Hold = balance.Hold + price
+								rec.Store(accountNumber, account)
+							case "completed-transation":
+							case "refund-transation":
+							default:
+								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
+							}
 						} else {
 							err = errors.New("Balance is not enough to execute this operation")
 							return new(pbAPI.Account)
@@ -130,9 +136,16 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 					// Selling
 					if balance, ok := account.Balances[symbols[0]]; ok {
 						if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
-							balance.Available = balance.Available - amount
-							balance.Hold = balance.Hold + amount
-							rec.Store(accountNumber, account)
+							switch mode {
+							case "hold-transaction":
+								balance.Available = balance.Available - amount
+								balance.Hold = balance.Hold + amount
+								rec.Store(accountNumber, account)
+							case "completed-transation":
+							case "refund-transation":
+							default:
+								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
+							}
 						} else {
 							err = errors.New("Balance is not enough to execute this operation")
 							return new(pbAPI.Account)
@@ -142,54 +155,6 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 				}
 				err = errors.New("Venue does not support this product")
 				return new(pbAPI.Account)
-			}
-			return stm.Atomically(transfer).(*pbAPI.Account), err
-		} else {
-			err = errors.New("Account was not found")
-			return new(pbAPI.Account), err
-		}
-	} else {
-		err = errors.New("Balances not found for this venue")
-		return new(pbAPI.Account), err
-	}
-}
-
-// ManageAccountBalances balances to the user account
-func (m *Account) ManageAccountBalances(venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64, mode string) (*pbAPI.Account, error) {
-	m.mutex.RLock()
-	defer m.mutex.RUnlock()
-	var err error
-	// Here is before trading, if things go well, this needs to update again the hold and available to the correct amount based on the execution
-	if venue, ok := m.account[venue]; ok {
-		if accountNumber, ok := venue[account]; ok {
-			transfer := func(rec *stm.TRec) interface{} {
-				account := rec.Load(accountNumber).(*pbAPI.Account)
-				symbols := strings.Split(product.String(), "_")
-				if balance, ok := account.Balances[symbols[1]]; ok {
-					switch mode {
-					case "refund":
-						// Refund values
-						balance.Available = balance.Available + amount
-						balance.Hold = balance.Hold - amount
-						rec.Store(accountNumber, account)
-					case "completed":
-						// Full Operation, remove the hold value
-						balance.Hold = balance.Hold - amount
-						rec.Store(accountNumber, account)
-
-						// Set the new available balance
-						if balanceOperation, ok := account.Balances[symbols[0]]; ok {
-							balanceOperation.Available = balance.Available + amount
-							rec.Store(accountNumber, account)
-						}
-					default:
-						logrus.Error("Manage Account Balances - mode not found ", mode)
-					}
-					return account
-				} else {
-					err = errors.New("Venue does not support this product")
-					return new(pbAPI.Account)
-				}
 			}
 			return stm.Atomically(transfer).(*pbAPI.Account), err
 		} else {
