@@ -115,14 +115,19 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 				if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
 					// Buying
 					if balance, ok := account.Balances[symbols[1]]; ok {
-						if balance.Available >= price && price > 0 { // we dont want users sending negative amounts
+						if balance.Available >= price && price > 0 { // we dont want users sending negative prices
 							switch mode {
 							case "hold-transaction":
 								balance.Available = balance.Available - price
 								balance.Hold = balance.Hold + price
 								rec.Store(accountNumber, account)
 							case "completed-transation":
+								balance.Hold = balance.Hold - price
+								rec.Store(accountNumber, account)
 							case "refund-transation":
+								balance.Available = balance.Available + price
+								balance.Hold = balance.Hold - price
+								rec.Store(accountNumber, account)
 							default:
 								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
 							}
@@ -142,7 +147,12 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 								balance.Hold = balance.Hold + amount
 								rec.Store(accountNumber, account)
 							case "completed-transation":
+								balance.Hold = balance.Hold - amount
+								rec.Store(accountNumber, account)
 							case "refund-transation":
+								balance.Available = balance.Available + amount
+								balance.Hold = balance.Hold - amount
+								rec.Store(accountNumber, account)
 							default:
 								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
 							}
