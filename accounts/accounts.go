@@ -133,8 +133,8 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 	}
 }
 
-// RefundAccountValues balances to the user account
-func (m *Account) RefundAccountValues(venue pbAPI.Venue, product pbAPI.Product, account string, amount float64) (*pbAPI.Account, error) {
+// ManageAccountBalances balances to the user account
+func (m *Account) ManageAccountBalances(venue pbAPI.Venue, product pbAPI.Product, account string, amount float64, mode string) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
@@ -145,14 +145,26 @@ func (m *Account) RefundAccountValues(venue pbAPI.Venue, product pbAPI.Product, 
 				account := rec.Load(accountNumber).(*pbAPI.Account)
 				symbols := strings.Split(product.String(), "_")
 				if balance, ok := account.Balances[symbols[1]]; ok {
+					switch mode {
+					case "refund":
+						// Refund values
+						balance.Available = balance.Available + amount
+						balance.Hold = balance.Hold - amount
+						rec.Store(accountNumber, account)
+					case "completed":
+						// Full Operation, remove the hold value
+						balance.Hold = balance.Hold - amount
+						rec.Store(accountNumber, account)
 
-					// Refund values
-					balance.Available = balance.Available + amount
-					balance.Hold = balance.Hold - amount
-					rec.Store(accountNumber, account)
-
+						// Set the new available balance
+						if balanceOperation, ok := account.Balances[symbols[0]]; ok {
+							balanceOperation.Available = balance.Available + amount
+							rec.Store(accountNumber, account)
+						}
+					default:
+						logrus.Error("Manage Account Balances - mode not found ", mode)
+					}
 					return account
-
 				} else {
 					err = errors.New("Venue does not support this product")
 					return new(pbAPI.Account)
