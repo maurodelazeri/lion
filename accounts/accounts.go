@@ -112,30 +112,36 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 			transfer := func(rec *stm.TRec) interface{} {
 				account := rec.Load(accountNumber).(*pbAPI.Account)
 				symbols := strings.Split(product.String(), "_")
-				if balance, ok := account.Balances[symbols[1]]; ok {
 
-					if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
-
-						if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
-
-						} else if pbAPI.OrderType_value[orderType.String()] == 1 || pbAPI.OrderType_value[orderType.String()] == 3 || pbAPI.OrderType_value[orderType.String()] == 5 || pbAPI.OrderType_value[orderType.String()] == 7 {
-
+				if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
+					// Buying
+					if balance, ok := account.Balances[symbols[1]]; ok {
+						if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
+							balance.Available = balance.Available - amount
+							balance.Hold = balance.Hold + amount
+							rec.Store(accountNumber, account)
+						} else {
+							err = errors.New("Balance is not enough to execute this operation")
+							return new(pbAPI.Account)
 						}
-
-						balance.Available = balance.Available - amount
-						balance.Hold = balance.Hold + amount
-						rec.Store(accountNumber, account)
-
-					} else {
-						err = errors.New("Balance is not enough to execute this operation")
-						return new(pbAPI.Account)
+						return account
 					}
-					return account
-
-				} else {
-					err = errors.New("Venue does not support this product")
-					return new(pbAPI.Account)
+				} else if pbAPI.OrderType_value[orderType.String()] == 1 || pbAPI.OrderType_value[orderType.String()] == 3 || pbAPI.OrderType_value[orderType.String()] == 5 || pbAPI.OrderType_value[orderType.String()] == 7 {
+					// Selling
+					if balance, ok := account.Balances[symbols[1]]; ok {
+						if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
+							balance.Available = balance.Available - amount
+							balance.Hold = balance.Hold + amount
+							rec.Store(accountNumber, account)
+						} else {
+							err = errors.New("Balance is not enough to execute this operation")
+							return new(pbAPI.Account)
+						}
+						return account
+					}
 				}
+				err = errors.New("Venue does not support this product")
+				return new(pbAPI.Account)
 			}
 			return stm.Atomically(transfer).(*pbAPI.Account), err
 		} else {
