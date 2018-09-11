@@ -2,6 +2,7 @@ package accounts
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -78,6 +79,7 @@ func (m *Account) LoadDataFromDB() {
 					Available: balances[i].Available,
 					Hold:      balances[i].Hold,
 				}
+				logrus.Info(" Venue ", balances[i].VenueID, " Available ", balances[i].Available, " account ", balances[i].AccountID)
 			}
 		}
 		m.LoadDataToMemory(data)
@@ -91,6 +93,7 @@ func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 	m.account[data.GetVenue()] = make(map[uint32]*stm.TVar)
 	newAccount := stm.New(data)
 	m.account[data.GetVenue()][data.GetAccountId()] = newAccount
+	fmt.Printf("Data loaded for %s, %d\n", data.GetVenue().String(), data.GetAccountId())
 	m.TotalAccounts++
 }
 
@@ -99,7 +102,10 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
-	// Here is before trading, if things go well, this needs to update again the hold and available to the correct amount based on the execution
+	// for i, _ := range m.account[venue] {
+	// 	logrus.Info("MAURO ", i)
+	// }
+
 	if venue, ok := m.account[venue]; ok {
 		if accountNumber, ok := venue[account]; ok {
 			transfer := func(rec *stm.TRec) interface{} {
