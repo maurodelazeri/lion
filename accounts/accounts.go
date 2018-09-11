@@ -115,14 +115,11 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 				if balance, ok := account.Balances[symbols[1]]; ok {
 
 					if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
-						//mauro
-						switch mode {
-						case "refund":
 
-						case "completed":
+						if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
 
-						default:
-							logrus.Error("Manage Account Balances - mode not found ", mode)
+						} else if pbAPI.OrderType_value[orderType.String()] == 1 || pbAPI.OrderType_value[orderType.String()] == 3 || pbAPI.OrderType_value[orderType.String()] == 5 || pbAPI.OrderType_value[orderType.String()] == 7 {
+
 						}
 
 						balance.Available = balance.Available - amount
