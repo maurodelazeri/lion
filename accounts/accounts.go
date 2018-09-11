@@ -102,7 +102,7 @@ func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 // Sell 1 3 5 7
 
 // ValidateAndUpdateBalances data onto memory
-func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64) (*pbAPI.Account, error) {
+func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64, price float64) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
@@ -116,9 +116,9 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 				if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
 					// Buying
 					if balance, ok := account.Balances[symbols[1]]; ok {
-						if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
-							balance.Available = balance.Available - amount
-							balance.Hold = balance.Hold + amount
+						if balance.Available >= price && price > 0 { // we dont want users sending negative amounts
+							balance.Available = balance.Available - price
+							balance.Hold = balance.Hold + price
 							rec.Store(accountNumber, account)
 						} else {
 							err = errors.New("Balance is not enough to execute this operation")
@@ -128,7 +128,7 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 					}
 				} else if pbAPI.OrderType_value[orderType.String()] == 1 || pbAPI.OrderType_value[orderType.String()] == 3 || pbAPI.OrderType_value[orderType.String()] == 5 || pbAPI.OrderType_value[orderType.String()] == 7 {
 					// Selling
-					if balance, ok := account.Balances[symbols[1]]; ok {
+					if balance, ok := account.Balances[symbols[0]]; ok {
 						if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
 							balance.Available = balance.Available - amount
 							balance.Hold = balance.Hold + amount
