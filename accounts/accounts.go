@@ -2,7 +2,6 @@ package accounts
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -79,7 +78,6 @@ func (m *Account) LoadDataFromDB() {
 					Available: balances[i].Available,
 					Hold:      balances[i].Hold,
 				}
-				logrus.Info(" Venue ", balances[i].VenueID, " Available ", balances[i].Available, " account ", balances[i].AccountID)
 			}
 		}
 		m.LoadDataToMemory(data)
@@ -96,12 +94,15 @@ func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 
 	newAccount := stm.New(data)
 	m.account[data.GetVenue()][data.GetAccountId()] = newAccount
-	fmt.Printf("Data loaded for %s, %d\n", data.GetVenue().String(), data.GetAccountId())
 	m.TotalAccounts++
 }
 
+// Order Type
+// Buy 0 2 4 6
+// Sell 1 3 5 7
+
 // ValidateAndUpdateBalances data onto memory
-func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64) (*pbAPI.Account, error) {
+func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
@@ -114,9 +115,20 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 				if balance, ok := account.Balances[symbols[1]]; ok {
 
 					if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
+						//mauro
+						switch mode {
+						case "refund":
+
+						case "completed":
+
+						default:
+							logrus.Error("Manage Account Balances - mode not found ", mode)
+						}
+
 						balance.Available = balance.Available - amount
 						balance.Hold = balance.Hold + amount
 						rec.Store(accountNumber, account)
+
 					} else {
 						err = errors.New("Balance is not enough to execute this operation")
 						return new(pbAPI.Account)

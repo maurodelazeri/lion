@@ -215,25 +215,25 @@ enum VenueType{
   // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
 
  message TradeRequest { 
-   TradeAction                   action         = 1;  // Trade operation type 
-   Venue                         venue          = 2;  // Venue where the order is being send
-   Product                       product        = 3;  // Trade product
-   uint64                        magic          = 4;  // Expert Advisor ID (magic number) 
-   uint64                        order          = 5;  // Order ticket 
-   double                        volume         = 6;  // Requested volume for a deal in lots 
-   double                        price          = 7;  // Price 
-   double                        stoplimit      = 8;  // StopLimit level of the order 
-   double                        sl             = 9;  // Stop Loss level of the order 
-   double                        tp             = 10; // Take Profit level of the order 
-   uint64                        deviation      = 11; // Maximal possible deviation from the requested price 
-   OrderType                     type           = 12; // Order type 
-   OrderTypeFilling              type_filling   = 13; // Order execution type 
-   OrderTypeTime                 type_time      = 14; // Order expiration type 
-   uint64                        expiration     = 15; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
-   string                        comment        = 16; // Order comment 
-   uint64                        position       = 17; // Position ticket 
-   uint64                        position_by    = 18; // The ticket of an opposite position
-   bool                          async          = 19; // Do not wait the result response, designed to high frequency
+   TradeAction                   action               = 1;  // Trade operation type 
+   Venue                         venue                = 2;  // Venue where the order is being send
+   Product                       product              = 3;  // Trade product
+   uint64                        magic                = 4;  // Expert Advisor ID (magic number) 
+   uint64                        order                = 5;  // Order ticket 
+   double                        volume               = 6;  // Requested volume for a deal in lots 
+   double                        price                = 7;  // Price 
+   double                        stoplimit            = 8;  // StopLimit level of the order 
+   double                        sl                   = 9;  // Stop Loss level of the order 
+   double                        tp                   = 10; // Take Profit level of the order 
+   uint64                        deviation            = 11; // Maximal possible deviation from the requested price 
+   OrderType                     order_type           = 12; // Order type 
+   OrderTypeFilling              order_type_filling   = 13; // Order execution type 
+   OrderTypeTime                 order_type_time      = 14; // Order expiration type 
+   uint64                        expiration           = 15; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   string                        comment              = 16; // Order comment 
+   uint64                        position             = 17; // Position ticket 
+   uint64                        position_by          = 18; // The ticket of an opposite position
+   bool                          async                = 19; // Do not wait the result response, designed to high frequency
   }
 
 message TradeResult { 
