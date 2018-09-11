@@ -53,9 +53,7 @@ func init() {
 
 // LoadDataFromDB get the accounts from the database and put it in memory
 func (m *Account) LoadDataFromDB() {
-
 	logrus.Info("Loading accounts balances to memory")
-
 	accounts := []UserAccount{}
 	if err := postgres.PostgresDB.Select(&accounts, "SELECT account_id,users_id,active FROM account WHERE active=true AND account_mode_id="+strconv.FormatInt(int64(pbAPI.AccountMode_value[os.Getenv("MODE")]), 10)); err != nil {
 		log.Fatal(err)
@@ -91,7 +89,6 @@ func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 	if _, ok := m.account[data.GetVenue()]; !ok {
 		m.account[data.GetVenue()] = make(map[uint32]*stm.TVar)
 	}
-
 	newAccount := stm.New(data)
 	m.account[data.GetVenue()][data.GetAccountId()] = newAccount
 	m.TotalAccounts++
