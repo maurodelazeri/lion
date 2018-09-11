@@ -90,7 +90,10 @@ func (m *Account) LoadDataFromDB() {
 func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
-	m.account[data.GetVenue()] = make(map[uint32]*stm.TVar)
+	if _, ok := m.account[data.GetVenue()]; !ok {
+		m.account[data.GetVenue()] = make(map[uint32]*stm.TVar)
+	}
+
 	newAccount := stm.New(data)
 	m.account[data.GetVenue()][data.GetAccountId()] = newAccount
 	fmt.Printf("Data loaded for %s, %d\n", data.GetVenue().String(), data.GetAccountId())
@@ -102,9 +105,6 @@ func (m *Account) ValidateAndUpdateBalances(venue pbAPI.Venue, product pbAPI.Pro
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
-	// for i, _ := range m.account[venue] {
-	// 	logrus.Info("MAURO ", i)
-	// }
 
 	if venue, ok := m.account[venue]; ok {
 		if accountNumber, ok := venue[account]; ok {
