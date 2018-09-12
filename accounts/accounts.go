@@ -58,9 +58,17 @@ func (m *Account) LoadDataFromDB() {
 	if err := postgres.PostgresDB.Select(&accounts, "SELECT account_id,users_id,active FROM account WHERE active=true AND account_mode_id="+strconv.FormatInt(int64(pbAPI.AccountMode_value[os.Getenv("MODE")]), 10)); err != nil {
 		log.Fatal(err)
 	}
+	if len(accounts) == 0 {
+		logrus.Error("There is no accounts found! (MODE " + os.Getenv("MODE") + ")")
+		os.Exit(1)
+	}
 	balances := []AccountBalances{}
 	if err := postgres.PostgresDB.Select(&balances, "SELECT b.symbol_id,b.venue_id,b.account_id,b.hold,b.available FROM balance b,account a WHERE a.account_id=b.account_id AND a.active=true ORDER BY account_id ASC"); err != nil {
 		log.Fatal(err)
+	}
+	if len(balances) == 0 {
+		logrus.Error("There is no balances found!")
+		os.Exit(1)
 	}
 	for _, account := range accounts {
 		data := &pbAPI.Account{
