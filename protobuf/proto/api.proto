@@ -224,15 +224,16 @@ enum VenueType{
    double                        stoplimit            = 7;  // StopLimit level of the order 
    double                        sl                   = 8;  // Stop Loss level of the order 
    double                        tp                   = 9;  // Take Profit level of the order 
-   uint64                        deviation            = 10; // Maximal possible deviation from the requested price 
-   OrderType                     order_type           = 11; // Order type 
-   OrderTypeFilling              order_type_filling   = 12; // Order execution type 
-   OrderTypeTime                 order_type_time      = 13; // Order expiration type 
-   uint64                        expiration           = 14; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
-   string                        comment              = 15; // Order comment 
-   uint64                        position             = 16; // Position ticket 
-   uint64                        position_by          = 17; // The ticket of an opposite position
-   bool                          async                = 18; // Do not wait the result response, designed to high frequency
+   double                        trailling_percent    = 10; // Once hit, follows to profit based on this percentage  
+   uint64                        deviation            = 11; // Maximal possible deviation from the requested price 
+   OrderType                     order_type           = 12; // Order type 
+   OrderTypeFilling              order_type_filling   = 13; // Order execution type 
+   OrderTypeTime                 order_type_time      = 14; // Order expiration type 
+   uint64                        expiration           = 15; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   string                        comment              = 16; // Order comment 
+   uint64                        position             = 17; // Position ticket 
+   uint64                        position_by          = 18; // The ticket of an opposite position
+   bool                          async                = 19; // Do not wait the result response, designed to high frequency
   }
 
 message TradeResult { 
