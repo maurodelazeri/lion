@@ -280,6 +280,7 @@ message PositionRequest {
 message PositionsResult { 
    Retcode                      retcode                   = 1;  // Operation return code
    repeated Position            positions                 = 2;  // Current open positions
+   string                       comment                   = 3;
 }
 
 message User {
