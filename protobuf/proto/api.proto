@@ -11,7 +11,7 @@ service API {
   // Order request - A simple RPC 
   rpc OrderSend(TradeRequest) returns (TradeResult) {}
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
-  rpc PositionClose(PositionRequest) returns (PositionsResult) {}
+  rpc ClosePositions(PositionRequest) returns (PositionsResult) {}
 } 
 
 enum Venue{
@@ -271,9 +271,9 @@ message Position {
 }
 
 message PositionRequest { 
-   Product                       product              = 1; // Positon product
+   Product                       product              = 1; // Product
    Venue                         venue                = 2; // Venue where the order was sent
-   uint64                        position             = 3; // Position ticket 
+   uint64                        position             = 3; // Order id 
    PositioType                   position_type        = 4; // Position type 
 }
 
