@@ -55,7 +55,7 @@ func (x Venue) String() string {
 	return proto.EnumName(Venue_name, int32(x))
 }
 func (Venue) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{0}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{0}
 }
 
 type AccountMode int32
@@ -78,7 +78,7 @@ func (x AccountMode) String() string {
 	return proto.EnumName(AccountMode_name, int32(x))
 }
 func (AccountMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{1}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{1}
 }
 
 type AccountType int32
@@ -107,7 +107,7 @@ func (x AccountType) String() string {
 	return proto.EnumName(AccountType_name, int32(x))
 }
 func (AccountType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{2}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{2}
 }
 
 type VenueType int32
@@ -130,7 +130,7 @@ func (x VenueType) String() string {
 	return proto.EnumName(VenueType_name, int32(x))
 }
 func (VenueType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{3}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{3}
 }
 
 type Symbol int32
@@ -165,7 +165,7 @@ func (x Symbol) String() string {
 	return proto.EnumName(Symbol_name, int32(x))
 }
 func (Symbol) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{4}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{4}
 }
 
 type Product int32
@@ -218,7 +218,7 @@ func (x Product) String() string {
 	return proto.EnumName(Product_name, int32(x))
 }
 func (Product) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{5}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{5}
 }
 
 type OrderType int32
@@ -262,7 +262,7 @@ func (x OrderType) String() string {
 	return proto.EnumName(OrderType_name, int32(x))
 }
 func (OrderType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{6}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{6}
 }
 
 type OrderState int32
@@ -309,7 +309,7 @@ func (x OrderState) String() string {
 	return proto.EnumName(OrderState_name, int32(x))
 }
 func (OrderState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{7}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{7}
 }
 
 type OrderTypeFilling int32
@@ -335,7 +335,7 @@ func (x OrderTypeFilling) String() string {
 	return proto.EnumName(OrderTypeFilling_name, int32(x))
 }
 func (OrderTypeFilling) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{8}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{8}
 }
 
 type OrderReason int32
@@ -373,7 +373,7 @@ func (x OrderReason) String() string {
 	return proto.EnumName(OrderReason_name, int32(x))
 }
 func (OrderReason) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{9}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{9}
 }
 
 type OrderTypeTime int32
@@ -402,7 +402,7 @@ func (x OrderTypeTime) String() string {
 	return proto.EnumName(OrderTypeTime_name, int32(x))
 }
 func (OrderTypeTime) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{10}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{10}
 }
 
 type DealType int32
@@ -455,7 +455,7 @@ func (x DealType) String() string {
 	return proto.EnumName(DealType_name, int32(x))
 }
 func (DealType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{11}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{11}
 }
 
 type DealEntry int32
@@ -484,7 +484,7 @@ func (x DealEntry) String() string {
 	return proto.EnumName(DealEntry_name, int32(x))
 }
 func (DealEntry) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{12}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{12}
 }
 
 type DealReason int32
@@ -534,7 +534,7 @@ func (x DealReason) String() string {
 	return proto.EnumName(DealReason_name, int32(x))
 }
 func (DealReason) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{13}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{13}
 }
 
 type PositionReason int32
@@ -563,7 +563,7 @@ func (x PositionReason) String() string {
 	return proto.EnumName(PositionReason_name, int32(x))
 }
 func (PositionReason) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{14}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{14}
 }
 
 type PositioType int32
@@ -586,7 +586,7 @@ func (x PositioType) String() string {
 	return proto.EnumName(PositioType_name, int32(x))
 }
 func (PositioType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{15}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{15}
 }
 
 type TradeAction int32
@@ -621,7 +621,7 @@ func (x TradeAction) String() string {
 	return proto.EnumName(TradeAction_name, int32(x))
 }
 func (TradeAction) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{16}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{16}
 }
 
 type TradeRetcode int32
@@ -764,7 +764,7 @@ func (x TradeRetcode) String() string {
 	return proto.EnumName(TradeRetcode_name, int32(x))
 }
 func (TradeRetcode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{17}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{17}
 }
 
 type TradeRequest struct {
@@ -796,7 +796,7 @@ func (m *TradeRequest) Reset()         { *m = TradeRequest{} }
 func (m *TradeRequest) String() string { return proto.CompactTextString(m) }
 func (*TradeRequest) ProtoMessage()    {}
 func (*TradeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{0}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{0}
 }
 func (m *TradeRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TradeRequest.Unmarshal(m, b)
@@ -969,7 +969,7 @@ func (m *TradeResult) Reset()         { *m = TradeResult{} }
 func (m *TradeResult) String() string { return proto.CompactTextString(m) }
 func (*TradeResult) ProtoMessage()    {}
 func (*TradeResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{1}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{1}
 }
 func (m *TradeResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TradeResult.Unmarshal(m, b)
@@ -1083,7 +1083,7 @@ func (m *Position) Reset()         { *m = Position{} }
 func (m *Position) String() string { return proto.CompactTextString(m) }
 func (*Position) ProtoMessage()    {}
 func (*Position) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{2}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{2}
 }
 func (m *Position) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Position.Unmarshal(m, b)
@@ -1215,7 +1215,7 @@ func (m *PositionRequest) Reset()         { *m = PositionRequest{} }
 func (m *PositionRequest) String() string { return proto.CompactTextString(m) }
 func (*PositionRequest) ProtoMessage()    {}
 func (*PositionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{3}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{3}
 }
 func (m *PositionRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PositionRequest.Unmarshal(m, b)
@@ -1275,7 +1275,7 @@ func (m *PositionsResult) Reset()         { *m = PositionsResult{} }
 func (m *PositionsResult) String() string { return proto.CompactTextString(m) }
 func (*PositionsResult) ProtoMessage()    {}
 func (*PositionsResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{4}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{4}
 }
 func (m *PositionsResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PositionsResult.Unmarshal(m, b)
@@ -1321,7 +1321,7 @@ func (m *User) Reset()         { *m = User{} }
 func (m *User) String() string { return proto.CompactTextString(m) }
 func (*User) ProtoMessage()    {}
 func (*User) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{5}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{5}
 }
 func (m *User) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_User.Unmarshal(m, b)
@@ -1372,7 +1372,7 @@ func (m *Account) Reset()         { *m = Account{} }
 func (m *Account) String() string { return proto.CompactTextString(m) }
 func (*Account) ProtoMessage()    {}
 func (*Account) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{6}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{6}
 }
 func (m *Account) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Account.Unmarshal(m, b)
@@ -1454,7 +1454,7 @@ func (m *Balance) Reset()         { *m = Balance{} }
 func (m *Balance) String() string { return proto.CompactTextString(m) }
 func (*Balance) ProtoMessage()    {}
 func (*Balance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_api_17022a3af93bde23, []int{7}
+	return fileDescriptor_api_15202b9e2bde51c5, []int{7}
 }
 func (m *Balance) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Balance.Unmarshal(m, b)
@@ -1669,9 +1669,9 @@ var _API_serviceDesc = grpc.ServiceDesc{
 	Metadata: "api.proto",
 }
 
-func init() { proto.RegisterFile("api.proto", fileDescriptor_api_17022a3af93bde23) }
+func init() { proto.RegisterFile("api.proto", fileDescriptor_api_15202b9e2bde51c5) }
 
-var fileDescriptor_api_17022a3af93bde23 = []byte{
+var fileDescriptor_api_15202b9e2bde51c5 = []byte{
 	// 2163 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x58, 0xdd, 0x72, 0x23, 0x47,
 	0xf5, 0xdf, 0xd1, 0xf7, 0x1c, 0x59, 0x72, 0xbb, 0x37, 0x9b, 0x28, 0xbb, 0xf9, 0x70, 0x94, 0xff,

@@ -268,7 +268,6 @@ message Position {
    double                       swap                   = 12;
    Product                      product                = 13;
    string                       comment                = 14;
-
 }
 
 message PositionRequest { 
