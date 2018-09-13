@@ -254,7 +254,21 @@ message TradeResult {
   }
 
 message Position {
-  
+   uint64                       position_id            = 1;
+   uint64                       orders_id              = 2;
+   Venue                        venue                  = 3;
+   uint64                       account                = 4;
+   uint64                       position_time          = 5;
+   PositioType                  position_type          = 6;
+   PositionReason               position_reason        = 7;
+   double                       volume                 = 8;
+   double                       price                  = 9;
+   double                       tp                     = 10;
+   double                       sl                     = 11;
+   double                       swap                   = 12;
+   Product                      product                = 13;
+   string                       comment                = 14;
+
 }
 
 message PositionRequest { 
