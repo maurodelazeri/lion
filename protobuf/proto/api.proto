@@ -271,10 +271,10 @@ message Position {
 }
 
 message PositionRequest { 
-   Product                       product              = 1;  // Trade product
-   Venue                         venue                = 2;  // Venue where the order is being send
+   Product                       product              = 1; // Positon product
+   Venue                         venue                = 2; // Venue where the order was sent
    uint64                        position             = 3; // Position ticket 
-   OrderType                     order_type           = 4;  // Order type 
+   PositioType                   position_type        = 4; // Position type 
 }
 
 message PositionsResult { 
