@@ -2,12 +2,16 @@ syntax = "proto3";
 
 package api;
 
+// https://www.mql5.com/en/docs/standardlibrary/tradeclasses/ctrade/ctradepositionclose
+
 // The API service definition.
 service API {   
   // Get all Order for a user with filter - A server-to-client streaming RPC.
  // rpc GetOrders(OrderFilter) returns (stream Order) {}
   // Order request - A simple RPC 
   rpc OrderSend(TradeRequest) returns (TradeResult) {}
+  rpc GetPositions(PositionRequest) returns (PositionsResult) {}
+  rpc PositionClose(PositionRequest) returns (PositionsResult) {}
 } 
 
 enum Venue{
@@ -248,7 +252,23 @@ message TradeResult {
    string                       request_id                = 9;  // Request ID set by the terminal during the dispatch  
    string                       broker_execution_id       = 10; // Return code of an external trading system 
   }
+
+message Position {
   
+}
+
+message PositionRequest { 
+   Product                       product              = 1;  // Trade product
+   Venue                         venue                = 2;  // Venue where the order is being send
+   uint64                        position             = 3; // Position ticket 
+   OrderType                     order_type           = 4;  // Order type 
+}
+
+message PositionsResult { 
+   TradeRetcode                 retcode                   = 1;  // Operation return code
+   repeated Position            positions                 = 2;  // Current open positions
+}
+
 message User {
   string           id       = 1;
   repeated Account accounts = 2;
