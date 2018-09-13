@@ -170,7 +170,7 @@ enum VenueType{
   CLOSE_BY    = 5;
  }
 
- enum TradeRetcode {
+ enum Retcode {
   REJECTX                        = 0;
   REJECT                         = 2;
   CANCEL                         = 3;
@@ -241,7 +241,7 @@ enum VenueType{
   }
 
 message TradeResult { 
-   TradeRetcode                 retcode                   = 1;  // Operation return code 
+   Retcode                      retcode                   = 1;  // Operation return code 
    Venue                        venue                     = 2;  // Venue where the order was sent
    Product                      product                   = 3;  // Product of the trade
    OrderType                    order_type                = 4;  // Order type 
@@ -278,7 +278,7 @@ message PositionRequest {
 }
 
 message PositionsResult { 
-   TradeRetcode                 retcode                   = 1;  // Operation return code
+   Retcode                      retcode                   = 1;  // Operation return code
    repeated Position            positions                 = 2;  // Current open positions
 }
 
