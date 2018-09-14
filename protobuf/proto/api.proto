@@ -12,6 +12,7 @@ service API {
   rpc OrderSend(TradeRequest) returns (TradeResult) {}
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
   rpc ClosePositions(PositionRequest) returns (PositionsResult) {}
+  rpc GetAccount(AccountRequest) returns (AccountResult) {}
 } 
 
 enum Venue{
@@ -280,6 +281,17 @@ message PositionRequest {
 message PositionsResult { 
    Retcode                      retcode                   = 1;  // Operation return code
    repeated Position            positions                 = 2;  // Current open positions
+   string                       comment                   = 3;
+}
+
+message AccountRequest { 
+   Product                       product              = 1; // Product
+   Venue                         venue                = 2; // Venue where the order was sent
+}
+
+message AccountResult { 
+   Retcode                      retcode                   = 1;  // Operation return code
+   User                         user_accounts             = 2;  // All account for given a user
    string                       comment                   = 3;
 }
 
