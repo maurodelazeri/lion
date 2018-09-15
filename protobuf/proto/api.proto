@@ -11,7 +11,6 @@ service API {
   // Order request - A simple RPC 
   rpc OrderSend(TradeRequest) returns (TradeResult) {}
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
-  rpc ClosePositions(PositionRequest) returns (PositionsResult) {}
   rpc GetAccount(AccountRequest) returns (AccountResult) {}
 } 
 
