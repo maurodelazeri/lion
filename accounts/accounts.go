@@ -119,56 +119,56 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 				if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
 					// Buying
 					if balance, ok := account.Balances[symbols[1]]; ok {
-						if balance.Available >= price && price > 0 { // we dont want users sending negative prices
-							switch mode {
-							case "transaction-hold":
+						switch mode {
+						case "transaction-hold":
+							if balance.Available >= price && price > 0 { // we dont want users sending negative prices
 								balance.Available = balance.Available - (price + fee)
 								balance.Hold = balance.Hold + (price + fee)
 								rec.Store(accountNumber, account)
-							case "transaction-done":
-								balance.Hold = balance.Hold - (price + fee)
-								if balanceQuote, ok := account.Balances[symbols[0]]; ok {
-									balanceQuote.Available = balanceQuote.Available + (amount + (fee / price))
-								}
-								rec.Store(accountNumber, account)
-							case "transaction-refund":
-								balance.Available = balance.Available + (price + fee)
-								balance.Hold = balance.Hold - (price + fee)
-								rec.Store(accountNumber, account)
-							default:
-								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
+							} else {
+								err = errors.New("Balance is not enough to execute this operation")
+								return new(pbAPI.Account)
 							}
-						} else {
-							err = errors.New("Balance is not enough to execute this operation")
-							return new(pbAPI.Account)
+						case "transaction-done":
+							balance.Hold = balance.Hold - (price + fee)
+							if balanceQuote, ok := account.Balances[symbols[0]]; ok {
+								balanceQuote.Available = balanceQuote.Available + (amount + (fee / price))
+							}
+							rec.Store(accountNumber, account)
+						case "transaction-refund":
+							balance.Available = balance.Available + (price + fee)
+							balance.Hold = balance.Hold - (price + fee)
+							rec.Store(accountNumber, account)
+						default:
+							logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
 						}
 						return account
 					}
 				} else if pbAPI.OrderType_value[orderType.String()] == 1 || pbAPI.OrderType_value[orderType.String()] == 3 || pbAPI.OrderType_value[orderType.String()] == 5 || pbAPI.OrderType_value[orderType.String()] == 7 {
 					// Selling
 					if balance, ok := account.Balances[symbols[0]]; ok {
-						if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
-							switch mode {
-							case "transaction-hold":
+						switch mode {
+						case "transaction-hold":
+							if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
 								balance.Available = balance.Available - (amount + (fee / price))
 								balance.Hold = balance.Hold + (amount + (fee / price))
 								rec.Store(accountNumber, account)
-							case "transaction-done":
-								balance.Hold = balance.Hold - (amount + (fee / price))
-								if balanceQuote, ok := account.Balances[symbols[1]]; ok {
-									balanceQuote.Available = balanceQuote.Available + (price - fee)
-								}
-								rec.Store(accountNumber, account)
-							case "transaction-refund":
-								balance.Available = balance.Available + (amount + (fee / price))
-								balance.Hold = balance.Hold - (amount + (fee / price))
-								rec.Store(accountNumber, account)
-							default:
-								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
+							} else {
+								err = errors.New("Balance is not enough to execute this operation")
+								return new(pbAPI.Account)
 							}
-						} else {
-							err = errors.New("Balance is not enough to execute this operation")
-							return new(pbAPI.Account)
+						case "transaction-done":
+							balance.Hold = balance.Hold - (amount + (fee / price))
+							if balanceQuote, ok := account.Balances[symbols[1]]; ok {
+								balanceQuote.Available = balanceQuote.Available + (price - fee)
+							}
+							rec.Store(accountNumber, account)
+						case "transaction-refund":
+							balance.Available = balance.Available + (amount + (fee / price))
+							balance.Hold = balance.Hold - (amount + (fee / price))
+							rec.Store(accountNumber, account)
+						default:
+							logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
 						}
 						return account
 					}
