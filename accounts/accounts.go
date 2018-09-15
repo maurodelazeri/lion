@@ -107,7 +107,7 @@ func (m *Account) LoadDataToMemory(data *pbAPI.Account) {
 // Sell 1 3 5 7
 
 // ValidateAndUpdateBalances data onto memory
-func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64, price float64, mode string) (*pbAPI.Account, error) {
+func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbAPI.Venue, product pbAPI.Product, account uint32, amount float64, price float64, fee float64, mode string) (*pbAPI.Account, error) {
 	m.mutex.RLock()
 	defer m.mutex.RUnlock()
 	var err error
@@ -122,18 +122,18 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 						if balance.Available >= price && price > 0 { // we dont want users sending negative prices
 							switch mode {
 							case "transaction-hold":
-								balance.Available = balance.Available - price
-								balance.Hold = balance.Hold + price
+								balance.Available = balance.Available - (price + fee)
+								balance.Hold = balance.Hold + (price + fee)
 								rec.Store(accountNumber, account)
 							case "transaction-done":
-								balance.Hold = balance.Hold - price
+								balance.Hold = balance.Hold - (price + fee)
 								if balanceQuote, ok := account.Balances[symbols[0]]; ok {
-									balanceQuote.Available = balanceQuote.Available + amount
+									balanceQuote.Available = balanceQuote.Available + (amount + (fee / price))
 								}
 								rec.Store(accountNumber, account)
 							case "transaction-refund":
-								balance.Available = balance.Available + price
-								balance.Hold = balance.Hold - price
+								balance.Available = balance.Available + (price + fee)
+								balance.Hold = balance.Hold - (price + fee)
 								rec.Store(accountNumber, account)
 							default:
 								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)
@@ -150,18 +150,18 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 						if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
 							switch mode {
 							case "transaction-hold":
-								balance.Available = balance.Available - amount
-								balance.Hold = balance.Hold + amount
+								balance.Available = balance.Available - (amount + (fee / price))
+								balance.Hold = balance.Hold + (amount + (fee / price))
 								rec.Store(accountNumber, account)
 							case "transaction-done":
-								balance.Hold = balance.Hold - amount
+								balance.Hold = balance.Hold - (amount + (fee / price))
 								if balanceQuote, ok := account.Balances[symbols[1]]; ok {
-									balanceQuote.Available = balanceQuote.Available + price
+									balanceQuote.Available = balanceQuote.Available + (price - fee)
 								}
 								rec.Store(accountNumber, account)
 							case "transaction-refund":
-								balance.Available = balance.Available + amount
-								balance.Hold = balance.Hold - amount
+								balance.Available = balance.Available + (amount + (fee / price))
+								balance.Hold = balance.Hold - (amount + (fee / price))
 								rec.Store(accountNumber, account)
 							default:
 								logrus.Error("ValidateAndUpdateBalances - Mode is not valid ", mode)

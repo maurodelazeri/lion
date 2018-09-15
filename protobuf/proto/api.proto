@@ -251,6 +251,7 @@ message TradeResult {
    string                       comment                   = 8;  // Broker comment to operation (by default it is filled by description of trade server return code) 
    string                       request_id                = 9;  // Request ID set by the terminal during the dispatch  
    string                       broker_execution_id       = 10; // Return code of an external trading system 
+   double                       fee                       = 11; // Trade fee
   }
 
 message Position {
