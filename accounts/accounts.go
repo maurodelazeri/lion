@@ -184,3 +184,23 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 	err = errors.New("Balances not found for this venue")
 	return new(pbAPI.Account), err
 }
+
+// GetUserAccount data onto memory
+func (m *Account) GetUserAccount(venue pbAPI.Venue, account uint32) (*pbAPI.Account, error) {
+	m.mutex.RLock()
+	defer m.mutex.RUnlock()
+	var err error
+	if venue, ok := m.account[venue]; ok {
+		if accountNumber, ok := venue[account]; ok {
+			accountData := func(rec *stm.TRec) interface{} {
+				account := rec.Load(accountNumber).(*pbAPI.Account)
+				return account
+			}
+			return stm.Atomically(accountData).(*pbAPI.Account), err
+		}
+		err = errors.New("Account was not found")
+		return new(pbAPI.Account), err
+	}
+	err = errors.New("Balances not found for this venue")
+	return new(pbAPI.Account), err
+}

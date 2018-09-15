@@ -284,13 +284,12 @@ message PositionsResult {
 }
 
 message AccountRequest { 
-   Product                       product              = 1; // Product
-   Venue                         venue                = 2; // Venue where the order was sent
+   Venue                         venue                = 1; // Venue where the order was sent
 }
 
 message AccountResult { 
    Retcode                      retcode                   = 1;  // Operation return code
-   User                         user_accounts             = 2;  // All account for given a user
+   Account                      account                   = 2;  // All account for given a user
    string                       comment                   = 3;
 }
 
