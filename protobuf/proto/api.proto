@@ -155,7 +155,7 @@ enum VenueType{
   POSITION_STRATEGY      = 3;
  } 
 
- enum PositioType {
+ enum PositionType {
   POSITION_BUY    = 0;
   POSITION_SELL   = 1; 
  } 
@@ -259,7 +259,7 @@ message Position {
    Venue                        venue                  = 3;
    uint64                       account                = 4;
    uint64                       position_time          = 5;
-   PositioType                  position_type          = 6;
+   PositionType                 position_type          = 6;
    PositionReason               position_reason        = 7;
    double                       volume                 = 8;
    double                       price                  = 9;
@@ -271,16 +271,13 @@ message Position {
 }
 
 message PositionRequest { 
-   Product                       product              = 1; // Product
-   Venue                         venue                = 2; // Venue where the order was sent
-   uint64                        position             = 3; // Order id 
-   PositioType                   position_type        = 4; // Position type 
+   uint64                        position             = 1; // Position id
 }
 
 message PositionsResult { 
    Retcode                      retcode                   = 1;  // Operation return code
    repeated Position            positions                 = 2;  // Current open positions
-   string                       comment                   = 3;
+   string                       comment                   = 3; 
 }
 
 message AccountRequest { 
