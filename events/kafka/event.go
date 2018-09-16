@@ -5,18 +5,16 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+
 	"github.com/Jeffail/tunny"
 	"github.com/maurodelazeri/lion/common"
 	"github.com/maurodelazeri/lion/protobuf/events"
-	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
 var pool *tunny.Pool
-
-// Producer stores the initialization of kafka
-var Producer *producer.Producer
 
 // Job ...
 type Job struct {
@@ -28,9 +26,6 @@ type Job struct {
 
 func init() {
 	pool = tunny.NewFunc(runtime.NumCPU(), worker)
-
-	Producer = new(producer.Producer)
-	Producer.InitializeProducer()
 }
 
 func worker(work interface{}) interface{} {
@@ -50,7 +45,7 @@ func (j *Job) build() error {
 		logrus.Error("Problem to Marshal order request ", err)
 		return err
 	}
-	Producer.PublishMessageAsync(j.topic, eventData, j.partition, j.verbose)
+	kafkaproducer.PublishMessageAsync(j.topic, eventData, j.partition, j.verbose)
 	return nil
 }
 
@@ -64,7 +59,7 @@ func processJob(pool *tunny.Pool, event events.Event, topic string, partition in
 
 // Start ...
 func Start(topic string, data []byte, partition int32, verbose bool) {
-	err := Producer.PublishMessageSync(topic, data, partition, verbose)
+	err := kafkaproducer.PublishMessageSync(topic, data, partition, verbose)
 	if err != nil {
 		logrus.Error("Problem to Marshal order request ", err)
 	}

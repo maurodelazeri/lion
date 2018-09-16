@@ -1,4 +1,4 @@
-package producer
+package kafkaproducer
 
 // advertised.host.name=<Kafka Running Machine IP>
 // server.properties
@@ -16,13 +16,15 @@ import (
 ./kafka-topics --list --zookeeper localhost:2181
 */
 
-// Producer stores the main session
-type Producer struct {
-	kafkalient *kafka.Producer
+// Producer ...
+var Producer *kafka.Producer
+
+func init() {
+	InitEngine()
 }
 
-// InitializeProducer a kafka instance
-func (k *Producer) InitializeProducer() {
+// InitEngine initializes our Database Connection
+func InitEngine() {
 	brokers := os.Getenv("KAFKA_BROKERS")
 	client, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers":            brokers,
@@ -39,12 +41,12 @@ func (k *Producer) InitializeProducer() {
 		os.Exit(1)
 	}
 
-	k.kafkalient = client
+	Producer = client
 }
 
 // PublishMessageAsync send a message to kafka server (asynchronous)
-func (k *Producer) PublishMessageAsync(topic string, message []byte, partition int32, verbose bool) error {
-	err := k.kafkalient.Produce(&kafka.Message{
+func PublishMessageAsync(topic string, message []byte, partition int32, verbose bool) error {
+	err := Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          message,
 	}, nil)
@@ -55,12 +57,12 @@ func (k *Producer) PublishMessageAsync(topic string, message []byte, partition i
 }
 
 // PublishMessageSync send a message to kafka server (synchronous)
-func (k *Producer) PublishMessageSync(topic string, message []byte, partition int32, verbose bool) error {
+func PublishMessageSync(topic string, message []byte, partition int32, verbose bool) error {
 	// Optional delivery channel, if not specified the Producer object's
 	// .Events channel is used.
 	deliveryChan := make(chan kafka.Event)
 
-	err := k.kafkalient.Produce(&kafka.Message{
+	err := Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          message,
 	}, deliveryChan)
