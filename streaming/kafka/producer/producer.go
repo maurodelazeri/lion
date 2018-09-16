@@ -51,7 +51,7 @@ func PublishMessageAsync(topic string, message []byte, partition int32, verbose 
 		Value:          message,
 	}, nil)
 	if err != nil {
-		logrus.Warn("Problem to publish message, ", err)
+		logrus.Warn("Problem to publish message topic:"+topic+" ", err)
 	}
 	return err
 }
