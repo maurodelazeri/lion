@@ -6,22 +6,13 @@ import (
 	//pbmarket "github.com/maurodelazeri/lion/protobuf/marketdata"
 )
 
-var historyRatesInterval int
-var intervalCandle int
-var numMaxBuckets int
-
-func init() {
-
-}
-
 // Venue is the bucket struck
 type Venue struct {
-	Name                 string
-	Product              string
-	Bucket               *[]*Bucket
-	NumMaxBuckets        int
-	IntervalCandle       int
-	HistoryRatesInterval int
+	Name           string
+	Product        string
+	Bucket         *[]*Bucket
+	NumMaxBuckets  int
+	DurationCandle time.Duration
 }
 
 // Bucket type
@@ -51,19 +42,18 @@ type BucketMessage struct {
 func New(venue string, product string) *Venue {
 	buckets := []*Bucket{}
 	s := &Venue{
-		Product:              product,
-		Name:                 venue,
-		Bucket:               &buckets,
-		NumMaxBuckets:        200,
-		IntervalCandle:       1,
-		HistoryRatesInterval: 60,
+		Product:        product,
+		Name:           venue,
+		Bucket:         &buckets,
+		NumMaxBuckets:  0,
+		DurationCandle: 1,
 	}
 	return s
 }
 
 // CandleByDuration create buckets by duration
-func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket, candleSize time.Duration, numMaxBuckets int) {
-	t := message.Time.Truncate(candleSize)
+func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket) {
+	t := message.Time.Truncate(s.DurationCandle)
 	// If there are no buckets, start one.
 	if len(*buckets) == 0 {
 		*buckets = append(*buckets, &Bucket{
@@ -72,7 +62,7 @@ func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket, cand
 			Start:    t.UTC(),
 			Low:      math.MaxFloat32,
 			High:     0.0,
-			Duration: candleSize,
+			Duration: s.DurationCandle,
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
@@ -83,11 +73,13 @@ func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket, cand
 		bucket.Close = message.Price
 		bucket.Last = message.Price
 		// only keep a predefined number max of buckets
-		buckCurrent := len(*buckets)
-		if buckCurrent > numMaxBuckets {
-			removalTotal := buckCurrent - numMaxBuckets
-			if removalTotal > 0 {
-				*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
+		if s.NumMaxBuckets > 0 {
+			buckCurrent := len(*buckets)
+			if buckCurrent > s.NumMaxBuckets {
+				removalTotal := buckCurrent - s.NumMaxBuckets
+				if removalTotal > 0 {
+					*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
+				}
 			}
 		}
 	} else {
@@ -98,7 +90,7 @@ func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket, cand
 			Start:    t.UTC(),
 			Low:      math.MaxFloat32,
 			High:     0.0,
-			Duration: candleSize,
+			Duration: s.DurationCandle,
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
@@ -111,9 +103,9 @@ func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket, cand
 	bucket.Last = message.Price
 }
 
-// CandleByNumberOfTrades create buckets by duration
-func (s *Venue) CandleByNumberOfTrades(message BucketMessage, buckets *[]*Bucket, candleSize time.Duration, numMaxBuckets int) {
-	t := message.Time.Truncate(candleSize)
+// CandleByDeals create buckets by duration
+func (s *Venue) CandleByDeals(message BucketMessage, buckets *[]*Bucket) {
+	t := message.Time.Truncate(s.DurationCandle)
 	// If there are no buckets, start one.
 	if len(*buckets) == 0 {
 		*buckets = append(*buckets, &Bucket{
@@ -122,7 +114,7 @@ func (s *Venue) CandleByNumberOfTrades(message BucketMessage, buckets *[]*Bucket
 			Start:    t.UTC(),
 			Low:      math.MaxFloat32,
 			High:     0.0,
-			Duration: candleSize,
+			Duration: s.DurationCandle,
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
@@ -133,11 +125,13 @@ func (s *Venue) CandleByNumberOfTrades(message BucketMessage, buckets *[]*Bucket
 		bucket.Close = message.Price
 		bucket.Last = message.Price
 		// only keep a predefined number max of buckets
-		buckCurrent := len(*buckets)
-		if buckCurrent > numMaxBuckets {
-			removalTotal := buckCurrent - numMaxBuckets
-			if removalTotal > 0 {
-				*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
+		if s.NumMaxBuckets > 0 {
+			buckCurrent := len(*buckets)
+			if buckCurrent > s.NumMaxBuckets {
+				removalTotal := buckCurrent - s.NumMaxBuckets
+				if removalTotal > 0 {
+					*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
+				}
 			}
 		}
 	} else {
@@ -148,7 +142,7 @@ func (s *Venue) CandleByNumberOfTrades(message BucketMessage, buckets *[]*Bucket
 			Start:    t.UTC(),
 			Low:      math.MaxFloat32,
 			High:     0.0,
-			Duration: candleSize,
+			Duration: s.DurationCandle,
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
@@ -162,8 +156,8 @@ func (s *Venue) CandleByNumberOfTrades(message BucketMessage, buckets *[]*Bucket
 }
 
 // CandleByVolume create buckets by duration
-func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket, candleSize time.Duration, numMaxBuckets int) {
-	t := message.Time.Truncate(candleSize)
+func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket) {
+	t := message.Time.Truncate(s.DurationCandle)
 	// If there are no buckets, start one.
 	if len(*buckets) == 0 {
 		*buckets = append(*buckets, &Bucket{
@@ -172,7 +166,7 @@ func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket, candle
 			Start:    t.UTC(),
 			Low:      math.MaxFloat32,
 			High:     0.0,
-			Duration: candleSize,
+			Duration: s.DurationCandle,
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
@@ -183,11 +177,13 @@ func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket, candle
 		bucket.Close = message.Price
 		bucket.Last = message.Price
 		// only keep a predefined number max of buckets
-		buckCurrent := len(*buckets)
-		if buckCurrent > numMaxBuckets {
-			removalTotal := buckCurrent - numMaxBuckets
-			if removalTotal > 0 {
-				*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
+		if s.NumMaxBuckets > 0 {
+			buckCurrent := len(*buckets)
+			if buckCurrent > s.NumMaxBuckets {
+				removalTotal := buckCurrent - s.NumMaxBuckets
+				if removalTotal > 0 {
+					*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
+				}
 			}
 		}
 	} else {
@@ -198,7 +194,7 @@ func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket, candle
 			Start:    t.UTC(),
 			Low:      math.MaxFloat32,
 			High:     0.0,
-			Duration: candleSize,
+			Duration: s.DurationCandle,
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
