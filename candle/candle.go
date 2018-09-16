@@ -3,6 +3,7 @@ package candle
 import (
 	"math"
 	"time"
+	//pbmarket "github.com/maurodelazeri/lion/protobuf/marketdata"
 )
 
 var historyRatesInterval int

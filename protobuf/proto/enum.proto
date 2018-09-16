@@ -1,0 +1,236 @@
+syntax = "proto3";
+package api;
+
+ enum Venue{
+	DARKPOOL    =  0;
+	COINBASEPRO =  1;
+	BITMEX      =  2;
+	BITFINEX    =  3;
+	BINANCE     =  4;
+	GEMINI      =  5;
+   }
+  
+ enum AccountMode{
+	LIVE               = 0;
+	DEMO               = 1;
+  };
+  
+   enum AccountType{
+	NET                 = 0;
+	HEDGE               = 1;
+	CROSS_VENUE_NET     = 2;
+	CROSS_VENUE_HEDGE   = 3;
+  };
+  
+ enum VenueType{
+   SPOT       = 0;
+   FUTURES    = 1;
+  };
+  
+ enum Symbol{
+	 BTC   = 0;
+	 ETH   = 1;
+	 USD   = 2;
+	 LTC   = 3;
+	 BCH   = 4;
+	 ETC   = 5;
+   }
+   
+   enum Product{
+	 BTC_USD = 0;
+	 ETH_BTC = 1;
+	 ETH_USD = 2;
+	 LTC_USD = 3;
+	 LTC_BTC = 4;   
+	 LTC_ETH = 5;
+	 BCH_USD = 6;
+	 BCH_BTC = 7;
+	 BCH_ETH = 8;
+	 ETC_USD = 9;
+	 ETC_BTC = 10;
+	 ETC_ETH = 11;
+   }
+   
+   enum OrderType {
+	BUY                = 0;
+	SELL               = 1; 
+	BUY_LIMIT          = 2;  
+	SELL_LIMIT         = 3;
+	BUY_STOP           = 4;
+	SELL_STOP          = 5;
+	BUY_STOP_LIMIT     = 6;
+	SELL_STOP_LIMIT    = 7;
+	CLOSING_BY         = 8;
+   }
+  
+   enum OrderState {
+	STARTED           = 0;
+	PLACED            = 1;
+	CANCELED          = 2;
+	PARTIAL           = 3;
+	FILLED            = 4;
+	REJECTED          = 5;
+	EXPIRED           = 6;
+	REQUEST_ADD       = 7;
+	REQUEST_MODIFY    = 8;  
+	REQUEST_CANCEL    = 9;
+   }
+  
+   enum OrderTypeFilling {
+	FOK           = 0;
+	IOC           = 1;
+	RETURN        = 2;
+   }
+  
+   enum OrderReason {
+	ORDER_CLIENT        = 0;
+	ORDER_MOBILE        = 1;
+	ORDER_WEB           = 2;
+	ORDER_STRATEGY      = 3;
+	ORDER_SL            = 4;
+	ORDER_TP            = 5;
+	ORDER_SO            = 6;
+   } 
+  
+   enum OrderTypeTime {
+	GTC              = 0;
+	DAY              = 1;
+	SPECIFIED        = 2;
+	SPECIFIED_DAY    = 3;
+   } 
+  
+   enum DealType {
+	DEAL_BUY                = 0;
+	DEAL_SELL               = 1; 
+	BALANCE                 = 2;  
+	CREDIT                  = 3;
+	CHARGE                  = 4;
+	CORRECTION              = 5;
+	BONUS                   = 6;
+	COMMISSION              = 7;
+	INTEREST                = 8;
+	BUY_CANCELED            = 9;
+	SELL_CANCELED           = 10;
+	DIVIDEND                = 11;
+   }
+  
+	enum DealEntry {
+	IN                = 0;
+	OUT               = 1; 
+	INOUT             = 2;  
+	OUT_BY            = 3;
+   }
+  
+   enum DealReason {
+	DEAL_CLIENT        = 0;
+	DEAL_MOBILE        = 1;
+	DEAL_WEB           = 2;
+	DEAL_STRATEGY      = 3;
+	DEAL_SL            = 4;
+	DEAL_TP            = 5;
+	DEAL_SO            = 6;
+	ROLLOVER           = 7;
+	VMARGIN            = 8;
+	SPLIT              = 9;
+	AJUST              = 10;
+   } 
+  
+   enum PositionReason {
+	POSITION_CLIENT        = 0;
+	POSITION_MOBILE        = 1;
+	POSITION_WEB           = 2;
+	POSITION_STRATEGY      = 3;
+   } 
+  
+   enum PositionType {
+	POSITION_BUY    = 0;
+	POSITION_SELL   = 1; 
+   } 
+	
+  
+   enum TradeAction {
+	DEAL        = 0;
+	PENDING     = 1;
+	SLTP        = 2;
+	MODIFY      = 3;
+	REMOVE      = 4;
+	CLOSE_BY    = 5;
+   }
+  
+   enum Retcode {
+	REJECTX                        = 0;
+	REJECT                         = 2;
+	CANCEL                         = 3;
+	PLACED_TRADE                   = 4;
+	DONE                           = 5;
+	DONE_PARTIAL                   = 6;
+	ERROR                          = 7;
+	TIMEOUT                        = 8;
+	INVALID                        = 9;
+	INVALID_VOLUME                 = 10;
+	INVALID_PRICE                  = 11;
+	INVALID_STOPS                  = 12;
+	TRADE_DISABLED                 = 13;
+	MARKET_CLOSED                  = 14;
+	NO_MONEY                       = 15;
+	PRICE_CHANGED                  = 16;
+	PRICE_OFF                      = 17;
+	INVALID_EXPIRATION             = 18;
+	ORDER_CHANGED                  = 19;
+	TOO_MANY_REQUESTS              = 21;
+	NO_CHANGES                     = 22;
+	SERVER_DISABLES_AT             = 23;
+	CLIENT_DISABLES_AT             = 24;
+	LOCKED                         = 25;
+	FROZEN                         = 26;
+	INVALID_FILL                   = 27;
+	CONNECTION                     = 28;
+	ONLY_REAL                      = 29;
+	LIMIT_ORDERS                   = 30;
+	LIMIT_VOLUME                   = 31;
+	INVALID_ORDER                  = 32;
+	POSITION_CLOSED                = 33;
+	CLOSE_ORDER_EXIST              = 34;
+	LIMIT_POSITIONS                = 35;
+	REJECT_CANCEL                  = 36;
+	LONG_ONLY                      = 37;
+	SHORT_ONLY                     = 38;
+	CLOSE_ONLY                     = 39;
+	REQUEST_WITH_NO_TOKEN          = 40;
+	INVALID_TOKEN                  = 41;
+	INVALID_REQUEST_CONTEXT        = 42;  
+	INVALID_REQUEST                = 43;  
+   }
+  
+   enum Period{
+	PERIOD_CURRENT = 0;
+	PERIOD_M1      = 1;
+	PERIOD_M2      = 2;
+	PERIOD_M3      = 3;
+	PERIOD_M4      = 4;
+	PERIOD_M5      = 5;
+	PERIOD_M6      = 6;
+	PERIOD_M10     = 7;
+	PERIOD_M12     = 8;
+	PERIOD_M15     = 9;
+	PERIOD_M20     = 10;
+	PERIOD_M30     = 11;
+	PERIOD_H1      = 12;
+	PERIOD_H2      = 13;
+	PERIOD_H3      = 14;
+	PERIOD_H4      = 15;
+	PERIOD_H5      = 16;
+	PERIOD_H6      = 17;
+	PERIOD_H7      = 18;
+	PERIOD_H8      = 19;
+	PERIOD_H12     = 20;
+	PERIOD_D1      = 21;
+	PERIOD_W1      = 22;
+	PERIOD_MN1     = 23;
+  };
+  
+  enum CandleType{
+	VOLUME   = 0;
+	TRADE    = 2;
+	BOOK     = 3;
+  };

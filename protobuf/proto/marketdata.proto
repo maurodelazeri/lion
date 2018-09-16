@@ -1,79 +1,6 @@
 syntax = "proto3";
-
-package marketdata;
-
-enum Venue{
-  DARKPOOL    =  0;
-  COINBASEPRO =  1;
-  BINANCE     =  2;
-  BITFINEX    =  3;
-  BITMEX      =  4;
-  GEMINI      =  5;
- }
- 
- enum VenueType{
-   SPOT    = 0;
-   FUTURES = 1;
- };
-
-enum Period{
-  PERIOD_CURRENT = 0;
-  PERIOD_M1      = 1;
-  PERIOD_M2      = 2;
-  PERIOD_M3      = 3;
-  PERIOD_M4      = 4;
-  PERIOD_M5      = 5;
-  PERIOD_M6      = 6;
-  PERIOD_M10     = 7;
-  PERIOD_M12     = 8;
-  PERIOD_M15     = 9;
-  PERIOD_M20     = 10;
-  PERIOD_M30     = 11;
-  PERIOD_H1      = 12;
-  PERIOD_H2      = 13;
-  PERIOD_H3      = 14;
-  PERIOD_H4      = 15;
-  PERIOD_H5      = 16;
-  PERIOD_H6      = 17;
-  PERIOD_H7      = 18;
-  PERIOD_H8      = 19;
-  PERIOD_H12     = 20;
-  PERIOD_D1      = 21;
-  PERIOD_W1      = 22;
-  PERIOD_MN1     = 23;
-};
-
-enum CandleType{
-  VOLUME   = 0;
-  TRADE    = 2;
-  BOOK     = 3;
-};
-
-enum OrderSide{
-  BUY  = 0;
-  SELL = 1;
-};
-
- enum Symbol{
-   USD   = 0;
-   BTC   = 1;
-   ETH   = 2;
-   BCH   = 3;
-   LTC   = 4;
-   ETC   = 5;
- }
- 
- enum Product{
-   BTC_USD = 0;
-   ETH_USD = 1;
-   ETH_BTC = 2;
-   LTC_USD = 3;
-   LTC_BTC = 4;   
-   BCH_USD = 5;
-   BCH_BTC = 6;
-   ETC_USD = 7;
-   ETC_BTC = 8;
- }
+package api;
+import "enum.proto";
  
 message Item {
   double amount = 1;
@@ -106,7 +33,7 @@ message Trade {
   uint64      timestamp     = 2;
   double      price         = 3;
   double      size          = 4;
-  OrderSide   order_side    = 5;
+  OrderType   order_side    = 5;
   VenueType   venue_type    = 6;
 };
 
@@ -114,7 +41,7 @@ message Ticker {
   Product     product       = 1;
   uint64      timestamp     = 2;
   double      price         = 3;
-  OrderSide   order_side    = 4;
+  OrderType   order_side    = 4;
   double      best_bid      = 5;
   double      best_ask      = 6;
   VenueType   venue_type    = 7;

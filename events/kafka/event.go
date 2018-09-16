@@ -18,7 +18,7 @@ var pool *tunny.Pool
 
 // Job ...
 type Job struct {
-	event     events.Event
+	event     api.Event
 	topic     string
 	partition int32
 	verbose   bool
@@ -49,7 +49,7 @@ func (j *Job) build() error {
 	return nil
 }
 
-func processJob(pool *tunny.Pool, event events.Event, topic string, partition int32, verbose bool) {
+func processJob(pool *tunny.Pool, event api.Event, topic string, partition int32, verbose bool) {
 	j := &Job{event: event, topic: topic, partition: partition, verbose: verbose}
 	_, err := pool.ProcessTimed(j, time.Minute*5)
 	if err == tunny.ErrJobTimedOut {
@@ -66,8 +66,8 @@ func Start(topic string, data []byte, partition int32, verbose bool) {
 }
 
 // CreateBaseEvent create a initial event
-func CreateBaseEvent(id, event, account, container, user, strategy string) *events.Event {
-	return &events.Event{
+func CreateBaseEvent(id, event, account, container, user, strategy string) *api.Event {
+	return &api.Event{
 		Event:     event,
 		Id:        id,
 		Account:   account,
@@ -80,8 +80,8 @@ func CreateBaseEvent(id, event, account, container, user, strategy string) *even
 }
 
 // PublishEvent to kafka
-func PublishEvent(event *events.Event, topic string, partition int32, verbose bool) {
-	go func(event *events.Event, topic string, partition int32, verbose bool) {
+func PublishEvent(event *api.Event, topic string, partition int32, verbose bool) {
+	go func(event *api.Event, topic string, partition int32, verbose bool) {
 		processJob(pool, *event, topic, partition, verbose)
 	}(event, topic, partition, verbose)
 }
