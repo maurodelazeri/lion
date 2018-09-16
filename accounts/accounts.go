@@ -121,7 +121,7 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 					if balance, ok := account.Balances[symbols[1]]; ok {
 						switch mode {
 						case "transaction-hold":
-							if balance.Available >= price && price > 0 { // we dont want users sending negative prices
+							if balance.Available >= (price+fee) && price > 0 { // we dont want users sending negative prices
 								balance.Available = balance.Available - (price + fee)
 								balance.Hold = balance.Hold + (price + fee)
 								rec.Store(accountNumber, account)
@@ -149,7 +149,7 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 					if balance, ok := account.Balances[symbols[0]]; ok {
 						switch mode {
 						case "transaction-hold":
-							if balance.Available >= amount && amount > 0 { // we dont want users sending negative amounts
+							if balance.Available >= (amount+(fee/price)) && amount > 0 { // we dont want users sending negative amounts
 								balance.Available = balance.Available - (amount + (fee / price))
 								balance.Hold = balance.Hold + (amount + (fee / price))
 								rec.Store(accountNumber, account)
