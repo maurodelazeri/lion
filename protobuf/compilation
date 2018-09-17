@@ -1,3 +1,4 @@
 protoc -I proto/ proto/enum.proto proto/marketdata.proto --go_out=marketdata
 protoc -I proto/ proto/enum.proto proto/api.proto --go_out=plugins=grpc:api
 protoc -I proto/ proto/events.proto --go_out=events
+protoc -I proto/ proto/enum.proto proto/candle.proto --go_out=candle

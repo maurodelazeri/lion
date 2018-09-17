@@ -6,19 +6,17 @@ import (
 	//pbmarket "github.com/maurodelazeri/lion/protobuf/marketdata"
 )
 
-// Venue is the bucket struck
-type Venue struct {
+// Bucket is the ohlc struck
+type Bucket struct {
 	Name           string
 	Product        string
-	Bucket         *[]*Bucket
-	NumMaxBuckets  int
+	OHLC           *[]*OHLC
+	NumMaxOHLCs    int
 	DurationCandle time.Duration
 }
 
-// Bucket type
-type Bucket struct {
-	Product  string
-	Venue    string
+// OHLC type
+type OHLC struct {
 	Open     float64
 	Close    float64
 	High     float64
@@ -30,33 +28,33 @@ type Bucket struct {
 	Duration time.Duration
 }
 
-// BucketMessage handles the messages
-type BucketMessage struct {
+// OHLCMessage handles the messages
+type OHLCMessage struct {
 	Size  float64
 	Price float64
 	Side  string
 	Time  time.Time
 }
 
-// New Initialize the bucket
-func New(venue string, product string) *Venue {
-	buckets := []*Bucket{}
-	s := &Venue{
+// New Initialize the ohlc
+func New(bucket string, product string) *Bucket {
+	buckets := []*OHLC{}
+	s := &Bucket{
 		Product:        product,
-		Name:           venue,
-		Bucket:         &buckets,
-		NumMaxBuckets:  0,
+		Name:           bucket,
+		OHLC:           &buckets,
+		NumMaxOHLCs:    0,
 		DurationCandle: 1,
 	}
 	return s
 }
 
 // CandleByDuration create buckets by duration
-func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket) {
+func (s *Bucket) CandleByDuration(message OHLCMessage, buckets *[]*OHLC) {
 	t := message.Time.Truncate(s.DurationCandle)
 	// If there are no buckets, start one.
 	if len(*buckets) == 0 {
-		*buckets = append(*buckets, &Bucket{
+		*buckets = append(*buckets, &OHLC{
 			Open:     message.Price,
 			Close:    message.Price,
 			Start:    t.UTC(),
@@ -68,23 +66,23 @@ func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket) {
 		})
 	}
 
-	bucket := (*buckets)[len(*buckets)-1]
+	ohlc := (*buckets)[len(*buckets)-1]
 	if (*buckets)[len(*buckets)-1].Start.Equal(t) {
-		bucket.Close = message.Price
-		bucket.Last = message.Price
+		ohlc.Close = message.Price
+		ohlc.Last = message.Price
 		// only keep a predefined number max of buckets
-		if s.NumMaxBuckets > 0 {
+		if s.NumMaxOHLCs > 0 {
 			buckCurrent := len(*buckets)
-			if buckCurrent > s.NumMaxBuckets {
-				removalTotal := buckCurrent - s.NumMaxBuckets
+			if buckCurrent > s.NumMaxOHLCs {
+				removalTotal := buckCurrent - s.NumMaxOHLCs
 				if removalTotal > 0 {
 					*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
 				}
 			}
 		}
 	} else {
-		// Time to start a new bucket.
-		*buckets = append(*buckets, &Bucket{
+		// Time to start a new ohlc.
+		*buckets = append(*buckets, &OHLC{
 			Open:     message.Price,
 			Close:    message.Price,
 			Start:    t.UTC(),
@@ -94,21 +92,21 @@ func (s *Venue) CandleByDuration(message BucketMessage, buckets *[]*Bucket) {
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
-		bucket = (*buckets)[len(*buckets)-1]
+		ohlc = (*buckets)[len(*buckets)-1]
 	}
-	bucket.Trades++
-	bucket.High = math.Max(bucket.High, message.Price)
-	bucket.Low = math.Min(bucket.Low, message.Price)
-	bucket.Volume = bucket.Volume + message.Size
-	bucket.Last = message.Price
+	ohlc.Trades++
+	ohlc.High = math.Max(ohlc.High, message.Price)
+	ohlc.Low = math.Min(ohlc.Low, message.Price)
+	ohlc.Volume = ohlc.Volume + message.Size
+	ohlc.Last = message.Price
 }
 
 // CandleByDeals create buckets by duration
-func (s *Venue) CandleByDeals(message BucketMessage, buckets *[]*Bucket) {
+func (s *Bucket) CandleByDeals(message OHLCMessage, buckets *[]*OHLC) {
 	t := message.Time.Truncate(s.DurationCandle)
 	// If there are no buckets, start one.
 	if len(*buckets) == 0 {
-		*buckets = append(*buckets, &Bucket{
+		*buckets = append(*buckets, &OHLC{
 			Open:     message.Price,
 			Close:    message.Price,
 			Start:    t.UTC(),
@@ -120,23 +118,23 @@ func (s *Venue) CandleByDeals(message BucketMessage, buckets *[]*Bucket) {
 		})
 	}
 
-	bucket := (*buckets)[len(*buckets)-1]
+	ohlc := (*buckets)[len(*buckets)-1]
 	if (*buckets)[len(*buckets)-1].Start.Equal(t) {
-		bucket.Close = message.Price
-		bucket.Last = message.Price
+		ohlc.Close = message.Price
+		ohlc.Last = message.Price
 		// only keep a predefined number max of buckets
-		if s.NumMaxBuckets > 0 {
+		if s.NumMaxOHLCs > 0 {
 			buckCurrent := len(*buckets)
-			if buckCurrent > s.NumMaxBuckets {
-				removalTotal := buckCurrent - s.NumMaxBuckets
+			if buckCurrent > s.NumMaxOHLCs {
+				removalTotal := buckCurrent - s.NumMaxOHLCs
 				if removalTotal > 0 {
 					*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
 				}
 			}
 		}
 	} else {
-		// Time to start a new bucket.
-		*buckets = append(*buckets, &Bucket{
+		// Time to start a new ohlc.
+		*buckets = append(*buckets, &OHLC{
 			Open:     message.Price,
 			Close:    message.Price,
 			Start:    t.UTC(),
@@ -146,21 +144,21 @@ func (s *Venue) CandleByDeals(message BucketMessage, buckets *[]*Bucket) {
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
-		bucket = (*buckets)[len(*buckets)-1]
+		ohlc = (*buckets)[len(*buckets)-1]
 	}
-	bucket.Trades++
-	bucket.High = math.Max(bucket.High, message.Price)
-	bucket.Low = math.Min(bucket.Low, message.Price)
-	bucket.Volume = bucket.Volume + message.Size
-	bucket.Last = message.Price
+	ohlc.Trades++
+	ohlc.High = math.Max(ohlc.High, message.Price)
+	ohlc.Low = math.Min(ohlc.Low, message.Price)
+	ohlc.Volume = ohlc.Volume + message.Size
+	ohlc.Last = message.Price
 }
 
 // CandleByVolume create buckets by duration
-func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket) {
+func (s *Bucket) CandleByVolume(message OHLCMessage, buckets *[]*OHLC) {
 	t := message.Time.Truncate(s.DurationCandle)
 	// If there are no buckets, start one.
 	if len(*buckets) == 0 {
-		*buckets = append(*buckets, &Bucket{
+		*buckets = append(*buckets, &OHLC{
 			Open:     message.Price,
 			Close:    message.Price,
 			Start:    t.UTC(),
@@ -172,23 +170,23 @@ func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket) {
 		})
 	}
 
-	bucket := (*buckets)[len(*buckets)-1]
+	ohlc := (*buckets)[len(*buckets)-1]
 	if (*buckets)[len(*buckets)-1].Start.Equal(t) {
-		bucket.Close = message.Price
-		bucket.Last = message.Price
+		ohlc.Close = message.Price
+		ohlc.Last = message.Price
 		// only keep a predefined number max of buckets
-		if s.NumMaxBuckets > 0 {
+		if s.NumMaxOHLCs > 0 {
 			buckCurrent := len(*buckets)
-			if buckCurrent > s.NumMaxBuckets {
-				removalTotal := buckCurrent - s.NumMaxBuckets
+			if buckCurrent > s.NumMaxOHLCs {
+				removalTotal := buckCurrent - s.NumMaxOHLCs
 				if removalTotal > 0 {
 					*buckets = (*buckets)[:0+copy((*buckets)[0:], (*buckets)[removalTotal:])]
 				}
 			}
 		}
 	} else {
-		// Time to start a new bucket.
-		*buckets = append(*buckets, &Bucket{
+		// Time to start a new ohlc.
+		*buckets = append(*buckets, &OHLC{
 			Open:     message.Price,
 			Close:    message.Price,
 			Start:    t.UTC(),
@@ -198,11 +196,11 @@ func (s *Venue) CandleByVolume(message BucketMessage, buckets *[]*Bucket) {
 			Volume:   message.Size,
 			Last:     message.Price,
 		})
-		bucket = (*buckets)[len(*buckets)-1]
+		ohlc = (*buckets)[len(*buckets)-1]
 	}
-	bucket.Trades++
-	bucket.High = math.Max(bucket.High, message.Price)
-	bucket.Low = math.Min(bucket.Low, message.Price)
-	bucket.Volume = bucket.Volume + message.Size
-	bucket.Last = message.Price
+	ohlc.Trades++
+	ohlc.High = math.Max(ohlc.High, message.Price)
+	ohlc.Low = math.Min(ohlc.Low, message.Price)
+	ohlc.Volume = ohlc.Volume + message.Size
+	ohlc.Last = message.Price
 }

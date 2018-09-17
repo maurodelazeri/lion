@@ -1,0 +1,30 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+
+message Bucket {
+    Venue                        venue                  = 1;
+    Product                      product                = 2;
+    repeated OHLC                ohlc                   = 3;
+    int32                        num_max_candles        = 4;
+    int32                        duration               = 5;  
+ }
+
+ message OHLC {
+    double                       open                 = 1;
+    double                       high                 = 2;
+    double                       low                  = 3;
+    double                       close                = 4;
+    double                       last                 = 5;
+    int32                        trades               = 6;
+    int32                        duration             = 7;
+    int64                        start                = 8;
+    int64                        order_type_count     = 9;
+ }
+
+ message OHLCMessage {
+    uint64                       price            = 1;
+    uint64                       size             = 2;
+    OrderType                    order_type       = 3;
+    int64                        time             = 4;
+ }

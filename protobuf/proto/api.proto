@@ -41,10 +41,10 @@ service API {
   }
 
 message TradeResult { 
-  Retcode                      retcode                   = 1;  // Operation return code 
-  Venue                        venue                     = 2;  // Venue where the order was sent
-  Product                      product                   = 3;  // Product of the trade
-  OrderType                    order_type                = 4;  // Order type 
+   Retcode                      retcode                   = 1;  // Operation return code 
+   Venue                        venue                     = 2;  // Venue where the order was sent
+   Product                      product                   = 3;  // Product of the trade
+   OrderType                    order_type                = 4;  // Order type 
    uint64                       order                     = 5;  // Order ticket, if it is placed 
    double                       volume                    = 6;  // Deal volume, confirmed by broker 
    double                       price                     = 7;  // Deal price, confirmed by broker
