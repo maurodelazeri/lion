@@ -83,5 +83,6 @@ func (s *Bucket) CandleByDuration(message OHLCMessage) []OHLC {
 	ohlc.Low = math.Min(ohlc.Low, message.Price)
 	ohlc.Volume = ohlc.Volume + message.Size
 	ohlc.Last = message.Price
+	s.LastUpdateTime = message.Time
 	return s.OHLC
 }
