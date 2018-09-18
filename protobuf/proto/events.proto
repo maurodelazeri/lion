@@ -1,5 +1,5 @@
 syntax = "proto3";
-package api;
+package events;
 
 message Event {
   string       id         = 1;

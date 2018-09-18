@@ -20,8 +20,8 @@ service API {
 
  message TradeRequest { 
   TradeAction                   action               = 1;  // Trade operation type 
-  Venue                         venue                = 2;  // Venue where the order is being send
-  Product                       product              = 3;  // Trade product
+   Venue                         venue                = 2;  // Venue where the order is being send
+   Product                       product              = 3;  // Trade product
    uint64                        order                = 4;  // Order ticket 
    double                        volume               = 5;  // Requested volume for a deal in lots 
    double                        price                = 6;  // Price 
@@ -110,4 +110,66 @@ message Balance {
   double  balance_id = 1;
   double  available  = 2;
   double  hold       = 3;
+}
+
+// Market Data
+
+message Item {
+  double amount = 1;
+  double price  = 2;
+};
+
+message Orderbook {
+  Product           product     = 1;
+  uint64            timestamp   = 2;
+  uint32            levels      = 3;
+  repeated Item     asks        = 4;
+  repeated Item     bids        = 5;
+  VenueType         venue_type  = 6;
+};
+
+message Candle {
+  Product     product     = 1;
+  Period      period      = 2;
+  double      open        = 3;
+  double      high        = 4;
+  double      low         = 5;
+  double      close       = 6;
+  double      volume      = 7;
+  CandleType  candle_type = 8;
+  VenueType   venue_type  = 9;
+};
+
+message Trade {
+  Product     product       = 1;
+  uint64      timestamp     = 2;
+  double      price         = 3;
+  double      size          = 4;
+  OrderType   order_side    = 5;
+  VenueType   venue_type    = 6;
+};
+
+message Ticker {
+  Product     product       = 1;
+  uint64      timestamp     = 2;
+  double      price         = 3;
+  OrderType   order_side    = 4;
+  double      best_bid      = 5;
+  double      best_ask      = 6;
+  VenueType   venue_type    = 7;
+};
+
+// Events
+message Event {
+  string       id         = 1;
+  string       event      = 2;
+  string       user       = 3; 
+  string       account    = 4;
+  string       container  = 5;
+  string       strategy   = 6;
+  int64        timestamp  = 7;
+  string       command    = 8;
+  string       message    = 9;
+  bool         error      = 10;
+  string       payload    = 11;      
 }
