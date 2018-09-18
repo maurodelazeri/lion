@@ -11,9 +11,9 @@ import (
 )
 
 /*
-./kafka-console-consumer --bootstrap-server localhost:9092 --topic test --from-beginning
-./kafka-console-producer --broker-list localhost:9092 --topic test
-./kafka-topics --list --zookeeper localhost:2181
+./kafka-console-consumer --bootstrap-server 192.168.3.100:9092 --topic BTC_USD.COINBASEPRO.trade --from-beginning
+./kafka-console-producer --broker-list 192.168.3.100:9092 --topic BTC_USD.COINBASEPRO.trade
+./kafka-topics --list --zookeeper 192.168.3.100:2181
 */
 
 // Producer ...
