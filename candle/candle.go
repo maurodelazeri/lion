@@ -9,7 +9,7 @@ import (
 type Bucket struct {
 	Name           string
 	Product        string
-	OHLC           *[]*OHLC
+	OHLC           []OHLC
 	NumMaxCandles  int
 	DurationCandle time.Duration
 	Initialized    bool
@@ -36,12 +36,12 @@ type OHLCMessage struct {
 }
 
 // CandleByDuration create buckets by duration
-func (s *Bucket) CandleByDuration(message OHLCMessage) *[]*OHLC {
+func (s *Bucket) CandleByDuration(message OHLCMessage) []OHLC {
 	t := message.Time.Truncate(s.DurationCandle)
 
 	// If there are no buckets, start one.
 	if !s.Initialized {
-		*s.OHLC = append(*s.OHLC, &OHLC{
+		s.OHLC = append(s.OHLC, OHLC{
 			Open:   message.Price,
 			Close:  message.Price,
 			Low:    math.MaxFloat32,
@@ -52,23 +52,23 @@ func (s *Bucket) CandleByDuration(message OHLCMessage) *[]*OHLC {
 		s.Initialized = true
 	}
 
-	ohlc := (*s.OHLC)[len(*s.OHLC)-1]
+	ohlc := (s.OHLC)[len(s.OHLC)-1]
 	if s.LastUpdateTime.Equal(t) {
 		ohlc.Close = message.Price
 		ohlc.Last = message.Price
 		// only keep a predefined number max of buckets
 		if s.NumMaxCandles > 0 {
-			buckCurrent := len(*s.OHLC)
+			buckCurrent := len(s.OHLC)
 			if buckCurrent > s.NumMaxCandles {
 				removalTotal := buckCurrent - s.NumMaxCandles
 				if removalTotal > 0 {
-					*s.OHLC = (*s.OHLC)[:0+copy((*s.OHLC)[0:], (*s.OHLC)[removalTotal:])]
+					s.OHLC = (s.OHLC)[:0+copy((s.OHLC)[0:], (s.OHLC)[removalTotal:])]
 				}
 			}
 		}
 	} else {
 		// Time to start a new ohlc.
-		*s.OHLC = append(*s.OHLC, &OHLC{
+		s.OHLC = append(s.OHLC, OHLC{
 			Open:   message.Price,
 			Close:  message.Price,
 			Low:    math.MaxFloat32,
@@ -76,7 +76,7 @@ func (s *Bucket) CandleByDuration(message OHLCMessage) *[]*OHLC {
 			Volume: message.Size,
 			Last:   message.Price,
 		})
-		ohlc = (*s.OHLC)[len(*s.OHLC)-1]
+		ohlc = (s.OHLC)[len(s.OHLC)-1]
 	}
 	ohlc.Trades++
 	ohlc.High = math.Max(ohlc.High, message.Price)
