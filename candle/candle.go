@@ -1,88 +1,146 @@
 package candle
 
 import (
-	"math"
+	"fmt"
 	"time"
+
+	number "github.com/MixinNetwork/go-number"
+	"github.com/sirupsen/logrus"
 )
 
-// Bucket is the ohlc struck
-type Bucket struct {
-	Name           string
-	Product        string
-	OHLC           []OHLC
-	NumMaxCandles  int
-	DurationCandle time.Duration
-	Initialized    bool
-	LastUpdateTime time.Time
+var mainCandles map[string]*Candle
+
+// CandleGranularity1M ...
+const (
+	CandleGranularity1M  = 60
+	CandleGranularity2M  = 120
+	CandleGranularity3M  = 180
+	CandleGranularity4M  = 240
+	CandleGranularity5M  = 300
+	CandleGranularity6M  = 360
+	CandleGranularity7M  = 420
+	CandleGranularity8M  = 480
+	CandleGranularity9M  = 540
+	CandleGranularity10M = 600
+	CandleGranularity15M = 900
+	CandleGranularity20M = 1200
+	CandleGranularity30M = 1800
+	CandleGranularity40M = 2400
+	CandleGranularity50M = 3000
+	CandleGranularity1H  = 3600
+	CandleGranularity2H  = 7200
+	CandleGranularity3H  = 10800
+	CandleGranularity4H  = 14400
+	CandleGranularity5H  = 18000
+	CandleGranularity6H  = 21600
+	CandleGranularity7H  = 25200
+	CandleGranularity8H  = 28800
+	CandleGranularity9H  = 32400
+	CandleGranularity10H = 36000
+	CandleGranularity11H = 39600
+	CandleGranularity12H = 43200
+	CandleGranularity1D  = 86400
+)
+
+// Candle ...
+type Candle struct {
+	Granularity int64
+	Point       int64
+	Open        float64
+	Close       float64
+	High        float64
+	Low         float64
+	Volume      float64
+	Total       float64
 }
 
-// OHLC type
-type OHLC struct {
-	Open   float64
-	Close  float64
-	High   float64
-	Low    float64
-	Volume float64
-	Last   float64
-	Trades int64
+func init() {
+	mainCandles = make(map[string]*Candle)
 }
 
-// OHLCMessage handles the messages
-type OHLCMessage struct {
-	Size  float64
-	Price float64
-	Side  string
-	Time  time.Time
-}
+func main() {
+	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7600.00"), number.FromString("1.00"), time.Now())
+	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7800.00"), number.FromString("3.00"), time.Now())
+	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7800.00"), number.FromString("1.00"), time.Now())
+	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7802.00"), number.FromString("7.00"), time.Now())
+	for i, num := range mainCandles {
+		logrus.Info("granularity: ", i, " candle: ", num)
+	}
+	fmt.Print("\n\n")
+	time.Sleep(time.Minute)
 
-// CandleByDuration create buckets by duration
-func (s *Bucket) CandleByDuration(message OHLCMessage) []OHLC {
-	t := message.Time.Truncate(s.DurationCandle)
+	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7808.00"), number.FromString("1.00"), time.Now())
+	for i, num := range mainCandles {
+		logrus.Info("granularity: ", i, " candle: ", num)
+	}
+	fmt.Print("\n\n")
 
-	// If there are no buckets, start one.
-	if !s.Initialized {
-		s.OHLC = append(s.OHLC, OHLC{
-			Open:   message.Price,
-			Close:  message.Price,
-			Low:    math.MaxFloat32,
-			High:   0.0,
-			Volume: message.Size,
-			Last:   message.Price,
-		})
-		s.Initialized = true
+	logrus.Info("6 minute wait \n")
+	time.Sleep(time.Minute * 6)
+	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7810.00"), number.FromString("12.00"), time.Now())
+	for i, num := range mainCandles {
+		logrus.Info("granularity: ", i, " candle: ", num)
 	}
 
-	ohlc := (s.OHLC)[len(s.OHLC)-1]
-	if s.LastUpdateTime.Equal(t) {
-		ohlc.Close = message.Price
-		ohlc.Last = message.Price
-		// only keep a predefined number max of buckets
-		if s.NumMaxCandles > 0 {
-			buckCurrent := len(s.OHLC)
-			if buckCurrent > s.NumMaxCandles {
-				removalTotal := buckCurrent - s.NumMaxCandles
-				if removalTotal > 0 {
-					s.OHLC = (s.OHLC)[:0+copy((s.OHLC)[0:], (s.OHLC)[removalTotal:])]
-				}
-			}
+}
+
+// CreateOrUpdateCandle ...
+func CreateOrUpdateCandle(base, quote string, price, amount number.Decimal, createdAt time.Time) {
+	var candles = make(map[string]*Candle)
+	for _, g := range []int64{
+		CandleGranularity1M,
+		CandleGranularity2M,
+		CandleGranularity3M,
+		CandleGranularity4M,
+		CandleGranularity5M,
+		CandleGranularity6M,
+		CandleGranularity7M,
+		CandleGranularity8M,
+		CandleGranularity9M,
+		CandleGranularity10M,
+		CandleGranularity15M,
+		CandleGranularity20M,
+		CandleGranularity30M,
+		CandleGranularity40M,
+		CandleGranularity50M,
+		CandleGranularity1H,
+		CandleGranularity2H,
+		CandleGranularity3H,
+		CandleGranularity4H,
+		CandleGranularity5H,
+		CandleGranularity6H,
+		CandleGranularity7H,
+		CandleGranularity8H,
+		CandleGranularity9H,
+		CandleGranularity10H,
+		CandleGranularity11H,
+		CandleGranularity12H,
+		CandleGranularity1D,
+	} {
+		p := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
+		candles[fmt.Sprintf("%d:%d", g, p)] = &Candle{
+			Granularity: g,
+			Point:       p,
+			Open:        price.Float64(),
+			Close:       price.Float64(),
+			High:        price.Float64(),
+			Low:         price.Float64(),
+			Volume:      amount.Float64(),
+			Total:       price.Mul(amount).Float64(),
 		}
-	} else {
-		// Time to start a new ohlc.
-		s.OHLC = append(s.OHLC, OHLC{
-			Open:   message.Price,
-			Close:  message.Price,
-			Low:    math.MaxFloat32,
-			High:   0.0,
-			Volume: message.Size,
-			Last:   message.Price,
-		})
-		ohlc = (s.OHLC)[len(s.OHLC)-1]
+
+		if c, ok := mainCandles[fmt.Sprintf("%d:%d", g, p)]; ok {
+			n := candles[fmt.Sprintf("%d:%d", c.Granularity, c.Point)]
+			n.Open = c.Open
+			if c.High > n.High {
+				n.High = c.High
+			}
+			if c.Low < n.Low {
+				n.Low = c.Low
+			}
+			n.Volume = n.Volume + c.Volume
+			n.Total = n.Total + c.Total
+		}
 	}
-	ohlc.Trades++
-	ohlc.High = math.Max(ohlc.High, message.Price)
-	ohlc.Low = math.Min(ohlc.Low, message.Price)
-	ohlc.Volume = ohlc.Volume + message.Size
-	ohlc.Last = message.Price
-	s.LastUpdateTime = message.Time
-	return s.OHLC
+	mainCandles = candles
 }
