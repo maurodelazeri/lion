@@ -2,6 +2,7 @@ package candle
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	number "github.com/maurodelazeri/go-number"
@@ -12,6 +13,7 @@ var (
 	Candlestic map[string]*Candle
 	// CandlesMap ...
 	CandlesMap map[string][]int64
+	mutex      sync.RWMutex
 )
 
 // CandleGranularity1M ...
@@ -70,6 +72,8 @@ func init() {
 
 // CreateOrUpdateCandle ...
 func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, side int32, createdAt time.Time) {
+	mutex.RLock()
+	defer mutex.RUnlock()
 	var candle = make(map[string]*Candle)
 	buy := 0
 	sell := 0
@@ -141,6 +145,6 @@ func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, s
 			n.BuySide = c.BuySide + buy
 			n.SellSide = c.SellSide + sell
 		}
+		Candlestic[currentKey] = candle[currentKey]
 	}
-	Candlestic = candle
 }
