@@ -70,8 +70,8 @@ func init() {
 	CandlesMap = make(map[string][]int64)
 }
 
-// CreateOrUpdateCandle ...
-func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, side int32, createdAt time.Time) {
+// CreateOrUpdateCandleTime ...
+func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decimal, side int32, createdAt time.Time) {
 	mutex.RLock()
 	defer mutex.RUnlock()
 	var candle = make(map[string]*Candle)
@@ -149,4 +149,14 @@ func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, s
 		}
 		Candlestic[currentKey] = candle[currentKey]
 	}
+}
+
+// CreateOrUpdateCandleVolume ...
+func CreateOrUpdateCandleVolume(venue, product string, price, amount number.Decimal, side int32, volume float64) {
+
+}
+
+// CreateOrUpdateCandleTrades ...
+func CreateOrUpdateCandleTrades(venue, product string, price, amount number.Decimal, side int32, numTrades int64) {
+
 }
