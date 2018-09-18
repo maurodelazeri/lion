@@ -2,6 +2,27 @@ syntax = "proto3";
 package api;
 import "enum.proto";
  
+ message OHLC {
+    double                       open                 = 1;
+    double                       high                 = 2;
+    double                       low                  = 3;
+    double                       close                = 4;
+    double                       last_price           = 5;
+    int32                        trades               = 6;
+    double                       volume               = 7;
+    int32                        duration             = 8;
+    int64                        timestamp            = 9;
+    int64                        buy_count            = 10;
+    int64                        sell_count           = 11;
+ }
+
+ message OHLCMessage {
+    double                       price            = 1;
+    double                       volume           = 2;
+   // OrderType                    order_type       = 3;
+    int64                        time             = 3;
+ }
+
 message Item {
   double amount = 1;
   double price  = 2;
