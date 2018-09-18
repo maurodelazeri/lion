@@ -4,14 +4,21 @@ import (
 	"fmt"
 	"time"
 
-	number "github.com/MixinNetwork/go-number"
+	number "github.com/maurodelazeri/go-number"
+)
+
+var (
+	// Candles ...
+	Candles map[string]*Candle
+
+	// CandlesMap ...
+	CandlesMap map[string]*[]int64
 )
 
 func init() {
 	Candles = make(map[string]*Candle)
+	CandlesMap = make(map[string]*[]int64)
 }
-
-var Candles map[string]*Candle
 
 // CandleGranularity1M ...
 const (
@@ -47,6 +54,8 @@ const (
 
 // Candle ...
 type Candle struct {
+	Venue       string
+	Product     string
 	Granularity int64
 	Point       int64
 	Open        float64
@@ -58,7 +67,7 @@ type Candle struct {
 }
 
 // CreateOrUpdateCandle ...
-func CreateOrUpdateCandle(base, quote string, price, amount number.Decimal, createdAt time.Time) {
+func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, createdAt time.Time) {
 	var candles = make(map[string]*Candle)
 	for _, g := range []int64{
 		CandleGranularity1M,
@@ -91,7 +100,7 @@ func CreateOrUpdateCandle(base, quote string, price, amount number.Decimal, crea
 		CandleGranularity1D,
 	} {
 		p := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
-		candles[fmt.Sprintf("%d:%d", g, p)] = &Candle{
+		candles[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)] = &Candle{
 			Granularity: g,
 			Point:       p,
 			Open:        price.Float64(),
@@ -102,8 +111,8 @@ func CreateOrUpdateCandle(base, quote string, price, amount number.Decimal, crea
 			Total:       price.Mul(amount).Float64(),
 		}
 
-		if c, ok := Candles[fmt.Sprintf("%d:%d", g, p)]; ok {
-			n := candles[fmt.Sprintf("%d:%d", c.Granularity, c.Point)]
+		if c, ok := Candles[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)]; ok {
+			n := candles[fmt.Sprintf("%d:%d:%s:%s", c.Granularity, c.Point, c.Venue, c.Product)]
 			n.Open = c.Open
 			if c.High > n.High {
 				n.High = c.High
@@ -113,6 +122,8 @@ func CreateOrUpdateCandle(base, quote string, price, amount number.Decimal, crea
 			}
 			n.Volume = n.Volume + c.Volume
 			n.Total = n.Total + c.Total
+		} else {
+			*(CandlesMap[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)]) = append(*(CandlesMap[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)]), p)
 		}
 	}
 	Candles = candles
