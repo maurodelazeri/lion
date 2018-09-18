@@ -5,10 +5,13 @@ import (
 	"time"
 
 	number "github.com/MixinNetwork/go-number"
-	"github.com/sirupsen/logrus"
 )
 
-var mainCandles map[string]*Candle
+func init() {
+	Candles = make(map[string]*Candle)
+}
+
+var Candles map[string]*Candle
 
 // CandleGranularity1M ...
 const (
@@ -52,36 +55,6 @@ type Candle struct {
 	Low         float64
 	Volume      float64
 	Total       float64
-}
-
-func init() {
-	mainCandles = make(map[string]*Candle)
-}
-
-func main() {
-	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7600.00"), number.FromString("1.00"), time.Now())
-	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7800.00"), number.FromString("3.00"), time.Now())
-	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7800.00"), number.FromString("1.00"), time.Now())
-	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7802.00"), number.FromString("7.00"), time.Now())
-	for i, num := range mainCandles {
-		logrus.Info("granularity: ", i, " candle: ", num)
-	}
-	fmt.Print("\n\n")
-	time.Sleep(time.Minute)
-
-	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7808.00"), number.FromString("1.00"), time.Now())
-	for i, num := range mainCandles {
-		logrus.Info("granularity: ", i, " candle: ", num)
-	}
-	fmt.Print("\n\n")
-
-	logrus.Info("6 minute wait \n")
-	time.Sleep(time.Minute * 6)
-	CreateOrUpdateCandle("XX", "xsdsd", number.FromString("7810.00"), number.FromString("12.00"), time.Now())
-	for i, num := range mainCandles {
-		logrus.Info("granularity: ", i, " candle: ", num)
-	}
-
 }
 
 // CreateOrUpdateCandle ...
@@ -129,7 +102,7 @@ func CreateOrUpdateCandle(base, quote string, price, amount number.Decimal, crea
 			Total:       price.Mul(amount).Float64(),
 		}
 
-		if c, ok := mainCandles[fmt.Sprintf("%d:%d", g, p)]; ok {
+		if c, ok := Candles[fmt.Sprintf("%d:%d", g, p)]; ok {
 			n := candles[fmt.Sprintf("%d:%d", c.Granularity, c.Point)]
 			n.Open = c.Open
 			if c.High > n.High {
@@ -142,5 +115,5 @@ func CreateOrUpdateCandle(base, quote string, price, amount number.Decimal, crea
 			n.Total = n.Total + c.Total
 		}
 	}
-	mainCandles = candles
+	Candles = candles
 }
