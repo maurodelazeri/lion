@@ -144,6 +144,8 @@ func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, s
 			n.TotalTrades = c.TotalTrades + 1
 			n.BuySide = c.BuySide + buy
 			n.SellSide = c.SellSide + sell
+		} else {
+			CandlesMap[currentKey] = append(CandlesMap[currentKey], currentPoint)
 		}
 		Candlestic[currentKey] = candle[currentKey]
 	}
