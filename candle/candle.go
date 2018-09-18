@@ -8,17 +8,11 @@ import (
 )
 
 var (
-	// Candles ...
-	Candles map[string]*Candle
-
+	// Candlestic ...
+	Candlestic map[string]*Candle
 	// CandlesMap ...
-	CandlesMap map[string]*[]int64
+	CandlesMap map[string][]int64
 )
-
-func init() {
-	Candles = make(map[string]*Candle)
-	CandlesMap = make(map[string]*[]int64)
-}
 
 // CandleGranularity1M ...
 const (
@@ -64,11 +58,26 @@ type Candle struct {
 	Low         float64
 	Volume      float64
 	Total       float64
+	TotalTrades int64
+	BuySide     int
+	SellSide    int
+}
+
+func init() {
+	Candlestic = make(map[string]*Candle)
+	CandlesMap = make(map[string][]int64)
 }
 
 // CreateOrUpdateCandle ...
-func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, createdAt time.Time) {
-	var candles = make(map[string]*Candle)
+func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, side int32, createdAt time.Time) {
+	var candle = make(map[string]*Candle)
+	buy := 0
+	sell := 0
+	if side == 0 {
+		buy = 1
+	} else {
+		sell = 1
+	}
 	for _, g := range []int64{
 		CandleGranularity1M,
 		CandleGranularity2M,
@@ -99,20 +108,26 @@ func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, c
 		CandleGranularity12H,
 		CandleGranularity1D,
 	} {
-		p := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
-		candles[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)] = &Candle{
+		currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
+		currentKey := fmt.Sprintf("%d:%d:%s:%s", g, currentPoint, venue, product)
+		candle[currentKey] = &Candle{
+			Venue:       venue,
+			Product:     product,
 			Granularity: g,
-			Point:       p,
+			Point:       currentPoint,
 			Open:        price.Float64(),
 			Close:       price.Float64(),
 			High:        price.Float64(),
 			Low:         price.Float64(),
 			Volume:      amount.Float64(),
 			Total:       price.Mul(amount).Float64(),
+			TotalTrades: 1,
+			BuySide:     buy,
+			SellSide:    sell,
 		}
-
-		if c, ok := Candles[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)]; ok {
-			n := candles[fmt.Sprintf("%d:%d:%s:%s", c.Granularity, c.Point, c.Venue, c.Product)]
+		// If exist, we need to update it
+		if c, ok := Candlestic[currentKey]; ok {
+			n := candle[currentKey]
 			n.Open = c.Open
 			if c.High > n.High {
 				n.High = c.High
@@ -122,9 +137,10 @@ func CreateOrUpdateCandle(venue, product string, price, amount number.Decimal, c
 			}
 			n.Volume = n.Volume + c.Volume
 			n.Total = n.Total + c.Total
-		} else {
-			*(CandlesMap[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)]) = append(*(CandlesMap[fmt.Sprintf("%d:%d:%s:%s", g, p, venue, product)]), p)
+			n.TotalTrades = c.TotalTrades + 1
+			n.BuySide = c.BuySide + buy
+			n.SellSide = c.SellSide + sell
 		}
 	}
-	Candles = candles
+	Candlestic = candle
 }
