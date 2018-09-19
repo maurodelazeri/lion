@@ -8,13 +8,54 @@ import (
 	number "github.com/maurodelazeri/go-number"
 )
 
+type SyncMap struct {
+	state map[string]*Candle
+	mutex *sync.Mutex
+}
+
+// NewSyncMap ...
+func NewSyncMap() *SyncMap {
+	s := &SyncMap{
+		state: make(map[string]*Candle),
+		mutex: &sync.Mutex{},
+	}
+	return s
+}
+
+// Put ...
+func (s *SyncMap) Put(key string, value *Candle) {
+	s.mutex.Lock()
+	s.state[key] = value
+	s.mutex.Unlock()
+}
+
+// Get ...
+func (s *SyncMap) Get(key string) *Candle {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	return s.state[key]
+}
+
+// Values ...
+func (s *SyncMap) Values() chan *Candle {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	values := make(chan *Candle, len(s.state))
+	for _, value := range s.state {
+		values <- value
+	}
+	close(values)
+	return values
+}
+
+// https://texlution.com/post/golang-lock-free-values-with-atomic-value/
 var (
 	// Candlestic ...
-	Candlestic map[string]*Candle
+	Candlestic  map[string]*Candle
+	Candlestic2 = NewSyncMap()
+
 	// CandlesMap ...
 	CandlesMap map[string][]int64
-	// Mutex ...
-	Mutex sync.RWMutex
 )
 
 // CandleGranularity1M ...
@@ -73,8 +114,6 @@ func init() {
 
 // CreateOrUpdateCandleTime ...
 func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decimal, side int32, createdAt time.Time) {
-	Mutex.RLock()
-	defer Mutex.RUnlock()
 	var candle = make(map[string]*Candle)
 	buy := 0
 	sell := 0
@@ -130,6 +169,7 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 			BuySide:     buy,
 			SellSide:    sell,
 		}
+
 		// If exist, we need to update it
 		if c, ok := Candlestic[currentKey]; ok {
 			n := candle[currentKey]
@@ -149,6 +189,7 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 			CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)] = append(CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)], currentPoint)
 		}
 		Candlestic[currentKey] = candle[currentKey]
+		Candlestic2.Put(currentKey, candle[currentKey])
 	}
 }
 
