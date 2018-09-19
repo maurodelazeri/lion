@@ -118,45 +118,47 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 		sell = 1
 	}
 	for _, g := range pbAPI.Granularity_value {
-		currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
-		currentKey := fmt.Sprintf("%d:%d:%s:%s", g, currentPoint, venue.String(), product.String())
-		candle[currentKey] = &pbAPI.Candle{
-			Venue:       venue,
-			Product:     product,
-			Granularity: g,
-			Point:       int32(currentPoint),
-			Open:        price.Float64(),
-			Close:       price.Float64(),
-			High:        price.Float64(),
-			Low:         price.Float64(),
-			Volume:      amount.Float64(),
-			Total:       price.Mul(amount).Float64(),
-			TotalTrades: 1,
-			BuyTotal:    int32(buy),
-			SellTotal:   int32(sell),
-		}
+		if g != 0 {
+			currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
+			currentKey := fmt.Sprintf("%d:%d:%s:%s", g, currentPoint, venue.String(), product.String())
+			candle[currentKey] = &pbAPI.Candle{
+				Venue:       venue,
+				Product:     product,
+				Granularity: g,
+				Point:       int32(currentPoint),
+				Open:        price.Float64(),
+				Close:       price.Float64(),
+				High:        price.Float64(),
+				Low:         price.Float64(),
+				Volume:      amount.Float64(),
+				Total:       price.Mul(amount).Float64(),
+				TotalTrades: 1,
+				BuyTotal:    int32(buy),
+				SellTotal:   int32(sell),
+			}
 
-		// If exist, we need to update it
-		if c, ok := Candlestick[currentKey]; ok {
-			n := candle[currentKey]
-			n.Open = c.Open
-			if c.High > n.High {
-				n.High = c.High
+			// If exist, we need to update it
+			if c, ok := Candlestick[currentKey]; ok {
+				n := candle[currentKey]
+				n.Open = c.Open
+				if c.High > n.High {
+					n.High = c.High
+				}
+				if c.Low < n.Low {
+					n.Low = c.Low
+				}
+				n.Volume = n.Volume + c.Volume
+				n.Total = n.Total + c.Total
+				n.TotalTrades = c.TotalTrades + 1
+				n.BuyTotal = c.BuyTotal + int32(buy)
+				n.SellTotal = c.SellTotal + int32(sell)
+			} else {
+				CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)] = append(CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)], currentPoint)
+				SyncCandlesMap.Put(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String())])
 			}
-			if c.Low < n.Low {
-				n.Low = c.Low
-			}
-			n.Volume = n.Volume + c.Volume
-			n.Total = n.Total + c.Total
-			n.TotalTrades = c.TotalTrades + 1
-			n.BuyTotal = c.BuyTotal + int32(buy)
-			n.SellTotal = c.SellTotal + int32(sell)
-		} else {
-			CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)] = append(CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)], currentPoint)
-			SyncCandlesMap.Put(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String())])
+			Candlestick[currentKey] = candle[currentKey]
+			SyncCandlestick.Put(currentKey, candle[currentKey])
 		}
-		Candlestick[currentKey] = candle[currentKey]
-		SyncCandlestick.Put(currentKey, candle[currentKey])
 	}
 }
 
