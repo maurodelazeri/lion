@@ -121,42 +121,33 @@ message Item {
 
 message Orderbook {
   Product           product     = 1;
-  uint64            timestamp   = 2;
-  uint32            levels      = 3;
-  repeated Item     asks        = 4;
-  repeated Item     bids        = 5;
-  VenueType         venue_type  = 6;
-};
-
-message Candle {
-  Product     product     = 1;
-  Period      period      = 2;
-  double      open        = 3;
-  double      high        = 4;
-  double      low         = 5;
-  double      close       = 6;
-  double      volume      = 7;
-  CandleType  candle_type = 8;
-  VenueType   venue_type  = 9;
+  Venue             venue       = 2;
+  uint64            timestamp   = 3;
+  uint32            levels      = 4;
+  repeated Item     asks        = 5;
+  repeated Item     bids        = 6;
+  VenueType         venue_type  = 7;
 };
 
 message Trade {
   Product     product       = 1;
-  uint64      timestamp     = 2;
-  double      price         = 3;
-  double      size          = 4;
-  OrderType   order_side    = 5;
-  VenueType   venue_type    = 6;
+  Venue       venue         = 2;
+  uint64      timestamp     = 3;
+  double      price         = 4;
+  double      size          = 5;
+  OrderType   order_side    = 6;
+  VenueType   venue_type    = 7;
 };
 
 message Ticker {
   Product     product       = 1;
-  uint64      timestamp     = 2;
-  double      price         = 3;
-  OrderType   order_side    = 4;
-  double      best_bid      = 5;
-  double      best_ask      = 6;
-  VenueType   venue_type    = 7;
+  Venue       venue         = 2;
+  uint64      timestamp     = 3;
+  double      price         = 4;
+  OrderType   order_side    = 5;
+  double      best_bid      = 6;
+  double      best_ask      = 7;
+  VenueType   venue_type    = 8;
 };
 
 // Events

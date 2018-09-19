@@ -13,7 +13,7 @@ var (
 	Candlestic map[string]*Candle
 	// CandlesMap ...
 	CandlesMap map[string][]int64
-	mutex      sync.RWMutex
+	Mutex      sync.RWMutex
 )
 
 // CandleGranularity1M ...
@@ -72,8 +72,8 @@ func init() {
 
 // CreateOrUpdateCandleTime ...
 func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decimal, side int32, createdAt time.Time) {
-	mutex.RLock()
-	defer mutex.RUnlock()
+	Mutex.RLock()
+	defer Mutex.RUnlock()
 	var candle = make(map[string]*Candle)
 	buy := 0
 	sell := 0
@@ -85,32 +85,32 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 	for _, g := range []int64{
 		CandleGranularity1M,
 		CandleGranularity2M,
-		CandleGranularity3M,
-		CandleGranularity4M,
-		CandleGranularity5M,
-		CandleGranularity6M,
-		CandleGranularity7M,
-		CandleGranularity8M,
-		CandleGranularity9M,
-		CandleGranularity10M,
-		CandleGranularity15M,
-		CandleGranularity20M,
-		CandleGranularity30M,
-		CandleGranularity40M,
-		CandleGranularity50M,
-		CandleGranularity1H,
-		CandleGranularity2H,
-		CandleGranularity3H,
-		CandleGranularity4H,
-		CandleGranularity5H,
-		CandleGranularity6H,
-		CandleGranularity7H,
-		CandleGranularity8H,
-		CandleGranularity9H,
-		CandleGranularity10H,
-		CandleGranularity11H,
-		CandleGranularity12H,
-		CandleGranularity1D,
+		// CandleGranularity3M,
+		// CandleGranularity4M,
+		// CandleGranularity5M,
+		// CandleGranularity6M,
+		// CandleGranularity7M,
+		// CandleGranularity8M,
+		// CandleGranularity9M,
+		// CandleGranularity10M,
+		// CandleGranularity15M,
+		// CandleGranularity20M,
+		// CandleGranularity30M,
+		// CandleGranularity40M,
+		// CandleGranularity50M,
+		// CandleGranularity1H,
+		// CandleGranularity2H,
+		// CandleGranularity3H,
+		// CandleGranularity4H,
+		// CandleGranularity5H,
+		// CandleGranularity6H,
+		// CandleGranularity7H,
+		// CandleGranularity8H,
+		// CandleGranularity9H,
+		// CandleGranularity10H,
+		// CandleGranularity11H,
+		// CandleGranularity12H,
+		// CandleGranularity1D,
 	} {
 		currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
 		currentKey := fmt.Sprintf("%d:%d:%s:%s", g, currentPoint, venue, product)
