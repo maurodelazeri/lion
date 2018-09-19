@@ -234,8 +234,8 @@ package api;
 	GRANULARITY_1D  			= 86400;
 };
   
-  enum CandleType{
-	VOLUME   = 0;
-	TRADE    = 2;
-	BOOK     = 3;
+  enum CandleGroupBy{
+	TIME       = 0;
+	VOLUME     = 2;
+	TRADE      = 3;
   };

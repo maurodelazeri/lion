@@ -118,6 +118,18 @@ message Item {
   double price  = 2;
 };
 
+
+message Subscription {
+  repeated SubscriptionItems  subscribe          = 1;
+  CandleGroupBy               candle_group_by    = 2;
+}
+
+message SubscriptionItems {
+  Venue            venue         = 1;
+  Product          product       = 2;
+  bool             orderbook     = 3;
+}
+
 message Orderbook {
   Product           product     = 1;
   Venue             venue       = 2;

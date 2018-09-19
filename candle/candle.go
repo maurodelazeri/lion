@@ -120,7 +120,7 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 	for _, g := range pbAPI.Granularity_value {
 		if g != 0 {
 			currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
-			currentKey := fmt.Sprintf("%d:%d:%s:%s", g, currentPoint, venue.String(), product.String())
+			currentKey := fmt.Sprintf("%d:%d:%d:%d", g, currentPoint, venue, product)
 			candle[currentKey] = &pbAPI.Candle{
 				Venue:       venue,
 				Product:     product,
@@ -154,7 +154,7 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 				n.SellTotal = c.SellTotal + int32(sell)
 			} else {
 				CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)] = append(CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)], currentPoint)
-				SyncCandlesMap.Put(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String())])
+				SyncCandlesMap.Put(fmt.Sprintf("%d:%d:%d", g, venue, product), CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)])
 			}
 			Candlestick[currentKey] = candle[currentKey]
 			SyncCandlestick.Put(currentKey, candle[currentKey])
