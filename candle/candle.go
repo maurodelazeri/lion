@@ -13,7 +13,8 @@ var (
 	Candlestic map[string]*Candle
 	// CandlesMap ...
 	CandlesMap map[string][]int64
-	Mutex      sync.RWMutex
+	// Mutex ...
+	Mutex sync.RWMutex
 )
 
 // CandleGranularity1M ...
