@@ -8,54 +8,44 @@ import (
 	number "github.com/maurodelazeri/go-number"
 )
 
-type SyncMap struct {
+// SyncCandle ...
+type SyncCandle struct {
 	state map[string]*Candle
 	mutex *sync.Mutex
 }
 
-// NewSyncMap ...
-func NewSyncMap() *SyncMap {
-	s := &SyncMap{
-		state: make(map[string]*Candle),
-		mutex: &sync.Mutex{},
-	}
-	return s
+// SyncMap ...
+type SyncMap struct {
+	state map[string][]int64
+	mutex *sync.Mutex
 }
 
-// Put ...
-func (s *SyncMap) Put(key string, value *Candle) {
-	s.mutex.Lock()
-	s.state[key] = value
-	s.mutex.Unlock()
-}
-
-// Get ...
-func (s *SyncMap) Get(key string) *Candle {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	return s.state[key]
-}
-
-// Values ...
-func (s *SyncMap) Values() chan *Candle {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	values := make(chan *Candle, len(s.state))
-	for _, value := range s.state {
-		values <- value
-	}
-	close(values)
-	return values
+// Candle ...
+type Candle struct {
+	Venue       string
+	Product     string
+	Granularity int64
+	Point       int64
+	Open        float64
+	Close       float64
+	High        float64
+	Low         float64
+	Volume      float64
+	Total       float64
+	TotalTrades int64
+	BuySide     int
+	SellSide    int
 }
 
 // https://texlution.com/post/golang-lock-free-values-with-atomic-value/
 var (
-	// Candlestic ...
-	Candlestic  map[string]*Candle
-	Candlestic2 = NewSyncMap()
+	// Candlestick ...
+	Candlestick     map[string]*Candle
+	SyncCandlestick = NewSyncCandle()
 
 	// CandlesMap ...
-	CandlesMap map[string][]int64
+	CandlesMap     map[string][]int64
+	SyncCandlesMap = NewSyncMap()
 )
 
 // CandleGranularity1M ...
@@ -90,26 +80,79 @@ const (
 	CandleGranularity1D  = 86400
 )
 
-// Candle ...
-type Candle struct {
-	Venue       string
-	Product     string
-	Granularity int64
-	Point       int64
-	Open        float64
-	Close       float64
-	High        float64
-	Low         float64
-	Volume      float64
-	Total       float64
-	TotalTrades int64
-	BuySide     int
-	SellSide    int
+func init() {
+	Candlestick = make(map[string]*Candle)
+	CandlesMap = make(map[string][]int64)
 }
 
-func init() {
-	Candlestic = make(map[string]*Candle)
-	CandlesMap = make(map[string][]int64)
+// NewSyncCandle ...
+func NewSyncCandle() *SyncCandle {
+	s := &SyncCandle{
+		state: make(map[string]*Candle),
+		mutex: &sync.Mutex{},
+	}
+	return s
+}
+
+// NewSyncMap ...
+func NewSyncMap() *SyncMap {
+	s := &SyncMap{
+		state: make(map[string][]int64),
+		mutex: &sync.Mutex{},
+	}
+	return s
+}
+
+// Put ...
+func (s *SyncCandle) Put(key string, value *Candle) {
+	s.mutex.Lock()
+	s.state[key] = value
+	s.mutex.Unlock()
+}
+
+// Put ...
+func (s *SyncMap) Put(key string, value []int64) {
+	s.mutex.Lock()
+	s.state[key] = value
+	s.mutex.Unlock()
+}
+
+// Get ...
+func (s *SyncCandle) Get(key string) *Candle {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	return s.state[key]
+}
+
+// Get ...
+func (s *SyncMap) Get(key string) []int64 {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	return s.state[key]
+}
+
+// Values ...
+func (s *SyncCandle) Values() chan *Candle {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	values := make(chan *Candle, len(s.state))
+	for _, value := range s.state {
+		values <- value
+	}
+	close(values)
+	return values
+}
+
+// Values ...
+func (s *SyncMap) Values() chan []int64 {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+	values := make(chan []int64, len(s.state))
+	for _, value := range s.state {
+		values <- value
+	}
+	close(values)
+	return values
 }
 
 // CreateOrUpdateCandleTime ...
@@ -124,10 +167,10 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 	}
 	for _, g := range []int64{
 		CandleGranularity1M,
-		CandleGranularity2M,
+		//CandleGranularity2M,
 		// CandleGranularity3M,
 		// CandleGranularity4M,
-		// CandleGranularity5M,
+		CandleGranularity5M,
 		// CandleGranularity6M,
 		// CandleGranularity7M,
 		// CandleGranularity8M,
@@ -171,7 +214,7 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 		}
 
 		// If exist, we need to update it
-		if c, ok := Candlestic[currentKey]; ok {
+		if c, ok := Candlestick[currentKey]; ok {
 			n := candle[currentKey]
 			n.Open = c.Open
 			if c.High > n.High {
@@ -187,9 +230,10 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 			n.SellSide = c.SellSide + sell
 		} else {
 			CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)] = append(CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)], currentPoint)
+			SyncCandlesMap.Put(fmt.Sprintf("%d:%s:%s", g, venue, product), CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue, product)])
 		}
-		Candlestic[currentKey] = candle[currentKey]
-		Candlestic2.Put(currentKey, candle[currentKey])
+		Candlestick[currentKey] = candle[currentKey]
+		SyncCandlestick.Put(currentKey, candle[currentKey])
 	}
 }
 
