@@ -113,7 +113,6 @@ message Balance {
 }
 
 // Market Data
-
 message Item {
   double amount = 1;
   double price  = 2;
@@ -148,6 +147,22 @@ message Ticker {
   double      best_bid      = 6;
   double      best_ask      = 7;
   VenueType   venue_type    = 8;
+};
+
+message Candle {
+  Venue         venue        = 1;
+  Product       product      = 2;
+  int32         granularity  = 3;
+  int32         point        = 4;
+  double        open         = 5;
+  double        close        = 6;
+  double        high         = 7;
+  double        low          = 8;
+  double        volume       = 9;
+  double        total        = 10;
+  int32         total_trades = 11;
+  int32         buy_total    = 12;
+  int32         sell_total   = 13;   
 };
 
 // Events

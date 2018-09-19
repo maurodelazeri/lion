@@ -201,33 +201,38 @@ package api;
 	INVALID_REQUEST_CONTEXT        = 42;  
 	INVALID_REQUEST                = 43;  
    }
-  
-   enum Period{
-	PERIOD_CURRENT = 0;
-	PERIOD_M1      = 1;
-	PERIOD_M2      = 2;
-	PERIOD_M3      = 3;
-	PERIOD_M4      = 4;
-	PERIOD_M5      = 5;
-	PERIOD_M6      = 6;
-	PERIOD_M10     = 7;
-	PERIOD_M12     = 8;
-	PERIOD_M15     = 9;
-	PERIOD_M20     = 10;
-	PERIOD_M30     = 11;
-	PERIOD_H1      = 12;
-	PERIOD_H2      = 13;
-	PERIOD_H3      = 14;
-	PERIOD_H4      = 15;
-	PERIOD_H5      = 16;
-	PERIOD_H6      = 17;
-	PERIOD_H7      = 18;
-	PERIOD_H8      = 19;
-	PERIOD_H12     = 20;
-	PERIOD_D1      = 21;
-	PERIOD_W1      = 22;
-	PERIOD_MN1     = 23;
-  };
+
+   enum Granularity{
+	GRANULARITY_0M  			= 0;
+	GRANULARITY_1M  			= 60;
+	GRANULARITY_2M  			= 120;
+	GRANULARITY_3M  			= 180;
+	GRANULARITY_4M  			= 240;
+	GRANULARITY_5M  			= 300;
+	GRANULARITY_6M  			= 360;
+	GRANULARITY_7M  			= 420;
+	GRANULARITY_8M  			= 480;
+	GRANULARITY_9M  			= 540;
+	GRANULARITY_10M  			= 600;
+	GRANULARITY_15M  			= 900;
+	GRANULARITY_20M  			= 1200;
+	GRANULARITY_30M  			= 1800;
+	GRANULARITY_40M  			= 2400;
+	GRANULARITY_50M  			= 3000;
+	GRANULARITY_1H  			= 3600;
+	GRANULARITY_2H  			= 7200;
+	GRANULARITY_3H  			= 10800;
+	GRANULARITY_4H  			= 14400;
+	GRANULARITY_5H  			= 18000;
+	GRANULARITY_6H  			= 21600;
+	GRANULARITY_7H  			= 25200;
+	GRANULARITY_8H  			= 28800;
+	GRANULARITY_9H  			= 32400;
+	GRANULARITY_10H  			= 36000;
+	GRANULARITY_11H  			= 39600;
+	GRANULARITY_12H  			= 43200;
+	GRANULARITY_1D  			= 86400;
+};
   
   enum CandleType{
 	VOLUME   = 0;
