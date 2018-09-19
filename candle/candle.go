@@ -166,11 +166,11 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 		sell = 1
 	}
 	for _, g := range []int64{
-		CandleGranularity1M,
+		//CandleGranularity1M,
 		//CandleGranularity2M,
 		// CandleGranularity3M,
 		// CandleGranularity4M,
-		CandleGranularity5M,
+		//CandleGranularity5M,
 		// CandleGranularity6M,
 		// CandleGranularity7M,
 		// CandleGranularity8M,
@@ -181,7 +181,7 @@ func CreateOrUpdateCandleTime(venue, product string, price, amount number.Decima
 		// CandleGranularity30M,
 		// CandleGranularity40M,
 		// CandleGranularity50M,
-		// CandleGranularity1H,
+		CandleGranularity1H,
 		// CandleGranularity2H,
 		// CandleGranularity3H,
 		// CandleGranularity4H,
