@@ -8,10 +8,7 @@ import (
 	"github.com/influxdata/influxdb/client/v2"
 )
 
-func aaaaa(name string,
-	tags map[string]string,
-	fields map[string]interface{},
-	t ...time.Time) {
+func aaaaa(name string,tags map[string]string, fields map[string]interface{},t ...time.Time) {
 	// Create a new HTTPClient
 	c, err := client.NewHTTPClient(client.HTTPConfig{
 		Addr:     os.Getenv("INFLUX_HOST"),

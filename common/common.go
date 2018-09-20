@@ -524,3 +524,17 @@ func MakeTimestamp() int64 {
 func LogError(format string, v ...interface{}) {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf(format, v...))
 }
+
+// CheckMicrosecondTimeDiff event must be provided as microsecond
+func CheckMicrosecondTimeDiff(event int64) time.Duration {
+	now := time.Now()
+	timeFromTS := time.Unix(0, event*int64(time.Microsecond))
+	return now.Sub(timeFromTS)
+}
+
+// CheckSecondTimeDiff event must be provided as seconds
+func CheckSecondTimeDiff(event int64) time.Duration {
+	now := time.Now()
+	timeFromTS := time.Unix(0, event*int64(time.Second))
+	return now.Sub(timeFromTS)
+}
