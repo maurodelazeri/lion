@@ -21,7 +21,8 @@ func init() {
 	// Make client
 	c, err := client.NewUDPClient(client.UDPConfig{Addr: os.Getenv("INFLUX_UDP_ADDR")})
 	if err != nil {
-		panic(err.Error())
+		logrus.Error("Problem to connect on influxdb ", err.Error())
+		os.Exit(1)
 	}
 	influxClinet = c
 	InitQueue()
