@@ -14,6 +14,8 @@ service API {
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
   rpc GetAccount(AccountRequest) returns (AccountResult) {}
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
+  rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
+  //https://github.com/maurodelazeri/golang-swiss-army-sknife/blob/39f1d58ed0ba2d319332be95010938f5c60b249f/grpc-nats/server/main.go
 } 
 
   // position — position ticket. Fill it when changing and closing a position for its clear identification. It usually matches the ticket of an order used to open the position.
@@ -73,22 +75,22 @@ message Position {
 }
 
 message PositionRequest { 
-   uint64                        position             = 1; // Position id
+   uint64                        position             = 1; 
 }
 
 message PositionsResult { 
-   Retcode                      retcode                   = 1;  // Operation return code
-   repeated Position            positions                 = 2;  // Current open positions
+   Retcode                      retcode                   = 1;
+   repeated Position            positions                 = 2;  
    string                       comment                   = 3; 
 }
 
 message AccountRequest { 
-  Venue                         venue                = 1; // Venue where the order was sent
+  Venue                         venue                = 1; 
 }
 
 message AccountResult { 
-   Retcode                      retcode                   = 1;  // Operation return code
-   Account                      account                   = 2;  // All account for given a user
+   Retcode                      retcode                   = 1;  
+   Account                      account                   = 2;  
    string                       comment                   = 3;
 }
 
@@ -112,6 +114,19 @@ message VenueProduct {
   double                  step_size                 = 6;
   double                  maker_fee                 = 7;
   double                  taker_fee                 = 8;
+}
+
+message HistoricalTradesRequest { 
+  Venue                           venue                = 1;
+  Product                         product              = 2;
+  uint64                          begin                = 3;
+  uint64                          end                  = 4;
+}
+
+message HistoricalTradesResult { 
+   Retcode                      retcode                   = 1; 
+   repeated Trade               trades                    = 2;
+   string                       comment                   = 3;
 }
 
 message User {
