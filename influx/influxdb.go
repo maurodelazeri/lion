@@ -13,8 +13,8 @@ import (
 
 var (
 	//InfluxQueue ...
-	InfluxQueue  *lane.Queue
-	influxClinet client.Client
+	InfluxQueue     *lane.Queue
+	influxUDPClinet client.Client
 )
 
 func init() {
@@ -24,7 +24,7 @@ func init() {
 		logrus.Error("Problem to connect on influxdb ", err.Error())
 		os.Exit(1)
 	}
-	influxClinet = c
+	influxUDPClinet = c
 	InfluxQueue = lane.NewQueue()
 	InitQueue()
 }
@@ -75,5 +75,5 @@ func InsertInflux(name string, tags map[string]string, fields map[string]interfa
 	}
 	bp.AddPoint(pt)
 	// Write the batch
-	influxClinet.Write(bp)
+	influxUDPClinet.Write(bp)
 }
