@@ -44,7 +44,18 @@ func InitQueue() {
 func Worker(item interface{}) {
 	switch t := item.(type) {
 	case pbAPI.Trade:
-		//InsertInflux("trade",)
+		// Create a point and add to batch
+		tags := map[string]string{
+			"venue":   t.GetVenue().String(),
+			"product": t.GetProduct().String(),
+			"side":    t.GetOrderSide().String(),
+		}
+		fields := map[string]interface{}{
+			"price": t.GetPrice(),
+			"size":  t.GetSize(),
+			"side":  pbAPI.OrderType_value[t.GetOrderSide().String()],
+		}
+		InsertInflux("trade", tags, fields)
 	default:
 		logrus.Error("Data is not an array ", t)
 	}
@@ -64,19 +75,3 @@ func InsertInflux(name string, tags map[string]string, fields map[string]interfa
 	// Write the batch
 	influxClinet.Write(bp)
 }
-
-// Create a point and add to batch
-// tags := map[string]string{"cpu": "cpu-total"}
-// fields := map[string]interface{}{
-// 	"idle":   10.1,
-// 	"system": 53.3,
-// 	"user":   46.6,
-// }
-
-// Product              Product   `protobuf:"varint,1,opt,name=product,proto3,enum=api.Product" json:"product,omitempty"`
-// 	Venue                Venue     `protobuf:"varint,2,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
-// 	Timestamp            uint64    `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-// 	Price                float64   `protobuf:"fixed64,4,opt,name=price,proto3" json:"price,omitempty"`
-// 	Size                 float64   `protobuf:"fixed64,5,opt,name=size,proto3" json:"size,omitempty"`
-// 	OrderSide            OrderType `protobuf:"varint,6,opt,name=order_side,json=orderSide,proto3,enum=api.OrderType" json:"order_side,omitempty"`
-// 	VenueType            VenueType `protobuf:"varint,7,opt,name=venue_type,json=venueType,proto3,enum=api.VenueType" json:"venue_type,omitempty"`

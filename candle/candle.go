@@ -160,7 +160,6 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 			}
 			Candlestick[currentKey] = candle[currentKey]
 			SyncCandlestick.Put(currentKey, candle[currentKey])
-			//			logrus.Info("CANDLE SIDE ", currentKey)
 		}
 	}
 }
