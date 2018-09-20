@@ -13,6 +13,7 @@ service API {
   rpc OrderSend(TradeRequest) returns (TradeResult) {}
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
   rpc GetAccount(AccountRequest) returns (AccountResult) {}
+  rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
 } 
 
   // position — position ticket. Fill it when changing and closing a position for its clear identification. It usually matches the ticket of an order used to open the position.
@@ -76,7 +77,7 @@ message PositionRequest {
 }
 
 message PositionsResult { 
-  Retcode                      retcode                   = 1;  // Operation return code
+   Retcode                      retcode                   = 1;  // Operation return code
    repeated Position            positions                 = 2;  // Current open positions
    string                       comment                   = 3; 
 }
@@ -86,9 +87,31 @@ message AccountRequest {
 }
 
 message AccountResult { 
-  Retcode                      retcode                   = 1;  // Operation return code
+   Retcode                      retcode                   = 1;  // Operation return code
    Account                      account                   = 2;  // All account for given a user
    string                       comment                   = 3;
+}
+
+message ProductRequest { 
+  Venue                           venue                = 1;
+  Product                         product              = 2;
+}
+
+message ProductResult { 
+   Retcode                      retcode                   = 1; 
+   repeated VenueProduct        venue_products            = 2;
+   string                       comment                   = 3;
+}
+
+message VenueProduct {
+  Venue                   venue                     = 1;
+  Product                 product                   = 2;
+  bool                    enabled                   = 3;
+  bool                    individual_connection     = 4;
+  double                  minimum_orders_size       = 5;
+  double                  step_size                 = 6;
+  double                  maker_fee                 = 7;
+  double                  taker_fee                 = 8;
 }
 
 message User {
