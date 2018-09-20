@@ -30,6 +30,7 @@ func InitEngine() {
 		"bootstrap.servers":            brokers,
 		"message.max.bytes":            100857600,
 		"queue.buffering.max.messages": 1000000,
+		"queue.buffering.max.kbytes":   1000000,
 		//"queue.buffering.max.ms":       5000,
 		//"batch.num.messages":           0,
 		"log.connection.close": false})
