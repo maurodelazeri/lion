@@ -41,20 +41,46 @@ func InitEngine() {
 		logrus.Info("No connection with kafka, ", err)
 		os.Exit(1)
 	}
-
 	Producer = client
 }
 
 // PublishMessageAsync send a message to kafka server (asynchronous)
 func PublishMessageAsync(topic string, message []byte, partition int32, verbose bool) error {
+	// err := Producer.Produce(&kafka.Message{
+	// 	TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+	// 	Value:          message,
+	// }, nil)
+	// if err != nil {
+	// 	logrus.Warn("Problem to publish message topic:"+topic+" ", err)
+	// }
+	// //Producer.Flush(15 * 1000)
+	// return err
+	deliveryChan := make(chan kafka.Event)
+
 	err := Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          message,
-	}, nil)
+	}, deliveryChan)
 	if err != nil {
-		logrus.Warn("Problem to publish message topic:"+topic+" ", err)
+		logrus.Warn("Problem with producer message, ", err)
+		close(deliveryChan)
+		return err
 	}
-	return err
+	e := <-deliveryChan
+	m := e.(*kafka.Message)
+
+	if verbose {
+		if m.TopicPartition.Error != nil {
+			fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
+			close(deliveryChan)
+			return m.TopicPartition.Error
+		} else {
+			fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
+				*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
+		}
+	}
+	close(deliveryChan)
+	return nil
 }
 
 // PublishMessageSync send a message to kafka server (synchronous)
