@@ -170,11 +170,12 @@ message Candle {
   double        close        = 6;
   double        high         = 7;
   double        low          = 8;
-  double        volume       = 9;
-  double        total        = 10;
-  int32         total_trades = 11;
-  int32         buy_total    = 12;
-  int32         sell_total   = 13;   
+  double        last         = 9; 
+  double        volume       = 10;
+  double        total        = 11;
+  int32         total_trades = 12;
+  int32         buy_total    = 13;
+  int32         sell_total   = 14;   
 };
 
 // Events
