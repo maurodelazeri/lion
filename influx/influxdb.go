@@ -25,6 +25,7 @@ func init() {
 		os.Exit(1)
 	}
 	influxClinet = c
+	InfluxQueue = lane.NewQueue()
 	InitQueue()
 }
 
@@ -44,7 +45,7 @@ func InitQueue() {
 // Worker execute sequencial execution based on the received instructions
 func Worker(item interface{}) {
 	switch t := item.(type) {
-	case pbAPI.Trade:
+	case *pbAPI.Trade:
 		// Create a point and add to batch
 		tags := map[string]string{
 			"venue":   t.GetVenue().String(),
@@ -56,19 +57,19 @@ func Worker(item interface{}) {
 			"size":  t.GetSize(),
 			"side":  pbAPI.OrderType_value[t.GetOrderSide().String()],
 		}
-		InsertInflux("trade", tags, fields)
+		InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Microsecond)))
 	default:
-		logrus.Error("Data is not an array ", t)
+		logrus.Error("Influx not found a correct type ", t)
 	}
 }
 
 // InsertInflux ...
-func InsertInflux(name string, tags map[string]string, fields map[string]interface{}, t ...time.Time) {
+func InsertInflux(name string, tags map[string]string, fields map[string]interface{}, t time.Time) {
 	// Create a new point batch
 	bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
-		Precision: "ns",
+		Precision: "us",
 	})
-	pt, err := client.NewPoint(name, tags, fields, time.Now())
+	pt, err := client.NewPoint(name, tags, fields, t)
 	if err != nil {
 		panic(err.Error())
 	}
