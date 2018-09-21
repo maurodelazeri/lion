@@ -68,7 +68,7 @@ func Worker(item interface{}) {
 func InsertInflux(name string, tags map[string]string, fields map[string]interface{}, t time.Time) {
 	// Create a new point batch
 	bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
-		Precision: "us",
+		Precision: "ns",
 	})
 	pt, err := client.NewPoint(name, tags, fields, t)
 	if err != nil {
