@@ -58,7 +58,7 @@ func Worker(item interface{}) {
 			"side":       pbAPI.OrderType_value[t.GetOrderSide().String()],
 			"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
 		}
-		InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Microsecond)))
+		InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Nanosecond)))
 	default:
 		logrus.Error("Influx not found a correct type ", t)
 	}

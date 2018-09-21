@@ -517,7 +517,7 @@ func GetPort() int {
 
 // MakeTimestamp ...
 func MakeTimestamp() int64 {
-	return time.Now().UnixNano() / int64(time.Microsecond)
+	return time.Now().UnixNano() / int64(time.Nanosecond)
 }
 
 // LogError ...
@@ -525,10 +525,10 @@ func LogError(format string, v ...interface{}) {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf(format, v...))
 }
 
-// CheckMicrosecondTimeDiff event must be provided as microsecond
-func CheckMicrosecondTimeDiff(event int64) time.Duration {
+// CheckNanoSecondTimeDiff event must be provided as microsecond
+func CheckNanoSecondTimeDiff(event int64) time.Duration {
 	now := time.Now()
-	timeFromTS := time.Unix(0, event*int64(time.Microsecond))
+	timeFromTS := time.Unix(0, event*int64(time.Nanosecond))
 	return now.Sub(timeFromTS)
 }
 
