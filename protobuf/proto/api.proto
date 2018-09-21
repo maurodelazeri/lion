@@ -15,7 +15,6 @@ service API {
   rpc GetAccount(AccountRequest) returns (AccountResult) {}
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
-  //https://github.com/maurodelazeri/golang-swiss-army-sknife/blob/39f1d58ed0ba2d319332be95010938f5c60b249f/grpc-nats/server/main.go
 } 
 
   // position — position ticket. Fill it when changing and closing a position for its clear identification. It usually matches the ticket of an order used to open the position.
@@ -125,7 +124,7 @@ message HistoricalTradesRequest {
 
 message HistoricalTradesResult { 
    Retcode                      retcode                   = 1; 
-   repeated Trade               trades                    = 2;
+   Trade                        trades                    = 2;
    string                       comment                   = 3;
 }
 
