@@ -24,18 +24,11 @@ type SyncMap struct {
 // https://texlution.com/post/golang-lock-free-values-with-atomic-value/
 var (
 	// Candlestick ...
-	Candlestick     map[string]*pbAPI.Candle
 	SyncCandlestick = NewSyncCandle()
 
 	// CandlesMap ...
-	CandlesMap     map[string][]int64
 	SyncCandlesMap = NewSyncMap()
 )
-
-func init() {
-	Candlestick = make(map[string]*pbAPI.Candle)
-	CandlesMap = make(map[string][]int64)
-}
 
 // NewSyncCandle ...
 func NewSyncCandle() *SyncCandle {
@@ -109,7 +102,6 @@ func (s *SyncMap) Values() chan []int64 {
 
 // CreateOrUpdateCandleTime ...
 func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, amount number.Decimal, side int32, createdAt time.Time) {
-	var candle = make(map[string]*pbAPI.Candle)
 	buy := 0
 	sell := 0
 	if side == 0 {
@@ -121,7 +113,8 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 		if g != 0 {
 			currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
 			currentKey := fmt.Sprintf("%d:%d:%s:%s", g, currentPoint, venue.String(), product.String())
-			candle[currentKey] = &pbAPI.Candle{
+			historyCandle := SyncCandlestick.Get(currentKey)
+			newCandle := &pbAPI.Candle{
 				Venue:       venue,
 				Product:     product,
 				Granularity: g,
@@ -130,36 +123,30 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 				Close:       price.Float64(),
 				High:        price.Float64(),
 				Low:         price.Float64(),
-				Last:        price.Float64(),
 				Volume:      amount.Float64(),
 				Total:       price.Mul(amount).Float64(),
 				TotalTrades: 1,
 				BuyTotal:    int32(buy),
 				SellTotal:   int32(sell),
 			}
-
-			// If exist, we need to update it
-			if c, ok := Candlestick[currentKey]; ok {
-				n := candle[currentKey]
-				n.Open = c.Open
-				if c.High > n.High {
-					n.High = c.High
+			if historyCandle.GetPoint() != 0 {
+				historyCandle.Open = newCandle.Open
+				if newCandle.High > historyCandle.High {
+					historyCandle.High = newCandle.High
 				}
-				if c.Low < n.Low {
-					n.Low = c.Low
+				if newCandle.Low < historyCandle.Low {
+					historyCandle.Low = newCandle.Low
 				}
-				n.Volume = n.Volume + c.Volume
-				n.Total = n.Total + c.Total
-				n.TotalTrades = c.TotalTrades + 1
-				n.BuyTotal = c.BuyTotal + int32(buy)
-				n.SellTotal = c.SellTotal + int32(sell)
-				n.Last = price.Float64()
+				historyCandle.Volume = historyCandle.Volume + newCandle.Volume
+				historyCandle.Total = historyCandle.Total + newCandle.Total
+				historyCandle.TotalTrades = newCandle.TotalTrades + 1
+				historyCandle.BuyTotal = newCandle.BuyTotal + int32(buy)
+				historyCandle.SellTotal = newCandle.SellTotal + int32(sell)
 			} else {
-				CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String())] = append(CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String())], currentPoint)
-				SyncCandlesMap.Put(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), CandlesMap[fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String())])
+				SyncCandlestick.Put(currentKey, newCandle)
+				currentPointsMap := SyncCandlesMap.Get(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()))
+				SyncCandlesMap.Put(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), append(currentPointsMap, currentPoint))
 			}
-			Candlestick[currentKey] = candle[currentKey]
-			SyncCandlestick.Put(currentKey, candle[currentKey])
 		}
 	}
 }
