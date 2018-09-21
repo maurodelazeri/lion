@@ -53,9 +53,10 @@ func Worker(item interface{}) {
 			"side":    t.GetOrderSide().String(),
 		}
 		fields := map[string]interface{}{
-			"price": t.GetPrice(),
-			"size":  t.GetSize(),
-			"side":  pbAPI.OrderType_value[t.GetOrderSide().String()],
+			"price":      t.GetPrice(),
+			"size":       t.GetSize(),
+			"side":       pbAPI.OrderType_value[t.GetOrderSide().String()],
+			"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
 		}
 		InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Microsecond)))
 	default:
