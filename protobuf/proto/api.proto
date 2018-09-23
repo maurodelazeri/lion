@@ -21,7 +21,7 @@ service API {
   // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
 
  message TradeRequest { 
-  TradeAction                   action               = 1;  // Trade operation type 
+   TradeAction                   action               = 1;  // Trade operation type 
    Venue                         venue                = 2;  // Venue where the order is being send
    Product                       product              = 3;  // Trade product
    uint64                        order                = 4;  // Order ticket 
