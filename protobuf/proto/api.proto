@@ -19,6 +19,32 @@ service API {
 
   // position — position ticket. Fill it when changing and closing a position for its clear identification. It usually matches the ticket of an order used to open the position.
   // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
+ 
+  message Orders { 
+    uint64                        orders_id                = 1;  
+    Venue                         venue                    = 2;  
+    uint64                        account_id               = 3;  
+    OrderType                     orders_type              = 4;  
+    OrderState                    orders_state             = 5;  
+    uint64                        time_expiration          = 6;  
+    uint64                        time_done                = 7;  
+    uint64                        time_setup               = 8;  
+    OrderTypeFilling              orders_type_filling      = 9;  
+    OrderTypeTime                 orders_type_time         = 10;  
+    OrderReason                   orders_reason            = 11;  
+    uint64                        orders_position_by_id    = 12;  
+    uint64                        orders_position_id       = 13;  
+    Product                       product                  = 14;  
+    uint64                        venue_execution_id       = 15;  
+    double                        volume                   = 16;  
+    double                        price                    = 17;  
+    double                        fee                      = 18;  
+    double                        tp                       = 19;  
+    double                        sl                       = 20;  
+    double                        trailling_percent        = 21;  
+    double                        stop_limit               = 22;  
+    string                        comment                  = 23;  
+   }
 
  message OrderRequest { 
    TradeAction                   action               = 1;  // Trade operation type 
@@ -47,14 +73,14 @@ message OrderResult {
    Venue                        venue                     = 2;  // Venue where the order was sent
    Product                      product                   = 3;  // Product of the trade
    OrderType                    order_type                = 4;  // Order type 
-   uint64                       order                     = 5;  // Order ticket, if it is placed 
-   double                       volume                    = 6;  // Deal volume, confirmed by broker 
-   double                       price                     = 7;  // Deal price, confirmed by broker
-   string                       comment                   = 8;  // Broker comment to operation (by default it is filled by description of trade server return code) 
-   string                       request_id                = 9;  // Request ID set by the terminal during the dispatch  
-   string                       broker_execution_id       = 10; // Return code of an external trading system 
-   double                       fee                       = 11; // Trade fee
-   uint64                       position                  = 12; // Position the order belongs
+   uint64                       order_id                  = 5;  // Order id placed
+   uint64                       position_id               = 6;  // position id placed
+   double                       volume                    = 7;  // Deal volume, confirmed by broker 
+   double                       price                     = 8;  // Deal price, confirmed by broker
+   string                       comment                   = 9;  // Broker comment to operation (by default it is filled by description of trade server return code) 
+   string                       request_id                = 10; // Request ID set by the terminal during the dispatch  
+   string                       broker_execution_id       = 11; // Return code of an external trading system 
+   double                       fee                       = 12; // Trade fee
   }
 
 message Position {
@@ -72,7 +98,7 @@ message Position {
    double                       swap                   = 12;
    Product                      product                = 13;
    string                       comment                = 14;
-   repeated OrderRequest        Orders                 = 15;    
+   repeated Orders              Orders                 = 15;    
   }
 
 message PositionRequest { 
