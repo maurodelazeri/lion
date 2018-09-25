@@ -10,7 +10,7 @@ service API {
   // Get all Order for a user with filter - A server-to-client streaming RPC.
  // rpc GetOrders(OrderFilter) returns (stream Order) {}
   // Order request - A simple RPC 
-  rpc OrderSend(TradeRequest) returns (TradeResult) {}
+  rpc OrderSend(OrderRequest) returns (OrderResult) {}
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
   rpc GetAccount(AccountRequest) returns (AccountResult) {}
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
@@ -20,7 +20,7 @@ service API {
   // position — position ticket. Fill it when changing and closing a position for its clear identification. It usually matches the ticket of an order used to open the position.
   // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
 
- message TradeRequest { 
+ message OrderRequest { 
    TradeAction                   action               = 1;  // Trade operation type 
    Venue                         venue                = 2;  // Venue where the order is being send
    Product                       product              = 3;  // Trade product
@@ -42,7 +42,7 @@ service API {
    bool                          async                = 19; // Do not wait the result response, designed to high frequency
   }
 
-message TradeResult { 
+message OrderResult { 
    Retcode                      retcode                   = 1;  // Operation return code 
    Venue                        venue                     = 2;  // Venue where the order was sent
    Product                      product                   = 3;  // Product of the trade
@@ -54,6 +54,7 @@ message TradeResult {
    string                       request_id                = 9;  // Request ID set by the terminal during the dispatch  
    string                       broker_execution_id       = 10; // Return code of an external trading system 
    double                       fee                       = 11; // Trade fee
+   uint64                       position                  = 12; // Position the order belongs
   }
 
 message Position {
@@ -71,7 +72,8 @@ message Position {
    double                       swap                   = 12;
    Product                      product                = 13;
    string                       comment                = 14;
-}
+   repeated OrderRequest        Orders                 = 15;    
+  }
 
 message PositionRequest { 
    uint64                        position             = 1; 
