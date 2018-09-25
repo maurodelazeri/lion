@@ -27,7 +27,6 @@ service API {
     OrderType                     orders_type              = 4;  
     OrderState                    orders_state             = 5;  
     uint64                        time_expiration          = 6;  
-    uint64                        time_done                = 7;  
     uint64                        time_setup               = 8;  
     OrderTypeFilling              orders_type_filling      = 9;  
     OrderTypeTime                 orders_type_time         = 10;  
@@ -35,7 +34,7 @@ service API {
     uint64                        orders_position_by_id    = 12;  
     uint64                        orders_position_id       = 13;  
     Product                       product                  = 14;  
-    uint64                        venue_execution_id       = 15;  
+    string                        venue_execution_id       = 15;  
     double                        volume                   = 16;  
     double                        price                    = 17;  
     double                        fee                      = 18;  
@@ -61,11 +60,12 @@ service API {
    OrderType                     order_type           = 12; // Order type 
    OrderTypeFilling              order_type_filling   = 13; // Order execution type 
    OrderTypeTime                 order_type_time      = 14; // Order expiration type 
-   uint64                        expiration           = 15; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
-   string                        comment              = 16; // Order comment 
-   uint64                        position             = 17; // Position ticket 
-   uint64                        position_by          = 18; // The ticket of an opposite position
-   bool                          async                = 19; // Do not wait the result response, designed to high frequency
+   OrderReason                   order_reason         = 15; // Order reason
+   uint64                        expiration           = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   string                        comment              = 17; // Order comment 
+   uint64                        position             = 18; // Position ticket 
+   uint64                        position_by          = 19; // The ticket of an opposite position
+   bool                          async                = 20; // Do not wait the result response, designed to high frequency
   }
 
 message OrderResult { 
