@@ -29,6 +29,8 @@ type UserAccount struct {
 	Active    bool   `db:"active"`
 	AccountID uint32 `db:"account_id"`
 	UsersID   uint32 `db:"users_id"`
+	Mode      uint32 `db:"account_mode_id"`
+	Type      uint32 `db:"account_type_id"`
 }
 
 // AccountBalances ...
@@ -55,7 +57,7 @@ func init() {
 func (m *Account) LoadDataFromDB() {
 	logrus.Info("Loading accounts balances to memory")
 	accounts := []UserAccount{}
-	if err := postgres.PostgresDB.Select(&accounts, "SELECT account_id,users_id,active FROM account WHERE active=true AND account_mode_id="+strconv.FormatInt(int64(pbAPI.AccountMode_value[os.Getenv("MODE")]), 10)); err != nil {
+	if err := postgres.PostgresDB.Select(&accounts, "SELECT account_id,users_id,active, account_mode_id, account_type_id FROM account WHERE active=true AND account_mode_id="+strconv.FormatInt(int64(pbAPI.AccountMode_value[os.Getenv("MODE")]), 10)); err != nil {
 		log.Fatal(err)
 	}
 	if len(accounts) == 0 {
@@ -72,10 +74,12 @@ func (m *Account) LoadDataFromDB() {
 	}
 	for _, account := range accounts {
 		data := &pbAPI.Account{
-			AccountId: account.AccountID,
-			UserId:    account.UsersID,
-			Active:    account.Active,
-			Balances:  make(map[string]*pbAPI.Balance),
+			AccountId:   account.AccountID,
+			UserId:      account.UsersID,
+			Active:      account.Active,
+			AccountMode: pbAPI.AccountMode(account.Mode),
+			AccountType: pbAPI.AccountType(account.Type),
+			Balances:    make(map[string]*pbAPI.Balance),
 		}
 		for i := 0; i < len(balances); i++ {
 			if balances[i].AccountID == account.AccountID {
