@@ -101,7 +101,8 @@ message Position {
   }
 
 message PositionRequest { 
-   uint64                        position             = 1; 
+  Venue                        venue                  = 1;
+  Product                      product                = 2;
 }
 
 message PositionsResult { 
