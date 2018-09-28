@@ -50,17 +50,18 @@ package api;
 	 ETC_BTC = 10;
 	 ETC_ETH = 11;
    }
-   
-   enum OrderType {
+
+   enum Side {
 	BUY                = 0;
 	SELL               = 1; 
-	BUY_LIMIT          = 2;  
-	SELL_LIMIT         = 3;
-	BUY_STOP           = 4;
-	SELL_STOP          = 5;
-	BUY_STOP_LIMIT     = 6;
-	SELL_STOP_LIMIT    = 7;
-	CLOSING_BY         = 8;
+   }
+
+   enum OrderType {
+	MARKET         = 0; 
+	LIMIT          = 1;  
+	STOP           = 2;
+	STOP_LIMIT     = 3;
+	CLOSING_BY     = 4;
    }
   
    enum OrderState {
@@ -82,7 +83,7 @@ package api;
 	RETURN        = 2;
    }
   
-   enum OrderReason {
+   enum Reason {
 	ORDER_CLIENT        = 0;
 	ORDER_MOBILE        = 1;
 	ORDER_WEB           = 2;
@@ -99,56 +100,28 @@ package api;
 	SPECIFIED_DAY    = 3;
    } 
   
-   enum DealType {
-	DEAL_BUY                = 0;
-	DEAL_SELL               = 1; 
-	BALANCE                 = 2;  
-	CREDIT                  = 3;
-	CHARGE                  = 4;
-	CORRECTION              = 5;
-	BONUS                   = 6;
-	COMMISSION              = 7;
-	INTEREST                = 8;
-	BUY_CANCELED            = 9;
-	SELL_CANCELED           = 10;
-	DIVIDEND                = 11;
-   }
-  
-	enum DealEntry {
+	enum OrderEntryType {
 	IN                = 0;
 	OUT               = 1; 
 	INOUT             = 2;  
 	OUT_BY            = 3;
    }
-  
-   enum DealReason {
-	DEAL_CLIENT        = 0;
-	DEAL_MOBILE        = 1;
-	DEAL_WEB           = 2;
-	DEAL_STRATEGY      = 3;
-	DEAL_SL            = 4;
-	DEAL_TP            = 5;
-	DEAL_SO            = 6;
-	ROLLOVER           = 7;
-	VMARGIN            = 8;
-	SPLIT              = 9;
-	AJUST              = 10;
-   } 
-  
-   enum PositionReason {
-	POSITION_CLIENT        = 0;
-	POSITION_MOBILE        = 1;
-	POSITION_WEB           = 2;
-	POSITION_STRATEGY      = 3;
-   } 
-  
-   enum PositionType {
-	POSITION_BUY    = 0;
-	POSITION_SELL   = 1; 
-   } 
-	
-  
-   enum TradeAction {
+
+   enum DealType {
+	POSITION                = 0;  
+	BALANCE                 = 1;  
+	CREDIT                  = 2;
+	CHARGE                  = 3;
+	CORRECTION              = 4;
+	BONUS                   = 5;
+	COMMISSION              = 6;
+	INTEREST                = 7;
+	BUY_CANCELED            = 8;
+	SELL_CANCELED           = 9;
+	DIVIDEND                = 10;
+   }
+
+  enum TradeAction {
 	DEAL        = 0;
 	PENDING     = 1;
 	SLTP        = 2;
@@ -156,7 +129,7 @@ package api;
 	REMOVE      = 4;
 	CLOSE_BY    = 5;
    }
-  
+
    enum Retcode {
 	REJECTX                        = 0;
 	REJECT                         = 2;
@@ -235,6 +208,6 @@ package api;
   
   enum CandleGroupBy{
 	TIME       = 0;
-	VOLUME     = 2;
-	TRADE      = 3;
+	VOLUME     = 1;
+	TRADE      = 2;
   };

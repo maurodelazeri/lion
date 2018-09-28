@@ -30,7 +30,7 @@ service API {
     uint64                        time_setup               = 8;  
     OrderTypeFilling              orders_type_filling      = 9;  
     OrderTypeTime                 orders_type_time         = 10;  
-    OrderReason                   orders_reason            = 11;  
+    Reason                        orders_reason            = 11;  
     uint64                        orders_position_by_id    = 12;  
     uint64                        orders_position_id       = 13;  
     Product                       product                  = 14;  
@@ -60,7 +60,7 @@ service API {
    OrderType                     order_type           = 12; // Order type 
    OrderTypeFilling              order_type_filling   = 13; // Order execution type 
    OrderTypeTime                 order_type_time      = 14; // Order expiration type 
-   OrderReason                   order_reason         = 15; // Order reason
+   Reason                        order_reason         = 15; // Order reason
    uint64                        expiration           = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
    string                        comment              = 17; // Order comment 
    uint64                        position             = 18; // Position ticket 
@@ -88,8 +88,8 @@ message Position {
    Venue                        venue                  = 2;
    uint64                       account                = 3;
    uint64                       position_time          = 4;
-   PositionType                 position_type          = 5;
-   PositionReason               position_reason        = 6;
+   Side                         position_type          = 5;
+   Reason                       position_reason        = 6;
    double                       volume                 = 7;
    double                       price                  = 8;
    double                       tp                     = 9;
