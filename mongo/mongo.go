@@ -26,7 +26,6 @@ func init() {
 // InitEngine initializes our Database Connection
 func InitEngine() {
 	var err error
-	// parse uri by using connstring.Parse()
 	connectionString, err := connstring.Parse(os.Getenv("MONGODB_CONNECTION_URL"))
 	if err != nil {
 		logrus.Error("Mongo ", err)
