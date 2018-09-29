@@ -50,19 +50,6 @@ package api;
 	 ETC_BTC = 10;
 	 ETC_ETH = 11;
    }
-
-   enum Side {
-	BUY                = 0;
-	SELL               = 1; 
-   }
-
-   enum OrderType {
-	MARKET         = 0; 
-	LIMIT          = 1;  
-	STOP           = 2;
-	STOP_LIMIT     = 3;
-	CLOSING_BY     = 4;
-   }
   
    enum OrderState {
 	STARTED           = 0;
@@ -105,6 +92,19 @@ package api;
 	OUT               = 1; 
 	INOUT             = 2;  
 	OUT_BY            = 3;
+   }
+
+   enum Side {
+	BUY                = 0;
+	SELL               = 1; 
+   }
+
+   enum OrderType {
+	MARKET         = 0; 
+	LIMIT          = 1;  
+	STOP           = 2;
+	STOP_LIMIT     = 3;
+	CLOSING_BY     = 4;
    }
 
    enum DealType {

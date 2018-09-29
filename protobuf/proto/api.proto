@@ -57,15 +57,16 @@ service API {
    double                        tp                   = 9;  // Take Profit level of the order 
    double                        trailling_percent    = 10; // Once hit, follows to profit based on this percentage  
    uint64                        deviation            = 11; // Maximal possible deviation from the requested price 
-   OrderType                     order_type           = 12; // Order type 
-   OrderTypeFilling              order_type_filling   = 13; // Order execution type 
-   OrderTypeTime                 order_type_time      = 14; // Order expiration type 
-   Reason                        order_reason         = 15; // Order reason
-   uint64                        expiration           = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
-   string                        comment              = 17; // Order comment 
-   uint64                        position             = 18; // Position ticket 
-   uint64                        position_by          = 19; // The ticket of an opposite position
-   bool                          async                = 20; // Do not wait the result response, designed to high frequency
+   OrderType                     order_type           = 12; // Order type
+   Side                          order_side           = 13; // Order side  
+   OrderTypeFilling              order_type_filling   = 14; // Order execution type 
+   OrderTypeTime                 order_type_time      = 15; // Order expiration type 
+   Reason                        order_reason         = 16; // Order reason
+   uint64                        expiration           = 17; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   string                        comment              = 18; // Order comment 
+   uint64                        position             = 19; // Position ticket 
+   uint64                        position_by          = 20; // The ticket of an opposite position
+   bool                          async                = 21; // Do not wait the result response, designed to high frequency
   }
 
 message OrderResult { 
@@ -88,7 +89,7 @@ message Position {
    Venue                        venue                  = 2;
    uint64                       account                = 3;
    uint64                       position_time          = 4;
-   Side                         position_type          = 5;
+   Side                         position_side          = 5;
    Reason                       position_reason        = 6;
    double                       volume                 = 7;
    double                       price                  = 8;
