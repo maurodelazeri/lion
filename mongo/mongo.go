@@ -2,11 +2,11 @@ package mongodb
 
 import (
 	"context"
-	"log"
 	"os"
 
 	"github.com/mongodb/mongo-go-driver/core/connstring"
 	"github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -29,7 +29,8 @@ func InitEngine() {
 	// parse uri by using connstring.Parse()
 	connectionString, err := connstring.Parse(os.Getenv("MONGODB_CONNECTION_URL"))
 	if err != nil {
-		log.Fatal(err)
+		logrus.Error("Mongo ", err)
+		os.Exit(1)
 	}
 	// if database is not specified in connectionString
 	// set database name
@@ -40,7 +41,8 @@ func InitEngine() {
 	// connect to mongo
 	client, err = mongo.Connect(context.Background(), uri, nil)
 	if err != nil {
-		log.Fatal(err)
+		logrus.Error("Mongo ", err)
+		os.Exit(1)
 	}
 	MongoDB = client.Database(dbname, nil)
 }
