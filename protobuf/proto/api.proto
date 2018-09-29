@@ -209,7 +209,7 @@ message Trade {
   uint64      timestamp     = 3;
   double      price         = 4;
   double      size          = 5;
-  OrderType   order_side    = 6;
+  Side        order_side    = 6;
   VenueType   venue_type    = 7;
 };
 
@@ -218,7 +218,7 @@ message Ticker {
   Venue       venue         = 2;
   uint64      timestamp     = 3;
   double      price         = 4;
-  OrderType   order_side    = 5;
+  Side        order_side    = 5;
   double      best_bid      = 6;
   double      best_ask      = 7;
   VenueType   venue_type    = 8;
