@@ -16,7 +16,8 @@ var (
 var (
 	// MongoDB ...
 	MongoDB *mongo.Database
-	client  *mongo.Client
+	// Client ...
+	Client *mongo.Client
 )
 
 func init() {
@@ -38,10 +39,10 @@ func InitEngine() {
 		dbname = os.Getenv("MONGODB_DATABASE_NAME")
 	}
 	// connect to mongo
-	client, err = mongo.Connect(context.Background(), uri, nil)
+	Client, err = mongo.Connect(context.Background(), uri, nil)
 	if err != nil {
 		logrus.Error("Mongo ", err)
 		os.Exit(1)
 	}
-	MongoDB = client.Database(dbname, nil)
+	MongoDB = Client.Database(dbname, nil)
 }
