@@ -29,8 +29,8 @@ package api;
   
  enum Symbol{
 	 BTC   = 0;
-	 ETH   = 1;
-	 USD   = 2;
+	 USD   = 1;
+	 ETH   = 2;
 	 LTC   = 3;
 	 BCH   = 4;
 	 ETC   = 5;
