@@ -111,7 +111,7 @@ func (m *Account) ValidateAndUpdateBalances(orderType pbAPI.OrderType, venue pbA
 		if accountNumber, ok := venue[account]; ok {
 			transfer := func(rec *stm.TRec) interface{} {
 				account := rec.Load(accountNumber).(*pbAPI.Account)
-				symbols := strings.Split(product.String(), "_")
+				symbols := strings.Split(product.String(), "_") //
 				if pbAPI.OrderType_value[orderType.String()] == 0 || pbAPI.OrderType_value[orderType.String()] == 2 || pbAPI.OrderType_value[orderType.String()] == 4 || pbAPI.OrderType_value[orderType.String()] == 6 {
 					// Buying
 					if balance, ok := account.Balances[symbols[1]]; ok {
