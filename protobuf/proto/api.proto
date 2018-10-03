@@ -155,18 +155,21 @@ message User {
 }
 
 message Account {
-  string                account_id   = 1;
-  string                user_id      = 2;
-  AccountType           account_type = 4;
-  AccountMode           account_mode = 5;
-  map<string, Balance>  balances     = 6;
-  bool                  active       = 7;
+  string                     account_id   = 1;
+  AccountType                account_type = 2;
+  AccountMode                account_mode = 3;
+  map<string, VenueBalance>  balances     = 4;
+  bool                        active       = 5;
 }
 
-message Balance {
+message VenueBalance {
   Venue                      id         = 1;
-  string                     name       = 2;
-  map<string, Currency>      currency   = 3;
+  map<string, Balance>      currency   = 2;
+}
+
+message Balance  {
+  double     available  = 1;
+  double     hold       = 2;
 }
 
 // Market Data
