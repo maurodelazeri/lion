@@ -21,18 +21,18 @@ service API {
   // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
  
   message Orders { 
-    uint64                        orders_id                = 1;  
+    int64                        orders_id                = 1;  
     Venue                         venue                    = 2;  
     string                        account_id               = 3;  
     OrderType                     orders_type              = 4;  
     OrderState                    orders_state             = 5;  
-    uint64                        time_expiration          = 6;  
-    uint64                        time_setup               = 8;  
+    int64                         time_expiration          = 6;  
+    int64                         time_setup               = 8;  
     OrderTypeFilling              orders_type_filling      = 9;  
     OrderTypeTime                 orders_type_time         = 10;  
     Reason                        orders_reason            = 11;  
-    uint64                        orders_position_by_id    = 12;  
-    uint64                        orders_position_id       = 13;  
+    int64                         orders_position_by_id    = 12;  
+    int64                         orders_position_id       = 13;  
     Product                       product                  = 14;  
     string                        venue_execution_id       = 15;  
     double                        volume                   = 16;  
@@ -49,22 +49,22 @@ service API {
    TradeAction                   action               = 1;  // Trade operation type 
    Venue                         venue                = 2;  // Venue where the order is being send
    Product                       product              = 3;  // Trade product
-   uint64                        order                = 4;  // Order ticket 
+   int64                         order                = 4;  // Order ticket 
    double                        volume               = 5;  // Requested volume for a deal in lots 
    double                        price                = 6;  // Price 
    double                        stoplimit            = 7;  // StopLimit level of the order 
    double                        sl                   = 8;  // Stop Loss level of the order 
    double                        tp                   = 9;  // Take Profit level of the order 
    double                        trailling_percent    = 10; // Once hit, follows to profit based on this percentage  
-   uint64                        deviation            = 11; // Maximal possible deviation from the requested price 
+   int64                         deviation            = 11; // Maximal possible deviation from the requested price 
    OrderType                     order_type           = 12; // Order type
    Side                          order_side           = 13; // Order side  
    OrderTypeFilling              order_type_filling   = 14; // Order execution type 
    OrderTypeTime                 order_type_time      = 15; // Order expiration type 
    Reason                        order_reason         = 16; // Order reason
-   uint64                        expiration           = 17; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   int64                         expiration           = 17; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
    string                        comment              = 18; // Order comment 
-   uint64                        position             = 19; // Position ticket 
+   int64                         position             = 19; // Position ticket 
   }
 
 message OrderResult { 
@@ -79,20 +79,24 @@ message OrderResult {
   }
 
 message Position {
-   uint64                       position_id            = 1;
-   Venue                        venue                  = 2;
-   string                       account                = 3;
-   uint64                       position_time          = 4;
-   Side                         position_side          = 5;
-   Reason                       position_reason        = 6;
-   double                       volume                 = 7;
-   double                       price                  = 8;
-   double                       tp                     = 9;
-   double                       sl                     = 10;
-   double                       swap                   = 11;
-   Product                      product                = 12;
-   string                       comment                = 13;
-   repeated Orders              Orders                 = 14;    
+  string                        order_id                 = 1;
+	string                        account_id               = 2;
+	Venue                         venue                    = 3; 
+	Product                       product                  = 4;
+	double                        price_open               = 5;
+	double                        weighted_price           = 6;
+	double                        volume                   = 7;
+	int64                         position_time            = 8;
+	Side                          position_side            = 9; 
+	Reason                        position_reason          = 10;
+	double                        sl                       = 11;
+	double                        tp                       = 12;  
+	double                        swap                     = 13;
+	double                        trailling_percent        = 14;  
+	string                        comment                  = 15;
+	double                        profit_liquid            = 16;
+	double                        cumulative_fees          = 17;
+  repeated  Orders              Orders                   = 18;
   }
 
 message PositionRequest { 
@@ -137,10 +141,10 @@ message VenueProduct {
 }
 
 message HistoricalTradesRequest { 
-  Venue                           venue                = 1;
-  Product                         product              = 2;
-  uint64                          begin                = 3;
-  uint64                          end                  = 4;
+  Venue                          venue                = 1;
+  Product                        product              = 2;
+  int64                          begin                = 3;
+  int64                          end                  = 4;
 }
 
 message HistoricalTradesResult { 
@@ -159,12 +163,12 @@ message Account {
   AccountType                account_type = 2;
   AccountMode                account_mode = 3;
   map<string, VenueBalance>  balances     = 4;
-  bool                        active       = 5;
+  bool                       active       = 5;
 }
 
 message VenueBalance {
   Venue                      id         = 1;
-  map<string, Balance>      currency   = 2;
+  map<string, Balance>       currency   = 2;
 }
 
 message Balance  {
@@ -193,7 +197,7 @@ message SubscriptionItems {
 message Orderbook {
   Product           product     = 1;
   Venue             venue       = 2;
-  uint64            timestamp   = 3;
+  int64             timestamp   = 3;
   uint32            levels      = 4;
   repeated Item     asks        = 5;
   repeated Item     bids        = 6;
@@ -203,7 +207,7 @@ message Orderbook {
 message Trade {
   Product     product       = 1;
   Venue       venue         = 2;
-  uint64      timestamp     = 3;
+  int64       timestamp     = 3;
   double      price         = 4;
   double      size          = 5;
   Side        order_side    = 6;
@@ -213,7 +217,7 @@ message Trade {
 message Ticker {
   Product     product       = 1;
   Venue       venue         = 2;
-  uint64      timestamp     = 3;
+  int64       timestamp     = 3;
   double      price         = 4;
   Side        order_side    = 5;
   double      best_bid      = 6;
