@@ -27,7 +27,7 @@ package api;
    FUTURES    = 1;
   };
   
- enum Symbol{
+ enum Currency{
 	 BTC   = 0;
 	 USD   = 1;
 	 ETH   = 2;
