@@ -65,23 +65,17 @@ service API {
    uint64                        expiration           = 17; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
    string                        comment              = 18; // Order comment 
    uint64                        position             = 19; // Position ticket 
-   uint64                        position_by          = 20; // The ticket of an opposite position
-   bool                          async                = 21; // Do not wait the result response, designed to high frequency
   }
 
 message OrderResult { 
-   Retcode                      retcode                   = 1;  // Operation return code 
-   Venue                        venue                     = 2;  // Venue where the order was sent
-   Product                      product                   = 3;  // Product of the trade
-   OrderType                    order_type                = 4;  // Order type 
-   uint64                       order_id                  = 5;  // Order id placed
-   uint64                       position_id               = 6;  // position id placed
-   double                       volume                    = 7;  // Deal volume, confirmed by broker 
-   double                       price                     = 8;  // Deal price, confirmed by broker
-   string                       comment                   = 9;  // Broker comment to operation (by default it is filled by description of trade server return code) 
-   string                       request_id                = 10; // Request ID set by the terminal during the dispatch  
-   string                       broker_execution_id       = 11; // Return code of an external trading system 
-   double                       fee                       = 12; // Trade fee
+   Retcode                      retcode                   = 1; // Operation return code    
+   double                       price                     = 2; // Deal price, confirmed by broker
+   double                       volume                    = 3; // Deal volume, confirmed by broker    
+   double                       fee                       = 4; // Trade fee
+   OrderState                   state                     = 5; // Order state
+   string                       position_id               = 6; // position id placed 
+   string                       broker_execution_id       = 7; // Return code of an external trading system 
+   string                       comment                   = 8; // Broker comment to operation (by default it is filled by description of trade server return code)    
   }
 
 message Position {
