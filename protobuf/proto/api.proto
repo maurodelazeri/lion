@@ -56,7 +56,7 @@ service API {
    Reason                        order_reason         = 16; // Order reason
    int64                         expiration           = 17; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
    string                        comment              = 18; // Order comment 
-   int64                         position             = 19; // Position ticket 
+   string                        position             = 19; // Position ticket 
   }
 
 message OrderResult { 
