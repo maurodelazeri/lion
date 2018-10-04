@@ -5,6 +5,7 @@ import (
 	"os"
 
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/core/connstring"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/oleiade/lane"
@@ -71,37 +72,24 @@ func InitQueue() {
 func Worker(item interface{}) {
 	switch t := item.(type) {
 	case *pbAPI.Trade:
-		// Create a point and add to batch
-		// tags := map[string]string{
-		// 	"venue":   t.GetVenue().String(),
-		// 	"product": t.GetProduct().String(),
-		// 	"side":    t.GetOrderSide().String(),
-		// }
-		// fields := map[string]interface{}{
-		// 	"price":      t.GetPrice(),
-		// 	"size":       t.GetSize(),
-		// 	"side":       pbAPI.OrderType_value[t.GetOrderSide().String()],
-		// 	"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
-		// }
-		//InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Nanosecond)))
+		coll := MongoDB.Collection("trades")
+		_, err := coll.InsertOne(
+			context.Background(),
+			bson.NewDocument(
+				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
+				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
+				bson.EC.Int64("timestamp", t.GetTimestamp()),
+				bson.EC.Double("price", t.GetPrice()),
+				bson.EC.Double("size", t.GetSize()),
+				bson.EC.Int32("side", pbAPI.Side_value[t.GetOrderSide().String()]),
+				bson.EC.Int32("venue_type", pbAPI.VenueType_value[t.GetVenueType().String()]),
+			))
+		if err != nil {
+			logrus.Error("Problem to insert on mongo ", err)
+		}
 	case *pbAPI.Orderbook:
 
 	default:
 		logrus.Error("Influx not found a correct type ", t)
 	}
-}
-
-// InsertMongo ...
-func InsertMongo() {
-	// // Create a new point batch
-	// bp, _ := client.NewBatchPoints(client.BatchPointsConfig{
-	// 	Precision: "ns",
-	// })
-	// pt, err := client.NewPoint(name, tags, fields, t)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// bp.AddPoint(pt)
-	// // Write the batch
-	// influxUDPClinet.Write(bp)
 }
