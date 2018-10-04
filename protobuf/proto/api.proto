@@ -21,28 +21,20 @@ service API {
   // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
  
   message Orders { 
-    int64                        orders_id                = 1;  
-    Venue                         venue                    = 2;  
-    string                        account_id               = 3;  
-    OrderType                     orders_type              = 4;  
-    OrderState                    orders_state             = 5;  
-    int64                         time_expiration          = 6;  
-    int64                         time_setup               = 8;  
-    OrderTypeFilling              orders_type_filling      = 9;  
-    OrderTypeTime                 orders_type_time         = 10;  
-    Reason                        orders_reason            = 11;  
-    int64                         orders_position_by_id    = 12;  
-    int64                         orders_position_id       = 13;  
-    Product                       product                  = 14;  
-    string                        venue_execution_id       = 15;  
-    double                        volume                   = 16;  
-    double                        price                    = 17;  
-    double                        fee                      = 18;  
-    double                        tp                       = 19;  
-    double                        sl                       = 20;  
-    double                        trailling_percent        = 21;  
-    double                        stop_limit               = 22;  
-    string                        comment                  = 23;  
+    Venue                         venue                    = 1;  
+    OrderType                     orders_type              = 2;  
+    OrderState                    orders_state             = 3;  
+    int64                         time_expiration          = 4;  
+    int64                         time_setup               = 5;  
+    OrderTypeFilling              orders_type_filling      = 6;  
+    OrderTypeTime                 orders_type_time         = 7;  
+    Reason                        orders_reason            = 8;   
+    Product                       product                  = 9;  
+    string                        venue_execution_id       = 10;  
+    double                        volume                   = 11;  
+    double                        price                    = 12;  
+    double                        fee                      = 13;  
+    string                        comment                  = 14;  
    }
 
  message OrderRequest { 
@@ -79,7 +71,7 @@ message OrderResult {
   }
 
 message Position {
-  string                        order_id                 = 1;
+  string                        position_id              = 1;
 	string                        account_id               = 2;
 	Venue                         venue                    = 3; 
 	Product                       product                  = 4;
