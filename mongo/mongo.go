@@ -56,7 +56,6 @@ func InitEngine() {
 func InitQueue() {
 	MongoQueue = lane.NewQueue()
 	InitQueue()
-
 	// Let's handle the clients asynchronously
 	go func() {
 		for {
@@ -85,6 +84,8 @@ func Worker(item interface{}) {
 		// 	"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
 		// }
 		//InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Nanosecond)))
+	case *pbAPI.Orderbook:
+
 	default:
 		logrus.Error("Influx not found a correct type ", t)
 	}
