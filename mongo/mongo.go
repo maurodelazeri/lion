@@ -56,7 +56,6 @@ func InitEngine() {
 // InitQueue the operations are in a queue to guarantee the correct execution order
 func InitQueue() {
 	MongoQueue = lane.NewQueue()
-	InitQueue()
 	// Let's handle the clients asynchronously
 	go func() {
 		for {
