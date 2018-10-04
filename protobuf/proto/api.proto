@@ -190,7 +190,7 @@ message Orderbook {
   Product           product     = 1;
   Venue             venue       = 2;
   int64             timestamp   = 3;
-  uint32            levels      = 4;
+  int32            levels      = 4;
   repeated Item     asks        = 5;
   repeated Item     bids        = 6;
   VenueType         venue_type  = 7;
