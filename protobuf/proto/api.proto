@@ -168,6 +168,15 @@ message Balance  {
   double     hold       = 2;
 }
 
+// Backtesting
+message Backtesting {
+  Account        account          = 1;
+  Venue          venue            = 2;
+  Product        product          = 3;
+  int64          start_date       = 4;
+  int64          end_date         = 5;
+}
+
 // Market Data
 message Item {
   double amount = 1;
