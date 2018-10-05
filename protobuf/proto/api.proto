@@ -192,10 +192,16 @@ message Item {
   double price  = 2;
 };
 
+message ClientInitilization {
+  ClientMode      client_mode            = 1; 
+  Subscription    subscription           = 2;
+  Granularity     candle_granularity     = 3;
+  CandleGroupBy   candle_group_by        = 4;
+  bool            verbose                = 5; 
+}
 
 message Subscription {
-  repeated SubscriptionItems  subscribe          = 1;
-  CandleGroupBy               candle_group_by    = 2;
+  repeated SubscriptionItems  subscribe  = 1;
 }
 
 message SubscriptionItems {

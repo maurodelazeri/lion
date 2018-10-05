@@ -205,9 +205,13 @@ package api;
 	GRANULARITY_12H  			= 43200;
 	GRANULARITY_1D  			= 86400;
 };
-  
   enum CandleGroupBy{
 	TIME       = 0;
 	VOLUME     = 1;
 	TRADE      = 2;
   };
+
+ enum ClientMode{
+	BACKTESTING   = 0;
+	LIVEMARKET    = 1; 
+ }
