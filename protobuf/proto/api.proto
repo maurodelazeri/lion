@@ -15,11 +15,9 @@ service API {
   rpc GetAccount(AccountRequest) returns (AccountResult) {}
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
+  rpc Backtesting(BacktestingRequest) returns (stream BacktestingResponse) {}
 } 
 
-  // position — position ticket. Fill it when changing and closing a position for its clear identification. It usually matches the ticket of an order used to open the position.
-  // position_by — opposite position ticket. It is used when closing a position by an opposite one (opened at the same symbol but in the opposite direction).
- 
   message Orders { 
     Venue                         venue                    = 1;  
     OrderType                     orders_type              = 2;  
@@ -175,6 +173,17 @@ message Backtesting {
   Product        product          = 3;
   int64          start_date       = 4;
   int64          end_date         = 5;
+}
+
+message BacktestingRequest { 
+  Venue                           venue                = 1;
+  Product                         product              = 2;
+}
+
+message BacktestingResponse { 
+   Retcode                      retcode                   = 1; 
+   VenueProduct                 venue_products            = 2;
+   string                       comment                   = 3;
 }
 
 // Market Data
