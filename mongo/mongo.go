@@ -24,8 +24,11 @@ var (
 	// Client ...
 	Client *mongo.Client
 
-	// MongoQueue ...
-	MongoQueue *lane.Queue
+	// TradesQueue ...
+	TradesQueue *lane.Queue
+
+	// OrderbookQueue ...
+	OrderbookQueue *lane.Queue
 )
 
 func init() {
@@ -57,20 +60,29 @@ func InitEngine() {
 
 // InitQueue the operations are in a queue to guarantee the correct execution order
 func InitQueue() {
-	MongoQueue = lane.NewQueue()
+	TradesQueue = lane.NewQueue()
+	OrderbookQueue = lane.NewQueue()
 	// Let's handle the clients asynchronously
 	go func() {
 		for {
-			for MongoQueue.Head() != nil {
-				item := MongoQueue.Dequeue()
-				Worker(item)
+			for TradesQueue.Head() != nil {
+				item := TradesQueue.Dequeue()
+				WorkerTrades(item)
+			}
+		}
+	}()
+	go func() {
+		for {
+			for OrderbookQueue.Head() != nil {
+				item := OrderbookQueue.Dequeue()
+				WorkerOrderbook(item)
 			}
 		}
 	}()
 }
 
-// Worker execute sequencial execution based on the received instructions
-func Worker(item interface{}) {
+// WorkerTrades execute sequencial execution based on the received instructions
+func WorkerTrades(item interface{}) {
 	switch t := item.(type) {
 	case *pbAPI.Trade:
 		coll := MongoDB.Collection("trades")
@@ -88,6 +100,12 @@ func Worker(item interface{}) {
 		if err != nil {
 			logrus.Error("Problem to insert on mongo ", err)
 		}
+	}
+}
+
+// WorkerOrderbook execute sequencial execution based on the received instructions
+func WorkerOrderbook(item interface{}) {
+	switch t := item.(type) {
 	case *pbAPI.Orderbook:
 		protobufByte, err := proto.Marshal(t)
 		if err != nil {
