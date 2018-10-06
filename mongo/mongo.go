@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gogo/protobuf/proto"
+	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/core/connstring"
@@ -88,9 +89,18 @@ func Worker(item interface{}) {
 			logrus.Error("Problem to insert on mongo ", err)
 		}
 	case *pbAPI.Orderbook:
-		compressed, err := proto.Marshal(t)
+		protobufByte, err := proto.Marshal(t)
 		if err != nil {
 			return
+		}
+		compressed := common.CompressLZW(string(protobufByte))
+		fixByteArray := []byte{}
+		for i := range compressed {
+			n := compressed[len(compressed)-1-i]
+			fixByteArray = append(fixByteArray, byte(n))
+		}
+		for i, j := 0, len(fixByteArray)-1; i < j; i, j = i+1, j-1 {
+			fixByteArray[i], fixByteArray[j] = fixByteArray[j], fixByteArray[i]
 		}
 		coll := MongoDB.Collection("orderbook")
 		_, err = coll.InsertOne(
@@ -99,7 +109,7 @@ func Worker(item interface{}) {
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
 				bson.EC.Int64("timestamp", t.GetTimestamp()),
-				bson.EC.Binary("depth", compressed),
+				bson.EC.Binary("depth", fixByteArray),
 			))
 		if err != nil {
 			logrus.Error("Problem to insert on mongo ", err)
