@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/gogo/protobuf/proto"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/core/connstring"
@@ -87,7 +88,22 @@ func Worker(item interface{}) {
 			logrus.Error("Problem to insert on mongo ", err)
 		}
 	case *pbAPI.Orderbook:
-
+		compressed, err := proto.Marshal(t)
+		if err != nil {
+			return
+		}
+		coll := MongoDB.Collection("orderbook")
+		_, err = coll.InsertOne(
+			context.Background(),
+			bson.NewDocument(
+				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
+				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
+				bson.EC.Int64("timestamp", t.GetTimestamp()),
+				bson.EC.Binary("depth", compressed),
+			))
+		if err != nil {
+			logrus.Error("Problem to insert on mongo ", err)
+		}
 	default:
 		logrus.Error("Influx not found a correct type ", t)
 	}
