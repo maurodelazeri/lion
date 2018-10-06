@@ -11,15 +11,14 @@ package api;
    }
   
  enum AccountMode{
-	LIVE               = 0;
-	DEMO               = 1;
+	DEMO               = 0;
+	LIVE               = 1;
+	BACKTESTING        = 2;
   };
   
    enum AccountType{
 	NET                 = 0;
 	HEDGE               = 1;
-	CROSS_VENUE_NET     = 2;
-	CROSS_VENUE_HEDGE   = 3;
   };
   
  enum VenueType{
@@ -210,8 +209,3 @@ package api;
 	VOLUME     = 1;
 	TRADE      = 2;
   };
-
- enum ClientMode{
-	BACKTESTING   = 0;
-	LIVEMARKET    = 1; 
- }
