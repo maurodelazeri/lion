@@ -170,7 +170,7 @@ package api;
 	CLOSE_ONLY                     = 39;
 	REQUEST_WITH_NO_TOKEN          = 40;
 	INVALID_TOKEN                  = 41;
-	INVALID_REQUEST                = 42;  
+	INVALID_REQUEST                = 42;
    }
 
    enum Granularity{

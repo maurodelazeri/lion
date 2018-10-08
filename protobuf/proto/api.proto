@@ -189,7 +189,7 @@ message Backtesting {
 
 message BacktestingRequest { 
   Subscription                    subscription         = 1;
-  Account                         account              = 2;
+  repeated VenueBalance           venue_balance        = 2;
   int64                           start_date           = 4;
   int64                           end_date             = 5;
 }
