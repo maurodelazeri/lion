@@ -14,16 +14,16 @@ import (
 // DEMO               = 0;
 // LIVE               = 1;
 // BACKTESTING        = 2;
-func CreateToken(account, mode string) (string, error) {
+func CreateToken(account, mode, accountType string) (string, error) {
 	now := time.Now()
 	expTime, _ := strconv.Atoi(os.Getenv("EXPIRATION_TIME_JWT_TOKEN"))
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, &jwt.StandardClaims{
 		IssuedAt:  now.Unix(),
 		ExpiresAt: time.Now().Add(time.Minute * time.Duration(expTime)).Unix(),
 		//Issuer:    mode,
-		//Audience:  strategy,
-		Subject: mode,
-		Id:      account,
+		Audience: accountType,
+		Subject:  mode,
+		Id:       account,
 	})
 	tokenString, err := token.SignedString([]byte(os.Getenv("SIGNED_JWT_KEY")))
 	if err != nil {
