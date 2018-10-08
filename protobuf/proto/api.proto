@@ -190,6 +190,8 @@ message Backtesting {
 message BacktestingRequest { 
   Subscription                    subscription         = 1;
   Account                         account              = 2;
+  int64                           start_date           = 4;
+  int64                           end_date             = 5;
 }
 
 message BacktestingResponse { 
@@ -208,9 +210,11 @@ message Item {
 message ClientInitilization {
   SystemMode      system_mode            = 1; 
   Subscription    subscription           = 2;
-  Granularity     candle_granularity     = 3;
-  CandleGroupBy   candle_group_by        = 4;
-  bool            verbose                = 5; 
+  int64           start_date             = 3;
+  int64           end_date               = 4;  
+  Granularity     candle_granularity     = 5;
+  CandleGroupBy   candle_group_by        = 6;
+  bool            verbose                = 7; 
 }
 
 message Subscription {
