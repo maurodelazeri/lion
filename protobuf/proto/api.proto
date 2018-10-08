@@ -169,7 +169,8 @@ message Balance  {
 
 // Token
 message TokenRequest {
-    repeated VenueBalance     venue_balances  = 1; 
+    repeated VenueBalance     venue_balances       = 1; 
+    Subscription              subscription         = 2;
 }
 
 message TokenResponse { 
@@ -179,7 +180,6 @@ message TokenResponse {
 }
 
 message BacktestingRequest { 
-  Subscription                    subscription         = 1;
   int64                           start_date           = 2;
   int64                           end_date             = 3;
 }
