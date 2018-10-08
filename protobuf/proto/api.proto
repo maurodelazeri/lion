@@ -153,7 +153,7 @@ message User {
 message Account {
   string                     account_id   = 1;
   AccountType                account_type = 2;
-  AccountMode                account_mode = 3;
+  SystemMode                 account_mode = 3;
   map<string, VenueBalance>  balances     = 4;
   bool                       active       = 5;
 }
@@ -206,7 +206,7 @@ message Item {
 };
 
 message ClientInitilization {
-  AccountMode     account_mode            = 1; 
+  SystemMode      account_mode            = 1; 
   Subscription    subscription           = 2;
   Granularity     candle_granularity     = 3;
   CandleGroupBy   candle_group_by        = 4;

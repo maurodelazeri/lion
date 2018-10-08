@@ -10,7 +10,7 @@ package api;
 	GEMINI      =  5;
    }
   
- enum AccountMode{
+ enum SystemMode{
 	DEMO               = 0;
 	LIVE               = 1;
 	BACKTESTING        = 2;
