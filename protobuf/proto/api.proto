@@ -168,8 +168,8 @@ message Balance  {
 }
 
 // Token
-message TokenRequest { 
-  string                        current_token        = 1;
+message TokenRequest {
+    repeated VenueBalance     venue_balances  = 1; 
 }
 
 message TokenResponse { 
@@ -178,20 +178,10 @@ message TokenResponse {
    string                       comment                   = 3;
 }
 
-// Backtesting
-message Backtesting {
-  Account        account          = 1;
-  Venue          venue            = 2;
-  Product        product          = 3;
-  int64          start_date       = 4;
-  int64          end_date         = 5;
-}
-
 message BacktestingRequest { 
   Subscription                    subscription         = 1;
-  repeated VenueBalance           venue_balance        = 2;
-  int64                           start_date           = 4;
-  int64                           end_date             = 5;
+  int64                           start_date           = 2;
+  int64                           end_date             = 3;
 }
 
 message BacktestingResponse { 
