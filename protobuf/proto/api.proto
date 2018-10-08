@@ -16,8 +16,7 @@ service API {
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
   rpc GetBacktestingToken(TokenRequest) returns (TokenResponse) {}
-
- // rpc Backtesting(BacktestingRequest) returns (stream BacktestingResponse) {}
+  rpc Backtesting(BacktestingRequest) returns (stream BacktestingResponse) {}
 } 
 
   message Orders { 
@@ -153,7 +152,7 @@ message User {
 message Account {
   string                     account_id   = 1;
   AccountType                account_type = 2;
-  SystemMode                 account_mode = 3;
+  SystemMode                 system_mode = 3;
   map<string, VenueBalance>  balances     = 4;
   bool                       active       = 5;
 }
@@ -189,14 +188,15 @@ message Backtesting {
 }
 
 message BacktestingRequest { 
-  Venue                           venue                = 1;
-  Product                         product              = 2;
+  Subscription                    subscription         = 1;
+  Account                         account              = 2;
 }
 
 message BacktestingResponse { 
-   Retcode                      retcode                   = 1; 
-   VenueProduct                 venue_products            = 2;
-   string                       comment                   = 3;
+   Retcode                      retcode                = 1; 
+   Trade                        trade                  = 2;
+   Orderbook                    orderbook              = 3;
+   string                       comment                = 4;
 }
 
 // Market Data
@@ -206,7 +206,7 @@ message Item {
 };
 
 message ClientInitilization {
-  SystemMode      account_mode            = 1; 
+  SystemMode      system_mode            = 1; 
   Subscription    subscription           = 2;
   Granularity     candle_granularity     = 3;
   CandleGroupBy   candle_group_by        = 4;
@@ -227,7 +227,7 @@ message Orderbook {
   Product           product     = 1;
   Venue             venue       = 2;
   int64             timestamp   = 3;
-  int32            levels      = 4;
+  int32             levels      = 4;
   repeated Item     asks        = 5;
   repeated Item     bids        = 6;
   VenueType         venue_type  = 7;
