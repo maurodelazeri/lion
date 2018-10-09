@@ -47,7 +47,7 @@ func (m *Orders) Reset()         { *m = Orders{} }
 func (m *Orders) String() string { return proto.CompactTextString(m) }
 func (*Orders) ProtoMessage()    {}
 func (*Orders) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{0}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{0}
 }
 func (m *Orders) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Orders.Unmarshal(m, b)
@@ -194,7 +194,7 @@ func (m *OrderRequest) Reset()         { *m = OrderRequest{} }
 func (m *OrderRequest) String() string { return proto.CompactTextString(m) }
 func (*OrderRequest) ProtoMessage()    {}
 func (*OrderRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{1}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{1}
 }
 func (m *OrderRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OrderRequest.Unmarshal(m, b)
@@ -365,7 +365,7 @@ func (m *OrderResult) Reset()         { *m = OrderResult{} }
 func (m *OrderResult) String() string { return proto.CompactTextString(m) }
 func (*OrderResult) ProtoMessage()    {}
 func (*OrderResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{2}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{2}
 }
 func (m *OrderResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OrderResult.Unmarshal(m, b)
@@ -469,7 +469,7 @@ func (m *Position) Reset()         { *m = Position{} }
 func (m *Position) String() string { return proto.CompactTextString(m) }
 func (*Position) ProtoMessage()    {}
 func (*Position) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{3}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{3}
 }
 func (m *Position) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Position.Unmarshal(m, b)
@@ -627,7 +627,7 @@ func (m *PositionRequest) Reset()         { *m = PositionRequest{} }
 func (m *PositionRequest) String() string { return proto.CompactTextString(m) }
 func (*PositionRequest) ProtoMessage()    {}
 func (*PositionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{4}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{4}
 }
 func (m *PositionRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PositionRequest.Unmarshal(m, b)
@@ -674,7 +674,7 @@ func (m *PositionsResult) Reset()         { *m = PositionsResult{} }
 func (m *PositionsResult) String() string { return proto.CompactTextString(m) }
 func (*PositionsResult) ProtoMessage()    {}
 func (*PositionsResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{5}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{5}
 }
 func (m *PositionsResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PositionsResult.Unmarshal(m, b)
@@ -726,7 +726,7 @@ func (m *AccountRequest) Reset()         { *m = AccountRequest{} }
 func (m *AccountRequest) String() string { return proto.CompactTextString(m) }
 func (*AccountRequest) ProtoMessage()    {}
 func (*AccountRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{6}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{6}
 }
 func (m *AccountRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountRequest.Unmarshal(m, b)
@@ -766,7 +766,7 @@ func (m *AccountResult) Reset()         { *m = AccountResult{} }
 func (m *AccountResult) String() string { return proto.CompactTextString(m) }
 func (*AccountResult) ProtoMessage()    {}
 func (*AccountResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{7}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{7}
 }
 func (m *AccountResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountResult.Unmarshal(m, b)
@@ -819,7 +819,7 @@ func (m *ProductRequest) Reset()         { *m = ProductRequest{} }
 func (m *ProductRequest) String() string { return proto.CompactTextString(m) }
 func (*ProductRequest) ProtoMessage()    {}
 func (*ProductRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{8}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{8}
 }
 func (m *ProductRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductRequest.Unmarshal(m, b)
@@ -866,7 +866,7 @@ func (m *ProductResult) Reset()         { *m = ProductResult{} }
 func (m *ProductResult) String() string { return proto.CompactTextString(m) }
 func (*ProductResult) ProtoMessage()    {}
 func (*ProductResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{9}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{9}
 }
 func (m *ProductResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductResult.Unmarshal(m, b)
@@ -923,7 +923,7 @@ func (m *VenueProduct) Reset()         { *m = VenueProduct{} }
 func (m *VenueProduct) String() string { return proto.CompactTextString(m) }
 func (*VenueProduct) ProtoMessage()    {}
 func (*VenueProduct) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{10}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{10}
 }
 func (m *VenueProduct) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueProduct.Unmarshal(m, b)
@@ -999,7 +999,7 @@ func (m *HistoricalTradesRequest) Reset()         { *m = HistoricalTradesRequest
 func (m *HistoricalTradesRequest) String() string { return proto.CompactTextString(m) }
 func (*HistoricalTradesRequest) ProtoMessage()    {}
 func (*HistoricalTradesRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{11}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{11}
 }
 func (m *HistoricalTradesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HistoricalTradesRequest.Unmarshal(m, b)
@@ -1060,7 +1060,7 @@ func (m *HistoricalTradesResult) Reset()         { *m = HistoricalTradesResult{}
 func (m *HistoricalTradesResult) String() string { return proto.CompactTextString(m) }
 func (*HistoricalTradesResult) ProtoMessage()    {}
 func (*HistoricalTradesResult) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{12}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{12}
 }
 func (m *HistoricalTradesResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HistoricalTradesResult.Unmarshal(m, b)
@@ -1113,7 +1113,7 @@ func (m *User) Reset()         { *m = User{} }
 func (m *User) String() string { return proto.CompactTextString(m) }
 func (*User) ProtoMessage()    {}
 func (*User) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{13}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{13}
 }
 func (m *User) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_User.Unmarshal(m, b)
@@ -1162,7 +1162,7 @@ func (m *Account) Reset()         { *m = Account{} }
 func (m *Account) String() string { return proto.CompactTextString(m) }
 func (*Account) ProtoMessage()    {}
 func (*Account) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{14}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{14}
 }
 func (m *Account) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Account.Unmarshal(m, b)
@@ -1229,7 +1229,7 @@ func (m *VenueBalance) Reset()         { *m = VenueBalance{} }
 func (m *VenueBalance) String() string { return proto.CompactTextString(m) }
 func (*VenueBalance) ProtoMessage()    {}
 func (*VenueBalance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{15}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{15}
 }
 func (m *VenueBalance) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueBalance.Unmarshal(m, b)
@@ -1275,7 +1275,7 @@ func (m *Balance) Reset()         { *m = Balance{} }
 func (m *Balance) String() string { return proto.CompactTextString(m) }
 func (*Balance) ProtoMessage()    {}
 func (*Balance) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{16}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{16}
 }
 func (m *Balance) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Balance.Unmarshal(m, b)
@@ -1322,7 +1322,7 @@ func (m *TokenRequest) Reset()         { *m = TokenRequest{} }
 func (m *TokenRequest) String() string { return proto.CompactTextString(m) }
 func (*TokenRequest) ProtoMessage()    {}
 func (*TokenRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{17}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{17}
 }
 func (m *TokenRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TokenRequest.Unmarshal(m, b)
@@ -1369,7 +1369,7 @@ func (m *TokenResponse) Reset()         { *m = TokenResponse{} }
 func (m *TokenResponse) String() string { return proto.CompactTextString(m) }
 func (*TokenResponse) ProtoMessage()    {}
 func (*TokenResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{18}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{18}
 }
 func (m *TokenResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TokenResponse.Unmarshal(m, b)
@@ -1422,7 +1422,7 @@ func (m *BacktestingRequest) Reset()         { *m = BacktestingRequest{} }
 func (m *BacktestingRequest) String() string { return proto.CompactTextString(m) }
 func (*BacktestingRequest) ProtoMessage()    {}
 func (*BacktestingRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{19}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{19}
 }
 func (m *BacktestingRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BacktestingRequest.Unmarshal(m, b)
@@ -1470,7 +1470,7 @@ func (m *BacktestingResponse) Reset()         { *m = BacktestingResponse{} }
 func (m *BacktestingResponse) String() string { return proto.CompactTextString(m) }
 func (*BacktestingResponse) ProtoMessage()    {}
 func (*BacktestingResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{20}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{20}
 }
 func (m *BacktestingResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BacktestingResponse.Unmarshal(m, b)
@@ -1531,7 +1531,7 @@ func (m *Item) Reset()         { *m = Item{} }
 func (m *Item) String() string { return proto.CompactTextString(m) }
 func (*Item) ProtoMessage()    {}
 func (*Item) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{21}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{21}
 }
 func (m *Item) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Item.Unmarshal(m, b)
@@ -1582,7 +1582,7 @@ func (m *ClientInitilization) Reset()         { *m = ClientInitilization{} }
 func (m *ClientInitilization) String() string { return proto.CompactTextString(m) }
 func (*ClientInitilization) ProtoMessage()    {}
 func (*ClientInitilization) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{22}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{22}
 }
 func (m *ClientInitilization) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientInitilization.Unmarshal(m, b)
@@ -1662,7 +1662,7 @@ func (m *Subscription) Reset()         { *m = Subscription{} }
 func (m *Subscription) String() string { return proto.CompactTextString(m) }
 func (*Subscription) ProtoMessage()    {}
 func (*Subscription) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{23}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{23}
 }
 func (m *Subscription) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Subscription.Unmarshal(m, b)
@@ -1702,7 +1702,7 @@ func (m *SubscriptionItems) Reset()         { *m = SubscriptionItems{} }
 func (m *SubscriptionItems) String() string { return proto.CompactTextString(m) }
 func (*SubscriptionItems) ProtoMessage()    {}
 func (*SubscriptionItems) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{24}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{24}
 }
 func (m *SubscriptionItems) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SubscriptionItems.Unmarshal(m, b)
@@ -1760,7 +1760,7 @@ func (m *Orderbook) Reset()         { *m = Orderbook{} }
 func (m *Orderbook) String() string { return proto.CompactTextString(m) }
 func (*Orderbook) ProtoMessage()    {}
 func (*Orderbook) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{25}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{25}
 }
 func (m *Orderbook) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Orderbook.Unmarshal(m, b)
@@ -1846,7 +1846,7 @@ func (m *Trade) Reset()         { *m = Trade{} }
 func (m *Trade) String() string { return proto.CompactTextString(m) }
 func (*Trade) ProtoMessage()    {}
 func (*Trade) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{26}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{26}
 }
 func (m *Trade) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Trade.Unmarshal(m, b)
@@ -1933,7 +1933,7 @@ func (m *Ticker) Reset()         { *m = Ticker{} }
 func (m *Ticker) String() string { return proto.CompactTextString(m) }
 func (*Ticker) ProtoMessage()    {}
 func (*Ticker) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{27}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{27}
 }
 func (m *Ticker) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Ticker.Unmarshal(m, b)
@@ -2032,7 +2032,7 @@ func (m *Candle) Reset()         { *m = Candle{} }
 func (m *Candle) String() string { return proto.CompactTextString(m) }
 func (*Candle) ProtoMessage()    {}
 func (*Candle) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{28}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{28}
 }
 func (m *Candle) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Candle.Unmarshal(m, b)
@@ -2165,7 +2165,7 @@ func (m *Event) Reset()         { *m = Event{} }
 func (m *Event) String() string { return proto.CompactTextString(m) }
 func (*Event) ProtoMessage()    {}
 func (*Event) Descriptor() ([]byte, []int) {
-	return fileDescriptor_00212fb1f9d3bf1c, []int{29}
+	return fileDescriptor_api_988d6a0ae42a31de, []int{29}
 }
 func (m *Event) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Event.Unmarshal(m, b)
@@ -2628,9 +2628,9 @@ var _API_serviceDesc = grpc.ServiceDesc{
 	Metadata: "api.proto",
 }
 
-func init() { proto.RegisterFile("api.proto", fileDescriptor_00212fb1f9d3bf1c) }
+func init() { proto.RegisterFile("api.proto", fileDescriptor_api_988d6a0ae42a31de) }
 
-var fileDescriptor_00212fb1f9d3bf1c = []byte{
+var fileDescriptor_api_988d6a0ae42a31de = []byte{
 	// 2268 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x19, 0x4d, 0x6f, 0x24, 0x47,
 	0x75, 0x7b, 0x3e, 0x7b, 0xde, 0x7c, 0xd8, 0x2e, 0x6f, 0x36, 0x1d, 0xc7, 0x4b, 0x4c, 0x47, 0x49,

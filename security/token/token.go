@@ -20,7 +20,7 @@ func CreateToken(account, mode, accountType string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, &jwt.StandardClaims{
 		IssuedAt:  now.Unix(),
 		ExpiresAt: time.Now().Add(time.Minute * time.Duration(expTime)).Unix(),
-		//Issuer:    mode,
+		//	Issuer:    mode,
 		Audience: accountType,
 		Subject:  mode,
 		Id:       account,
