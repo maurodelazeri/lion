@@ -1,6 +1,11 @@
 package common
 
 import (
+	"bytes"
+	"compress/flate"
+	"compress/gzip"
+	"compress/lzw"
+	"compress/zlib"
 	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha1"
@@ -596,4 +601,48 @@ func DecompressLZW(compressed []int) string {
 		currChar = word
 	}
 	return result
+}
+
+// CompressFlate ...
+func CompressFlate(data []byte) []byte {
+	buf := bytes.Buffer{}
+	w, _ := flate.NewWriter(&buf, flate.BestCompression)
+	w.Write(data)
+	w.Close()
+	return buf.Bytes()
+}
+
+// DecompressFlate ...
+func DecompressFlate(obj []byte) []byte {
+	data := bytes.NewReader(obj)
+	r := flate.NewReader(data)
+	enflate, _ := ioutil.ReadAll(r)
+	return enflate
+}
+
+// CompressGzip ...
+func CompressGzip(data []byte) []byte {
+	buf := bytes.Buffer{}
+	w, _ := gzip.NewWriterLevel(&buf, gzip.BestCompression)
+	w.Write(data)
+	w.Close()
+	return buf.Bytes()
+}
+
+// CompressLZW2 ...
+func CompressLZW2(data []byte) []byte {
+	buf := bytes.Buffer{}
+	w := lzw.NewWriter(&buf, lzw.LSB, 8)
+	w.Write(data)
+	w.Close()
+	return buf.Bytes()
+}
+
+// CompressZlib ...
+func CompressZlib(data []byte) []byte {
+	buf := bytes.Buffer{}
+	w, _ := zlib.NewWriterLevel(&buf, zlib.BestCompression)
+	w.Write(data)
+	w.Close()
+	return buf.Bytes()
 }
