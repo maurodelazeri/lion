@@ -179,10 +179,11 @@ message TokenResponse {
    string                       comment                   = 3;
 }
 
-message BacktestingRequest { 
-  Subscription                    subscription         = 1;
-  int64                           start_date           = 2;
-  int64                           end_date             = 3;
+message BacktestingRequest {
+  string                          account              = 1; 
+  Subscription                    subscription         = 2;
+  int64                           start_date           = 3;
+  int64                           end_date             = 4;
 }
 
 message BacktestingResponse { 
