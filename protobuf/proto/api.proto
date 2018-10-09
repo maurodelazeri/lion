@@ -16,7 +16,7 @@ service API {
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
   rpc GetBacktestingToken(TokenRequest) returns (TokenResponse) {}
-  rpc Backtesting(BacktestingRequest) returns (stream BacktestingResponse) {}
+  rpc Backtesting(stream BacktestingRequest) returns (stream BacktestingResponse) {}
 } 
 
   message Orders { 
