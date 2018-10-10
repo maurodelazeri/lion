@@ -2,103 +2,21 @@ package candle
 
 import (
 	"fmt"
-	"sync"
 	"time"
 
+	"github.com/maurodelazeri/concurrency-map-slice"
 	number "github.com/maurodelazeri/go-number"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 )
 
-// SyncCandle ...
-type SyncCandle struct {
-	state map[string]*pbAPI.Candle
-	mutex *sync.Mutex
-}
-
-// SyncMap ...
-type SyncMap struct {
-	state map[string][]int64
-	mutex *sync.Mutex
-}
-
 // https://texlution.com/post/golang-lock-free-values-with-atomic-value/
 var (
 	// Candlestick ...
-	SyncCandlestick = NewSyncCandle()
+	SyncCandlestick = utils.NewConcurrentMap()
 
 	// CandlesMap ...
-	SyncCandlesMap = NewSyncMap()
+	SyncCandlesMap = utils.NewConcurrentMap()
 )
-
-// NewSyncCandle ...
-func NewSyncCandle() *SyncCandle {
-	s := &SyncCandle{
-		state: make(map[string]*pbAPI.Candle),
-		mutex: &sync.Mutex{},
-	}
-	return s
-}
-
-// NewSyncMap ...
-func NewSyncMap() *SyncMap {
-	s := &SyncMap{
-		state: make(map[string][]int64),
-		mutex: &sync.Mutex{},
-	}
-	return s
-}
-
-// Put ...
-func (s *SyncCandle) Put(key string, value *pbAPI.Candle) {
-	s.mutex.Lock()
-	s.state[key] = value
-	s.mutex.Unlock()
-}
-
-// Put ...
-func (s *SyncMap) Put(key string, value []int64) {
-	s.mutex.Lock()
-	s.state[key] = value
-	s.mutex.Unlock()
-}
-
-// Get ...
-func (s *SyncCandle) Get(key string) *pbAPI.Candle {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	return s.state[key]
-}
-
-// Get ...
-func (s *SyncMap) Get(key string) []int64 {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	return s.state[key]
-}
-
-// Values ...
-func (s *SyncCandle) Values() chan *pbAPI.Candle {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	values := make(chan *pbAPI.Candle, len(s.state))
-	for _, value := range s.state {
-		values <- value
-	}
-	close(values)
-	return values
-}
-
-// Values ...
-func (s *SyncMap) Values() chan []int64 {
-	s.mutex.Lock()
-	defer s.mutex.Unlock()
-	values := make(chan []int64, len(s.state))
-	for _, value := range s.state {
-		values <- value
-	}
-	close(values)
-	return values
-}
 
 // CreateOrUpdateCandleTime ...
 func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, amount number.Decimal, side int32, createdAt time.Time) {
@@ -113,7 +31,7 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 		if g != 0 {
 			currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
 			currentKey := fmt.Sprintf("%d:%d:%s:%s", g, currentPoint, venue.String(), product.String())
-			historyCandle := SyncCandlestick.Get(currentKey)
+			history, exist := SyncCandlestick.Get(currentKey)
 			newCandle := &pbAPI.Candle{
 				Venue:       venue,
 				Product:     product,
@@ -129,7 +47,8 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 				BuyTotal:    int32(buy),
 				SellTotal:   int32(sell),
 			}
-			if historyCandle.GetPoint() != 0 {
+			if exist {
+				historyCandle := history.(*pbAPI.Candle)
 				historyCandle.Open = newCandle.Open
 				if newCandle.High > historyCandle.High {
 					historyCandle.High = newCandle.High
@@ -143,9 +62,13 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 				historyCandle.BuyTotal = newCandle.BuyTotal + int32(buy)
 				historyCandle.SellTotal = newCandle.SellTotal + int32(sell)
 			} else {
-				SyncCandlestick.Put(currentKey, newCandle)
-				currentPointsMap := SyncCandlesMap.Get(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()))
-				SyncCandlesMap.Put(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), append(currentPointsMap, currentPoint))
+				SyncCandlestick.Set(currentKey, newCandle)
+				currentPointsMap, found := SyncCandlesMap.Get(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()))
+				if found {
+					SyncCandlesMap.Set(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), append(currentPointsMap.([]int64), currentPoint))
+				} else {
+					SyncCandlesMap.Set(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()), append([]int64{}, currentPoint))
+				}
 			}
 		}
 	}
