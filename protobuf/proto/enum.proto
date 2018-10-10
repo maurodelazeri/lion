@@ -209,3 +209,9 @@ package api;
 	VOLUME     = 1;
 	TRADE      = 2;
   };
+
+  enum BacktestingCode{
+	START      = 0;
+	NEXT       = 1;
+	FINISHED   = 2;
+  };

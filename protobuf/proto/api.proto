@@ -184,13 +184,15 @@ message BacktestingRequest {
   Subscription                    subscription         = 2;
   int64                           start_date           = 3;
   int64                           end_date             = 4;
+  BacktestingCode                 code                 = 5; 
 }
 
 message BacktestingResponse { 
    Retcode                      retcode                = 1; 
-   Trade                        trade                  = 2;
-   Orderbook                    orderbook              = 3;
-   string                       comment                = 4;
+   BacktestingCode              code                   = 2; 
+   Trade                        trade                  = 3;
+   Orderbook                    orderbook              = 4;
+   string                       comment                = 5;
 }
 
 // Market Data
