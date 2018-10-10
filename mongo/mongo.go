@@ -128,7 +128,7 @@ func WorkerOrderbook(item interface{}) {
 			bson.NewDocument(
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-				bson.EC.Time("timestamp", timestamp),
+				bson.EC.Timestamp("timestamp", timestamp),
 				bson.EC.Binary("depth", common.CompressFlate(protobufByte)),
 			))
 		if err != nil {
