@@ -12,11 +12,18 @@ import (
 // https://texlution.com/post/golang-lock-free-values-with-atomic-value/
 var (
 	// Candlestick ...
-	SyncCandlestick = utils.NewConcurrentMap()
+	SyncCandlestick *utils.ConcurrentMap
 
 	// CandlesMap ...
-	SyncCandlesMap = utils.NewConcurrentMap()
+	SyncCandlesMap *utils.ConcurrentMap
 )
+
+func init() {
+	// Candlestick ...
+	SyncCandlestick = utils.NewConcurrentMap()
+	// CandlesMap ...
+	SyncCandlesMap = utils.NewConcurrentMap()
+}
 
 // CreateOrUpdateCandleTime ...
 func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, amount number.Decimal, side int32, createdAt time.Time) {

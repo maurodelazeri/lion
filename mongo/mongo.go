@@ -3,6 +3,7 @@ package mongodb
 import (
 	"context"
 	"os"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/maurodelazeri/lion/common"
@@ -86,12 +87,17 @@ func WorkerTrades(item interface{}) {
 	switch t := item.(type) {
 	case *pbAPI.Trade:
 		coll := MongoDB.Collection("trades")
-		_, err := coll.InsertOne(
+		layout := "2006-01-02T15:04:05.999999Z"
+		timestamp, err := time.Parse(layout, t.GetTimestamp())
+		if err != nil {
+			return
+		}
+		_, err = coll.InsertOne(
 			context.Background(),
 			bson.NewDocument(
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-				bson.EC.Int64("timestamp", t.GetTimestamp()),
+				bson.EC.Time("timestamp", timestamp),
 				bson.EC.Double("price", t.GetPrice()),
 				bson.EC.Double("size", t.GetSize()),
 				bson.EC.Int32("side", pbAPI.Side_value[t.GetOrderSide().String()]),
@@ -111,13 +117,18 @@ func WorkerOrderbook(item interface{}) {
 		if err != nil {
 			return
 		}
+		layout := "2006-01-02T15:04:05.999999Z"
+		timestamp, err := time.Parse(layout, t.GetTimestamp())
+		if err != nil {
+			return
+		}
 		coll := MongoDB.Collection("orderbook")
 		_, err = coll.InsertOne(
 			context.Background(),
 			bson.NewDocument(
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-				bson.EC.Int64("timestamp", t.GetTimestamp()),
+				bson.EC.Time("timestamp", timestamp),
 				bson.EC.Binary("depth", common.CompressFlate(protobufByte)),
 			))
 		if err != nil {
@@ -127,3 +138,12 @@ func WorkerOrderbook(item interface{}) {
 		logrus.Error("Influx not found a correct type ", t)
 	}
 }
+
+// fmt.Println(time.Now().UTC().Format("2006-01-02T15:04:05.999999Z"))
+// layout := "2006-01-02T15:04:05.999999Z"
+// str := "2018-10-10T18:47:00.945274Z"
+// t, err := time.Parse(layout, str)
+// if err != nil {
+// 	fmt.Println(err)
+// }
+// fmt.Println(t)
