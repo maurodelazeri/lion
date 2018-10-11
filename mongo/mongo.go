@@ -80,7 +80,7 @@ func WorkerTrades(item interface{}) {
 		for _, values := range t.GetBids() {
 			value := bson.VC.DocumentFromElements(
 				bson.EC.Double("price", values.GetPrice()),
-				bson.EC.Double("volume", values.GetAmount()),
+				bson.EC.Double("volume", values.GetVolume()),
 			)
 			arrBids.Append(value)
 		}
@@ -88,7 +88,7 @@ func WorkerTrades(item interface{}) {
 		for _, values := range t.GetAsks() {
 			value := bson.VC.DocumentFromElements(
 				bson.EC.Double("price", values.GetPrice()),
-				bson.EC.Double("volume", values.GetAmount()),
+				bson.EC.Double("volume", values.GetVolume()),
 			)
 			arrAsks.Append(value)
 		}

@@ -196,7 +196,7 @@ message BacktestingResponse {
 
 // Market Data
 message Item {
-  double amount = 1;
+  double volume = 1;
   double price  = 2;
 };
 
