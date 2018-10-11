@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 
-	"github.com/gogo/protobuf/proto"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/core/connstring"
@@ -70,20 +69,29 @@ func InitQueue() {
 			}
 		}
 	}()
-	go func() {
-		for {
-			for OrderbookQueue.Head() != nil {
-				item := OrderbookQueue.Dequeue()
-				WorkerOrderbook(item)
-			}
-		}
-	}()
 }
 
 // WorkerTrades execute sequencial execution based on the received instructions
 func WorkerTrades(item interface{}) {
 	switch t := item.(type) {
 	case *pbAPI.Trade:
+
+		arrBids := bson.NewArray()
+		for _, values := range t.GetBids() {
+			value := bson.VC.DocumentFromElements(
+				bson.EC.Double("price", values.GetPrice()),
+				bson.EC.Double("volume", values.GetAmount()),
+			)
+			arrBids.Append(value)
+		}
+		arrAsks := bson.NewArray()
+		for _, values := range t.GetAsks() {
+			value := bson.VC.DocumentFromElements(
+				bson.EC.Double("price", values.GetPrice()),
+				bson.EC.Double("volume", values.GetAmount()),
+			)
+			arrAsks.Append(value)
+		}
 		coll := MongoDB.Collection("trades")
 		_, err := coll.InsertOne(
 			context.Background(),
@@ -95,35 +103,12 @@ func WorkerTrades(item interface{}) {
 				bson.EC.Double("size", t.GetSize()),
 				bson.EC.Int32("side", pbAPI.Side_value[t.GetOrderSide().String()]),
 				bson.EC.Int32("venue_type", pbAPI.VenueType_value[t.GetVenueType().String()]),
+				bson.EC.Array("bids", arrBids),
+				bson.EC.Array("asks", arrAsks),
 			))
 		if err != nil {
 			logrus.Error("Problem to insert on mongo ", err)
 		}
-	}
-}
-
-// WorkerOrderbook execute sequencial execution based on the received instructions
-func WorkerOrderbook(item interface{}) {
-	switch t := item.(type) {
-	case *pbAPI.Orderbook:
-		protobufByte, err := proto.Marshal(t)
-		if err != nil {
-			return
-		}
-		coll := MongoDB.Collection("orderbook")
-		_, err = coll.InsertOne(
-			context.Background(),
-			bson.NewDocument(
-				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
-				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-				bson.EC.Int64("timestamp", t.GetTimestamp()),
-				bson.EC.Binary("depth", protobufByte),
-			))
-		if err != nil {
-			logrus.Error("Problem to insert on mongo ", err)
-		}
-	default:
-		logrus.Error("Influx not found a correct type ", t)
 	}
 }
 
