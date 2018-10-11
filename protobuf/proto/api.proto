@@ -23,8 +23,8 @@ service API {
     Venue                         venue                    = 1;  
     OrderType                     orders_type              = 2;  
     OrderState                    orders_state             = 3;  
-    string                        time_expiration          = 4;  
-    string                        time_setup               = 5;  
+    int64                         time_expiration          = 4;  
+    int64                         time_setup               = 5;  
     OrderTypeFilling              orders_type_filling      = 6;  
     OrderTypeTime                 orders_type_time         = 7;  
     Reason                        orders_reason            = 8;   
@@ -52,7 +52,7 @@ service API {
    OrderTypeFilling              order_type_filling   = 13; // Order execution type 
    OrderTypeTime                 order_type_time      = 14; // Order expiration type 
    Reason                        order_reason         = 15; // Order reason
-   string                        expiration           = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   int64                         expiration           = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
    string                        comment              = 17; // Order comment 
    string                        position             = 18; // Position ticket 
   }
@@ -76,7 +76,7 @@ message Position {
 	double                        price_open               = 5;
 	double                        weighted_price           = 6;
 	double                        volume                   = 7;
-	string                        position_time            = 8;
+	int64                         position_time            = 8;
 	Side                          position_side            = 9; 
 	Reason                        position_reason          = 10;
 	double                        sl                       = 11;
@@ -133,8 +133,8 @@ message VenueProduct {
 message HistoricalTradesRequest { 
   Venue                          venue                = 1;
   Product                        product              = 2;
-  string                         begin                = 3;
-  string                         end                  = 4;
+  int64                          begin                = 3;
+  int64                          end                  = 4;
 }
 
 message HistoricalTradesResult { 
@@ -181,8 +181,8 @@ message TokenResponse {
 message BacktestingRequest {
   string                          account              = 1; 
   Subscription                    subscription         = 2;
-  string                          start_date           = 3;
-  string                          end_date             = 4;
+  int64                           start_date           = 3;
+  int64                           end_date             = 4;
   BacktestingCode                 code                 = 5; 
 }
 
@@ -203,8 +203,8 @@ message Item {
 message ClientInitilization {
   SystemMode      system_mode            = 1; 
   Subscription    subscription           = 2;
-  string          start_date             = 3;
-  string          end_date               = 4;  
+  int64           start_date             = 3;
+  int64           end_date               = 4;  
   Granularity     candle_granularity     = 5;
   CandleGroupBy   candle_group_by        = 6;
   bool            verbose                = 7; 
@@ -223,7 +223,7 @@ message SubscriptionItems {
 message Orderbook {
   Product           product     = 1;
   Venue             venue       = 2;
-  string            timestamp   = 3;
+  int64             timestamp   = 3;
   int32             levels      = 4;
   repeated Item     asks        = 5;
   repeated Item     bids        = 6;
@@ -233,7 +233,7 @@ message Orderbook {
 message Trade {
   Product     product       = 1;
   Venue       venue         = 2;
-  string      timestamp     = 3;
+  int64       timestamp     = 3;
   double      price         = 4;
   double      size          = 5;
   Side        order_side    = 6;
@@ -243,7 +243,7 @@ message Trade {
 message Ticker {
   Product     product       = 1;
   Venue       venue         = 2;
-  string      timestamp     = 3;
+  int64       timestamp     = 3;
   double      price         = 4;
   Side        order_side    = 5;
   double      best_bid      = 6;
@@ -275,7 +275,7 @@ message Event {
   string       account    = 4;
   string       container  = 5;
   string       strategy   = 6;
-  string       timestamp  = 7;
+  int64        timestamp  = 7;
   string       command    = 8;
   string       message    = 9;
   bool         error      = 10;

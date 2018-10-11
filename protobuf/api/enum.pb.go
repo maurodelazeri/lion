@@ -37,7 +37,6 @@ var Venue_name = map[int32]string{
 	4: "BINANCE",
 	5: "GEMINI",
 }
-
 var Venue_value = map[string]int32{
 	"DARKPOOL":    0,
 	"COINBASEPRO": 1,
@@ -50,9 +49,8 @@ var Venue_value = map[string]int32{
 func (x Venue) String() string {
 	return proto.EnumName(Venue_name, int32(x))
 }
-
 func (Venue) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{0}
+	return fileDescriptor_enum_390429901a2bf211, []int{0}
 }
 
 type SystemMode int32
@@ -68,7 +66,6 @@ var SystemMode_name = map[int32]string{
 	1: "LIVE",
 	2: "BACKTESTING",
 }
-
 var SystemMode_value = map[string]int32{
 	"DEMO":        0,
 	"LIVE":        1,
@@ -78,9 +75,8 @@ var SystemMode_value = map[string]int32{
 func (x SystemMode) String() string {
 	return proto.EnumName(SystemMode_name, int32(x))
 }
-
 func (SystemMode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{1}
+	return fileDescriptor_enum_390429901a2bf211, []int{1}
 }
 
 type AccountType int32
@@ -94,7 +90,6 @@ var AccountType_name = map[int32]string{
 	0: "NET",
 	1: "HEDGE",
 }
-
 var AccountType_value = map[string]int32{
 	"NET":   0,
 	"HEDGE": 1,
@@ -103,9 +98,8 @@ var AccountType_value = map[string]int32{
 func (x AccountType) String() string {
 	return proto.EnumName(AccountType_name, int32(x))
 }
-
 func (AccountType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{2}
+	return fileDescriptor_enum_390429901a2bf211, []int{2}
 }
 
 type VenueType int32
@@ -119,7 +113,6 @@ var VenueType_name = map[int32]string{
 	0: "SPOT",
 	1: "FUTURES",
 }
-
 var VenueType_value = map[string]int32{
 	"SPOT":    0,
 	"FUTURES": 1,
@@ -128,9 +121,8 @@ var VenueType_value = map[string]int32{
 func (x VenueType) String() string {
 	return proto.EnumName(VenueType_name, int32(x))
 }
-
 func (VenueType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{3}
+	return fileDescriptor_enum_390429901a2bf211, []int{3}
 }
 
 type Currency int32
@@ -152,7 +144,6 @@ var Currency_name = map[int32]string{
 	4: "BCH",
 	5: "ETC",
 }
-
 var Currency_value = map[string]int32{
 	"BTC": 0,
 	"USD": 1,
@@ -165,9 +156,8 @@ var Currency_value = map[string]int32{
 func (x Currency) String() string {
 	return proto.EnumName(Currency_name, int32(x))
 }
-
 func (Currency) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{4}
+	return fileDescriptor_enum_390429901a2bf211, []int{4}
 }
 
 type Product int32
@@ -201,7 +191,6 @@ var Product_name = map[int32]string{
 	10: "ETC_BTC",
 	11: "ETC_ETH",
 }
-
 var Product_value = map[string]int32{
 	"BTC_USD": 0,
 	"ETH_BTC": 1,
@@ -220,9 +209,8 @@ var Product_value = map[string]int32{
 func (x Product) String() string {
 	return proto.EnumName(Product_name, int32(x))
 }
-
 func (Product) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{5}
+	return fileDescriptor_enum_390429901a2bf211, []int{5}
 }
 
 type OrderState int32
@@ -252,7 +240,6 @@ var OrderState_name = map[int32]string{
 	8: "REQUEST_MODIFY",
 	9: "REQUEST_CANCEL",
 }
-
 var OrderState_value = map[string]int32{
 	"STARTED":        0,
 	"PLACED":         1,
@@ -269,9 +256,8 @@ var OrderState_value = map[string]int32{
 func (x OrderState) String() string {
 	return proto.EnumName(OrderState_name, int32(x))
 }
-
 func (OrderState) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{6}
+	return fileDescriptor_enum_390429901a2bf211, []int{6}
 }
 
 type OrderTypeFilling int32
@@ -287,7 +273,6 @@ var OrderTypeFilling_name = map[int32]string{
 	1: "IOC",
 	2: "RETURN",
 }
-
 var OrderTypeFilling_value = map[string]int32{
 	"FOK":    0,
 	"IOC":    1,
@@ -297,9 +282,8 @@ var OrderTypeFilling_value = map[string]int32{
 func (x OrderTypeFilling) String() string {
 	return proto.EnumName(OrderTypeFilling_name, int32(x))
 }
-
 func (OrderTypeFilling) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{7}
+	return fileDescriptor_enum_390429901a2bf211, []int{7}
 }
 
 type Reason int32
@@ -323,7 +307,6 @@ var Reason_name = map[int32]string{
 	5: "ORDER_TP",
 	6: "ORDER_SO",
 }
-
 var Reason_value = map[string]int32{
 	"ORDER_CLIENT":   0,
 	"ORDER_MOBILE":   1,
@@ -337,9 +320,8 @@ var Reason_value = map[string]int32{
 func (x Reason) String() string {
 	return proto.EnumName(Reason_name, int32(x))
 }
-
 func (Reason) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{8}
+	return fileDescriptor_enum_390429901a2bf211, []int{8}
 }
 
 type OrderTypeTime int32
@@ -357,7 +339,6 @@ var OrderTypeTime_name = map[int32]string{
 	2: "SPECIFIED",
 	3: "SPECIFIED_DAY",
 }
-
 var OrderTypeTime_value = map[string]int32{
 	"GTC":           0,
 	"DAY":           1,
@@ -368,9 +349,8 @@ var OrderTypeTime_value = map[string]int32{
 func (x OrderTypeTime) String() string {
 	return proto.EnumName(OrderTypeTime_name, int32(x))
 }
-
 func (OrderTypeTime) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{9}
+	return fileDescriptor_enum_390429901a2bf211, []int{9}
 }
 
 type OrderEntryType int32
@@ -388,7 +368,6 @@ var OrderEntryType_name = map[int32]string{
 	2: "INOUT",
 	3: "OUT_BY",
 }
-
 var OrderEntryType_value = map[string]int32{
 	"IN":     0,
 	"OUT":    1,
@@ -399,9 +378,8 @@ var OrderEntryType_value = map[string]int32{
 func (x OrderEntryType) String() string {
 	return proto.EnumName(OrderEntryType_name, int32(x))
 }
-
 func (OrderEntryType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{10}
+	return fileDescriptor_enum_390429901a2bf211, []int{10}
 }
 
 type Side int32
@@ -415,7 +393,6 @@ var Side_name = map[int32]string{
 	0: "BUY",
 	1: "SELL",
 }
-
 var Side_value = map[string]int32{
 	"BUY":  0,
 	"SELL": 1,
@@ -424,9 +401,8 @@ var Side_value = map[string]int32{
 func (x Side) String() string {
 	return proto.EnumName(Side_name, int32(x))
 }
-
 func (Side) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{11}
+	return fileDescriptor_enum_390429901a2bf211, []int{11}
 }
 
 type OrderType int32
@@ -446,7 +422,6 @@ var OrderType_name = map[int32]string{
 	3: "STOP_LIMIT",
 	4: "CLOSING_BY",
 }
-
 var OrderType_value = map[string]int32{
 	"MARKET":     0,
 	"LIMIT":      1,
@@ -458,9 +433,8 @@ var OrderType_value = map[string]int32{
 func (x OrderType) String() string {
 	return proto.EnumName(OrderType_name, int32(x))
 }
-
 func (OrderType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{12}
+	return fileDescriptor_enum_390429901a2bf211, []int{12}
 }
 
 type DealType int32
@@ -492,7 +466,6 @@ var DealType_name = map[int32]string{
 	9:  "SELL_CANCELED",
 	10: "DIVIDEND",
 }
-
 var DealType_value = map[string]int32{
 	"POSITION":      0,
 	"BALANCE":       1,
@@ -510,9 +483,8 @@ var DealType_value = map[string]int32{
 func (x DealType) String() string {
 	return proto.EnumName(DealType_name, int32(x))
 }
-
 func (DealType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{13}
+	return fileDescriptor_enum_390429901a2bf211, []int{13}
 }
 
 type TradeAction int32
@@ -534,7 +506,6 @@ var TradeAction_name = map[int32]string{
 	4: "REMOVE",
 	5: "CLOSE_BY",
 }
-
 var TradeAction_value = map[string]int32{
 	"DEAL":     0,
 	"PENDING":  1,
@@ -547,9 +518,8 @@ var TradeAction_value = map[string]int32{
 func (x TradeAction) String() string {
 	return proto.EnumName(TradeAction_name, int32(x))
 }
-
 func (TradeAction) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{14}
+	return fileDescriptor_enum_390429901a2bf211, []int{14}
 }
 
 type Retcode int32
@@ -641,7 +611,6 @@ var Retcode_name = map[int32]string{
 	41: "INVALID_TOKEN",
 	42: "INVALID_REQUEST",
 }
-
 var Retcode_value = map[string]int32{
 	"REJECTX":               0,
 	"REJECT":                2,
@@ -689,9 +658,8 @@ var Retcode_value = map[string]int32{
 func (x Retcode) String() string {
 	return proto.EnumName(Retcode_name, int32(x))
 }
-
 func (Retcode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{15}
+	return fileDescriptor_enum_390429901a2bf211, []int{15}
 }
 
 type Granularity int32
@@ -759,7 +727,6 @@ var Granularity_name = map[int32]string{
 	43200: "GRANULARITY_12H",
 	86400: "GRANULARITY_1D",
 }
-
 var Granularity_value = map[string]int32{
 	"GRANULARITY_0M":  0,
 	"GRANULARITY_1M":  60,
@@ -795,9 +762,8 @@ var Granularity_value = map[string]int32{
 func (x Granularity) String() string {
 	return proto.EnumName(Granularity_name, int32(x))
 }
-
 func (Granularity) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{16}
+	return fileDescriptor_enum_390429901a2bf211, []int{16}
 }
 
 type CandleGroupBy int32
@@ -813,7 +779,6 @@ var CandleGroupBy_name = map[int32]string{
 	1: "VOLUME",
 	2: "TRADE",
 }
-
 var CandleGroupBy_value = map[string]int32{
 	"TIME":   0,
 	"VOLUME": 1,
@@ -823,9 +788,8 @@ var CandleGroupBy_value = map[string]int32{
 func (x CandleGroupBy) String() string {
 	return proto.EnumName(CandleGroupBy_name, int32(x))
 }
-
 func (CandleGroupBy) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{17}
+	return fileDescriptor_enum_390429901a2bf211, []int{17}
 }
 
 type BacktestingCode int32
@@ -841,7 +805,6 @@ var BacktestingCode_name = map[int32]string{
 	1: "NEXT",
 	2: "FINISHED",
 }
-
 var BacktestingCode_value = map[string]int32{
 	"START":    0,
 	"NEXT":     1,
@@ -851,9 +814,8 @@ var BacktestingCode_value = map[string]int32{
 func (x BacktestingCode) String() string {
 	return proto.EnumName(BacktestingCode_name, int32(x))
 }
-
 func (BacktestingCode) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_13a9f1b5947140c8, []int{18}
+	return fileDescriptor_enum_390429901a2bf211, []int{18}
 }
 
 func init() {
@@ -878,9 +840,9 @@ func init() {
 	proto.RegisterEnum("api.BacktestingCode", BacktestingCode_name, BacktestingCode_value)
 }
 
-func init() { proto.RegisterFile("enum.proto", fileDescriptor_13a9f1b5947140c8) }
+func init() { proto.RegisterFile("enum.proto", fileDescriptor_enum_390429901a2bf211) }
 
-var fileDescriptor_13a9f1b5947140c8 = []byte{
+var fileDescriptor_enum_390429901a2bf211 = []byte{
 	// 1438 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x56, 0x3b, 0x6f, 0x1b, 0xc7,
 	0x16, 0x16, 0xdf, 0xe4, 0x50, 0x8f, 0xe3, 0xb5, 0x65, 0x5f, 0xdf, 0xeb, 0xfb, 0xb0, 0xef, 0x7b,

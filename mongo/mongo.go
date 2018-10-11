@@ -3,7 +3,6 @@ package mongodb
 import (
 	"context"
 	"os"
-	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/maurodelazeri/lion/common"
@@ -87,17 +86,12 @@ func WorkerTrades(item interface{}) {
 	switch t := item.(type) {
 	case *pbAPI.Trade:
 		coll := MongoDB.Collection("trades")
-		layout := "2006-01-02T15:04:05.999999Z"
-		timestamp, err := time.Parse(layout, t.GetTimestamp())
-		if err != nil {
-			return
-		}
-		_, err = coll.InsertOne(
+		_, err := coll.InsertOne(
 			context.Background(),
 			bson.NewDocument(
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-				bson.EC.Time("timestamp", timestamp),
+				bson.EC.Int64("timestamp", t.GetTimestamp()),
 				bson.EC.Double("price", t.GetPrice()),
 				bson.EC.Double("size", t.GetSize()),
 				bson.EC.Int32("side", pbAPI.Side_value[t.GetOrderSide().String()]),
@@ -117,18 +111,13 @@ func WorkerOrderbook(item interface{}) {
 		if err != nil {
 			return
 		}
-		layout := "2006-01-02T15:04:05.999999Z"
-		timestamp, err := time.Parse(layout, t.GetTimestamp())
-		if err != nil {
-			return
-		}
 		coll := MongoDB.Collection("orderbook")
 		_, err = coll.InsertOne(
 			context.Background(),
 			bson.NewDocument(
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-				bson.EC.Timestamp("timestamp", timestamp),
+				bson.EC.Int64("timestamp", t.GetTimestamp()),
 				bson.EC.Binary("depth", common.CompressFlate(protobufByte)),
 			))
 		if err != nil {
