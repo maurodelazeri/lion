@@ -541,12 +541,12 @@ func CheckSecondTimeDiff(event int64) time.Duration {
 
 // MakeTimestampFromTime create standart timestamp
 func MakeTimestampFromTime(ref time.Time) int64 {
-	return ref.UnixNano() / int64(time.Nanosecond)
+	return ref.UTC().UnixNano() / int64(time.Nanosecond)
 }
 
 // MakeTimestamp ...
 func MakeTimestamp() int64 {
-	return time.Now().UnixNano() / int64(time.Nanosecond)
+	return time.Now().UTC().UnixNano() / int64(time.Nanosecond)
 }
 
 // CompressLZW ...
