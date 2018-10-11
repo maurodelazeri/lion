@@ -539,6 +539,11 @@ func CheckSecondTimeDiff(event int64) time.Duration {
 	return now.Sub(timeFromTS)
 }
 
+// MakeTimestampFromInt64 create standart timestamp
+func MakeTimestampFromInt64(ref int64) time.Time {
+	return time.Unix(0, ref*int64(time.Nanosecond))
+}
+
 // MakeTimestampFromTime create standart timestamp
 func MakeTimestampFromTime(ref time.Time) int64 {
 	return ref.UTC().UnixNano() / int64(time.Nanosecond)

@@ -15,7 +15,7 @@ service API {
   rpc GetAccount(AccountRequest) returns (AccountResult) {}
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
-  rpc GetBacktestingToken(TokenRequest) returns (TokenResponse) {}
+  rpc GetBacktestingAccount(BacktestingAccountRequest) returns (BacktestingAccountResponse) {}
   rpc Backtesting(stream BacktestingRequest) returns (stream BacktestingResponse) {}
 } 
 
@@ -167,14 +167,14 @@ message Balance  {
 }
 
 // Token
-message TokenRequest {
+message BacktestingAccountRequest {
     repeated VenueBalance     venue_balances       = 1; 
     Subscription              subscription         = 2;
 }
 
-message TokenResponse { 
+message BacktestingAccountResponse { 
    Retcode                      retcode                   = 1; 
-   string                       token                     = 2;
+   string                       account                   = 2;
    string                       comment                   = 3;
 }
 

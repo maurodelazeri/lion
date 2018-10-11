@@ -3,8 +3,8 @@ package mongodb
 import (
 	"context"
 	"os"
-	"time"
 
+	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/core/connstring"
@@ -99,7 +99,7 @@ func WorkerTrades(item interface{}) {
 			bson.NewDocument(
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-				bson.EC.Time("timestamp", time.Unix(0, t.GetTimestamp()*int64(time.Nanosecond))),
+				bson.EC.Time("timestamp", common.MakeTimestampFromInt64(t.GetTimestamp())),
 				bson.EC.Double("price", t.GetPrice()),
 				bson.EC.Double("size", t.GetSize()),
 				bson.EC.Int32("side", pbAPI.Side_value[t.GetOrderSide().String()]),
