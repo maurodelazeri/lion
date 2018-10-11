@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/core/connstring"
@@ -118,7 +117,7 @@ func WorkerOrderbook(item interface{}) {
 				bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
 				bson.EC.Int64("timestamp", t.GetTimestamp()),
-				bson.EC.Binary("depth", common.CompressFlate(protobufByte)),
+				bson.EC.Binary("depth", protobufByte),
 			))
 		if err != nil {
 			logrus.Error("Problem to insert on mongo ", err)
