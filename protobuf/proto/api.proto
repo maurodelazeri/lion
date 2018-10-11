@@ -170,6 +170,7 @@ message Balance  {
 message BacktestingTokenRequest {
     repeated VenueBalance     venue_balances       = 1; 
     Subscription              subscription         = 2;
+    SystemMode                system_mode          = 3;
 }
 
 message BacktestingTokenResponse { 
