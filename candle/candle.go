@@ -9,12 +9,13 @@ import (
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 )
 
-// https://texlution.com/post/golang-lock-free-values-with-atomic-value/
-var (
-	// Candlestick ...
-	SyncCandlestick *utils.ConcurrentMap
+// http://www.blackarbs.com/blog/exploring-alternative-price-bars
+// http://www.blackarbs.com/blog/
 
-	// CandlesMap ...
+var (
+	// SyncCandlestick ...
+	SyncCandlestick *utils.ConcurrentMap
+	// SyncCandlesMap ...
 	SyncCandlesMap *utils.ConcurrentMap
 )
 
@@ -26,11 +27,11 @@ func init() {
 }
 
 // CreateOrUpdateCandleTime ...
-func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, amount number.Decimal, side int32, createdAt time.Time) {
+func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, createdAt time.Time) {
 	buy := 0
 	sell := 0
-	if side == 0 {
-		buy = 1
+	if side == pbAPI.Side_BUY {
+		buy = 0
 	} else {
 		sell = 1
 	}
@@ -48,8 +49,8 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 				Close:       price.Float64(),
 				High:        price.Float64(),
 				Low:         price.Float64(),
-				Volume:      amount.Float64(),
-				Total:       price.Mul(amount).Float64(),
+				Volume:      volume.Float64(),
+				Total:       price.Mul(volume).Float64(),
 				TotalTrades: 1,
 				BuyTotal:    int32(buy),
 				SellTotal:   int32(sell),
@@ -81,12 +82,17 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, a
 	}
 }
 
-// CreateOrUpdateCandleVolume ...
-func CreateOrUpdateCandleVolume(venue, product string, price, amount number.Decimal, side int32, volume float64) {
+// CreateOrUpdateCandleTick ...
+func CreateOrUpdateCandleTick(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, ticks int32) {
 
 }
 
-// CreateOrUpdateCandleTrades ...
-func CreateOrUpdateCandleTrades(venue, product string, price, amount number.Decimal, side int32, numTrades int64) {
+// CreateOrUpdateCandleVolume ...
+func CreateOrUpdateCandleVolume(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, volLimit float64) {
+
+}
+
+// CreateOrUpdateCandleDollars ...
+func CreateOrUpdateCandleDollars(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, maxDollars float64) {
 
 }
