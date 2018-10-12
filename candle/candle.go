@@ -26,12 +26,13 @@ type Candle struct {
 }
 
 // NewCandles ...
-func NewCandles() {
+func NewCandles() *Candle {
 	candle := new(Candle)
 	candle.CandlesTime = utils.NewConcurrentMap()
 	candle.CandlesTick = utils.NewConcurrentMap()
 	candle.CandlesVolume = utils.NewConcurrentMap()
 	candle.CandlesMoney = utils.NewConcurrentMap()
+	return candle
 }
 
 // CreateOrUpdateCandleBarTime ...
@@ -88,7 +89,7 @@ func (c *Candle) CreateOrUpdateCandleBarTime(venue pbAPI.Venue, product pbAPI.Pr
 
 // CreateOrUpdateCandleBarTick ...
 // https://www.thebalance.com/tick-chart-or-1-minute-chart-for-day-trading-1030978
-func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side) {
+func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, createdAt time.Time) {
 	countBuy := 0
 	countSell := 0
 	if side == pbAPI.Side_BUY {
@@ -143,7 +144,7 @@ func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Pr
 }
 
 // CreateOrUpdateCandleBarVolume ...
-func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, volLimit float64) {
+func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, createdAt time.Time) {
 	countBuy := 0
 	countSell := 0
 	if side == pbAPI.Side_BUY {
@@ -198,7 +199,7 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 }
 
 // CreateOrUpdateCandleBarMoney ...
-func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, maxDollars float64) {
+func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, createdAt time.Time) {
 	countBuy := 0
 	countSell := 0
 	if side == pbAPI.Side_BUY {

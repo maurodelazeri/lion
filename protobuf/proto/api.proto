@@ -206,7 +206,7 @@ message ClientInitilization {
   Subscription                      subscription           = 2;
   int64                             start_date             = 3;
   int64                             end_date               = 4;  
-  map<string, Granularity>          candle_granularity     = 5;
+  string                            candle_granularity     = 5;
   CandleGroupBy                     candle_group_by        = 6;
   bool                              verbose                = 7; 
 }
