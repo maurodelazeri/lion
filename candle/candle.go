@@ -6,8 +6,8 @@ import (
 
 	"github.com/maurodelazeri/concurrency-map-slice"
 	number "github.com/maurodelazeri/go-number"
-	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/sirupsen/logrus"
 )
 
 // http://www.blackarbs.com/blog/exploring-alternative-price-bars
@@ -65,9 +65,30 @@ func (c *Candle) CreateOrUpdateCandleBarTime(venue pbAPI.Venue, product pbAPI.Pr
 				SellTotal:   0,
 			}
 			if exist {
-				// NEED A VALIDATION IN CASE A PRICE COMES OUT OF ORDER, based on the start of the candle (timestamp we can solve this)
 				historyCandle := history.([]*pbAPI.Candle)[len(history.([]*pbAPI.Candle))-1]
+				if currentPoint > historyCandle.Point {
+					// New candle
+					c.CandlesTime.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					continue
+				}
 
+				if currentPoint < historyCandle.Point {
+					// candle our of order
+					c.CandlesTime.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					for i := len(history.([]*pbAPI.Candle)) - 1; i > -1; i-- {
+						found := false
+						if history.([]*pbAPI.Candle)[i].Point == currentPoint {
+							found = true
+							historyCandle = history.([]*pbAPI.Candle)[i]
+						}
+						if !found {
+							logrus.Warn("Candle out of order, ignoring")
+						}
+					}
+					continue
+				}
+
+				// Just update
 				historyCandle.Open = newCandle.Open
 				if newCandle.High > historyCandle.High {
 					historyCandle.High = newCandle.High
@@ -98,12 +119,13 @@ func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Pr
 		countSell = 1
 	}
 	for _, g := range pbAPI.GranularityTick_value {
+		currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
 		if g != 0 {
 			newCandle := &pbAPI.Candle{
 				Venue:       venue,
 				Product:     product,
 				Granularity: g,
-				Point:       common.MakeTimestamp(),
+				Point:       currentPoint,
 				Open:        price.Float64(),
 				Close:       price.Float64(),
 				High:        price.Float64(),
@@ -154,11 +176,12 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 	}
 	for _, g := range pbAPI.GranularityVolume_value {
 		if g != 0 {
+			currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
 			newCandle := &pbAPI.Candle{
 				Venue:       venue,
 				Product:     product,
 				Granularity: g,
-				Point:       common.MakeTimestamp(),
+				Point:       currentPoint,
 				Open:        price.Float64(),
 				Close:       price.Float64(),
 				High:        price.Float64(),
@@ -209,11 +232,12 @@ func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.P
 	}
 	for _, g := range pbAPI.GranularityMoney_value {
 		if g != 0 {
+			currentPoint := createdAt.UTC().Truncate(time.Duration(g) * time.Second).Unix()
 			newCandle := &pbAPI.Candle{
 				Venue:       venue,
 				Product:     product,
 				Granularity: g,
-				Point:       common.MakeTimestamp(),
+				Point:       currentPoint,
 				Open:        price.Float64(),
 				Close:       price.Float64(),
 				High:        price.Float64(),
