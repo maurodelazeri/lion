@@ -202,13 +202,20 @@ message Item {
 };
 
 message ClientInitilization {
-  SystemMode      system_mode            = 1; 
-  Subscription    subscription           = 2;
-  int64           start_date             = 3;
-  int64           end_date               = 4;  
-  Granularity     candle_granularity     = 5;
-  CandleGroupBy   candle_group_by        = 6;
-  bool            verbose                = 7; 
+  SystemMode                        system_mode            = 1; 
+  Subscription                      subscription           = 2;
+  int64                             start_date             = 3;
+  int64                             end_date               = 4;  
+  map<string, Granularity>          candle_granularity     = 5;
+  CandleGroupBy                     candle_group_by        = 6;
+  bool                              verbose                = 7; 
+}
+
+message Granularity {
+ GranularityTime       time   = 1;
+ GranularityTick       tick   = 2;
+ GranularityVolume     volume = 3;
+ GranularityMoney      money  = 4;
 }
 
 message Subscription {
@@ -258,7 +265,7 @@ message Candle {
   Venue         venue        = 1;
   Product       product      = 2;
   int32         granularity  = 3;
-  int32         point        = 4;
+  int64         point        = 4;
   double        open         = 5;
   double        close        = 6;
   double        high         = 7;
