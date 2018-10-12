@@ -28,12 +28,12 @@ func init() {
 
 // CreateOrUpdateCandleTime ...
 func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, volume number.Decimal, side pbAPI.Side, createdAt time.Time) {
-	buy := 0
-	sell := 0
+	countBuy := 0
+	countSell := 0
 	if side == pbAPI.Side_BUY {
-		buy = 0
+		countBuy = 1
 	} else {
-		sell = 1
+		countSell = 1
 	}
 	for _, g := range pbAPI.Granularity_value {
 		if g != 0 {
@@ -52,8 +52,8 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, v
 				Volume:      volume.Float64(),
 				Total:       price.Mul(volume).Float64(),
 				TotalTrades: 1,
-				BuyTotal:    int32(buy),
-				SellTotal:   int32(sell),
+				BuyTotal:    0,
+				SellTotal:   0,
 			}
 			if exist {
 				historyCandle := history.(*pbAPI.Candle)
@@ -67,8 +67,8 @@ func CreateOrUpdateCandleTime(venue pbAPI.Venue, product pbAPI.Product, price, v
 				historyCandle.Volume = historyCandle.Volume + newCandle.Volume
 				historyCandle.Total = historyCandle.Total + newCandle.Total
 				historyCandle.TotalTrades = newCandle.TotalTrades + 1
-				historyCandle.BuyTotal = newCandle.BuyTotal + int32(buy)
-				historyCandle.SellTotal = newCandle.SellTotal + int32(sell)
+				historyCandle.BuyTotal = newCandle.BuyTotal + int32(countBuy)
+				historyCandle.SellTotal = newCandle.SellTotal + int32(countSell)
 			} else {
 				SyncCandlestick.Set(currentKey, newCandle)
 				currentPointsMap, found := SyncCandlesMap.Get(fmt.Sprintf("%d:%s:%s", g, venue.String(), product.String()))
