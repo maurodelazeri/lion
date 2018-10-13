@@ -157,7 +157,7 @@ func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Pr
 					continue
 				}
 
-				if historyCandle.TotalTrades <= g {
+				if historyCandle.GetTotalTrades()+1 <= g {
 					historyCandle.Open = newCandle.GetOpen()
 					if newCandle.GetHigh() > historyCandle.GetHigh() {
 						historyCandle.High = newCandle.GetLow()
@@ -230,7 +230,7 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 					}
 					continue
 				}
-				if historyCandle.Volume <= float64(g) {
+				if historyCandle.GetVolume()+volume.Float64() <= float64(g) {
 					historyCandle.Open = newCandle.GetOpen()
 					if newCandle.GetHigh() > historyCandle.GetHigh() {
 						historyCandle.High = newCandle.GetLow()
@@ -243,7 +243,6 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 					historyCandle.TotalTrades = historyCandle.GetTotalTrades() + 1
 					historyCandle.BuyTotal = historyCandle.GetBuyTotal() + int32(countBuy)
 					historyCandle.SellTotal = historyCandle.GetSellTotal() + int32(countSell)
-
 				} else {
 					// New Candle
 					var arr []*pbAPI.Candle
@@ -306,7 +305,7 @@ func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.P
 					continue
 				}
 
-				if int32(historyCandle.Total) <= g {
+				if historyCandle.GetTotal()+price.Mul(volume).Float64() <= float64(g) {
 					historyCandle.Open = newCandle.GetOpen()
 					if newCandle.GetHigh() > historyCandle.GetHigh() {
 						historyCandle.High = newCandle.GetLow()
