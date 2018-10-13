@@ -98,11 +98,12 @@ func (c *Candle) CreateOrUpdateCandleBarTime(venue pbAPI.Venue, product pbAPI.Pr
 				}
 				historyCandle.Volume = historyCandle.Volume + newCandle.Volume
 				historyCandle.Total = historyCandle.Total + newCandle.Total
-				historyCandle.TotalTrades = newCandle.TotalTrades + 1
-				historyCandle.BuyTotal = newCandle.BuyTotal + int32(countBuy)
-				historyCandle.SellTotal = newCandle.SellTotal + int32(countSell)
+				historyCandle.TotalTrades = historyCandle.TotalTrades + 1
+				historyCandle.BuyTotal = historyCandle.BuyTotal + int32(countBuy)
+				historyCandle.SellTotal = historyCandle.SellTotal + int32(countSell)
 			} else {
-				c.CandlesTime.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+				var arr []*pbAPI.Candle
+				c.CandlesTime.Set(currentKey, append(arr, newCandle))
 			}
 		}
 	}
@@ -140,6 +141,23 @@ func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Pr
 			history, exist := c.CandlesTick.Get(currentKey)
 			if exist {
 				historyCandle := history.([]*pbAPI.Candle)[len(history.([]*pbAPI.Candle))-1]
+
+				if currentPoint < historyCandle.Point {
+					// candle our of order
+					c.CandlesTime.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					for i := len(history.([]*pbAPI.Candle)) - 1; i > -1; i-- {
+						found := false
+						if history.([]*pbAPI.Candle)[i].Point == currentPoint {
+							found = true
+							historyCandle = history.([]*pbAPI.Candle)[i]
+						}
+						if !found {
+							logrus.Warn("Candle out of order, ignoring")
+						}
+					}
+					continue
+				}
+
 				if historyCandle.TotalTrades <= g {
 					historyCandle.Open = newCandle.Open
 					if newCandle.High > historyCandle.High {
@@ -150,16 +168,18 @@ func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Pr
 					}
 					historyCandle.Volume = historyCandle.Volume + newCandle.Volume
 					historyCandle.Total = historyCandle.Total + newCandle.Total
-					historyCandle.TotalTrades = newCandle.TotalTrades + 1
-					historyCandle.BuyTotal = newCandle.BuyTotal + int32(countBuy)
-					historyCandle.SellTotal = newCandle.SellTotal + int32(countSell)
+					historyCandle.TotalTrades = historyCandle.TotalTrades + 1
+					historyCandle.BuyTotal = historyCandle.BuyTotal + int32(countBuy)
+					historyCandle.SellTotal = historyCandle.SellTotal + int32(countSell)
 				} else {
 					// New Candle
-					c.CandlesTick.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					var arr []*pbAPI.Candle
+					c.CandlesTime.Set(currentKey, append(arr, newCandle))
 				}
 			} else {
 				// New Candle
-				c.CandlesTick.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+				var arr []*pbAPI.Candle
+				c.CandlesTime.Set(currentKey, append(arr, newCandle))
 			}
 		}
 	}
@@ -196,7 +216,23 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 			history, exist := c.CandlesVolume.Get(currentKey)
 			if exist {
 				historyCandle := history.([]*pbAPI.Candle)[len(history.([]*pbAPI.Candle))-1]
-				if int32(historyCandle.Total) <= g {
+
+				if currentPoint < historyCandle.Point {
+					// candle our of order
+					c.CandlesVolume.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					for i := len(history.([]*pbAPI.Candle)) - 1; i > -1; i-- {
+						found := false
+						if history.([]*pbAPI.Candle)[i].Point == currentPoint {
+							found = true
+							historyCandle = history.([]*pbAPI.Candle)[i]
+						}
+						if !found {
+							logrus.Warn("Candle out of order, ignoring")
+						}
+					}
+					continue
+				}
+				if int32(historyCandle.Volume) <= g {
 					historyCandle.Open = newCandle.Open
 					if newCandle.High > historyCandle.High {
 						historyCandle.High = newCandle.High
@@ -204,18 +240,23 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 					if newCandle.Low < historyCandle.Low {
 						historyCandle.Low = newCandle.Low
 					}
+					logrus.Info("OLD VOLUME ", historyCandle.Volume, " new volume ", newCandle.Volume)
 					historyCandle.Volume = historyCandle.Volume + newCandle.Volume
 					historyCandle.Total = historyCandle.Total + newCandle.Total
-					historyCandle.TotalTrades = newCandle.TotalTrades + 1
-					historyCandle.BuyTotal = newCandle.BuyTotal + int32(countBuy)
-					historyCandle.SellTotal = newCandle.SellTotal + int32(countSell)
+					historyCandle.TotalTrades = historyCandle.TotalTrades + 1
+					historyCandle.BuyTotal = historyCandle.BuyTotal + int32(countBuy)
+					historyCandle.SellTotal = historyCandle.SellTotal + int32(countSell)
+					logrus.Info("REsult: ", historyCandle.Volume)
+
 				} else {
 					// New Candle
-					c.CandlesVolume.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					var arr []*pbAPI.Candle
+					c.CandlesVolume.Set(currentKey, append(arr, newCandle))
 				}
 			} else {
 				// New Candle
-				c.CandlesVolume.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+				var arr []*pbAPI.Candle
+				c.CandlesVolume.Set(currentKey, append(arr, newCandle))
 			}
 		}
 	}
@@ -252,6 +293,23 @@ func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.P
 			history, exist := c.CandlesMoney.Get(currentKey)
 			if exist {
 				historyCandle := history.([]*pbAPI.Candle)[len(history.([]*pbAPI.Candle))-1]
+
+				if currentPoint < historyCandle.Point {
+					// candle our of order
+					c.CandlesMoney.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					for i := len(history.([]*pbAPI.Candle)) - 1; i > -1; i-- {
+						found := false
+						if history.([]*pbAPI.Candle)[i].Point == currentPoint {
+							found = true
+							historyCandle = history.([]*pbAPI.Candle)[i]
+						}
+						if !found {
+							logrus.Warn("Candle out of order, ignoring")
+						}
+					}
+					continue
+				}
+
 				if int32(historyCandle.Total) <= g {
 					historyCandle.Open = newCandle.Open
 					if newCandle.High > historyCandle.High {
@@ -267,11 +325,13 @@ func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.P
 					historyCandle.SellTotal = newCandle.SellTotal + int32(countSell)
 				} else {
 					// New Candle
-					c.CandlesMoney.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+					var arr []*pbAPI.Candle
+					c.CandlesMoney.Set(currentKey, append(arr, newCandle))
 				}
 			} else {
 				// New Candle
-				c.CandlesMoney.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
+				var arr []*pbAPI.Candle
+				c.CandlesMoney.Set(currentKey, append(arr, newCandle))
 			}
 		}
 	}
