@@ -211,6 +211,7 @@ package api;
 
    enum GranularityTick{
 	TICK_0  		    = 0;
+	TICK_1  		    = 1;
 	TICK_5  		    = 5;
 	TICK_10  		    = 10;
 	TICK_15  			= 15;
@@ -237,6 +238,7 @@ package api;
 
    enum GranularityVolume{
 	VOL_0  			    = 0;
+	VOL_1  			    = 1;
 	VOL_5  			    = 5;
 	VOL_10  		    = 10;
 	VOL_15  			= 15;

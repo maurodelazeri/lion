@@ -92,7 +92,7 @@ func (c *Candle) CreateOrUpdateCandleBarTime(venue pbAPI.Venue, product pbAPI.Pr
 				if newCandle.GetHigh() > historyCandle.GetHigh() {
 					historyCandle.High = newCandle.GetLow()
 				}
-				if newCandle.Low < historyCandle.Low {
+				if newCandle.GetLow() < historyCandle.GetLow() {
 					historyCandle.Low = newCandle.GetLow()
 				}
 				historyCandle.Volume = historyCandle.GetVolume() + volume.Float64()
@@ -162,7 +162,7 @@ func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Pr
 					if newCandle.GetHigh() > historyCandle.GetHigh() {
 						historyCandle.High = newCandle.GetLow()
 					}
-					if newCandle.Low < historyCandle.Low {
+					if newCandle.GetLow() < historyCandle.GetLow() {
 						historyCandle.Low = newCandle.GetLow()
 					}
 					historyCandle.Volume = historyCandle.GetVolume() + volume.Float64()
@@ -234,7 +234,7 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 					if newCandle.GetHigh() > historyCandle.GetHigh() {
 						historyCandle.High = newCandle.GetLow()
 					}
-					if newCandle.Low < historyCandle.Low {
+					if newCandle.GetLow() < historyCandle.GetLow() {
 						historyCandle.Low = newCandle.GetLow()
 					}
 					historyCandle.Volume = historyCandle.GetVolume() + volume.Float64()
@@ -308,7 +308,7 @@ func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.P
 					if newCandle.GetHigh() > historyCandle.GetHigh() {
 						historyCandle.High = newCandle.GetLow()
 					}
-					if newCandle.Low < historyCandle.Low {
+					if newCandle.GetLow() < historyCandle.GetLow() {
 						historyCandle.Low = newCandle.GetLow()
 					}
 					historyCandle.Volume = historyCandle.GetVolume() + volume.Float64()
