@@ -172,8 +172,7 @@ func (c *Candle) CreateOrUpdateCandleBarTick(venue pbAPI.Venue, product pbAPI.Pr
 					historyCandle.SellTotal = historyCandle.GetSellTotal() + int32(countSell)
 				} else {
 					// New Candle
-					var arr []*pbAPI.Candle
-					c.CandlesTime.Set(currentKey, append(arr, newCandle))
+					c.CandlesTime.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
 				}
 			} else {
 				// New Candle
@@ -245,8 +244,7 @@ func (c *Candle) CreateOrUpdateCandleBarVolume(venue pbAPI.Venue, product pbAPI.
 					historyCandle.SellTotal = historyCandle.GetSellTotal() + int32(countSell)
 				} else {
 					// New Candle
-					var arr []*pbAPI.Candle
-					c.CandlesVolume.Set(currentKey, append(arr, newCandle))
+					c.CandlesVolume.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
 				}
 			} else {
 				// New Candle
@@ -320,8 +318,7 @@ func (c *Candle) CreateOrUpdateCandleBarMoney(venue pbAPI.Venue, product pbAPI.P
 					historyCandle.SellTotal = historyCandle.GetSellTotal() + int32(countSell)
 				} else {
 					// New Candle
-					var arr []*pbAPI.Candle
-					c.CandlesMoney.Set(currentKey, append(arr, newCandle))
+					c.CandlesMoney.Set(currentKey, append(history.([]*pbAPI.Candle), newCandle))
 				}
 			} else {
 				// New Candle
