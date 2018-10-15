@@ -166,7 +166,7 @@ message Balance  {
   double     hold       = 2;
 }
 
-// Token
+// Backtesting
 message BacktestingTokenRequest {
     repeated VenueBalance     venue_balances       = 1; 
     Subscription              subscription         = 2;
@@ -195,12 +195,6 @@ message BacktestingResponse {
    string                       comment                = 5;
 }
 
-// Market Data
-message Item {
-  double volume = 1;
-  double price  = 2;
-};
-
 message ClientInitilization {
   SystemMode                        system_mode            = 1; 
   Subscription                      subscription           = 2;
@@ -211,12 +205,11 @@ message ClientInitilization {
   bool                              verbose                = 7; 
 }
 
-message Granularity {
- GranularityTime       time   = 1;
- GranularityTick       tick   = 2;
- GranularityVolume     volume = 3;
- GranularityMoney      money  = 4;
-}
+// Market Data
+message Item {
+  double volume = 1;
+  double price  = 2;
+};
 
 message Subscription {
   repeated SubscriptionItems  subscribe  = 1;
