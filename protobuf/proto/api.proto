@@ -77,7 +77,7 @@ message Position {
 	double                        weighted_price           = 6;
 	double                        volume                   = 7;
   int64                         position_time            = 8;
-	int64                         position_closing         = 9;
+	int64                         closing_time             = 9;
 	Side                          position_side            = 10; 
 	Reason                        position_reason          = 11;
 	double                        sl                       = 12;
