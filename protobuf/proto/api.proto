@@ -76,17 +76,18 @@ message Position {
 	double                        price_open               = 5;
 	double                        weighted_price           = 6;
 	double                        volume                   = 7;
-	int64                         position_time            = 8;
-	Side                          position_side            = 9; 
-	Reason                        position_reason          = 10;
-	double                        sl                       = 11;
-	double                        tp                       = 12;  
-	double                        swap                     = 13;
-	double                        trailling_percent        = 14;  
-	string                        comment                  = 15;
-	double                        profit_liquid            = 16;
-	double                        cumulative_fees          = 17;
-  repeated  Orders              Orders                   = 18;
+  int64                         position_time            = 8;
+	int64                         position_closing         = 9;
+	Side                          position_side            = 10; 
+	Reason                        position_reason          = 11;
+	double                        sl                       = 12;
+	double                        tp                       = 13;  
+	double                        swap                     = 14;
+	double                        trailling_percent        = 15;  
+	string                        comment                  = 16;
+	double                        profit_liquid            = 17;
+	double                        cumulative_fees          = 18;
+  repeated  Orders              Orders                   = 19;
   }
 
 message PositionRequest { 
