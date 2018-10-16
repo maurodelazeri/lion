@@ -205,6 +205,55 @@ message ClientInitilization {
   bool                              verbose                = 7; 
 }
 
+// Reports
+message BacktestingReport {
+  ClientInitilization               initialization               = 1;
+  string                            comment                      = 2;
+  Statistics                        statistics                   = 3;
+}
+
+message Statistics {
+  int32                             products                     = 1;
+  int32                             venues                       = 2;
+  double                            bars                         = 3; 
+  double                            total_net_profit             = 4;
+  double                            gross_profit                 = 5;
+  double                            gross_loss                   = 6;  
+  double                            profict_factor               = 7;
+  double                            recovery_factor              = 8;
+  double                            ahpr                         = 9; 
+  double                            ghpr                         = 10;
+  int32                             total_trades                 = 11;
+  int32                             total_deals                  = 12;  
+  int32                             ticks                        = 13;  
+  double                            balance_drawdown_abs         = 14;   
+  double                            balance_drawdown_max         = 15;   
+  double                            balance_drawdown_rel         = 16;   
+  double                            expected_payoff              = 17;   
+  double                            sharp_ratio                  = 18;   
+  double                            lr_correlation               = 19;   
+  double                            lr_standart_err              = 20;   
+  double                            equity_drawdown_abs          = 21;   
+  double                            equity_drawdown_max          = 22;   
+  double                            equity_drawdown_rel          = 23;   
+  double                            margin_level                 = 24;   
+  double                            z_score                      = 25;   
+  int32                             short_trades_won             = 26;   
+  int32                             profit_trades_total          = 27;   
+  double                            lagest_profit_trade          = 28;   
+  double                            average_profit_trade         = 29;   
+  int32                             max_consecutive_win          = 30;   
+  int32                             max_consecutive_profit       = 31;   
+  double                            average_consecutive_win      = 32;   
+  int32                             long_trades_won              = 33;   
+  int32                             loss_trades_total            = 34;   
+  double                            lagest_loss_trade            = 35;   
+  double                            average_loss_trade           = 36;   
+  int32                             max_consecutive_losses       = 37;   
+  int32                             max_consecutive_loss         = 38;   
+  double                            average_consecutive_losses   = 39;      
+}
+
 // Market Data
 message Item {
   double volume = 1;
