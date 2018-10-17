@@ -209,8 +209,8 @@ message ClientInitilization {
 // Reports
 message BacktestingReport {
   ClientInitilization               initialization               = 1;
-  Statistics                        statistics                   = 2;
-  int32                             ticks                        = 3;  
+  map<string, Statistics>           statistics                   = 2;
+  map<string, int32>                ticks                        = 3;  
   string                            comment                      = 4;
 }
 
