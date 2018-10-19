@@ -238,14 +238,14 @@ message Statistics {
   double                            z_score                      = 21;   
   int32                             short_trades_won             = 22;   
   int32                             profit_trades_total          = 23;   
-  double                            lagest_profit_trade          = 24;   
+  double                            largest_profit_trade         = 24;   
   double                            average_profit_trade         = 25;   
   int32                             max_consecutive_win          = 26;   
   int32                             max_consecutive_profit       = 27;   
   double                            average_consecutive_win      = 28;   
   int32                             long_trades_won              = 29;   
   int32                             loss_trades_total            = 30;   
-  double                            lagest_loss_trade            = 31;   
+  double                            largest_loss_trade           = 31;   
   double                            average_loss_trade           = 32;   
   int32                             max_consecutive_losses       = 33;   
   int32                             max_consecutive_loss         = 34;   
