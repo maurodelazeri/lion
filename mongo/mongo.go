@@ -132,41 +132,50 @@ func WorkerTrades(item interface{}) {
 
 // WorkerBacktesting execute sequencial execution based on the received instructions
 func WorkerBacktesting(item interface{}) {
-	// switch t := item.(type) {
-	// case *pbAPI.BacktestingReport:
-	// 	arrBids := bson.NewArray()
-	// 	for _, values := range t.GetPositions() {
-	// 		value := bson.VC.DocumentFromElements(
-	// 			bson.EC.Double("price", values.GetPrice()),
-	// 		)
-	// 		arrBids.Append(value)
-	// 	}
-	// 	arrAsks := bson.NewArray()
-	// 	for _, values := range t.GetAsks() {
-	// 		value := bson.VC.DocumentFromElements(
-	// 			bson.EC.Double("price", values.GetPrice()),
-	// 			bson.EC.Double("volume", values.GetVolume()),
-	// 		)
-	// 		arrAsks.Append(value)
-	// 	}
-	// 	coll := MongoDB.Collection("backtesting")
-	// 	_, err := coll.InsertOne(
-	// 		context.Background(),
-	// 		bson.NewDocument(
-	// 			bson.EC.Int32("venue", pbAPI.Venue_value[t.GetVenue().String()]),
-	// 			bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
-	// 			bson.EC.Time("timestamp", common.MakeTimestampFromInt64(t.GetTimestamp())),
-	// 			bson.EC.Double("price", t.GetPrice()),
-	// 			bson.EC.Double("size", t.GetSize()),
-	// 			bson.EC.Int32("side", pbAPI.Side_value[t.GetOrderSide().String()]),
-	// 			bson.EC.Int32("venue_type", pbAPI.VenueType_value[t.GetVenueType().String()]),
-	// 			bson.EC.Array("bids", arrBids),
-	// 			bson.EC.Array("asks", arrAsks),
-	// 		))
-	// 	if err != nil {
-	// 		logrus.Error("Problem to insert on mongo ", err)
-	// 	}
-	// }
+	switch t := item.(type) {
+	case *pbAPI.BacktestingReport:
+		arrBids := bson.NewArray()
+		for _, values := range t.GetPositions() {
+			value := bson.VC.DocumentFromElements(
+				bson.EC.Double("price", values.GetPrice()),
+			)
+			arrBids.Append(value)
+		}
+		arrAsks := bson.NewArray()
+		for _, values := range t.GetAsks() {
+			value := bson.VC.DocumentFromElements(
+				bson.EC.Double("price", values.GetPrice()),
+				bson.EC.Double("volume", values.GetVolume()),
+			)
+			arrAsks.Append(value)
+		}
+		coll := MongoDB.Collection("backtesting")
+		_, err := coll.InsertOne(
+			context.Background(),
+			bson.NewDocument(
+				bson.EC.Int32("venue", positRef.Orders[0].Venue),
+				bson.EC.ObjectID("account", q.Account.ID),
+				bson.EC.Int32("product", positRef.Orders[0].Product),
+				bson.EC.Double("price_open", positRef.Orders[0].Price),
+				bson.EC.Double("weighted_price", positRef.Orders[0].Price),
+				bson.EC.Double("volume", positRef.Orders[0].Volume),
+				bson.EC.Int64("position_time", positRef.Orders[0].TimeSetup),
+				bson.EC.Int64("closing_time", 0),
+				bson.EC.Int32("position_side", positRef.Orders[0].Side),
+				bson.EC.Int32("position_reason", positRef.Orders[0].Reason),
+				bson.EC.Double("sl", positRef.Orders[0].Sl),
+				bson.EC.Double("tp", positRef.Orders[0].Tp),
+				bson.EC.Double("swap", 0.0),
+				bson.EC.Double("trailling_percent", positRef.Orders[0].TraillingPercent),
+				bson.EC.Double("profit_liquid", 0.0),
+				bson.EC.Double("cumulative_fees", execution.Fee),
+				bson.EC.String("comment", positRef.Orders[0].Comment),
+				bson.EC.Array("orders", arrVal),
+			))
+		if err != nil {
+			logrus.Error("Problem to insert on mongo ", err)
+		}
+	}
 }
 
 // fmt.Println(time.Now().UTC().Format("2006-01-02T15:04:05.999999Z"))
