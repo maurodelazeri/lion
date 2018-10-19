@@ -149,6 +149,13 @@ func WorkerBacktesting(item interface{}) {
 			)
 			arrAsks.Append(value)
 		}
+
+		// Initialization       *ClientInitilization   `protobuf:"bytes,1,opt,name=initialization,proto3" json:"initialization,omitempty"`
+		// Statistics           map[string]*Statistics `protobuf:"bytes,2,rep,name=statistics,proto3" json:"statistics,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+		// Ticks                map[string]int32       `protobuf:"bytes,3,rep,name=ticks,proto3" json:"ticks,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
+		// Positions            []string               `protobuf:"bytes,4,rep,name=positions,proto3" json:"positions,omitempty"`
+		// Comment              string                 `protobuf:"bytes,5,opt,name=comment,proto3" json:"comment,omitempty"`
+
 		coll := MongoDB.Collection("backtesting")
 		_, err := coll.InsertOne(
 			context.Background(),
