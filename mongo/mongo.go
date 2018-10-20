@@ -193,6 +193,17 @@ func WorkerBacktesting(item interface{}) {
 			bson.EC.Int32("candle_group_by", pbAPI.CandleGroupBy_value[t.Initialization.GetCandleGroupBy().String()]),
 		)
 
+		// Get current balances
+		// symbols := strings.Split(execution.Request.GetProduct().String(), "_")
+		// quoteCurrency, quoteExist := q.Account.Balances.Get(execution.Request.GetVenue().String() + ":" + pbAPI.Currency(pbAPI.Currency_value[symbols[1]]).String())
+		// baseCurrency, baseExist := q.Account.Balances.Get(execution.Request.GetVenue().String() + ":" + pbAPI.Currency(pbAPI.Currency_value[symbols[0]]).String())
+		// if !quoteExist || !baseExist {
+		// 	logrus.Error()
+		// 	return errors.New("Problem to update mongo, balances not found")
+		// }
+		// base := baseCurrency.(*Currency)
+		// quote := quoteCurrency.(*Currency)
+
 		// Positions
 		posittionsArrVal := bson.NewArray()
 		var posiDocument *bson.Element
@@ -215,6 +226,14 @@ func WorkerBacktesting(item interface{}) {
 					bson.EC.Int32("reason", pbAPI.Reason_value[order.GetReason().String()]),
 					bson.EC.Double("fee", order.GetFee()),
 					bson.EC.String("comment", order.GetComment()),
+					// bson.EC.ArrayFromElements("balance",
+					// 	bson.VC.DocumentFromElements(
+					// 		bson.EC.Double("base_available", base.Available),
+					// 		bson.EC.Double("base_hold", base.Hold),
+					// 		bson.EC.Double("quote_available", quote.Available),
+					// 		bson.EC.Double("quote_hold", quote.Hold),
+					// 	),
+					// ),
 				)
 				posittionsArrVal.Append(value)
 			}
