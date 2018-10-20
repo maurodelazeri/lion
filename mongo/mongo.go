@@ -3,6 +3,7 @@ package mongodb
 import (
 	"context"
 	"os"
+	"strings"
 
 	"github.com/mongodb/mongo-go-driver/bson/objectid"
 
@@ -132,55 +133,100 @@ func WorkerTrades(item interface{}) {
 	}
 }
 
-// Initialization       *ClientInitilization   `protobuf:"bytes,1,opt,name=initialization,proto3" json:"initialization,omitempty"`
-// Statistics           map[string]*Statistics `protobuf:"bytes,2,rep,name=statistics,proto3" json:"statistics,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-// Ticks                map[string]int32       `protobuf:"bytes,3,rep,name=ticks,proto3" json:"ticks,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"varint,2,opt,name=value,proto3"`
-// Positions            []string               `protobuf:"bytes,4,rep,name=positions,proto3" json:"positions,omitempty"`
-// Comment              string                 `protobuf:"bytes,5,opt,name=comment,proto3" json:"comment,omitempty"`
-
-// 		type ClientInitilization struct {
-// 	SystemMode           SystemMode    `protobuf:"varint,1,opt,name=system_mode,json=systemMode,proto3,enum=api.SystemMode" json:"system_mode,omitempty"`
-// 	Subscription         *Subscription `protobuf:"bytes,2,opt,name=subscription,proto3" json:"subscription,omitempty"`
-// 	StartDate            int64         `protobuf:"varint,3,opt,name=start_date,json=startDate,proto3" json:"start_date,omitempty"`
-// 	EndDate              int64         `protobuf:"varint,4,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
-// 	CandleGranularity    string        `protobuf:"bytes,5,opt,name=candle_granularity,json=candleGranularity,proto3" json:"candle_granularity,omitempty"`
-// 	CandleGroupBy        CandleGroupBy `protobuf:"varint,6,opt,name=candle_group_by,json=candleGroupBy,proto3,enum=api.CandleGroupBy" json:"candle_group_by,omitempty"`
-// 	Verbose              bool          `protobuf:"varint,7,opt,name=verbose,proto3" json:"verbose,omitempty"`
-// 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-// 	XXX_unrecognized     []byte        `json:"-"`
-// 	XXX_sizecache        int32         `json:"-"`
-// }
-
 // WorkerBacktesting execute sequencial execution based on the received instructions
 func WorkerBacktesting(item interface{}) {
 	switch t := item.(type) {
 	case *pbAPI.BacktestingReport:
-		arrVal := bson.NewArray()
-		var posiDocumento *bson.Element
+
+		// Balance document
+		var balanceDocument *bson.Element
+		balancesBacktestArr := bson.NewArray()
+		for _, balances := range t.GetBalance() {
+			venueBalArr := bson.NewArray()
+			for index, balances := range balances.GetCurrency() {
+				valueCurrency := bson.VC.DocumentFromElements(
+					bson.EC.String("name", index),
+					bson.EC.Double("available", balances.GetAvailable()),
+					bson.EC.Double("hold", balances.GetHold()),
+				)
+				venueBalArr.Append(valueCurrency)
+			}
+			valueCurrency := bson.VC.DocumentFromElements(
+				bson.EC.Int32("venue", pbAPI.Venue_value[balances.GetId().String()]),
+				bson.EC.Array("currency", venueBalArr),
+			)
+			balancesBacktestArr.Append(valueCurrency)
+		}
+
+		balanceDocument = bson.EC.SubDocumentFromElements("balances",
+			bson.EC.Array("balances", balancesBacktestArr),
+		)
+
+		// Client init parameters
+		subscriptionArr := bson.NewArray()
+		for _, subscription := range t.GetInitialization().GetSubscription().GetSubscribe() {
+			value := bson.VC.DocumentFromElements(
+				bson.EC.Int32("venue", pbAPI.Venue_value[subscription.GetVenue().String()]),
+				bson.EC.Int32("product", pbAPI.Product_value[subscription.GetProduct().String()]),
+			)
+			subscriptionArr.Append(value)
+		}
+
+		balancesInitArr := bson.NewArray()
+		for _, balances := range t.GetInitialization().GetVenueBalances() {
+			venueBalArr := bson.NewArray()
+			for index, balances := range balances.GetCurrency() {
+				valueCurrency := bson.VC.DocumentFromElements(
+					bson.EC.String("name", index),
+					bson.EC.Double("available", balances.GetAvailable()),
+					bson.EC.Double("hold", balances.GetHold()),
+				)
+				venueBalArr.Append(valueCurrency)
+			}
+			valueCurrency := bson.VC.DocumentFromElements(
+				bson.EC.Int32("venue", pbAPI.Venue_value[balances.GetId().String()]),
+				bson.EC.Array("currency", venueBalArr),
+			)
+			balancesInitArr.Append(valueCurrency)
+		}
+
+		var initDocument *bson.Element
+		initDocument = bson.EC.SubDocumentFromElements("Initialization",
+			bson.EC.Array("subscription", subscriptionArr),
+			bson.EC.Array("balances", balancesInitArr),
+			bson.EC.Int64("start_date", t.Initialization.GetStartDate()),
+			bson.EC.Int64("end_date", t.Initialization.GetEndDate()),
+			bson.EC.String("candle_granularity", t.Initialization.GetCandleGranularity()),
+			bson.EC.Int32("candle_group_by", pbAPI.CandleGroupBy_value[t.Initialization.GetCandleGroupBy().String()]),
+		)
+
+		// Positions
+		posittionsArrVal := bson.NewArray()
+		var posiDocument *bson.Element
 		for _, posi := range t.GetPositions() {
 			for _, order := range posi.Orders {
 				value := bson.VC.DocumentFromElements(
-					bson.EC.Int32("venue", pbAPI.Venue_value[order.Venue.String()]),
-					bson.EC.Int32("product", pbAPI.Product_value[order.Product.String()]),
-					bson.EC.Double("volume", order.Volume),
-					bson.EC.Double("left_volume", order.LeftVolume),
-					bson.EC.Double("price", order.Price),
-					bson.EC.Int32("type", pbAPI.OrderType_value[order.Type.String()]),
-					bson.EC.Int32("side", pbAPI.Side_value[order.Side.String()]),
-					bson.EC.Int32("state", pbAPI.OrderState_value[order.State.String()]),
-					bson.EC.Int32("entry_type", pbAPI.OrderEntryType_value[order.EntryType.String()]),
-					bson.EC.Int64("time_expiration", order.TimeExpiration),
-					bson.EC.Int64("time_setup", order.TimeSetup),
-					bson.EC.Int32("type_filling", pbAPI.OrderTypeFilling_value[order.TypeFilling.String()]),
-					bson.EC.Int32("type_time", pbAPI.OrderTypeTime_value[order.TypeTime.String()]),
-					bson.EC.Int32("reason", pbAPI.Reason_value[order.Reason.String()]),
-					bson.EC.Double("fee", order.Fee),
-					bson.EC.String("comment", order.Comment),
+					bson.EC.Int32("venue", pbAPI.Venue_value[order.GetVenue().String()]),
+					bson.EC.Int32("product", pbAPI.Product_value[order.GetProduct().String()]),
+					bson.EC.Double("volume", order.GetVolume()),
+					bson.EC.Double("left_volume", order.GetLeftVolume()),
+					bson.EC.Double("price", order.GetPrice()),
+					bson.EC.Int32("type", pbAPI.OrderType_value[order.GetType().String()]),
+					bson.EC.Int32("side", pbAPI.Side_value[order.GetSide().String()]),
+					bson.EC.Int32("state", pbAPI.OrderState_value[order.GetState().String()]),
+					bson.EC.Int32("entry_type", pbAPI.OrderEntryType_value[order.GetEntryType().String()]),
+					bson.EC.Int64("time_expiration", order.GetTimeExpiration()),
+					bson.EC.Int64("time_setup", order.GetTimeSetup()),
+					bson.EC.Int32("type_filling", pbAPI.OrderTypeFilling_value[order.GetTypeFilling().String()]),
+					bson.EC.Int32("type_time", pbAPI.OrderTypeTime_value[order.GetTypeTime().String()]),
+					bson.EC.Int32("reason", pbAPI.Reason_value[order.GetReason().String()]),
+					bson.EC.Double("fee", order.GetFee()),
+					bson.EC.String("comment", order.GetComment()),
 				)
-				arrVal.Append(value)
+				posittionsArrVal.Append(value)
 			}
 			accountID, _ := objectid.FromHex(posi.GetAccountId())
-			posiDocumento = bson.EC.SubDocumentFromElements("positions",
+			posiDocument = bson.EC.SubDocumentFromElements("positions",
 				bson.EC.Int32("venue", pbAPI.Venue_value[posi.GetVenue().String()]),
 				bson.EC.ObjectID("account", accountID),
 				bson.EC.Int32("product", pbAPI.Product_value[posi.GetProduct().String()]),
@@ -198,14 +244,66 @@ func WorkerBacktesting(item interface{}) {
 				bson.EC.Double("profit_liquid", posi.GetProfitLiquid()),
 				bson.EC.Double("cumulative_fees", posi.GetCumulativeFees()),
 				bson.EC.String("comment", posi.GetComment()),
-				bson.EC.Array("orders", arrVal),
+				bson.EC.Array("orders", posittionsArrVal),
 			)
 		}
-		coll := MongoDB.Collection("trades")
+
+		// Ticks
+		ticksArrVal := bson.NewArray()
+		var tickDocument *bson.Element
+		for index, ticks := range t.GetTicks() {
+			venueSymbol := strings.Split(index, ":")
+			value := bson.VC.DocumentFromElements(
+				bson.EC.Int32("venue", pbAPI.Venue_value[venueSymbol[0]]),
+				bson.EC.Int32("product", pbAPI.Venue_value[venueSymbol[1]]),
+				bson.EC.Int32("total_ticks", ticks),
+			)
+			ticksArrVal.Append(value)
+		}
+
+		coll := MongoDB.Collection("backtesting")
 		_, err := coll.InsertOne(
 			context.Background(),
 			bson.NewDocument(
-				posiDocumento,
+				bson.EC.Double("total_net_profit", 0.0),
+				bson.EC.Double("gross_profit", 0.0),
+				bson.EC.Double("gross_loss", 0.0),
+				bson.EC.Double("profict_factor", 0.0),
+				bson.EC.Double("recovery_factor", 0.0),
+				bson.EC.Double("ahpr", 0.0),
+				bson.EC.Double("ghpr", 0.0),
+				bson.EC.Double("total_trades", 0.0),
+				bson.EC.Double("total_deals", 0.0),
+				bson.EC.Double("balance_drawdown_abs", 0.0),
+				bson.EC.Double("balance_drawdown_max", 0.0),
+				bson.EC.Double("balance_drawdown_rel", 0.0),
+				bson.EC.Double("expected_payoff", 0.0),
+				bson.EC.Double("sharp_ratio", 0.0),
+				bson.EC.Double("lr_correlation", 0.0),
+				bson.EC.Double("lr_standart_err", 0.0),
+				bson.EC.Double("equity_drawdown_abs", 0.0),
+				bson.EC.Double("equity_drawdown_max", 0.0),
+				bson.EC.Double("equity_drawdown_rel", 0.0),
+				bson.EC.Double("margin_level", 0.0),
+				bson.EC.Double("z_score", 0.0),
+				bson.EC.Double("short_trades_won", 0.0),
+				bson.EC.Double("profit_trades_total", 0.0),
+				bson.EC.Double("largest_profit_trade", 0.0),
+				bson.EC.Double("average_profit_trade", 0.0),
+				bson.EC.Double("max_consecutive_win", 0.0),
+				bson.EC.Double("max_consecutive_profit", 0.0),
+				bson.EC.Double("average_consecutive_win", 0.0),
+				bson.EC.Double("long_trades_won", 0.0),
+				bson.EC.Double("loss_trades_total", 0.0),
+				bson.EC.Double("largest_loss_trade", 0.0),
+				bson.EC.Double("max_consecutive_losses", 0.0),
+				bson.EC.Double("max_consecutive_loss", 0.0),
+				bson.EC.Double("average_consecutive_losses", 0.0),
+				tickDocument,
+				initDocument,
+				posiDocument,
+				balanceDocument,
+				bson.EC.String("comment", t.GetComment()),
 				bson.EC.SubDocumentFromElements("size",
 					bson.EC.Int32("h", 28),
 					bson.EC.Double("w", 35.5),

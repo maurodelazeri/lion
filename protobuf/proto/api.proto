@@ -211,10 +211,10 @@ message ClientInitilization {
 // Reports
 message BacktestingReport {
   ClientInitilization               initialization               = 1;
-  map<string, Statistics>           statistics                   = 2;
+  Statistics                        statistics                   = 2;
   map<string, int32>                ticks                        = 3; 
   repeated Position                 positions                    = 4; 
-  VenueBalance                      balance                      = 5;
+  repeated VenueBalance             balance                      = 5;
   string                            comment                      = 6;
 }
 
