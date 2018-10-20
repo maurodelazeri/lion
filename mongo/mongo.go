@@ -25,13 +25,8 @@ var (
 	MongoDB *mongo.Database
 	// Client ...
 	Client *mongo.Client
-
 	// TradesQueue ...
 	TradesQueue *lane.Queue
-
-	// OrderbookQueue ...
-	OrderbookQueue *lane.Queue
-
 	// BacktestingQueue ...
 	BacktestingQueue *lane.Queue
 )
@@ -66,7 +61,6 @@ func InitEngine() {
 // InitQueueTrades ....
 func InitQueueTrades() {
 	TradesQueue = lane.NewQueue()
-	OrderbookQueue = lane.NewQueue()
 	// Let's handle the clients asynchronously
 	go func() {
 		for {
@@ -80,8 +74,7 @@ func InitQueueTrades() {
 
 // InitQueueBacktesting ...
 func InitQueueBacktesting() {
-	TradesQueue = lane.NewQueue()
-	OrderbookQueue = lane.NewQueue()
+	BacktestingQueue = lane.NewQueue()
 	// Let's handle the clients asynchronously
 	go func() {
 		for {
@@ -128,7 +121,7 @@ func WorkerTrades(item interface{}) {
 				bson.EC.Array("asks", arrAsks),
 			))
 		if err != nil {
-			logrus.Error("Problem to insert on mongo ", err)
+			logrus.Error("Problem to insert on mongo (trade)", err)
 		}
 	}
 }
@@ -311,7 +304,7 @@ func WorkerBacktesting(item interface{}) {
 				),
 			))
 		if err != nil {
-			logrus.Error("Problem to insert on mongo ", err)
+			logrus.Error("Problem to insert on mongo (backtesting) ", err)
 		}
 	}
 }
