@@ -21,19 +21,22 @@ service API {
 
   message Orders { 
     Venue                         venue                    = 1;  
-    OrderType                     orders_type              = 2;  
-    OrderState                    orders_state             = 3;  
-    int64                         time_expiration          = 4;  
-    int64                         time_setup               = 5;  
-    OrderTypeFilling              orders_type_filling      = 6;  
-    OrderTypeTime                 orders_type_time         = 7;  
-    Reason                        orders_reason            = 8;   
-    Product                       product                  = 9;  
-    string                        venue_execution_id       = 10;  
-    double                        volume                   = 11;  
-    double                        price                    = 12;  
-    double                        fee                      = 13;  
-    string                        comment                  = 14;  
+    OrderType                     type                     = 2;
+    Side                          side                     = 3;    
+    OrderState                    state                    = 4;  
+    int64                         time_expiration          = 5;  
+    int64                         time_setup               = 6;  
+    OrderTypeFilling              type_filling             = 7;  
+    OrderTypeTime                 type_time                = 8;  
+    Reason                        reason                   = 9;   
+    Product                       product                  = 10;  
+    string                        venue_execution_id       = 11;  
+    double                        volume                   = 12;  
+    double                        price                    = 13;  
+    double                        fee                      = 14; 
+    double                        left_volume              = 15;
+    OrderEntryType                entry_type               = 16;   
+    string                        comment                  = 17;  
    }
 
  message OrderRequest { 
@@ -152,7 +155,7 @@ message User {
 message Account {
   string                     account_id   = 1;
   AccountType                account_type = 2;
-  SystemMode                 system_mode = 3;
+  SystemMode                 system_mode  = 3;
   map<string, VenueBalance>  balances     = 4;
   bool                       active       = 5;
 }
@@ -169,9 +172,7 @@ message Balance  {
 
 // Backtesting
 message BacktestingTokenRequest {
-    repeated VenueBalance     venue_balances       = 1; 
-    Subscription              subscription         = 2;
-    SystemMode                system_mode          = 3;
+  ClientInitilization     initialization     = 1;
 }
 
 message BacktestingTokenResponse { 
@@ -199,11 +200,12 @@ message BacktestingResponse {
 message ClientInitilization {
   SystemMode                        system_mode            = 1; 
   Subscription                      subscription           = 2;
-  int64                             start_date             = 3;
-  int64                             end_date               = 4;  
-  string                            candle_granularity     = 5;
-  CandleGroupBy                     candle_group_by        = 6;
-  bool                              verbose                = 7; 
+  repeated VenueBalance             venue_balances         = 3; 
+  int64                             start_date             = 4;
+  int64                             end_date               = 5;  
+  string                            candle_granularity     = 6;
+  CandleGroupBy                     candle_group_by        = 7;
+  bool                              verbose                = 8; 
 }
 
 // Reports
@@ -211,8 +213,9 @@ message BacktestingReport {
   ClientInitilization               initialization               = 1;
   map<string, Statistics>           statistics                   = 2;
   map<string, int32>                ticks                        = 3; 
-  repeated string                   positions                    = 4; 
-  string                            comment                      = 5;
+  repeated Position                 positions                    = 4; 
+  VenueBalance                      balance                      = 5;
+  string                            comment                      = 6;
 }
 
 message Statistics {
