@@ -163,10 +163,9 @@ message Balance  {
   Venue      venue           = 1; 
   Currency   currency        = 2;
   double     available       = 3; 
-  double     hold            = 4;
-  int64      Timestamp       = 5;
-  string     position        = 6;
-  string     order           = 7;
+  int64      Timestamp       = 4;
+  string     position        = 5;
+  string     order           = 6;
 }
 
 // Backtesting
