@@ -14,18 +14,18 @@ import (
 // DEMO               = 0;
 // LIVE               = 1;
 // BACKTESTING        = 2;
-func CreateToken(account string, mode int32, accountType string) (string, error) {
-	sub := strconv.FormatInt(int64(mode), 10)
+func CreateToken(account string, mode int32, executionType string) (string, error) {
+	systemMode := strconv.FormatInt(int64(mode), 10)
 	now := time.Now()
 	expTime, _ := strconv.Atoi(os.Getenv("EXPIRATION_TIME_JWT_TOKEN"))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, &jwt.StandardClaims{
 		IssuedAt:  now.Unix(),
 		ExpiresAt: time.Now().Add(time.Minute * time.Duration(expTime)).Unix(),
-		//	Issuer:    mode,
-		Audience: accountType,
-		Subject:  sub,
-		Id:       account,
+		Issuer:    executionType,
+		Audience:  systemMode,
+		//Subject: sub,
+		Id: account,
 	})
 	tokenString, err := token.SignedString([]byte(os.Getenv("SIGNED_JWT_KEY")))
 	if err != nil {
