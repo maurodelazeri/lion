@@ -111,7 +111,7 @@ func WorkerTrades(item interface{}) {
 				bson.EC.Int32("product", pbAPI.Product_value[t.GetProduct().String()]),
 				bson.EC.Time("timestamp", common.MakeTimestampFromInt64(t.GetTimestamp())),
 				bson.EC.Double("price", t.GetPrice()),
-				bson.EC.Double("size", t.GetSize()),
+				bson.EC.Double("size", t.GetVolume()),
 				bson.EC.Int32("side", pbAPI.Side_value[t.GetOrderSide().String()]),
 				bson.EC.Int32("venue_type", pbAPI.VenueType_value[t.GetVenueType().String()]),
 				bson.EC.Array("bids", arrBids),

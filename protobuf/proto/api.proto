@@ -286,7 +286,7 @@ message Trade {
   Venue           venue         = 2;
   int64           timestamp     = 3;
   double          price         = 4;
-  double          size          = 5;
+  double          volume        = 5;
   Side            order_side    = 6;
   VenueType       venue_type    = 7;
   repeated Item   asks          = 8; 
