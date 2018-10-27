@@ -250,16 +250,18 @@ message Statistics {
   int64                           minimal_position_holding_time     = 30; 
   int64                           max_position_holding_time         = 31; 
   int64                           average_position_holding_time     = 32; 
-  double                          profict_factor                    = 33;
-  double                          recovery_factor                   = 34;
-  double                          ahpr                              = 35; 
-  double                          ghpr                              = 36;
-  double                          expected_payoff                   = 37;   
-  double                          sharp_ratio                       = 38;   
-  double                          lr_correlation                    = 39;   
-  double                          lr_standart_err                   = 40;   
-  double                          margin_level                      = 41;   
-  double                          z_score                           = 42;   
+  int32                           loss_total_series                 = 33; 
+  int32                           wins_total_series                 = 34; 
+  double                          profict_factor                    = 35;
+  double                          recovery_factor                   = 36;
+  double                          ahpr                              = 37; 
+  double                          ghpr                              = 38;
+  double                          expected_payoff                   = 39;   
+  double                          sharp_ratio                       = 40;   
+  double                          lr_correlation                    = 41;   
+  double                          lr_standart_err                   = 42;   
+  double                          margin_level                      = 43;   
+  double                          z_score                           = 44;   
 } 
 
 // Market Data
