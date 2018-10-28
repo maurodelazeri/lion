@@ -244,7 +244,7 @@ message Statistics {
   int32                           profit_trades_total               = 24;   
   int32                           short_trades_won                  = 25;   
   double                          average_profit_trade              = 26;   
-  double                          average_consecutive_win           = 27;   
+  double                          average_consecutive_wins          = 27;   
   double                          average_loss_trade                = 28;   
   double                          average_consecutive_losses        = 29;
   int64                           minimal_position_holding_time     = 30; 
