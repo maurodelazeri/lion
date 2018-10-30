@@ -238,7 +238,6 @@ message Statistics {
   double                          sharpe_ratio                  					          = 19;
   double                          lr_correlation                  					        = 20;
   double                          lr_standard_error                  				        = 21;	
-  double                          margin_level                  					          = 22;
   double                          z_score                  							            = 23;
   double                          total_trades                  					          = 24;
   int32                           total_deals                  						          = 25;
