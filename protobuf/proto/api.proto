@@ -263,8 +263,8 @@ message Statistics {
   int32                           maximal_consecutive_loss_count             		    = 41;
   double                          average_consecutive_wins                 		      = 42;
   double                          average_consecutive_losses                  		  = 43;
-  int32                           wins_total_series                               	= 44;
-  int32                           loss_total_series                               	= 45;
+  double                          wins_total_series                               	= 44;
+  double                          loss_total_series                               	= 45;
   double                          correlation_mfe                 			    	      = 46;
   double                          correlation_mae                  					        = 47;
   int64                           minimal_position_holding_time                   	= 48;
