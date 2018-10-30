@@ -244,7 +244,7 @@ message Statistics {
   double                          lr_standard_error                  				        = 21;	
   double                          z_score                  							            = 23;
   double                          total_trades                  					          = 24;
-  int32                           total_deals                  						          = 25;
+  double                          total_deals                  						          = 25;
   double                          short_trades_won                  				        = 26;
   double                          long_trades_won                  					        = 27;
   double                          profit_trades_total                  				      = 28;
@@ -254,13 +254,13 @@ message Statistics {
   double                          average_profit_trade                  			      = 32;
   double                          average_loss_trade                  				      = 33;
   double                          maximum_consecutive_wins                  		    = 34;
-  int32                           maximum_consecutive_wins_count             		    = 35;
+  double                          maximum_consecutive_wins_count             		    = 35;
   double                          maximum_consecutive_losses                  		  = 36;
-  int32                           maximum_consecutive_losses_count                  = 37;
+  double                          maximum_consecutive_losses_count                  = 37;
   double                          maximal_consecutive_profit                  		  = 38;
-  int32                           maximal_consecutive_profit_count                  = 39;
+  double                          maximal_consecutive_profit_count                  = 39;
   double                          maximal_consecutive_loss                  		    = 40;
-  int32                           maximal_consecutive_loss_count             		    = 41;
+  double                          maximal_consecutive_loss_count             		    = 41;
   double                          average_consecutive_wins                 		      = 42;
   double                          average_consecutive_losses                  		  = 43;
   double                          wins_total_series                               	= 44;
