@@ -217,6 +217,10 @@ message BacktestingReport {
   string                            comment                          = 7;
 }
 
+message BalanceEvolution {
+  repeated double                  balance                           = 1;
+}
+
 message Statistics {
   double                          history_quality                   			        	= 1;
   double                          ticks                			    			            	= 2;
@@ -266,7 +270,8 @@ message Statistics {
   int64                           minimal_position_holding_time                   	= 48;
   int64                           maximal_position_holding_time                   	= 49;
   int64                           average_position_holding_time                    	= 50;
-  
+  map<string, BalanceEvolution>   balance_evolution                                 = 51; 
+
   // double                          entries_by_hours                  			        	= 45;
   // double                          entries_by_weekdays                  			      	= 46;
   // double                          profits_and_losses_by_hours                    		= 47;
