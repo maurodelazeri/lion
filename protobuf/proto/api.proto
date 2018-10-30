@@ -221,8 +221,7 @@ message Statistics {
   double                          history_quality                   			        	= 1;
   double                          ticks                			    			            	= 2;
   double                          symbols                  							            = 3;
-  double                          initial_deposit                   				        = 4;
-  double                          gross_profit          	        				          = 5;
+  double                          gross_profit          	        				          = 4;
   double                          gross_loss                        				        = 6;
   double                          total_net_profit                   				        = 7;
   double                          balance_drawdown_absolute                  	    	= 8;
