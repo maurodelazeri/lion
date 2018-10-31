@@ -240,8 +240,10 @@ message Statistics {
   double                          ghpr                  							              = 17;
   double                          expected_payoff                  					        = 18;
   double                          sharpe_ratio                  					          = 19;
-  double                          lr_correlation                  					        = 20;
-  double                          lr_standard_error                  				        = 21;	
+  double                          lr_correlation_balance           					        = 20;
+  double                          lr_standard_error_balance          				        = 21;	
+  double                          lr_correlation_equity            					        = 20;
+  double                          lr_standard_error_equity           				        = 21;	  
   double                          z_score                  							            = 23;
   double                          total_trades                  					          = 24;
   double                          total_deals                  						          = 25;
@@ -271,6 +273,7 @@ message Statistics {
   int64                           maximal_position_holding_time                   	= 49;
   int64                           average_position_holding_time                    	= 50;
   map<string, BalanceEvolution>   balance_evolution                                 = 51; 
+  map<string, BalanceEvolution>  equity_evolution                                   = 52; 
 
   // double                          entries_by_hours                  			        	= 45;
   // double                          entries_by_weekdays                  			      	= 46;
