@@ -125,9 +125,10 @@ func WorkerTrades(item interface{}) {
 
 // WorkerBacktesting execute sequencial execution based on the received instructions
 func WorkerBacktesting(item interface{}) {
-	// switch t := item.(type) {
-	// case *pbAPI.BacktestingReport:
-
+	switch t := item.(type) {
+	case *pbAPI.BacktestingReport:
+		logrus.Info(t)
+	}
 	// 	// Balance document
 	// 	var balanceDocument *bson.Element
 	// 	balancesBacktestArr := bson.NewArray()
