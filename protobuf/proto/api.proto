@@ -269,17 +269,11 @@ message Statistics {
   int64                           maximal_position_holding_time                   	= 46;
   int64                           average_position_holding_time                    	= 47;
   map<string, BalanceEvolution>   balance_evolution                                 = 48; 
-  map<string, BalanceEvolution>   equity_evolution                                  = 49; 
-  double                          lr_slope_equity           	        			        = 50;	  
-  double                          lr_intercept_equity           	        			    = 51;	  
-  double                          lr_r_squared_equity           	        			    = 52;	  
-  double                          lr_slope_standard_error_equity       			        = 53;	  
-  double                          lr_intercept_standard_error_equity                = 54;	  
-  double                          lr_slope_balance           	        			        = 55;	  
-  double                          lr_intercept_balance           	        			    = 56;	  
-  double                          lr_r_squared_balance          	        			    = 57;	  
-  double                          lr_slope_standard_error_balance       		        = 58;	  
-  double                          lr_intercept_standard_error_balance               = 59;
+  double                          lr_slope_balance           	        			        = 49;	  
+  double                          lr_intercept_balance           	        			    = 50;	  
+  double                          lr_r_squared_balance          	        			    = 51;	  
+  double                          lr_slope_standard_error_balance       		        = 52;	  
+  double                          lr_intercept_standard_error_balance               = 53;
   
   
   
