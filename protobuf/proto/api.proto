@@ -274,18 +274,6 @@ message Statistics {
   double                          lr_r_squared_balance          	        			    = 51;	  
   double                          lr_slope_standard_error_balance       		        = 52;	  
   double                          lr_intercept_standard_error_balance               = 53;
-  
-  
-  
-  
-  
-  // double                          entries_by_hours                  			        	= 45;
-  // double                          entries_by_weekdays                  			      	= 46;
-  // double                          profits_and_losses_by_hours                    		= 47;
-  // double                          profits_and_losses_by_weekdays                  	= 48;
-  // double                          mfe_profits_distribution                  	    	= 49;
-  // double                          mae_profits_distribution                  		    = 50;
-  // double                          profit_and_position_holding_time_distribution     = 51;   
 } 
 
 // Market Data
