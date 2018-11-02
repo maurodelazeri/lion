@@ -8,6 +8,7 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
 	"github.com/mongodb/mongo-go-driver/core/connstring"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/oleiade/lane"
@@ -179,91 +180,66 @@ func WorkerBacktesting(item interface{}) {
 			)
 			ticksArrVal.Append(value)
 		}
-
 		// ############## - ##############
 
 		// ############## Positions ##############
+		posittionsArrVal := bson.NewArray()
+		for _, posi := range t.GetPositions() {
+			ordersOntoPositionArrVal := bson.NewArray()
+			for _, order := range posi.Orders {
+				value := bson.VC.DocumentFromElements(
+					bson.EC.Int32("venue", pbAPI.Venue_value[order.GetVenue().String()]),
+					bson.EC.Int32("product", pbAPI.Product_value[order.GetProduct().String()]),
+					bson.EC.Double("volume", order.GetVolume()),
+					bson.EC.Double("left_volume", order.GetLeftVolume()),
+					bson.EC.Double("price", order.GetPrice()),
+					bson.EC.Int32("type", pbAPI.OrderType_value[order.GetType().String()]),
+					bson.EC.Int32("side", pbAPI.Side_value[order.GetSide().String()]),
+					bson.EC.Int32("state", pbAPI.OrderState_value[order.GetState().String()]),
+					bson.EC.Int32("entry_type", pbAPI.OrderEntryType_value[order.GetEntryType().String()]),
+					bson.EC.Int64("time_expiration", order.GetTimeExpiration()),
+					bson.EC.Int64("time_setup", order.GetTimeSetup()),
+					bson.EC.Int32("type_filling", pbAPI.OrderTypeFilling_value[order.GetTypeFilling().String()]),
+					bson.EC.Int32("type_time", pbAPI.OrderTypeTime_value[order.GetTypeTime().String()]),
+					bson.EC.Int32("reason", pbAPI.Reason_value[order.GetReason().String()]),
+					bson.EC.Double("fee", order.GetFee()),
+					bson.EC.String("comment", order.GetComment()),
+				)
+				ordersOntoPositionArrVal.Append(value)
+			}
 
+			accountID, _ := objectid.FromHex(posi.GetAccountId())
+			positionData := bson.VC.DocumentFromElements(
+				bson.EC.Int32("venue", pbAPI.Venue_value[posi.GetVenue().String()]),
+				bson.EC.ObjectID("account", accountID),
+				bson.EC.Int32("product", pbAPI.Product_value[posi.GetProduct().String()]),
+				bson.EC.Double("price_open", posi.GetPriceOpen()),
+				bson.EC.Double("weighted_price", posi.GetWeightedPrice()),
+				bson.EC.Double("volume", posi.GetVolume()),
+				bson.EC.Int64("position_time", posi.GetPositionTime()),
+				bson.EC.Int64("closing_time", posi.GetClosingTime()),
+				bson.EC.Int32("position_side", pbAPI.Side_value[posi.GetPositionSide().String()]),
+				bson.EC.Int32("position_reason", pbAPI.Reason_value[posi.GetPositionReason().String()]),
+				bson.EC.Double("sl", posi.GetSl()),
+				bson.EC.Double("tp", posi.GetTp()),
+				bson.EC.Double("swap", posi.GetSwap()),
+				bson.EC.Double("trailling_percent", posi.GetTraillingPercent()),
+				bson.EC.Double("profit_liquid", posi.GetProfitLiquid()),
+				bson.EC.Double("cumulative_fees", posi.GetCumulativeFees()),
+				bson.EC.String("comment", posi.GetComment()),
+				bson.EC.Array("orders", ordersOntoPositionArrVal),
+			)
+			posittionsArrVal.Append(positionData)
+		}
 		// ############## - ##############
 
-		// ############## Positions ##############
-
-		// ############## - ##############
-
-		// Get current balances
-		// symbols := strings.Split(execution.Request.GetProduct().String(), "_")
-		// quoteCurrency, quoteExist := q.Account.Balances.Get(execution.Request.GetVenue().String() + ":" + pbAPI.Currency(pbAPI.Currency_value[symbols[1]]).String())
-		// baseCurrency, baseExist := q.Account.Balances.Get(execution.Request.GetVenue().String() + ":" + pbAPI.Currency(pbAPI.Currency_value[symbols[0]]).String())
-		// if !quoteExist || !baseExist {
-		// 	logrus.Error()
-		// 	return errors.New("Problem to update mongo, balances not found")
-		// }
-		// base := baseCurrency.(*Currency)
-		// quote := quoteCurrency.(*Currency)
-
-		// Positions
-		// posittionsArrVal := bson.NewArray()
-		// var posiDocument *bson.Element
-		// for _, posi := range t.GetPositions() {
-		// 	for _, order := range posi.Orders {
-		// 		value := bson.VC.DocumentFromElements(
-		// 			bson.EC.Int32("venue", pbAPI.Venue_value[order.GetVenue().String()]),
-		// 			bson.EC.Int32("product", pbAPI.Product_value[order.GetProduct().String()]),
-		// 			bson.EC.Double("volume", order.GetVolume()),
-		// 			bson.EC.Double("left_volume", order.GetLeftVolume()),
-		// 			bson.EC.Double("price", order.GetPrice()),
-		// 			bson.EC.Int32("type", pbAPI.OrderType_value[order.GetType().String()]),
-		// 			bson.EC.Int32("side", pbAPI.Side_value[order.GetSide().String()]),
-		// 			bson.EC.Int32("state", pbAPI.OrderState_value[order.GetState().String()]),
-		// 			bson.EC.Int32("entry_type", pbAPI.OrderEntryType_value[order.GetEntryType().String()]),
-		// 			bson.EC.Int64("time_expiration", order.GetTimeExpiration()),
-		// 			bson.EC.Int64("time_setup", order.GetTimeSetup()),
-		// 			bson.EC.Int32("type_filling", pbAPI.OrderTypeFilling_value[order.GetTypeFilling().String()]),
-		// 			bson.EC.Int32("type_time", pbAPI.OrderTypeTime_value[order.GetTypeTime().String()]),
-		// 			bson.EC.Int32("reason", pbAPI.Reason_value[order.GetReason().String()]),
-		// 			bson.EC.Double("fee", order.GetFee()),
-		// 			bson.EC.String("comment", order.GetComment()),
-		// 			// bson.EC.ArrayFromElements("balance",
-		// 			// 	bson.VC.DocumentFromElements(
-		// 			// 		bson.EC.Double("base_available", base.Available),
-		// 			// 		bson.EC.Double("base_hold", base.Hold),
-		// 			// 		bson.EC.Double("quote_available", quote.Available),
-		// 			// 		bson.EC.Double("quote_hold", quote.Hold),
-		// 			// 	),
-		// 			// ),
-		// 		)
-		// 		posittionsArrVal.Append(value)
-		// 	}
-		// 	accountID, _ := objectid.FromHex(posi.GetAccountId())
-		// 	posiDocument = bson.EC.SubDocumentFromElements("positions",
-		// 		bson.EC.Int32("venue", pbAPI.Venue_value[posi.GetVenue().String()]),
-		// 		bson.EC.ObjectID("account", accountID),
-		// 		bson.EC.Int32("product", pbAPI.Product_value[posi.GetProduct().String()]),
-		// 		bson.EC.Double("price_open", posi.GetPriceOpen()),
-		// 		bson.EC.Double("weighted_price", posi.GetWeightedPrice()),
-		// 		bson.EC.Double("volume", posi.GetVolume()),
-		// 		bson.EC.Int64("position_time", posi.GetPositionTime()),
-		// 		bson.EC.Int64("closing_time", posi.GetClosingTime()),
-		// 		bson.EC.Int32("position_side", pbAPI.Side_value[posi.GetPositionSide().String()]),
-		// 		bson.EC.Int32("position_reason", pbAPI.Reason_value[posi.GetPositionReason().String()]),
-		// 		bson.EC.Double("sl", posi.GetSl()),
-		// 		bson.EC.Double("tp", posi.GetTp()),
-		// 		bson.EC.Double("swap", posi.GetSwap()),
-		// 		bson.EC.Double("trailling_percent", posi.GetTraillingPercent()),
-		// 		bson.EC.Double("profit_liquid", posi.GetProfitLiquid()),
-		// 		bson.EC.Double("cumulative_fees", posi.GetCumulativeFees()),
-		// 		bson.EC.String("comment", posi.GetComment()),
-		// 		bson.EC.Array("orders", posittionsArrVal),
-		// 	)
-		// }
 		coll := MongoDB.Collection("backtesting")
 		_, err := coll.InsertOne(
 			context.Background(),
 			bson.NewDocument(
-				bson.EC.Double("total_net_profit", 0.0),
-				bson.EC.Array("ticks", ticksArrVal),
 				initDocument,
-				//	posiDocument,
+				bson.EC.Array("ticks", ticksArrVal),
+				bson.EC.Array("positions", posittionsArrVal),
 				bson.EC.String("comment", t.GetComment()),
 				bson.EC.SubDocumentFromElements("size",
 					bson.EC.Int32("h", 28),
