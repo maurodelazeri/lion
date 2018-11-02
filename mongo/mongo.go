@@ -127,6 +127,7 @@ func WorkerTrades(item interface{}) {
 func WorkerBacktesting(item interface{}) {
 	switch t := item.(type) {
 	case *pbAPI.BacktestingReport:
+
 		logrus.Info(t)
 	}
 	// 	// Balance document
