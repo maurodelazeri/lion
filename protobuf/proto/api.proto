@@ -221,8 +221,6 @@ message BalanceEvolution {
 
 message Statistics {
   double                          history_quality                   			        	= 1;
-  double                          ticks                			    			            	= 2;
-  double                          symbols                  							            = 3;
   double                          gross_profit          	        				          = 4;
   double                          gross_loss                        				        = 6;
   double                          total_net_profit                   				        = 7;

@@ -207,7 +207,6 @@ func WorkerBacktesting(item interface{}) {
 				)
 				ordersOntoPositionArrVal.Append(value)
 			}
-
 			accountID, _ := objectid.FromHex(posi.GetAccountId())
 			positionData := bson.VC.DocumentFromElements(
 				bson.EC.Int32("venue", pbAPI.Venue_value[posi.GetVenue().String()]),
@@ -233,6 +232,83 @@ func WorkerBacktesting(item interface{}) {
 		}
 		// ############## - ##############
 
+		//############## Statistics ##############
+		statistics := t.GetStatistics()
+		statisticsArrVal := bson.NewArray()
+		for _, stats := range statistics {
+			balanceEvolutionArr := bson.NewArray()
+			for index, value := range stats.GetBalanceEvolution() {
+				venueSymbol := strings.Split(index, ":")
+				balanceArr := bson.NewArray()
+				for _, balance := range value.GetBalance() {
+					balanceValue := bson.VC.DocumentFromElements(
+						bson.EC.Double("available", balance),
+					)
+					balanceArr.Append(balanceValue)
+				}
+				value := bson.VC.DocumentFromElements(
+					bson.EC.Int32("venue", pbAPI.Venue_value[venueSymbol[0]]),
+					bson.EC.Int32("currency", pbAPI.Product_value[venueSymbol[1]]),
+					bson.EC.Array("balance", balanceArr), //map[string]*BalanceEvolution
+				)
+				balanceEvolutionArr.Append(value)
+			}
+			statisticData := bson.VC.DocumentFromElements(
+				bson.EC.Double("history_quality", stats.GetHistoryQuality()),
+				bson.EC.Double("gross_profit", stats.GetGrossProfit()),
+				bson.EC.Double("gross_loss", stats.GetGrossLoss()),
+				bson.EC.Double("total_net_profit", stats.GetTotalNetProfit()),
+				bson.EC.Double("balance_drawdown_absolute", stats.GetBalanceDrawdownAbsolute()),
+				bson.EC.Double("balance_drawdown_maximal", stats.GetBalanceDrawdownMaximal()),
+				bson.EC.Double("balance_drawdown_relative", stats.GetBalanceDrawdownRelative()),
+				bson.EC.Double("equity_drawdown_absolute", stats.GetEquityDrawdownAbsolute()),
+				bson.EC.Double("equity_drawdown_maximal", stats.GetEquityDrawdownMaximal()),
+				bson.EC.Double("equity_drawdown_relative", stats.GetEquityDrawdownRelative()),
+				bson.EC.Double("profit_factor", stats.GetProfitFactor()),
+				bson.EC.Double("recovery_factor", stats.GetRecoveryFactor()),
+				bson.EC.Double("ahpr", stats.GetAhpr()),
+				bson.EC.Double("ghpr", stats.GetGhpr()),
+				bson.EC.Double("expected_payoff", stats.GetExpectedPayoff()),
+				bson.EC.Double("sharpe_ratio", stats.GetSharpeRatio()),
+				bson.EC.Double("z_score", stats.GetZScore()),
+				bson.EC.Double("total_trades", stats.GetTotalTrades()),
+				bson.EC.Double("total_deals", stats.GetTotalDeals()),
+				bson.EC.Double("short_trades_won", stats.GetShortTradesWon()),
+				bson.EC.Double("long_trades_won", stats.GetLongTradesWon()),
+				bson.EC.Double("profit_trades_total", stats.GetProfitTradesTotal()),
+				bson.EC.Double("loss_trades_total", stats.GetLossTradesTotal()),
+				bson.EC.Double("largest_profit_trade", stats.GetLargestProfitTrade()),
+				bson.EC.Double("largest_loss_trade", stats.GetLargestLossTrade()),
+				bson.EC.Double("average_profit_trade", stats.GetAverageProfitTrade()),
+				bson.EC.Double("average_loss_trade", stats.GetAverageLossTrade()),
+				bson.EC.Double("maximum_consecutive_wins", stats.GetMaximumConsecutiveWins()),
+				bson.EC.Double("maximum_consecutive_wins_count", stats.GetMaximumConsecutiveWinsCount()),
+				bson.EC.Double("maximum_consecutive_losses", stats.GetMaximumConsecutiveLosses()),
+				bson.EC.Double("maximum_consecutive_losses_count", stats.GetMaximalConsecutiveLossCount()),
+				bson.EC.Double("maximal_consecutive_profit", stats.GetMaximalConsecutiveProfit()),
+				bson.EC.Double("maximal_consecutive_profit_count", stats.GetMaximalConsecutiveProfitCount()),
+				bson.EC.Double("maximal_consecutive_loss", stats.GetMaximalConsecutiveLoss()),
+				bson.EC.Double("maximal_consecutive_loss_count", stats.GetMaximalConsecutiveLossCount()),
+				bson.EC.Double("average_consecutive_wins", stats.GetAverageConsecutiveWins()),
+				bson.EC.Double("average_consecutive_losses", stats.GetAverageConsecutiveLosses()),
+				bson.EC.Double("wins_total_series", stats.GetWinsTotalSeries()),
+				bson.EC.Double("loss_total_series", stats.GetLossTotalSeries()),
+				bson.EC.Double("correlation_mfe", stats.GetCorrelationMfe()),
+				bson.EC.Double("correlation_mae", stats.GetCorrelationMae()),
+				bson.EC.Int64("minimal_position_holding_time", stats.GetMinimalPositionHoldingTime()),
+				bson.EC.Int64("maximal_position_holding_time", stats.GetMaximalPositionHoldingTime()),
+				bson.EC.Int64("average_position_holding_time", stats.GetAveragePositionHoldingTime()),
+				bson.EC.Double("lr_slope_balance", stats.GetLrSlopeBalance()),
+				bson.EC.Double("lr_intercept_balance", stats.GetLrInterceptBalance()),
+				bson.EC.Double("lr_r_squared_balance", stats.GetLrRSquaredBalance()),
+				bson.EC.Double("lr_slope_standard_error_balance", stats.GetLrSlopeStandardErrorBalance()),
+				bson.EC.Double("lr_intercept_standard_error_balance", stats.GetLrInterceptStandardErrorBalance()),
+				bson.EC.Array("balance_evolution", balanceEvolutionArr),
+			)
+			statisticsArrVal.Append(statisticData)
+		}
+		// ############## - ##############
+
 		coll := MongoDB.Collection("backtesting")
 		_, err := coll.InsertOne(
 			context.Background(),
@@ -240,12 +316,8 @@ func WorkerBacktesting(item interface{}) {
 				initDocument,
 				bson.EC.Array("ticks", ticksArrVal),
 				bson.EC.Array("positions", posittionsArrVal),
+				bson.EC.Array("statistics", statisticsArrVal),
 				bson.EC.String("comment", t.GetComment()),
-				bson.EC.SubDocumentFromElements("size",
-					bson.EC.Int32("h", 28),
-					bson.EC.Double("w", 35.5),
-					bson.EC.String("uom", "cm"),
-				),
 			))
 		if err != nil {
 			logrus.Error("Problem to insert on mongo (backtesting) ", err)
