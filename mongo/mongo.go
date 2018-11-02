@@ -161,8 +161,8 @@ func WorkerBacktesting(item interface{}) {
 		initDocument = bson.EC.SubDocumentFromElements("initialization",
 			bson.EC.Array("subscription", subscriptionArr),
 			bson.EC.Array("balances", venueBalArr),
-			bson.EC.Int64("start_date", t.Initialization.GetStartDate()),
-			bson.EC.Int64("end_date", t.Initialization.GetEndDate()),
+			bson.EC.Time("start_date", common.MakeTimestampFromInt64(t.Initialization.GetStartDate())),
+			bson.EC.Time("end_date", common.MakeTimestampFromInt64(t.Initialization.GetEndDate())),
 			bson.EC.String("candle_granularity", t.Initialization.GetCandleGranularity()),
 			bson.EC.Int32("candle_group_by", pbAPI.CandleGroupBy_value[t.Initialization.GetCandleGroupBy().String()]),
 		)
