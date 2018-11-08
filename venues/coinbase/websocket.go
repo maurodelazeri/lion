@@ -4,17 +4,21 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
 	"sort"
 	"sync"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
+	"github.com/maurodelazeri/lion/mongo"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -68,16 +72,32 @@ type MessageChannel struct {
 
 // Subscribe subsribe public and private endpoints
 func (r *WebsocketCoinbase) Subscribe(products []string) error {
-	subscribe := Message{
-		Type: "subscribe",
-		Channels: []MessageChannel{
-			MessageChannel{
-				Name:       "level2",
-				ProductIDs: products,
+	subscribe := Message{}
+	if r.base.Streaming {
+		subscribe = Message{
+			Type: "subscribe",
+			Channels: []MessageChannel{
+				MessageChannel{
+					Name:       "full",
+					ProductIDs: products,
+				},
+				MessageChannel{
+					Name:       "level2",
+					ProductIDs: products,
+				},
 			},
-		},
+		}
+	} else {
+		subscribe = Message{
+			Type: "subscribe",
+			Channels: []MessageChannel{
+				MessageChannel{
+					Name:       "level2",
+					ProductIDs: products,
+				},
+			},
+		}
 	}
-
 	json, err := common.JSONEncode(subscribe)
 	if err != nil {
 		return err
@@ -364,6 +384,53 @@ func (r *WebsocketCoinbase) startReading() {
 								VenueType: pbAPI.VenueType_SPOT,
 							}
 							refLiveBook = book
+
+							if r.base.Streaming {
+								serialized, err := proto.Marshal(book)
+								if err != nil {
+									log.Fatal("proto.Marshal error: ", err)
+								}
+								r.MessageType[0] = 1
+								serialized = append(r.MessageType, serialized[:]...)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+							}
+						}
+
+						if data.Type == "match" {
+							var side pbAPI.Side
+
+							if data.Side == "buy" {
+								side = pbAPI.Side_BUY
+							} else {
+								side = pbAPI.Side_SELL
+							}
+
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+							if len(refLiveBook.Asks) > 4 && len(refLiveBook.Bids) > 4 {
+								trades := &pbAPI.Trade{
+									Product:   pbAPI.Product((pbAPI.Product_value[product])),
+									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+									Timestamp: common.MakeTimestamp(),
+									Price:     data.Price,
+									OrderSide: side,
+									Volume:    data.Size,
+									VenueType: pbAPI.VenueType_SPOT,
+									Asks:      refLiveBook.Asks,
+									Bids:      refLiveBook.Bids,
+								}
+								serialized, err := proto.Marshal(trades)
+								if err != nil {
+									log.Fatal("proto.Marshal error: ", err)
+								}
+								r.MessageType[0] = 0
+								serialized = append(r.MessageType, serialized[:]...)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								mongodb.TradesQueue.Enqueue(trades)
+							}
 						}
 
 						if data.Type == "snapshot" {
