@@ -47,6 +47,7 @@ type WebsocketCoinbase struct {
 	OrderBookMAP       map[string]map[float64]float64
 	subscribedPairs    []string
 	pairsMapping       *utils.ConcurrentMap
+	MessageType        []byte
 	MaxLevelsOrderBook int
 }
 
@@ -85,6 +86,7 @@ func (r *Coinbase) Start() {
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
 				socket := new(WebsocketCoinbase)
+				socket.MessageType = make([]byte, 4)
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
 				socket.MaxLevelsOrderBook = 10
@@ -93,6 +95,7 @@ func (r *Coinbase) Start() {
 		}
 		if len(sharedSocket) > 0 {
 			socket := new(WebsocketCoinbase)
+			socket.MessageType = make([]byte, 4)
 			socket.base = r
 			socket.subscribedPairs = sharedSocket
 			socket.MaxLevelsOrderBook = 10

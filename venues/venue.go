@@ -22,8 +22,8 @@ type Base struct {
 	RefExecutionTime int64
 	Mode             pbAPI.SystemMode
 	VenueConfig      *utils.ConcurrentMap
-	mutex            *sync.RWMutex
 	LiveOrderBook    *utils.ConcurrentMap
+	mutex            *sync.RWMutex
 }
 
 // Venues enforces standard functions for all venues supported in
