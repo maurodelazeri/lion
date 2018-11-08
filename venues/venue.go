@@ -34,6 +34,9 @@ type Venues interface {
 	GetName() string
 	IsEnabled() bool
 	SetEnabled(bool)
+	StartKafkaConsumer() error
+	StartInfluxSave() error
+	StartMongoDBSave() error
 	GetMakerFee(product pbAPI.Product, price, volume number.Decimal) (number.Decimal, error)
 	GetTakerFee(product pbAPI.Product, price, volume number.Decimal) (number.Decimal, error)
 	ValidateVolume(product pbAPI.Product, volume float64) error
@@ -209,4 +212,20 @@ func (e *Base) GetProductDetail(product pbAPI.Product) (config.Product, error) {
 		}
 	}
 	return prodCondig, errors.New("Product not found")
+}
+
+// StartKafkaConsumer load the streaming from kafka
+func (e *Base) StartKafkaConsumer() error {
+
+	return nil
+}
+
+// StartInfluxSave save data to influxDB
+func (e *Base) StartInfluxSave() error {
+	return nil
+}
+
+// StartMongoDBSave save data to mongoDB
+func (e *Base) StartMongoDBSave() error {
+	return nil
 }

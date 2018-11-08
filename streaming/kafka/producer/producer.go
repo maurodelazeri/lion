@@ -23,7 +23,7 @@ func init() {
 	InitEngine()
 }
 
-// InitEngine initializes our Database Connection
+// InitEngine ...
 func InitEngine() {
 	brokers := os.Getenv("KAFKA_BROKERS")
 	client, err := kafka.NewProducer(&kafka.ConfigMap{
@@ -38,7 +38,7 @@ func InitEngine() {
 	//"default.topic.config": {"acks": "all"}})
 
 	if err != nil {
-		logrus.Info("No connection with kafka, ", err)
+		logrus.Error("No connection with kafka, ", err)
 		os.Exit(1)
 	}
 	Producer = client

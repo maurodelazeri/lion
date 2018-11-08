@@ -8,6 +8,10 @@ package api;
 	BITFINEX    =  3;
 	BINANCE     =  4;
 	GEMINI      =  5;
+	KRAKEN      =  6;
+	OKEX        =  7;
+	BITSTAMP    =  8;
+	HUOBIPRO    =  9;
    }
   
  enum SystemMode{
@@ -30,24 +34,52 @@ package api;
 	 BTC   = 0;
 	 USD   = 1;
 	 ETH   = 2;
-	 LTC   = 3;
-	 BCH   = 4;
-	 ETC   = 5;
+	 EOS   = 3;
+	 XRP   = 4;
+	 BCH   = 5;
+	 LTC   = 6;
+	 XLM   = 7;
+	 ADA   = 8;
+	 ZEC   = 9;
+	 QTUM  = 10;
+	 NANO  = 11;
+	 ETC   = 12;
    }
    
    enum Product{
-	 BTC_USD = 0;
-	 ETH_BTC = 1;
-	 ETH_USD = 2;
-	 LTC_USD = 3;
-	 LTC_BTC = 4;   
-	 LTC_ETH = 5;
-	 BCH_USD = 6;
-	 BCH_BTC = 7;
-	 BCH_ETH = 8;
-	 ETC_USD = 9;
-	 ETC_BTC = 10;
-	 ETC_ETH = 11;
+	 BTC_USD 		= 0;
+	 BTC_ETH 		= 1;
+	 ETH_USD 		= 2;
+	 EOS_USD 		= 3;
+	 EOS_BTC 		= 4;
+	 EOS_ETH 		= 5;
+	 XRP_USD 		= 6;
+	 XRP_BTC 		= 7;
+	 XRP_ETH 		= 8;
+	 BCH_USD 		= 9;
+	 BCH_BTC 		= 10;
+	 BCH_ETH 		= 11;
+	 LTC_USD 		= 12;
+	 LTC_BTC 		= 13;
+	 LTC_ETH 		= 14;
+	 XLM_USD 		= 15;
+	 XLM_BTC 		= 16;
+	 XLM_ETH 		= 17;
+	 ADA_USD 		= 18;
+	 ADA_BTC 		= 19;
+	 ADA_ETH 		= 20;
+	 ZEC_USD 		= 21;
+	 ZEC_BTC 		= 22;
+	 ZEC_ETH 		= 23;
+	 QTUM_USD 		= 24;
+	 QTUM_BTC 		= 25;
+	 QTUM_ETH 		= 26;
+	 NANO_USD 		= 27;
+	 NANO_BTC 		= 28;
+	 NANO_ETH 		= 29;
+	 ETC_USD 		= 30;
+	 ETC_BTC 		= 31;
+	 ETC_ETH 		= 32;
    }
   
    enum OrderState {

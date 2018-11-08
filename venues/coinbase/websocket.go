@@ -16,7 +16,6 @@ import (
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
-	"github.com/maurodelazeri/lion/mongo"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
@@ -429,7 +428,6 @@ func (r *WebsocketCoinbase) startReading() {
 								r.MessageType[0] = 0
 								serialized = append(r.MessageType, serialized[:]...)
 								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
-								mongodb.TradesQueue.Enqueue(trades)
 							}
 						}
 
