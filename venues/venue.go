@@ -15,6 +15,7 @@ import (
 
 // Base stores the individual venue information
 type Base struct {
+	Streaming        bool
 	Name             string
 	Verbose          bool
 	Enabled          bool
@@ -27,7 +28,7 @@ type Base struct {
 
 // Venues enforces standard functions for all venues supported in
 type Venues interface {
-	Setup(venue string, exch config.VenueConfig, mode ...pbAPI.SystemMode)
+	Setup(venue string, exch config.VenueConfig, streaming bool, mode ...pbAPI.SystemMode)
 	SetDefaults()
 	Start()
 	GetName() string

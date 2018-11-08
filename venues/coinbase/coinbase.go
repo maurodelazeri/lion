@@ -57,7 +57,8 @@ func (r *Coinbase) SetDefaults() {
 }
 
 // Setup initialises the venue parameters with the current configuration
-func (r *Coinbase) Setup(venueName string, config config.VenueConfig, mode ...pbAPI.SystemMode) {
+func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming bool, mode ...pbAPI.SystemMode) {
+	r.Streaming = streaming
 	r.Name = venueName
 	r.VenueConfig = utils.NewConcurrentMap()
 	r.VenueConfig.Set(venueName, config)
@@ -68,6 +69,7 @@ func (r *Coinbase) Setup(venueName string, config config.VenueConfig, mode ...pb
 
 // Start ...
 func (r *Coinbase) Start() {
+
 	var dedicatedSocket, sharedSocket []string
 	// Individual system order book for each product
 	venueConf, ok := r.VenueConfig.Get(r.GetName())
