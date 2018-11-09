@@ -81,7 +81,6 @@ func (r *Coinbase) Start() {
 			} else {
 				sharedSocket = append(sharedSocket, product)
 			}
-			r.Pairs = append(r.Pairs, product)
 		}
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {

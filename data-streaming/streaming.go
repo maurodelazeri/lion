@@ -41,6 +41,10 @@ func InitKafkaConnection(topics []string, groupID string) *Streaming {
 		logrus.Error("No connection with kafka, ", err)
 		os.Exit(1)
 	}
+	if len(topics) == 0 {
+		logrus.Error("Kafka received 0 topics to subscribe")
+		os.Exit(1)
+	}
 	err = k.SubscribeTopics(topics, nil)
 	if err != nil {
 		logrus.Error("Problem to subscribe topics, ", err)

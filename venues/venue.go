@@ -24,7 +24,6 @@ type Base struct {
 	Mode             pbAPI.SystemMode
 	VenueConfig      *utils.ConcurrentMap
 	LiveOrderBook    *utils.ConcurrentMap
-	Pairs            []string
 	mutex            *sync.RWMutex
 }
 
@@ -216,6 +215,13 @@ func (e *Base) GetProductDetail(product pbAPI.Product) (config.Product, error) {
 
 // StartStreamingToStorage load the streaming from kafka
 func (e *Base) StartStreamingToStorage(mongo bool, influx bool) {
-	stream := streaming.InitKafkaConnection(e.Pairs, e.GetName())
-	stream.StartReading()
+	venueConf, ok := e.VenueConfig.Get(e.GetName())
+	if ok {
+		pairs := []string{}
+		for product := range venueConf.(config.VenueConfig).Products {
+			pairs = append(pairs, product+"."+e.GetName()+".trade")
+		}
+		stream := streaming.InitKafkaConnection(pairs, e.GetName())
+		stream.StartReading()
+	}
 }
