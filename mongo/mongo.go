@@ -31,24 +31,23 @@ func init() {
 // InitEngine initializes our Database Connection
 func InitEngine() {
 	var err error
-	connectionString, err := connstring.Parse(os.Getenv("MONGODB_CONNECTION_URL"))
-	if err != nil {
-		logrus.Error("Mongo ", err)
-		os.Exit(1)
+	var CS = connstring.ConnString{
+		Hosts:    []string{os.Getenv("MONGODB_CONNECTION")},
+		Username: os.Getenv("MONGODB_USERNAME"),
+		Password: os.Getenv("MONGODB_PASSWORD"),
 	}
-	// if database is not specified in connectionString
-	// set database name
-	dbname := connectionString.Database
-	if dbname == "" {
-		dbname = os.Getenv("MONGODB_DATABASE_NAME")
+	Client, err = mongo.NewClientFromConnString(CS)
+	if err != nil {
+		logrus.Error("Problem to connect with mongo ", err)
+		os.Exit(1)
 	}
 	// connect to mongo
-	Client, err = mongo.Connect(context.Background(), os.Getenv("MONGODB_CONNECTION_URL"), nil)
+	err = Client.Connect(context.Background())
 	if err != nil {
 		logrus.Error("Mongo ", err)
 		os.Exit(1)
 	}
-	MongoDB = Client.Database(dbname, nil)
+	MongoDB = Client.Database(os.Getenv("MONGODB_DATABASE_NAME"), nil)
 }
 
 // InitQueueBacktesting ...
