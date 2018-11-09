@@ -48,7 +48,7 @@ package api;
    
    enum Product{
 	 BTC_USD 		= 0;
-	 BTC_ETH 		= 1;
+	 ETH_BTC 		= 1;
 	 ETH_USD 		= 2;
 	 EOS_USD 		= 3;
 	 EOS_BTC 		= 4;

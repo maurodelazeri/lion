@@ -1,6 +1,7 @@
 package coinbase
 
 import (
+
 	//"encoding/json"
 
 	"errors"
@@ -121,7 +122,6 @@ func (r *WebsocketCoinbase) Close() {
 
 // WebsocketClient ...
 func (r *WebsocketCoinbase) WebsocketClient() {
-
 	if r.RecIntvlMin == 0 {
 		r.RecIntvlMin = 2 * time.Second
 	}
@@ -271,6 +271,9 @@ func (r *WebsocketCoinbase) startReading() {
 						if err != nil {
 							logrus.Error(err)
 							continue
+						}
+						if data.Type == "error" {
+							logrus.Warn("Error ", string(resp))
 						}
 						value, exist := r.pairsMapping.Get(data.ProductID)
 						if !exist {
