@@ -303,7 +303,7 @@ func (r *WebsocketCoinbase) startReading() {
 										price := r.base.Strfloat(data[1])
 										amount := r.base.Strfloat(data[2])
 										totalLevels := len(refLiveBook.GetBids())
-										if totalLevels == r.MaxLevelsOrderBook {
+										if totalLevels == r.base.MaxLevelsOrderBook {
 											if price < refLiveBook.Bids[totalLevels-1].Price {
 												continue
 											}
@@ -320,7 +320,7 @@ func (r *WebsocketCoinbase) startReading() {
 										price := r.base.Strfloat(data[1])
 										amount := r.base.Strfloat(data[2])
 										totalLevels := len(refLiveBook.GetAsks())
-										if totalLevels == r.MaxLevelsOrderBook {
+										if totalLevels == r.base.MaxLevelsOrderBook {
 											if price > refLiveBook.Asks[totalLevels-1].Price {
 												continue
 											}
@@ -361,16 +361,16 @@ func (r *WebsocketCoinbase) startReading() {
 							wg.Add(1)
 							go func() {
 								totalBids := len(refLiveBook.Bids)
-								if totalBids > r.MaxLevelsOrderBook {
-									refLiveBook.Bids = refLiveBook.Bids[0:r.MaxLevelsOrderBook]
+								if totalBids > r.base.MaxLevelsOrderBook {
+									refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
 								}
 								wg.Done()
 							}()
 							wg.Add(1)
 							go func() {
 								totalAsks := len(refLiveBook.Asks)
-								if totalAsks > r.MaxLevelsOrderBook {
-									refLiveBook.Asks = refLiveBook.Asks[0:r.MaxLevelsOrderBook]
+								if totalAsks > r.base.MaxLevelsOrderBook {
+									refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
 								}
 								wg.Done()
 							}()
@@ -379,7 +379,7 @@ func (r *WebsocketCoinbase) startReading() {
 							book := &pbAPI.Orderbook{
 								Product:   pbAPI.Product((pbAPI.Product_value[product])),
 								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-								Levels:    int32(r.MaxLevelsOrderBook),
+								Levels:    int32(r.base.MaxLevelsOrderBook),
 								Timestamp: common.MakeTimestamp(),
 								Asks:      refLiveBook.Asks,
 								Bids:      refLiveBook.Bids,
@@ -449,7 +449,7 @@ func (r *WebsocketCoinbase) startReading() {
 								for _, line := range arr {
 									price := r.base.Strfloat(line[0])
 									amount := r.base.Strfloat(line[1])
-									if total > r.MaxLevelsOrderBook {
+									if total > r.base.MaxLevelsOrderBook {
 										continue
 									}
 									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
@@ -465,7 +465,7 @@ func (r *WebsocketCoinbase) startReading() {
 								for _, line := range arr {
 									price := r.base.Strfloat(line[0])
 									amount := r.base.Strfloat(line[1])
-									if total > r.MaxLevelsOrderBook {
+									if total > r.base.MaxLevelsOrderBook {
 										continue
 									}
 									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})

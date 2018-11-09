@@ -44,11 +44,10 @@ type WebsocketCoinbase struct {
 	// default to 2 seconds
 	HandshakeTimeout time.Duration
 
-	OrderBookMAP       map[string]map[float64]float64
-	subscribedPairs    []string
-	pairsMapping       *utils.ConcurrentMap
-	MessageType        []byte
-	MaxLevelsOrderBook int
+	OrderBookMAP    map[string]map[float64]float64
+	subscribedPairs []string
+	pairsMapping    *utils.ConcurrentMap
+	MessageType     []byte
 }
 
 // SetDefaults sets default values for the venue
@@ -58,10 +57,11 @@ func (r *Coinbase) SetDefaults() {
 }
 
 // Setup initialises the venue parameters with the current configuration
-func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming bool, mode ...pbAPI.SystemMode) {
+func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming bool, maxLevelsOrderBook int, mode ...pbAPI.SystemMode) {
 	r.Streaming = streaming
 	r.Name = venueName
 	r.VenueConfig = utils.NewConcurrentMap()
+	r.Base.MaxLevelsOrderBook = maxLevelsOrderBook
 	r.VenueConfig.Set(venueName, config)
 	if len(mode) > 0 {
 		r.Mode = mode[0]
@@ -88,7 +88,6 @@ func (r *Coinbase) Start() {
 				socket.MessageType = make([]byte, 4)
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
-				socket.MaxLevelsOrderBook = 10
 				go socket.WebsocketClient()
 			}
 		}
@@ -97,7 +96,6 @@ func (r *Coinbase) Start() {
 			socket.MessageType = make([]byte, 4)
 			socket.base = r
 			socket.subscribedPairs = sharedSocket
-			socket.MaxLevelsOrderBook = 10
 			go socket.WebsocketClient()
 		}
 	}
