@@ -70,7 +70,6 @@ func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming 
 
 // Start ...
 func (r *Coinbase) Start() {
-
 	var dedicatedSocket, sharedSocket []string
 	// Individual system order book for each product
 	venueConf, ok := r.VenueConfig.Get(r.GetName())
@@ -82,6 +81,7 @@ func (r *Coinbase) Start() {
 			} else {
 				sharedSocket = append(sharedSocket, product)
 			}
+			r.Pairs = append(r.Pairs, product)
 		}
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {

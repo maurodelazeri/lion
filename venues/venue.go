@@ -9,6 +9,7 @@ import (
 	"github.com/maurodelazeri/concurrency-map-slice"
 	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
+	"github.com/maurodelazeri/lion/data-streaming"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
 )
@@ -23,6 +24,7 @@ type Base struct {
 	Mode             pbAPI.SystemMode
 	VenueConfig      *utils.ConcurrentMap
 	LiveOrderBook    *utils.ConcurrentMap
+	Pairs            []string
 	mutex            *sync.RWMutex
 }
 
@@ -34,7 +36,7 @@ type Venues interface {
 	GetName() string
 	IsEnabled() bool
 	SetEnabled(bool)
-	StartStreamingSave(mongo bool, influx bool) error
+	StartStreamingToStorage(mongo bool, influx bool)
 	GetMakerFee(product pbAPI.Product, price, volume number.Decimal) (number.Decimal, error)
 	GetTakerFee(product pbAPI.Product, price, volume number.Decimal) (number.Decimal, error)
 	ValidateVolume(product pbAPI.Product, volume float64) error
@@ -212,7 +214,8 @@ func (e *Base) GetProductDetail(product pbAPI.Product) (config.Product, error) {
 	return prodCondig, errors.New("Product not found")
 }
 
-// StartStreamingSave load the streaming from kafka
-func (e *Base) StartStreamingSave(mongo bool, influx bool) error {
-	return nil
+// StartStreamingToStorage load the streaming from kafka
+func (e *Base) StartStreamingToStorage(mongo bool, influx bool) {
+	stream := streaming.InitKafkaConnection(e.Pairs, e.GetName())
+	stream.StartReading()
 }
