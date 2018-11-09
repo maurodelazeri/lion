@@ -214,6 +214,5 @@ func (e *Base) GetProductDetail(product pbAPI.Product) (config.Product, error) {
 
 // StartStreamingSave load the streaming from kafka
 func (e *Base) StartStreamingSave(mongo bool, influx bool) error {
-
 	return nil
 }
