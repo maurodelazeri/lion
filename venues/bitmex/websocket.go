@@ -375,24 +375,11 @@ func (r *Websocket) startReading() {
 									}
 								}
 							case "partial":
-								var refProduct string
-								var refLiveBook *pbAPI.Orderbook
+								refLiveBook := &pbAPI.Orderbook{}
 								var wg sync.WaitGroup
 
 								for _, data := range message.Data {
-									value, exist := r.pairsMapping.Get(data.Symbol)
-									if !exist {
-										continue
-									}
-									product := value.(string)
-									refProduct = product
-
-									refBook, ok := r.base.LiveOrderBook.Get(product)
-									if !ok {
-										continue
-									}
-									refLiveBook = refBook.(*pbAPI.Orderbook)
-
+									productRef = data.Symbol
 									if data.Side == "Buy" {
 										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: data.Size})
 									} else {
@@ -400,15 +387,21 @@ func (r *Websocket) startReading() {
 									}
 								}
 
+								value, exist := r.pairsMapping.Get(productRef)
+								if !exist {
+									continue
+								}
+								productRef = value.(string)
+
 								// Cut off the waste
 								refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-								refLiveBook.Asks = refLiveBook.Asks[:len(refLiveBook.Asks)-r.base.MaxLevelsOrderBook]
+								refLiveBook.Asks = refLiveBook.Asks[len(refLiveBook.Asks)-r.base.MaxLevelsOrderBook:]
 
 								for _, bids := range refLiveBook.Bids {
-									r.OrderBookMAP[refProduct+"bids"][bids.Id] = BookItem{Price: bids.Price, Volume: bids.Volume}
+									r.OrderBookMAP[productRef+"bids"][bids.Id] = BookItem{Price: bids.Price, Volume: bids.Volume}
 								}
 								for _, asks := range refLiveBook.Asks {
-									r.OrderBookMAP[refProduct+"asks"][asks.Id] = BookItem{Price: asks.Price, Volume: asks.Volume}
+									r.OrderBookMAP[productRef+"asks"][asks.Id] = BookItem{Price: asks.Price, Volume: asks.Volume}
 								}
 
 								wg.Add(1)
@@ -426,6 +419,8 @@ func (r *Websocket) startReading() {
 									wg.Done()
 								}()
 								wg.Wait()
+
+								r.base.LiveOrderBook.Set(productRef, refLiveBook)
 
 								continue
 							}
@@ -487,7 +482,9 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook = book
 
-							logrus.Warn("FINAL: ", book)
+							if len(book.Asks) > 0 && len(book.Bids) > 0 {
+								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume, " BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+							}
 
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)
