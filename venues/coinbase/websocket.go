@@ -290,6 +290,7 @@ func (r *Websocket) startReading() {
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 
 							var wg sync.WaitGroup
+							updated := false
 
 							for _, data := range data.Changes {
 								switch data[0] {
@@ -298,6 +299,7 @@ func (r *Websocket) startReading() {
 										price := r.base.Strfloat(data[1])
 										if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
 											delete(r.OrderBookMAP[product+"bids"], price)
+											updated = true
 										}
 									} else {
 										price := r.base.Strfloat(data[1])
@@ -308,6 +310,7 @@ func (r *Websocket) startReading() {
 												continue
 											}
 										}
+										updated = true
 										r.OrderBookMAP[product+"bids"][price] = amount
 									}
 								case "sell":
@@ -315,6 +318,7 @@ func (r *Websocket) startReading() {
 										price := r.base.Strfloat(data[1])
 										if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
 											delete(r.OrderBookMAP[product+"asks"], price)
+											updated = true
 										}
 									} else {
 										price := r.base.Strfloat(data[1])
@@ -325,11 +329,17 @@ func (r *Websocket) startReading() {
 												continue
 											}
 										}
+										updated = true
 										r.OrderBookMAP[product+"asks"][price] = amount
 									}
 								default:
 									continue
 								}
+							}
+
+							// we dont need to update the book if any level we care was changed
+							if !updated {
+								continue
 							}
 
 							wg.Add(1)

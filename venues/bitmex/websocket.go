@@ -57,7 +57,7 @@ type Message struct {
 		Symbol string  `json:"symbol,omitempty"`
 		ID     int64   `json:"id,omitempty"`
 		Side   string  `json:"side,omitempty"`
-		Size   float64 `json:"size,omitempty"`
+		Size   int     `json:"size,omitempty"`
 		Price  float64 `json:"price,omitempty"`
 	} `json:"data,omitempty"`
 }
@@ -185,15 +185,15 @@ func (r *Websocket) connect() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	r.OrderBookMAP = make(map[string]map[int64]*BookItem)
+	r.OrderBookMAP = make(map[string]map[int64]BookItem)
 	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
-		r.OrderBookMAP[sym+"bids"] = make(map[int64]*BookItem)
-		r.OrderBookMAP[sym+"asks"] = make(map[int64]*BookItem)
+		r.OrderBookMAP[sym+"bids"] = make(map[int64]BookItem)
+		r.OrderBookMAP[sym+"asks"] = make(map[int64]BookItem)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
@@ -281,7 +281,7 @@ func (r *Websocket) startReading() {
 										Timestamp: common.MakeTimestamp(),
 										Price:     data.Price,
 										OrderSide: side,
-										Volume:    data.Size,
+										Volume:    float64(data.Size),
 										VenueType: pbAPI.VenueType_SPOT,
 										Asks:      refLiveBook.Asks,
 										Bids:      refLiveBook.Bids,
@@ -311,30 +311,43 @@ func (r *Websocket) startReading() {
 
 							switch message.Action {
 							case "update":
+								updated := false
 								for _, data := range message.Data {
 									if data.Side == "Buy" {
 										if val, ok := r.OrderBookMAP[product+"bids"][data.ID]; ok {
-											r.OrderBookMAP[product+"bids"][data.ID] = &BookItem{Price: val.Price, Volume: data.Size}
-										} else {
-											continue
+											r.OrderBookMAP[product+"bids"][data.ID] = BookItem{Price: val.Price, Volume: float64(data.Size)}
+											updated = true
 										}
 									} else {
 										if val, ok := r.OrderBookMAP[product+"asks"][data.ID]; ok {
-											r.OrderBookMAP[product+"asks"][data.ID] = &BookItem{Price: val.Price, Volume: data.Size}
-										} else {
-											continue
+											r.OrderBookMAP[product+"asks"][data.ID] = BookItem{Price: val.Price, Volume: float64(data.Size)}
+											updated = true
 										}
 									}
 								}
+								if !updated {
+									continue
+								}
 							case "delete":
+								updated := false
 								for _, data := range message.Data {
 									if data.Side == "Buy" {
-										delete(r.OrderBookMAP[product+"bids"], data.ID)
+										if _, ok := r.OrderBookMAP[product+"bids"][data.ID]; ok {
+											delete(r.OrderBookMAP[product+"bids"], data.ID)
+											updated = true
+										}
 									} else {
-										delete(r.OrderBookMAP[product+"asks"], data.ID)
+										if _, ok := r.OrderBookMAP[product+"asks"][data.ID]; ok {
+											delete(r.OrderBookMAP[product+"asks"], data.ID)
+											updated = true
+										}
 									}
 								}
+								if !updated {
+									continue
+								}
 							case "insert":
+								updated := false
 								for _, data := range message.Data {
 									if data.Side == "Buy" {
 										totalLevels := len(refLiveBook.GetBids())
@@ -343,7 +356,8 @@ func (r *Websocket) startReading() {
 												continue
 											}
 										}
-										r.OrderBookMAP[product+"bids"][data.ID] = &BookItem{Price: data.Price, Volume: data.Size}
+										updated = true
+										r.OrderBookMAP[product+"bids"][data.ID] = BookItem{Price: data.Price, Volume: float64(data.Size)}
 									} else {
 										totalLevels := len(refLiveBook.GetAsks())
 										if totalLevels == r.base.MaxLevelsOrderBook {
@@ -351,18 +365,21 @@ func (r *Websocket) startReading() {
 												continue
 											}
 										}
-										r.OrderBookMAP[product+"asks"][data.ID] = &BookItem{Price: data.Price, Volume: data.Size}
+										updated = true
+										r.OrderBookMAP[product+"asks"][data.ID] = BookItem{Price: data.Price, Volume: float64(data.Size)}
 									}
+								}
+								if !updated {
+									continue
 								}
 							case "partial":
 								for _, data := range message.Data {
 									if data.Side == "Buy" {
-										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: data.Size})
+										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: float64(data.Size)})
 									} else {
-										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: data.Size})
+										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: float64(data.Size)})
 									}
 								}
-
 								wg.Add(1)
 								go func() {
 									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
@@ -384,13 +401,11 @@ func (r *Websocket) startReading() {
 								refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
 
 								for _, bids := range refLiveBook.Bids {
-									r.OrderBookMAP[product+"bids"][bids.Id] = &BookItem{Price: bids.Price, Volume: bids.Volume}
+									r.OrderBookMAP[product+"bids"][bids.Id] = BookItem{Price: bids.Price, Volume: bids.Volume}
 								}
 								for _, asks := range refLiveBook.Asks {
-									r.OrderBookMAP[product+"asks"][asks.Id] = &BookItem{Price: asks.Price, Volume: asks.Volume}
+									r.OrderBookMAP[product+"asks"][asks.Id] = BookItem{Price: asks.Price, Volume: asks.Volume}
 								}
-
-								r.base.LiveOrderBook.Set(product, refLiveBook)
 								continue
 							}
 
@@ -450,9 +465,10 @@ func (r *Websocket) startReading() {
 							refLiveBook = book
 
 							if len(book.Asks) > 0 && len(book.Bids) > 0 {
-								if book.Asks[0].Price > 5000.00 {
-									logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume, " BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-								}
+								log.Print("==")
+								logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
+								log.Print("==\n")
 							}
 
 							if r.base.Streaming {
@@ -464,7 +480,6 @@ func (r *Websocket) startReading() {
 								serialized = append(r.MessageType, serialized[:]...)
 								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 							}
-
 						}
 					}
 				}
