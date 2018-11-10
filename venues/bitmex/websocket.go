@@ -1,6 +1,7 @@
 package bitmex
 
 import (
+	"os"
 
 	//"encoding/json"
 
@@ -375,6 +376,8 @@ func (r *Websocket) startReading() {
 									}
 								}
 							case "partial":
+								logrus.Warn(string(resp))
+								os.Exit(1)
 								for _, data := range message.Data {
 									value, exist := r.pairsMapping.Get(data.Symbol)
 									if !exist {

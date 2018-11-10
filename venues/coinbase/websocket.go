@@ -474,6 +474,7 @@ func (r *Websocket) startReading() {
 							}(data.Asks)
 							wg.Wait()
 
+							// DO I NEED THIS????
 							wg.Add(1)
 							go func() {
 								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
