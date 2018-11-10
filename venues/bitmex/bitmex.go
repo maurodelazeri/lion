@@ -1,4 +1,4 @@
-package coinbase
+package bitmex
 
 import (
 	"net/http"
@@ -12,16 +12,16 @@ import (
 	"github.com/maurodelazeri/lion/venues/config"
 )
 
-const websocketURL = "wss://ws-feed.pro.coinbase.com"
+const websocketURL = "wss://www.bitmex.com/realtime"
 
-// Coinbase internals
-type Coinbase struct {
+// Bitmex internals
+type Bitmex struct {
 	venue.Base
 }
 
-// Websocket is the overarching type across the Coinbase package
+// Websocket is the overarching type across the Bitmex package
 type Websocket struct {
-	base        *Coinbase
+	base        *Bitmex
 	nonce       int64
 	isConnected bool
 	mu          sync.Mutex
@@ -51,13 +51,13 @@ type Websocket struct {
 }
 
 // SetDefaults sets default values for the venue
-func (r *Coinbase) SetDefaults() {
+func (r *Bitmex) SetDefaults() {
 	r.Enabled = true
 	r.Base.LiveOrderBook = utils.NewConcurrentMap()
 }
 
 // Setup initialises the venue parameters with the current configuration
-func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming bool, maxLevelsOrderBook int, mode ...pbAPI.SystemMode) {
+func (r *Bitmex) Setup(venueName string, config config.VenueConfig, streaming bool, maxLevelsOrderBook int, mode ...pbAPI.SystemMode) {
 	r.Streaming = streaming
 	r.Name = venueName
 	r.VenueConfig = utils.NewConcurrentMap()
@@ -69,7 +69,7 @@ func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming 
 }
 
 // Start ...
-func (r *Coinbase) Start() {
+func (r *Bitmex) Start() {
 	var dedicatedSocket, sharedSocket []string
 	// Individual system order book for each product
 	venueConf, ok := r.VenueConfig.Get(r.GetName())
