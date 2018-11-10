@@ -6,10 +6,12 @@ import (
 
 	"encoding/json"
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
@@ -49,11 +51,11 @@ type Message struct {
 		Symbol string `json:"symbol,omitempty"`
 	} `json:"filter,omitempty"`
 	Data []struct {
-		Symbol string `json:"symbol,omitempty"`
-		ID     int64  `json:"id,omitempty"`
-		Side   string `json:"side,omitempty"`
-		Size   int    `json:"size,omitempty"`
-		Price  int    `json:"price,omitempty"`
+		Symbol string  `json:"symbol,omitempty"`
+		ID     int64   `json:"id,omitempty"`
+		Side   string  `json:"side,omitempty"`
+		Size   float64 `json:"size,omitempty"`
+		Price  float64 `json:"price,omitempty"`
 	} `json:"data,omitempty"`
 }
 
@@ -247,7 +249,104 @@ func (r *Websocket) startReading() {
 						switch message.Table {
 						case "trade":
 							if message.Action == "insert" {
-								//logrus.Warn(string(resp))
+								for _, data := range message.Data {
+									var side pbAPI.Side
+									if data.Side == "Buy" {
+										side = pbAPI.Side_BUY
+									} else {
+										side = pbAPI.Side_SELL
+									}
+									value, exist := r.pairsMapping.Get(data.Symbol)
+									if !exist {
+										continue
+									}
+									product := value.(string)
+									refBook, ok := r.base.LiveOrderBook.Get(product)
+									if !ok {
+										continue
+									}
+									refLiveBook := refBook.(*pbAPI.Orderbook)
+									//	if len(refLiveBook.Asks) > 4 && len(refLiveBook.Bids) > 4 {
+									trades := &pbAPI.Trade{
+										Product:   pbAPI.Product((pbAPI.Product_value[product])),
+										Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+										Timestamp: common.MakeTimestamp(),
+										Price:     data.Price,
+										OrderSide: side,
+										Volume:    data.Size,
+										VenueType: pbAPI.VenueType_SPOT,
+										Asks:      refLiveBook.Asks,
+										Bids:      refLiveBook.Bids,
+									}
+									serialized, err := proto.Marshal(trades)
+									if err != nil {
+										log.Fatal("proto.Marshal error: ", err)
+									}
+									r.MessageType[0] = 0
+									serialized = append(r.MessageType, serialized[:]...)
+									//kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+									logrus.Warn(string(serialized), " - ", trades)
+									//	}
+
+								}
+								// 	refLiveBook := refBook.(*pbAPI.Orderbook)
+								// 	if len(refLiveBook.Asks) > 4 && len(refLiveBook.Bids) > 4 {
+								// 		trades := &pbAPI.Trade{
+								// 			Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								// 			Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								// 			Timestamp: common.MakeTimestamp(),
+								// 			Price:     data.Price,
+								// 			OrderSide: side,
+								// 			Volume:    data.Size,
+								// 			VenueType: pbAPI.VenueType_SPOT,
+								// 			Asks:      refLiveBook.Asks,
+								// 			Bids:      refLiveBook.Bids,
+								// 		}
+								// 		serialized, err := proto.Marshal(trades)
+								// 		if err != nil {
+								// 			log.Fatal("proto.Marshal error: ", err)
+								// 		}
+								// 		r.MessageType[0] = 0
+								// 		serialized = append(r.MessageType, serialized[:]...)
+								// 		kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+
+								// }
+
+								//var side pbAPI.Side
+								/*
+									if data.Side == "buy" {
+										side = pbAPI.Side_BUY
+									} else {
+										side = pbAPI.Side_SELL
+									}
+
+									refBook, ok := r.base.LiveOrderBook.Get(product)
+									if !ok {
+										continue
+									}
+									refLiveBook := refBook.(*pbAPI.Orderbook)
+									if len(refLiveBook.Asks) > 4 && len(refLiveBook.Bids) > 4 {
+										trades := &pbAPI.Trade{
+											Product:   pbAPI.Product((pbAPI.Product_value[product])),
+											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+											Timestamp: common.MakeTimestamp(),
+											Price:     data.Price,
+											OrderSide: side,
+											Volume:    data.Size,
+											VenueType: pbAPI.VenueType_SPOT,
+											Asks:      refLiveBook.Asks,
+											Bids:      refLiveBook.Bids,
+										}
+										serialized, err := proto.Marshal(trades)
+										if err != nil {
+											log.Fatal("proto.Marshal error: ", err)
+										}
+										r.MessageType[0] = 0
+										serialized = append(r.MessageType, serialized[:]...)
+										kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+									}
+								*/
+
 							}
 						case "orderBookL2":
 							switch message.Action {
@@ -256,12 +355,11 @@ func (r *Websocket) startReading() {
 							case "delete":
 							//	logrus.Warn(string(resp))
 							case "insert":
-								logrus.Warn(string(resp))
+							//	logrus.Warn(string(resp))
 							case "partial":
 								//logrus.Warn(string(resp))
 							}
 						}
-
 					}
 					// case websocket.TextMessage:
 					// 	data := Message{}
