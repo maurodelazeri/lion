@@ -6,7 +6,6 @@ import (
 
 	"encoding/json"
 	"errors"
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -20,60 +19,42 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Message ...
-type Message struct {
-	//Time          time.Time        `json:"time,string,omitempty"`
-	HiveTable     string           `json:"hivetable,omitempty"`
-	Type          string           `json:"type,omitempty"`
-	ProductID     string           `json:"product_id,omitempty"`
-	ProductIDs    []string         `json:"product_ids,omitempty"`
-	TradeID       int64            `json:"trade_id,number,omitempty"`
-	OrderID       string           `json:"order_id,omitempty"`
-	Sequence      int64            `json:"sequence,number,omitempty"`
-	MakerOrderID  string           `json:"maker_order_id,omitempty"`
-	TakerOrderID  string           `json:"taker_order_id,omitempty"`
-	RemainingSize float64          `json:"remaining_size,string,omitempty"`
-	NewSize       float64          `json:"new_size,string,omitempty"`
-	OldSize       float64          `json:"old_size,string,omitempty"`
-	Size          float64          `json:"size,string,omitempty"`
-	Price         float64          `json:"price,string,omitempty"`
-	Side          string           `json:"side,omitempty"`
-	Reason        string           `json:"reason,omitempty"`
-	OrderType     string           `json:"order_type,omitempty"`
-	Funds         float64          `json:"funds,string,omitempty"`
-	NewFunds      float64          `json:"new_funds,string,omitempty"`
-	OldFunds      float64          `json:"old_funds,string,omitempty"`
-	Message       string           `json:"message,omitempty"`
-	Bids          [][]string       `json:"bids,omitempty"`
-	Asks          [][]string       `json:"asks,omitempty"`
-	Changes       [][]string       `json:"changes,omitempty"`
-	LastSize      float64          `json:"last_size,string,omitempty"`
-	BestBid       float64          `json:"best_bid,string,omitempty"`
-	BestAsk       float64          `json:"best_ask,string,omitempty"`
-	Channels      []MessageChannel `json:"channels,omitempty"`
-	UserID        string           `json:"user_id,omitempty"`
-	ProfileID     string           `json:"profile_id,omitempty"`
-	Open24H       float64          `json:"open_24h,string,omitempty"`
-	Volume24H     float64          `json:"volume_24h,string,omitempty"`
-	Low24H        float64          `json:"low_24h,string,omitempty"`
-	High24H       float64          `json:"high_24h,string,omitempty"`
-	Volume30D     float64          `json:"volume_30d,string,omitempty"`
-}
-
 // MessageChannel takes in subscription information
 type MessageChannel struct {
 	OP   string   `json:"op"`
 	Args []string `json:"args"`
 }
 
-type wsData struct {
-	Table       string            `json:"table"`
-	Action      string            `json:"action"`
-	Keys        []string          `json:"keys"`
-	Attributes  map[string]string `json:"attributes"`
-	Types       map[string]string `json:"types"`
-	ForeignKeys map[string]string `json:"foreignKeys"`
-	Data        json.RawMessage
+// Message ...
+type Message struct {
+	Table  string   `json:"table,omitempty"`
+	Action string   `json:"action,omitempty"`
+	Keys   []string `json:"keys,omitempty"`
+	Types  struct {
+		Symbol string `json:"symbol,omitempty"`
+		ID     string `json:"id,omitempty"`
+		Side   string `json:"side,omitempty"`
+		Size   string `json:"size,omitempty"`
+		Price  string `json:"price,omitempty"`
+	} `json:"types,omitempty"`
+	ForeignKeys struct {
+		Symbol string `json:"symbol,omitempty"`
+		Side   string `json:"side,omitempty"`
+	} `json:"foreignKeys"`
+	Attributes struct {
+		Symbol string `json:"symbol,omitempty"`
+		ID     string `json:"id,omitempty"`
+	} `json:"attributes,omitempty"`
+	Filter struct {
+		Symbol string `json:"symbol,omitempty"`
+	} `json:"filter,omitempty"`
+	Data []struct {
+		Symbol string `json:"symbol,omitempty"`
+		ID     int64  `json:"id,omitempty"`
+		Side   string `json:"side,omitempty"`
+		Size   int    `json:"size,omitempty"`
+		Price  int    `json:"price,omitempty"`
+	} `json:"data,omitempty"`
 }
 
 // Subscribe subsribe public and private endpoints
@@ -261,22 +242,26 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						data := wsData{}
-						err := common.JSONDecode(resp, &data)
-						if err != nil {
-							log.Println(err)
-							continue
-						}
-						var table wsData
-						json.Unmarshal(resp, &table)
-
-						switch table.Table {
+						var message Message
+						json.Unmarshal(resp, &message)
+						switch message.Table {
 						case "trade":
-							if table.Action == "insert" {
-								logrus.Warn(string(resp))
+							if message.Action == "insert" {
+								//logrus.Warn(string(resp))
 							}
-						case "instrument":
+						case "orderBookL2":
+							switch message.Action {
+							case "update":
+								//logrus.Warn(string(resp))
+							case "delete":
+							//	logrus.Warn(string(resp))
+							case "insert":
+								logrus.Warn(string(resp))
+							case "partial":
+								//logrus.Warn(string(resp))
+							}
 						}
+
 					}
 					// case websocket.TextMessage:
 					// 	data := Message{}
