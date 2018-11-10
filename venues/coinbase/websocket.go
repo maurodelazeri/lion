@@ -412,26 +412,24 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
-							if len(refLiveBook.Asks) > 4 && len(refLiveBook.Bids) > 4 {
-								trades := &pbAPI.Trade{
-									Product:   pbAPI.Product((pbAPI.Product_value[product])),
-									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-									Timestamp: common.MakeTimestamp(),
-									Price:     data.Price,
-									OrderSide: side,
-									Volume:    data.Size,
-									VenueType: pbAPI.VenueType_SPOT,
-									Asks:      refLiveBook.Asks,
-									Bids:      refLiveBook.Bids,
-								}
-								serialized, err := proto.Marshal(trades)
-								if err != nil {
-									log.Fatal("proto.Marshal error: ", err)
-								}
-								r.MessageType[0] = 0
-								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+							trades := &pbAPI.Trade{
+								Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Timestamp: common.MakeTimestamp(),
+								Price:     data.Price,
+								OrderSide: side,
+								Volume:    data.Size,
+								VenueType: pbAPI.VenueType_SPOT,
+								Asks:      refLiveBook.Asks,
+								Bids:      refLiveBook.Bids,
 							}
+							serialized, err := proto.Marshal(trades)
+							if err != nil {
+								log.Fatal("proto.Marshal error: ", err)
+							}
+							r.MessageType[0] = 0
+							serialized = append(r.MessageType, serialized[:]...)
+							kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 						}
 
 						if data.Type == "snapshot" {
