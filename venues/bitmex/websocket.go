@@ -1,7 +1,6 @@
 package bitmex
 
 import (
-	"os"
 
 	//"encoding/json"
 
@@ -376,45 +375,59 @@ func (r *Websocket) startReading() {
 									}
 								}
 							case "partial":
-								logrus.Warn(string(resp))
-								os.Exit(1)
+								var refProduct string
+								var refLiveBook *pbAPI.Orderbook
+								var wg sync.WaitGroup
+
 								for _, data := range message.Data {
 									value, exist := r.pairsMapping.Get(data.Symbol)
 									if !exist {
 										continue
 									}
 									product := value.(string)
+									refProduct = product
+
 									refBook, ok := r.base.LiveOrderBook.Get(product)
 									if !ok {
 										continue
 									}
-									refLiveBook := refBook.(*pbAPI.Orderbook)
-									var wg sync.WaitGroup
+									refLiveBook = refBook.(*pbAPI.Orderbook)
+
 									if data.Side == "Buy" {
-										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: data.Price, Volume: data.Size})
-										r.OrderBookMAP[product+"bids"][data.ID] = BookItem{Price: data.Price, Volume: data.Size}
+										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: data.Size})
 									} else {
-										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: data.Price, Volume: data.Size})
-										r.OrderBookMAP[product+"asks"][data.ID] = BookItem{Price: data.Price, Volume: data.Size}
+										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: data.Size})
 									}
-									wg.Add(1)
-									go func() {
-										sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-											return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-										})
-										wg.Done()
-									}()
-									wg.Add(1)
-									go func() {
-										sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-											return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-										})
-										wg.Done()
-									}()
-									wg.Wait()
-									// REMOVE THE WASTE HERE
-									continue
 								}
+
+								// Cut off the waste
+								refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+								refLiveBook.Asks = refLiveBook.Asks[:len(refLiveBook.Asks)-r.base.MaxLevelsOrderBook]
+
+								for _, bids := range refLiveBook.Bids {
+									r.OrderBookMAP[refProduct+"bids"][bids.Id] = BookItem{Price: bids.Price, Volume: bids.Volume}
+								}
+								for _, asks := range refLiveBook.Asks {
+									r.OrderBookMAP[refProduct+"asks"][asks.Id] = BookItem{Price: asks.Price, Volume: asks.Volume}
+								}
+
+								wg.Add(1)
+								go func() {
+									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+									})
+									wg.Done()
+								}()
+								wg.Add(1)
+								go func() {
+									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+									})
+									wg.Done()
+								}()
+								wg.Wait()
+
+								continue
 							}
 
 							var wg sync.WaitGroup
@@ -473,6 +486,8 @@ func (r *Websocket) startReading() {
 								VenueType: pbAPI.VenueType_SPOT,
 							}
 							refLiveBook = book
+
+							logrus.Warn("FINAL: ", book)
 
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)

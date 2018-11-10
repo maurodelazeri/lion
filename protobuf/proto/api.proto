@@ -274,8 +274,9 @@ message Statistics {
 
 // Market Data
 message Item {
-  double volume = 1;
-  double price  = 2;
+  int64  id     = 1;  
+  double volume = 2;
+  double price  = 3;
 };
 
 message Subscription {
