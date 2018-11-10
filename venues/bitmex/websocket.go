@@ -70,7 +70,6 @@ type BookItem struct {
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
-	products = append(products, "ETHUSD")
 	endpoint := []string{}
 	subscribe := MessageChannel{}
 	if r.base.Streaming {
@@ -421,12 +420,16 @@ func (r *Websocket) startReading() {
 								wg.Wait()
 
 								r.base.LiveOrderBook.Set(productRef, refLiveBook)
-
 								continue
 							}
 
 							var wg sync.WaitGroup
-							refLiveBook := &pbAPI.Orderbook{}
+							refBook, ok := r.base.LiveOrderBook.Get(productRef)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+
 							wg.Add(1)
 							go func() {
 								refLiveBook.Bids = []*pbAPI.Item{}
@@ -483,7 +486,9 @@ func (r *Websocket) startReading() {
 							refLiveBook = book
 
 							if len(book.Asks) > 0 && len(book.Bids) > 0 {
-								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume, " BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+								if book.Asks[0].Price > 5000.00 {
+									logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume, " BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+								}
 							}
 
 							if r.base.Streaming {
