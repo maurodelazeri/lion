@@ -185,15 +185,15 @@ func (r *Websocket) connect() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	r.OrderBookMAP = make(map[string]map[int64]BookItem)
+	r.OrderBookMAP = make(map[string]map[int64]*BookItem)
 	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
-		r.OrderBookMAP[sym+"bids"] = make(map[int64]BookItem)
-		r.OrderBookMAP[sym+"asks"] = make(map[int64]BookItem)
+		r.OrderBookMAP[sym+"bids"] = make(map[int64]*BookItem)
+		r.OrderBookMAP[sym+"asks"] = make(map[int64]*BookItem)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
@@ -296,27 +296,31 @@ func (r *Websocket) startReading() {
 								}
 							}
 						case "orderBookL2":
-							productRef := ""
+							var wg sync.WaitGroup
+							value, exist := r.pairsMapping.Get(message.Data[0].Symbol)
+							if !exist {
+								continue
+							}
+							product := value.(string)
+
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
 
 							switch message.Action {
 							case "update":
 								for _, data := range message.Data {
-									value, exist := r.pairsMapping.Get(data.Symbol)
-									if !exist {
-										continue
-									}
-									product := value.(string)
-									productRef = product
-
 									if data.Side == "Buy" {
 										if val, ok := r.OrderBookMAP[product+"bids"][data.ID]; ok {
-											r.OrderBookMAP[product+"bids"][data.ID] = BookItem{Price: val.Price, Volume: data.Size}
+											r.OrderBookMAP[product+"bids"][data.ID] = &BookItem{Price: val.Price, Volume: data.Size}
 										} else {
 											continue
 										}
 									} else {
 										if val, ok := r.OrderBookMAP[product+"asks"][data.ID]; ok {
-											r.OrderBookMAP[product+"asks"][data.ID] = BookItem{Price: val.Price, Volume: data.Size}
+											r.OrderBookMAP[product+"asks"][data.ID] = &BookItem{Price: val.Price, Volume: data.Size}
 										} else {
 											continue
 										}
@@ -324,45 +328,22 @@ func (r *Websocket) startReading() {
 								}
 							case "delete":
 								for _, data := range message.Data {
-									value, exist := r.pairsMapping.Get(data.Symbol)
-									if !exist {
-										continue
-									}
-									product := value.(string)
-									productRef = product
-
 									if data.Side == "Buy" {
-										if _, ok := r.OrderBookMAP[product+"bids"][data.ID]; ok {
-											delete(r.OrderBookMAP[product+"bids"], data.ID)
-										}
+										delete(r.OrderBookMAP[product+"bids"], data.ID)
 									} else {
-										if _, ok := r.OrderBookMAP[product+"asks"][data.ID]; ok {
-											delete(r.OrderBookMAP[product+"asks"], data.ID)
-										}
+										delete(r.OrderBookMAP[product+"asks"], data.ID)
 									}
 								}
 							case "insert":
 								for _, data := range message.Data {
-									value, exist := r.pairsMapping.Get(data.Symbol)
-									if !exist {
-										continue
-									}
-									product := value.(string)
-									productRef = product
-
-									refBook, ok := r.base.LiveOrderBook.Get(product)
-									if !ok {
-										continue
-									}
-									refLiveBook := refBook.(*pbAPI.Orderbook)
 									if data.Side == "Buy" {
-										totalLevels := len(refLiveBook.GetAsks())
+										totalLevels := len(refLiveBook.GetBids())
 										if totalLevels == r.base.MaxLevelsOrderBook {
-											if data.Price > refLiveBook.Asks[totalLevels-1].Price {
+											if data.Price < refLiveBook.Bids[totalLevels-1].Price {
 												continue
 											}
 										}
-										r.OrderBookMAP[product+"bids"][data.ID] = BookItem{Price: data.Price, Volume: data.Size}
+										r.OrderBookMAP[product+"bids"][data.ID] = &BookItem{Price: data.Price, Volume: data.Size}
 									} else {
 										totalLevels := len(refLiveBook.GetAsks())
 										if totalLevels == r.base.MaxLevelsOrderBook {
@@ -370,37 +351,16 @@ func (r *Websocket) startReading() {
 												continue
 											}
 										}
-										r.OrderBookMAP[product+"asks"][data.ID] = BookItem{Price: data.Price, Volume: data.Size}
+										r.OrderBookMAP[product+"asks"][data.ID] = &BookItem{Price: data.Price, Volume: data.Size}
 									}
 								}
 							case "partial":
-								refLiveBook := &pbAPI.Orderbook{}
-								var wg sync.WaitGroup
-
 								for _, data := range message.Data {
-									productRef = data.Symbol
 									if data.Side == "Buy" {
 										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: data.Size})
 									} else {
 										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Id: data.ID, Price: data.Price, Volume: data.Size})
 									}
-								}
-
-								value, exist := r.pairsMapping.Get(productRef)
-								if !exist {
-									continue
-								}
-								productRef = value.(string)
-
-								// Cut off the waste
-								refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-								refLiveBook.Asks = refLiveBook.Asks[len(refLiveBook.Asks)-r.base.MaxLevelsOrderBook:]
-
-								for _, bids := range refLiveBook.Bids {
-									r.OrderBookMAP[productRef+"bids"][bids.Id] = BookItem{Price: bids.Price, Volume: bids.Volume}
-								}
-								for _, asks := range refLiveBook.Asks {
-									r.OrderBookMAP[productRef+"asks"][asks.Id] = BookItem{Price: asks.Price, Volume: asks.Volume}
 								}
 
 								wg.Add(1)
@@ -419,21 +379,25 @@ func (r *Websocket) startReading() {
 								}()
 								wg.Wait()
 
-								r.base.LiveOrderBook.Set(productRef, refLiveBook)
-								continue
-							}
+								// Cut off the waste
+								refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+								refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
 
-							var wg sync.WaitGroup
-							refBook, ok := r.base.LiveOrderBook.Get(productRef)
-							if !ok {
+								for _, bids := range refLiveBook.Bids {
+									r.OrderBookMAP[product+"bids"][bids.Id] = &BookItem{Price: bids.Price, Volume: bids.Volume}
+								}
+								for _, asks := range refLiveBook.Asks {
+									r.OrderBookMAP[product+"asks"][asks.Id] = &BookItem{Price: asks.Price, Volume: asks.Volume}
+								}
+
+								r.base.LiveOrderBook.Set(product, refLiveBook)
 								continue
 							}
-							refLiveBook := refBook.(*pbAPI.Orderbook)
 
 							wg.Add(1)
 							go func() {
 								refLiveBook.Bids = []*pbAPI.Item{}
-								for _, values := range r.OrderBookMAP[productRef+"bids"] {
+								for _, values := range r.OrderBookMAP[product+"bids"] {
 									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
 								}
 								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
@@ -445,7 +409,7 @@ func (r *Websocket) startReading() {
 							wg.Add(1)
 							go func() {
 								refLiveBook.Asks = []*pbAPI.Item{}
-								for _, values := range r.OrderBookMAP[productRef+"asks"] {
+								for _, values := range r.OrderBookMAP[product+"asks"] {
 									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
 								}
 								sort.Slice(refLiveBook.Asks, func(i, j int) bool {
@@ -475,7 +439,7 @@ func (r *Websocket) startReading() {
 
 							wg.Wait()
 							book := &pbAPI.Orderbook{
-								Product:   pbAPI.Product((pbAPI.Product_value[productRef])),
+								Product:   pbAPI.Product((pbAPI.Product_value[product])),
 								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 								Levels:    int32(r.base.MaxLevelsOrderBook),
 								Timestamp: common.MakeTimestamp(),
@@ -498,7 +462,7 @@ func (r *Websocket) startReading() {
 								}
 								r.MessageType[0] = 1
 								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(productRef+"."+r.base.Name+".orderbook", serialized, 1, false)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 							}
 
 						}
