@@ -70,6 +70,7 @@ type BookItem struct {
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
+	products = append(products, "ETHUSD")
 	endpoint := []string{}
 	subscribe := MessageChannel{}
 	if r.base.Streaming {
@@ -296,8 +297,7 @@ func (r *Websocket) startReading() {
 								}
 							}
 						case "orderBookL2":
-
-							var wg sync.WaitGroup
+							productRef := ""
 
 							switch message.Action {
 							case "update":
@@ -307,6 +307,8 @@ func (r *Websocket) startReading() {
 										continue
 									}
 									product := value.(string)
+									productRef = product
+
 									if data.Side == "Buy" {
 										if val, ok := r.OrderBookMAP[product+"bids"][data.ID]; ok {
 											r.OrderBookMAP[product+"bids"][data.ID] = BookItem{Price: val.Price, Volume: data.Size}
@@ -328,6 +330,8 @@ func (r *Websocket) startReading() {
 										continue
 									}
 									product := value.(string)
+									productRef = product
+
 									if data.Side == "Buy" {
 										if _, ok := r.OrderBookMAP[product+"bids"][data.ID]; ok {
 											delete(r.OrderBookMAP[product+"bids"], data.ID)
@@ -345,6 +349,8 @@ func (r *Websocket) startReading() {
 										continue
 									}
 									product := value.(string)
+									productRef = product
+
 									refBook, ok := r.base.LiveOrderBook.Get(product)
 									if !ok {
 										continue
@@ -403,15 +409,18 @@ func (r *Websocket) startReading() {
 										wg.Done()
 									}()
 									wg.Wait()
+									// REMOVE THE WASTE HERE
 									continue
 								}
 							}
 
+							var wg sync.WaitGroup
+							refLiveBook := &pbAPI.Orderbook{}
 							wg.Add(1)
 							go func() {
 								refLiveBook.Bids = []*pbAPI.Item{}
-								for price, amount := range r.OrderBookMAP[product+"bids"] {
-									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
+								for _, values := range r.OrderBookMAP[productRef+"bids"] {
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
 								}
 								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
 									return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
@@ -422,8 +431,8 @@ func (r *Websocket) startReading() {
 							wg.Add(1)
 							go func() {
 								refLiveBook.Asks = []*pbAPI.Item{}
-								for price, amount := range r.OrderBookMAP[product+"asks"] {
-									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
+								for _, values := range r.OrderBookMAP[productRef+"asks"] {
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
 								}
 								sort.Slice(refLiveBook.Asks, func(i, j int) bool {
 									return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
@@ -452,7 +461,7 @@ func (r *Websocket) startReading() {
 
 							wg.Wait()
 							book := &pbAPI.Orderbook{
-								Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								Product:   pbAPI.Product((pbAPI.Product_value[productRef])),
 								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 								Levels:    int32(r.base.MaxLevelsOrderBook),
 								Timestamp: common.MakeTimestamp(),
@@ -469,7 +478,7 @@ func (r *Websocket) startReading() {
 								}
 								r.MessageType[0] = 1
 								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+								kafkaproducer.PublishMessageAsync(productRef+"."+r.base.Name+".orderbook", serialized, 1, false)
 							}
 
 						}
