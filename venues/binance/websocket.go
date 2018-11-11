@@ -141,35 +141,30 @@ func (r *Websocket) GetDialError() error {
 }
 
 // FetchEnabledOrderBooks gets the initial orderbook
-// func (b *Websocket) FetchEnabledOrderBooks() {
-// 	go func() {
-// 		for _, p := range b.ExchangeEnabledPairs {
-// 			time.Sleep(1 * time.Second)
+func (r *Websocket) FetchEnabledOrderBooks() {
+	go func() {
+		for _, sym := range r.subscribedPairs {
+			venueConf, _ := r.base.VenueConfig.Get(r.base.GetName())
+			data, err := r.base.LoadOrderbook(venueConf.(config.VenueConfig).Products[sym].VenueName, 50)
+			if err != nil {
+				logrus.Error("problem to fech the orderbook ", venueConf.(config.VenueConfig).Products[sym].VenueName)
+			}
+			logrus.Warn(data)
+			// symbol := strings.Split(b.APIEnabledPairs[position], "_")
+			// for _, bids := range orderbookNew.Bids {
+			// 	b.redisSession.HSet("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":bids", b.FloatToString(bids.Price), b.FloatToString(bids.Quantity))
+			// }
+			// for _, asks := range orderbookNew.Asks {
+			// 	b.redisSession.HSet("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":asks", b.FloatToString(asks.Price), b.FloatToString(asks.Quantity))
+			// }
 
-// 			orderbookNew, err := b.GetOrderBook(p, 50)
-// 			position, exist := b.StringInSlice(p, b.ExchangeEnabledPairs)
-// 			if err != nil {
-// 				logrus.Error(b.Name, " ", p, " Problem to Fetch orderbook ", err)
-// 				time.Sleep(5 * time.Second)
-// 				continue
-// 			}
-// 			if exist {
-// 				symbol := strings.Split(b.APIEnabledPairs[position], "/")
-// 				for _, bids := range orderbookNew.Bids {
-// 					b.redisSession.HSet("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":bids", b.FloatToString(bids.Price), b.FloatToString(bids.Quantity))
-// 				}
-// 				for _, asks := range orderbookNew.Asks {
-// 					b.redisSession.HSet("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":asks", b.FloatToString(asks.Price), b.FloatToString(asks.Quantity))
-// 				}
+			// b.redisSession.Expire("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":asks", 1*time.Minute)
+			// b.redisSession.Expire("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":bids", 1*time.Minute)
 
-// 				b.redisSession.Expire("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":asks", 1*time.Minute)
-// 				b.redisSession.Expire("exchange:"+b.Name+":book:"+symbol[0]+symbol[1]+":bids", 1*time.Minute)
-
-// 				b.LockTillBookFetchToFinish[strings.ToLower(p)+"@depth"] = symbol[0] + symbol[1]
-// 			}
-// 		}
-// 	}()
-// }
+			r.LockTillBookFetchToFinish[strings.ToLower(sym)+"@depth"] = venueConf.(config.VenueConfig).Products[sym].VenueName
+		}
+	}()
+}
 
 func (r *Websocket) connect() {
 
@@ -208,6 +203,8 @@ func (r *Websocket) connect() {
 			currencies = append(currencies, strings.ToLower(x)+"@trade")
 			currencies = append(currencies, strings.ToLower(x)+"@depth")
 		}
+
+		r.FetchEnabledOrderBooks()
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 

@@ -1,22 +1,53 @@
 package binance
 
 import (
+	"fmt"
 	"net/http"
+	"net/url"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/maurodelazeri/concurrency-map-slice"
+	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/maurodelazeri/lion/venues/request"
 )
 
-const websocketURL = "wss://stream.binance.com:9443/stream?streams="
+const (
+	apiURL       = "https://api.binance.com"
+	mainWebsite  = "https://www.binance.com"
+	websocketURL = "wss://stream.binance.com:9443/stream?streams="
+
+	// Public endpoints
+	exchangeInfo     = "/api/v1/exchangeInfo"
+	orderBookDepth   = "/api/v1/depth"
+	recentTrades     = "/api/v1/trades"
+	historicalTrades = "/api/v1/historicalTrades"
+	aggregatedTrades = "/api/v1/aggTrades"
+	candleStick      = "/api/v1/klines"
+	priceChange      = "/api/v1/ticker/24hr"
+	symbolPrice      = "/api/v3/ticker/price"
+	bestPrice        = "/api/v3/ticker/bookTicker"
+	getAllAsset      = "/assetWithdraw/getAllAsset.html"
+
+	// Authenticated endpoints
+	newOrderTest = "/api/v3/order/test"
+	newOrder     = "/api/v3/order"
+	queryOrder   = "/api/v3/order"
+
+	// binance authenticated and unauthenticated limit rates
+	binanceAuthRate   = 1000
+	binanceUnauthRate = 1000
+)
 
 // Binance internals
 type Binance struct {
 	venue.Base
+	*request.Handler
 }
 
 // Websocket is the overarching type across the Binance package
@@ -48,6 +79,8 @@ type Websocket struct {
 	subscribedPairs []string
 	pairsMapping    *utils.ConcurrentMap
 	MessageType     []byte
+
+	LockTillBookFetchToFinish map[string]string
 }
 
 // SetDefaults sets default values for the venue
@@ -88,6 +121,7 @@ func (r *Binance) Start() {
 				socket.MessageType = make([]byte, 4)
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
+				socket.LockTillBookFetchToFinish = map[string]string{}
 				go socket.WebsocketClient()
 			}
 		}
@@ -96,7 +130,30 @@ func (r *Binance) Start() {
 			socket.MessageType = make([]byte, 4)
 			socket.base = r
 			socket.subscribedPairs = sharedSocket
+			socket.LockTillBookFetchToFinish = map[string]string{}
 			go socket.WebsocketClient()
 		}
 	}
+}
+
+// SendHTTPRequest sends an unauthenticated request
+func (r *Binance) SendHTTPRequest(path string, result interface{}) error {
+	return r.SendPayload("GET", path, nil, nil, result, false, r.Verbose)
+}
+
+// LoadOrderbook returns full orderbook information
+//
+// symbol: string of currency pair
+// limit: returned limit amount
+func (r *Binance) LoadOrderbook(symbol string, limit int64) (MessageDepht, error) {
+	resp := MessageDepht{}
+	params := url.Values{}
+	params.Set("symbol", common.StringToUpper(symbol))
+	params.Set("limit", strconv.FormatInt(limit, 10))
+
+	path := fmt.Sprintf("%s%s?%s", apiURL, orderBookDepth, params.Encode())
+	if err := r.SendHTTPRequest(path, &resp); err != nil {
+		return resp, err
+	}
+	return resp, nil
 }
