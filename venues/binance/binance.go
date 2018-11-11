@@ -99,6 +99,9 @@ func (r *Binance) Setup(venueName string, config config.VenueConfig, streaming b
 	if len(mode) > 0 {
 		r.Mode = mode[0]
 	}
+
+	r.Handler = new(request.Handler)
+	r.SetRequestHandler(r.Name, binanceAuthRate, binanceUnauthRate, new(http.Client))
 }
 
 // Start ...
@@ -145,12 +148,11 @@ func (r *Binance) SendHTTPRequest(path string, result interface{}) error {
 //
 // symbol: string of currency pair
 // limit: returned limit amount
-func (r *Binance) LoadOrderbook(symbol string, limit int64) (MessageDepht, error) {
-	resp := MessageDepht{}
+func (r *Binance) LoadOrderbook(symbol string, limit int64) (OrderBook, error) {
+	resp := OrderBook{}
 	params := url.Values{}
 	params.Set("symbol", common.StringToUpper(symbol))
 	params.Set("limit", strconv.FormatInt(limit, 10))
-
 	path := fmt.Sprintf("%s%s?%s", apiURL, orderBookDepth, params.Encode())
 	if err := r.SendHTTPRequest(path, &resp); err != nil {
 		return resp, err
