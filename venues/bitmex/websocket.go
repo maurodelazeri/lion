@@ -282,7 +282,7 @@ func (r *Websocket) startReading() {
 										Price:     data.Price,
 										OrderSide: side,
 										Volume:    float64(data.Size),
-										VenueType: pbAPI.VenueType_SPOT,
+										VenueType: pbAPI.VenueType_FUTURES,
 										Asks:      refLiveBook.Asks,
 										Bids:      refLiveBook.Bids,
 									}
