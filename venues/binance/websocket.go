@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -255,15 +256,14 @@ func (r *Websocket) startReading() {
 							continue
 						}
 						if strings.Contains(data.Stream, "@depth") {
-							// logrus.Warn("RAW ", string(resp))
 							var wg sync.WaitGroup
-
 							message := MessageDepht{}
 							err = ffjson.Unmarshal(resp, &message)
 							if err != nil {
 								logrus.Error(err)
 								continue
 							}
+
 							value, exist := r.pairsMapping.Get(message.Data.Symbol)
 							if !exist {
 								continue
@@ -276,6 +276,59 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 
+							wg.Add(1)
+							go func() {
+								for _, book := range message.Data.Bids {
+									amount, _ := strconv.ParseFloat(book[1].(string), 64)
+									price, _ := strconv.ParseFloat(book[0].(string), 64)
+									if amount == 0 {
+										if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+											delete(r.OrderBookMAP[product+"bids"], price)
+											updated = true
+										}
+									} else {
+										amount, _ := strconv.ParseFloat(book[1].(string), 64)
+										price, _ := strconv.ParseFloat(book[0].(string), 64)
+										totalLevels := len(refLiveBook.GetBids())
+										if totalLevels == r.base.MaxLevelsOrderBook {
+											if price < refLiveBook.Bids[totalLevels-1].Price {
+												continue
+											}
+										}
+										updated = true
+										r.OrderBookMAP[product+"bids"][price] = amount
+									}
+								}
+								wg.Done()
+							}()
+
+							wg.Add(1)
+							go func() {
+								for _, book := range message.Data.Asks {
+									amount, _ := strconv.ParseFloat(book[1].(string), 64)
+									price, _ := strconv.ParseFloat(book[0].(string), 64)
+									if amount == 0 {
+										if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+											delete(r.OrderBookMAP[product+"asks"], price)
+											updated = true
+										}
+									} else {
+										amount, _ := strconv.ParseFloat(book[1].(string), 64)
+										price, _ := strconv.ParseFloat(book[0].(string), 64)
+										totalLevels := len(refLiveBook.GetAsks())
+										if totalLevels == r.base.MaxLevelsOrderBook {
+											if price > refLiveBook.Asks[totalLevels-1].Price {
+												continue
+											}
+										}
+										updated = true
+										r.OrderBookMAP[product+"asks"][price] = amount
+									}
+								}
+								wg.Done()
+							}()
+
+							wg.Wait()
 							// we dont need to update the book if any level we care was changed
 							if !updated {
 								continue
