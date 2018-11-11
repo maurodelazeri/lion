@@ -2,16 +2,23 @@ syntax = "proto3";
 package api;
 
  enum Venue{
-	DARKPOOL    =  0;
-	COINBASEPRO =  1;
-	BITMEX      =  2;
-	BITFINEX    =  3;
-	BINANCE     =  4;
-	GEMINI      =  5;
-	KRAKEN      =  6;
-	OKEX        =  7;
-	BITSTAMP    =  8;
-	HUOBIPRO    =  9;
+	DARKPOOL    		=  0;
+	COINBASEPRO 		=  1;
+	BITMEX      		=  2;
+	BITFINEX    		=  3;
+	BINANCE     		=  4;
+	GEMINI      		=  5;
+	BITTREX     		=  6;
+	OKEX        		=  7;
+	BITSTAMP    		=  8;
+	HUOBIPRO    		=  9;
+	GATEIO      		=  10;
+	LBANK       		=  11;
+	POLONIEX    		=  12;
+	ZB          		=  13;
+	FOXBIT      		=  14;
+	BITCOINTOYOU    	=  15;
+	BITCAMBIO        	=  16;
    }
   
  enum SystemMode{
