@@ -80,6 +80,18 @@ package api;
 	 ETC_USD 		= 30;
 	 ETC_BTC 		= 31;
 	 ETC_ETH 		= 32;
+	 XMR_USD 		= 33;
+	 XMR_BTC 		= 34;
+	 XMR_ETH 		= 35;
+	 OMG_USD 		= 36;
+	 OMG_BTC 		= 37;
+	 OMG_ETH 		= 38;
+	 DASH_USD 		= 39;
+	 DASH_BTC 		= 40;
+	 DASH_ETH 		= 41;
+	 NEO_USD 		= 42;
+	 NEO_BTC 		= 43;
+	 NEO_ETH 		= 44;	 	 	 
    }
   
    enum OrderState {

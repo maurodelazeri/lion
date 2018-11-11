@@ -1,0 +1,76 @@
+{
+    "_id": ObjectId("5be5d3fda68e293b5aec0632"),
+    "protobuf": 4,
+    "enabled": true,
+    "api_key": "-",
+    "api_secret": "-",
+    "passphrase": "-",
+    "name": "BINANCE",
+    "product": [{
+            "product": 0,
+            "enabled": true,
+            "individual_connection": false,
+            "venue_name": "BTCUSDT",
+            "api_name": "BTC_USD",
+            "minimum_orders_size": 1e-06,
+            "step_size": 1e-06,
+            "maker_fee": 0.0,
+            "taker_fee": 0.3
+        },
+        {
+            "product": 1,
+            "enabled": true,
+            "individual_connection": false,
+            "venue_name": "ETHBTC",
+            "api_name": "ETH_BTC",
+            "minimum_orders_size": 0.001,
+            "step_size": 0.001,
+            "maker_fee": 0.0,
+            "taker_fee": 0.3
+        },
+        {
+            "product": 2,
+            "enabled": true,
+            "individual_connection": false,
+            "venue_name": "ETHUSDT",
+            "api_name": "ETH_USD",
+            "minimum_orders_size": 1e-05,
+            "step_size": 1e-05,
+            "maker_fee": 0.0,
+            "taker_fee": 0.3
+        },
+        {
+            "product": 3,
+            "enabled": true,
+            "individual_connection": false,
+            "venue_name": "EOSUSDT",
+            "api_name": "EOS_USD",
+            "minimum_orders_size": 0.01,
+            "step_size": 0.01,
+            "maker_fee": 0.0,
+            "taker_fee": 0.3
+        },
+        {
+            "product": 4,
+            "enabled": true,
+            "individual_connection": false,
+            "venue_name": "EOSBTC",
+            "api_name": "EOS_BTC",
+            "minimum_orders_size": 0.01000000,
+            "step_size": 0.01000000,
+            "maker_fee": 0.0,
+            "taker_fee": 0.3
+        },
+        {
+            "product": 5,
+            "enabled": true,
+            "individual_connection": false,
+            "venue_name": "EOSETH",
+            "api_name": "EOS_ETH",
+            "minimum_orders_size": 0.01000000,
+            "step_size": 0.01000000,
+            "maker_fee": 0.0,
+            "taker_fee": 0.3
+        }
+    ]
+}
