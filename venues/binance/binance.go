@@ -12,7 +12,7 @@ import (
 	"github.com/maurodelazeri/lion/venues/config"
 )
 
-const websocketURL = "wss://stream2.binance.com:9443/stream?streams="
+const websocketURL = "wss://stream.binance.com:9443/stream?streams="
 
 // Binance internals
 type Binance struct {

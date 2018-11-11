@@ -15,46 +15,44 @@ import (
 	"github.com/maurodelazeri/concurrency-map-slice"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
 // Message ...
 type Message struct {
-	//Time          time.Time        `json:"time,string,omitempty"`
-	HiveTable     string     `json:"hivetable,omitempty"`
-	Type          string     `json:"type,omitempty"`
-	ProductID     string     `json:"product_id,omitempty"`
-	ProductIDs    []string   `json:"product_ids,omitempty"`
-	TradeID       int64      `json:"trade_id,number,omitempty"`
-	OrderID       string     `json:"order_id,omitempty"`
-	Sequence      int64      `json:"sequence,number,omitempty"`
-	MakerOrderID  string     `json:"maker_order_id,omitempty"`
-	TakerOrderID  string     `json:"taker_order_id,omitempty"`
-	RemainingSize float64    `json:"remaining_size,string,omitempty"`
-	NewSize       float64    `json:"new_size,string,omitempty"`
-	OldSize       float64    `json:"old_size,string,omitempty"`
-	Size          float64    `json:"size,string,omitempty"`
-	Price         float64    `json:"price,string,omitempty"`
-	Side          string     `json:"side,omitempty"`
-	Reason        string     `json:"reason,omitempty"`
-	OrderType     string     `json:"order_type,omitempty"`
-	Funds         float64    `json:"funds,string,omitempty"`
-	NewFunds      float64    `json:"new_funds,string,omitempty"`
-	OldFunds      float64    `json:"old_funds,string,omitempty"`
-	Message       string     `json:"message,omitempty"`
-	Bids          [][]string `json:"bids,omitempty"`
-	Asks          [][]string `json:"asks,omitempty"`
-	Changes       [][]string `json:"changes,omitempty"`
-	LastSize      float64    `json:"last_size,string,omitempty"`
-	BestBid       float64    `json:"best_bid,string,omitempty"`
-	BestAsk       float64    `json:"best_ask,string,omitempty"`
-	UserID        string     `json:"user_id,omitempty"`
-	ProfileID     string     `json:"profile_id,omitempty"`
-	Open24H       float64    `json:"open_24h,string,omitempty"`
-	Volume24H     float64    `json:"volume_24h,string,omitempty"`
-	Low24H        float64    `json:"low_24h,string,omitempty"`
-	High24H       float64    `json:"high_24h,string,omitempty"`
-	Volume30D     float64    `json:"volume_30d,string,omitempty"`
+	Stream string `json:"stream"`
+}
+
+// MessageTrade ...
+type MessageTrade struct {
+	Stream string `json:"stream"`
+	Data   struct {
+		EventType     string  `json:"e"`
+		EventTime     int64   `json:"E"`
+		Symbol        string  `json:"s"`
+		TradeID       int64   `json:"t"`
+		Price         float64 `json:"p,string"`
+		Quantity      float64 `json:"q,string"`
+		TradeTime     int64   `json:"T"`
+		Buyer         bool    `json:"m"`
+		FirstUpdateID int64   `json:"U"`
+		FinalUpdateID int64   `json:"u"`
+	} `json:"data"`
+}
+
+// MessageDepht ...
+type MessageDepht struct {
+	Stream string `json:"stream"`
+	Data   struct {
+		EventType     string          `json:"e"`
+		EventTime     int64           `json:"E"`
+		Symbol        string          `json:"s"`
+		FirstUpdateID int             `json:"U"`
+		FinalUpdateID int             `json:"u"`
+		Bids          [][]interface{} `json:"b"`
+		Asks          [][]interface{} `json:"a"`
+	} `json:"data"`
 }
 
 // Close closes the underlying network connection without
@@ -203,7 +201,7 @@ func (r *Websocket) connect() {
 			currencies = append(currencies, strings.ToLower(x)+"@depth")
 		}
 
-		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "_"), r.reqHeader)
+		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
 		r.mu.Lock()
 		r.Conn = wsConn
@@ -243,14 +241,71 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Warn(string(resp))
-						// data := Message{}
-						// err = ffjson.Unmarshal(resp, &data)
-						// if err != nil {
-						// 	logrus.Error(err)
-						// 	continue
-						// }
+						data := Message{}
+						err = ffjson.Unmarshal(resp, &data)
+						if err != nil {
+							logrus.Error(err)
+							continue
+						}
+						if strings.Contains(data.Stream, "@depth") {
+							// logrus.Warn("RAW ", string(resp))
 
+							// data := MessageDepht{}
+							// err = ffjson.Unmarshal(resp, &data)
+							// if err != nil {
+							// 	logrus.Error(err)
+							// 	continue
+							// }
+							// logrus.Warn(data)
+
+						} else {
+
+							//	logrus.Warn("RAW ", string(resp))
+							message := MessageTrade{}
+							err = ffjson.Unmarshal(resp, &message)
+							if err != nil {
+								logrus.Error(err)
+								continue
+							}
+							logrus.Info(message.Data.Buyer)
+							// var side pbAPI.Side
+							// if message.Data.Buyer {
+							// 	side = pbAPI.Side_SELL
+							// 	logrus.Info("SELL ", message.Data.Price, " - ", message.Data.Quantity)
+							// } else {
+							// 	logrus.Info("BUY ", message.Data.Price, " - ", message.Data.Quantity)
+
+							// 	side = pbAPI.Side_BUY
+							// }
+							// if side == 8 {
+
+							// }
+
+							// refBook, ok := r.base.LiveOrderBook.Get(product)
+							// if !ok {
+							// 	continue
+							// }
+							// refLiveBook := refBook.(*pbAPI.Orderbook)
+							// trades := &pbAPI.Trade{
+							// 	Product:   pbAPI.Product((pbAPI.Product_value[product])),
+							// 	Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+							// 	Timestamp: common.MakeTimestamp(),
+							// 	Price:     data.Price,
+							// 	OrderSide: side,
+							// 	Volume:    data.Size,
+							// 	VenueType: pbAPI.VenueType_SPOT,
+							// 	Asks:      refLiveBook.Asks,
+							// 	Bids:      refLiveBook.Bids,
+							// }
+							// serialized, err := proto.Marshal(trades)
+							// if err != nil {
+							// 	log.Fatal("proto.Marshal error: ", err)
+							// }
+							// r.MessageType[0] = 0
+							// serialized = append(r.MessageType, serialized[:]...)
+							// kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+
+						}
 						// value, exist := r.pairsMapping.Get(data.ProductID)
 						// if !exist {
 						// 	continue
