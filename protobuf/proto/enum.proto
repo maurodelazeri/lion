@@ -44,6 +44,10 @@ package api;
 	 QTUM  = 10;
 	 NANO  = 11;
 	 ETC   = 12;
+	 XRM   = 13;
+	 OMG   = 14;
+	 DASH  = 15;
+	 NEO   = 16;	 	 	 	 
    }
    
    enum Product{
