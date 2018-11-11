@@ -1,16 +1,12 @@
 package binance
 
 import (
-	"fmt"
 	"net/http"
-	"net/url"
-	"strconv"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/maurodelazeri/concurrency-map-slice"
-	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
@@ -142,20 +138,4 @@ func (r *Binance) Start() {
 // SendHTTPRequest sends an unauthenticated request
 func (r *Binance) SendHTTPRequest(path string, result interface{}) error {
 	return r.SendPayload("GET", path, nil, nil, result, false, r.Verbose)
-}
-
-// LoadOrderbook returns full orderbook information
-//
-// symbol: string of currency pair
-// limit: returned limit amount
-func (r *Binance) LoadOrderbook(symbol string, limit int64) (OrderBook, error) {
-	resp := OrderBook{}
-	params := url.Values{}
-	params.Set("symbol", common.StringToUpper(symbol))
-	params.Set("limit", strconv.FormatInt(limit, 10))
-	path := fmt.Sprintf("%s%s?%s", apiURL, orderBookDepth, params.Encode())
-	if err := r.SendHTTPRequest(path, &resp); err != nil {
-		return resp, err
-	}
-	return resp, nil
 }
