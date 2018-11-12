@@ -66,45 +66,56 @@ type Message struct {
 
 // MessageChannel ...
 type MessageChannel struct {
-	Name       string   `json:"name"`
-	ProductIDs []string `json:"product_ids"`
+	Event   string `json:"event,omitempty"`
+	Channel string `json:"channel,omitempty"`
+	Symbol  string `json:"symbol,omitempty"`
+	Prec    string `json:"prec,omitempty"`
+	Freq    string `json:"freq,omitempty"`
+	Len     int    `json:"len,omitempty"`
 }
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
-	subscribe := Message{}
+	subscribe := []MessageChannel{}
 	if r.base.Streaming {
-		subscribe = Message{
-			Type: "subscribe",
-			Channels: []MessageChannel{
-				MessageChannel{
-					Name:       "full",
-					ProductIDs: products,
-				},
-				MessageChannel{
-					Name:       "level2",
-					ProductIDs: products,
-				},
-			},
+		for _, product := range products {
+			book := MessageChannel{
+				Event:   "subscribe",
+				Channel: "book",
+				Symbol:  "t" + product,
+				Prec:    "P0",
+				Freq:    "F0",
+				Len:     25,
+			}
+			subscribe = append(subscribe, book)
+			trade := MessageChannel{
+				Event:   "subscribe",
+				Channel: "trades",
+				Symbol:  "t" + product,
+			}
+			subscribe = append(subscribe, trade)
 		}
 	} else {
-		subscribe = Message{
-			Type: "subscribe",
-			Channels: []MessageChannel{
-				MessageChannel{
-					Name:       "level2",
-					ProductIDs: products,
-				},
-			},
+		for _, product := range products {
+			trade := MessageChannel{
+				Event:   "subscribe",
+				Channel: "trades",
+				Symbol:  "t" + product,
+			}
+			subscribe = append(subscribe, trade)
 		}
 	}
-	json, err := common.JSONEncode(subscribe)
-	if err != nil {
-		return err
-	}
-	err = r.Conn.WriteMessage(websocket.TextMessage, json)
-	if err != nil {
-		return err
+	for _, channels := range subscribe {
+		json, err := common.JSONEncode(channels)
+		if err != nil {
+			logrus.Error("Subscription ", err)
+			continue
+		}
+		err = r.Conn.WriteMessage(websocket.TextMessage, json)
+		if err != nil {
+			logrus.Error("Subscription ", err)
+			continue
+		}
 	}
 	return nil
 }
@@ -266,6 +277,8 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
+						logrus.Warn(string(resp))
+						continue
 						data := Message{}
 						err = ffjson.Unmarshal(resp, &data)
 						if err != nil {

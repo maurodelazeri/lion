@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	websocketURL = "wss://stream.binance.com:9443/stream?streams="
+	websocketURL = "wss://api.bitfinex.com/ws/2"
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates

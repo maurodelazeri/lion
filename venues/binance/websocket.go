@@ -171,7 +171,9 @@ func (r *Websocket) connect() {
 		currencies := []string{}
 		for _, x := range venueArrayPairs {
 			currencies = append(currencies, strings.ToLower(x)+"@trade")
-			currencies = append(currencies, strings.ToLower(x)+"@depth")
+			if r.base.Streaming {
+				currencies = append(currencies, strings.ToLower(x)+"@depth")
+			}
 		}
 
 		r.FetchEnabledOrderBooks()
