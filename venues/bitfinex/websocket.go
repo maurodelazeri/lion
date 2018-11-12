@@ -278,12 +278,11 @@ func (r *Websocket) startReading() {
 							chanInfo, ok := r.base.WebsocketSubdChannels[chanID]
 							if !ok {
 								log.Printf("Unable to locate chanID: %d\n", chanID)
-							} else {
-								if len(chanData) == 2 {
-									if reflect.TypeOf(chanData[1]).String() == "string" {
-										if chanData[1].(string) == "hb" {
-											continue
-										}
+							}
+							if len(chanData) == 2 {
+								if reflect.TypeOf(chanData[1]).String() == "string" {
+									if chanData[1].(string) == "hb" {
+										continue
 									}
 								}
 							}

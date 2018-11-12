@@ -19,6 +19,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// https://support.okcoin.com/hc/en-us/articles/360000754131-WebSocket-API-Reference
+// https://github.com/okcoin-okex/API-docs-OKEx.com/blob/master/API-For-Futures-EN/WebSocket%20API%20for%20FUTURES.md
+
 // Message ...
 type Message struct {
 	//Time          time.Time        `json:"time,string,omitempty"`
@@ -71,12 +74,12 @@ func (r *Websocket) Subscribe(products []string) error {
 	if r.base.Streaming {
 		for _, product := range products {
 			book := MessageChannel{
-				Event:   "subscribe",
+				Event:   "addChannel",
 				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "depth_20"),
 			}
 			subscribe = append(subscribe, book)
 			trade := MessageChannel{
-				Event:   "subscribe",
+				Event:   "addChannel",
 				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "deals"),
 			}
 			subscribe = append(subscribe, trade)
@@ -84,13 +87,12 @@ func (r *Websocket) Subscribe(products []string) error {
 	} else {
 		for _, product := range products {
 			trade := MessageChannel{
-				Event:   "subscribe",
+				Event:   "addChannel",
 				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "deals"),
 			}
 			subscribe = append(subscribe, trade)
 		}
 	}
-
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
 		if err != nil {
@@ -262,9 +264,10 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
+					logrus.Warn(string(resp), err)
+
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Warn(string(resp))
 						// data := Message{}
 						// err = ffjson.Unmarshal(resp, &data)
 						// if err != nil {

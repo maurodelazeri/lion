@@ -13,8 +13,9 @@ import (
 	"github.com/maurodelazeri/lion/venues/request"
 )
 
+var websocketURL = ""
+
 const (
-	websocketURL = "wss://real.okcoin.com:10440/websocket/okcoinapi"
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates
@@ -74,6 +75,13 @@ func (r *Okex) Setup(venueName string, config config.VenueConfig, streaming bool
 	r.VenueConfig.Set(venueName, config)
 	if len(mode) > 0 {
 		r.Mode = mode[0]
+	}
+
+	switch r.Name {
+	case "OKEX_INTERNATIONAL_FUT":
+		websocketURL = "wss://real.okcoin.com:10440/websocket/okcoinapi"
+	case "OKEX_INTERNATIONAL_SPOT":
+		websocketURL = "wss://real.okcoin.com:10440/websocket/okcoinapi"
 	}
 
 	r.Handler = new(request.Handler)
