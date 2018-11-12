@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -73,12 +72,12 @@ func (r *Websocket) Subscribe(products []string) error {
 		for _, product := range products {
 			book := MessageChannel{
 				Event:   "subscribe",
-				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, strings.ToLower(product), "depth_Y"),
+				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "depth_20"),
 			}
 			subscribe = append(subscribe, book)
 			trade := MessageChannel{
 				Event:   "subscribe",
-				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, strings.ToLower(product), "deals"),
+				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "deals"),
 			}
 			subscribe = append(subscribe, trade)
 		}
@@ -86,11 +85,12 @@ func (r *Websocket) Subscribe(products []string) error {
 		for _, product := range products {
 			trade := MessageChannel{
 				Event:   "subscribe",
-				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, strings.ToLower(product), "deals"),
+				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "deals"),
 			}
 			subscribe = append(subscribe, trade)
 		}
 	}
+
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
 		if err != nil {
@@ -103,6 +103,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			continue
 		}
 	}
+
 	return nil
 }
 
