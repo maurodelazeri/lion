@@ -410,13 +410,11 @@ func (r *Websocket) startReading() {
 
 						if data.Type == "match" {
 							var side pbAPI.Side
-
 							if data.Side == "buy" {
 								side = pbAPI.Side_BUY
 							} else {
 								side = pbAPI.Side_SELL
 							}
-
 							refBook, ok := r.base.LiveOrderBook.Get(product)
 							if !ok {
 								continue
