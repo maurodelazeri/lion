@@ -35,9 +35,9 @@ const (
 	newOrder     = "/api/v3/order"
 	queryOrder   = "/api/v3/order"
 
-	// binance authenticated and unauthenticated limit rates
-	binanceAuthRate   = 1000
-	binanceUnauthRate = 1000
+	// authenticated and unauthenticated limit rates
+	authRate   = 1000
+	unauthRate = 1000
 )
 
 // Binance internals
@@ -97,7 +97,7 @@ func (r *Binance) Setup(venueName string, config config.VenueConfig, streaming b
 	}
 
 	r.Handler = new(request.Handler)
-	r.SetRequestHandler(r.Name, binanceAuthRate, binanceUnauthRate, new(http.Client))
+	r.SetRequestHandler(r.Name, authRate, unauthRate, new(http.Client))
 }
 
 // Start ...

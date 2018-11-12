@@ -10,13 +10,22 @@ import (
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/maurodelazeri/lion/venues/request"
 )
 
-const websocketURL = "wss://ws-feed.pro.coinbase.com"
+const (
+	websocketURL = "wss://ws-feed.pro.coinbase.com"
+	// Public endpoints
+	// Authenticated endpoints
+	// authenticated and unauthenticated limit rates
+	authRate   = 1000
+	unauthRate = 1000
+)
 
 // Coinbase internals
 type Coinbase struct {
 	venue.Base
+	*request.Handler
 }
 
 // Websocket is the overarching type across the Coinbase package
@@ -66,6 +75,9 @@ func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming 
 	if len(mode) > 0 {
 		r.Mode = mode[0]
 	}
+
+	r.Handler = new(request.Handler)
+	r.SetRequestHandler(r.Name, authRate, unauthRate, new(http.Client))
 }
 
 // Start ...
