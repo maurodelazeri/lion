@@ -4,10 +4,15 @@ import (
 
 	//"encoding/json"
 
+	"bytes"
+	"compress/flate"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -70,17 +75,35 @@ type MessageChannel struct {
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
+
+	tradesBegin := ""
+	tradesEnd := ""
+	bookBegin := ""
+	bookEnd := ""
+	switch r.base.GetName() {
+	case "OKEX_INTERNATIONAL_FUT":
+		tradesBegin = "ok_sub_future"
+		tradesEnd = "_trade_this_week"
+		bookBegin = "ok_sub_future"
+		bookEnd = "_depth_week"
+	case "OKEX_INTERNATIONAL_SPOT":
+		tradesBegin = "ok_sub_spot_"
+		tradesEnd = "_deals"
+		bookBegin = "ok_sub_spot_"
+		bookEnd = "_depth_20"
+	}
+
 	subscribe := []MessageChannel{}
 	if r.base.Streaming {
 		for _, product := range products {
 			book := MessageChannel{
 				Event:   "addChannel",
-				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "depth_20"),
+				Channel: fmt.Sprintf(`%s%s%s`, bookBegin, product, bookEnd),
 			}
 			subscribe = append(subscribe, book)
 			trade := MessageChannel{
 				Event:   "addChannel",
-				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "deals"),
+				Channel: fmt.Sprintf(`%s%s%s`, tradesBegin, product, tradesEnd),
 			}
 			subscribe = append(subscribe, trade)
 		}
@@ -88,7 +111,7 @@ func (r *Websocket) Subscribe(products []string) error {
 		for _, product := range products {
 			trade := MessageChannel{
 				Event:   "addChannel",
-				Channel: fmt.Sprintf(`ok_sub_spot_%s_%s`, product, "deals"),
+				Channel: fmt.Sprintf(`%s%s%s`, tradesBegin, product, tradesEnd),
 			}
 			subscribe = append(subscribe, trade)
 		}
@@ -185,6 +208,13 @@ func (r *Websocket) GetDialError() error {
 	return r.dialErr
 }
 
+// GzipDecode ...
+func (r *Websocket) GzipDecode(in []byte) ([]byte, error) {
+	reader := flate.NewReader(bytes.NewReader(in))
+	defer reader.Close()
+	return ioutil.ReadAll(reader)
+}
+
 func (r *Websocket) connect() {
 
 	r.setReadTimeOut(1)
@@ -216,8 +246,8 @@ func (r *Websocket) connect() {
 
 	for {
 		nextItvl := bb.Duration()
-
-		wsConn, httpResp, err := r.dialer.Dial(websocketURL, r.reqHeader)
+		u := url.URL{Scheme: "wss", Host: websocketURL, Path: "/websocket", RawQuery: "compress=true"}
+		wsConn, httpResp, err := r.dialer.Dial(u.String(), r.reqHeader)
 
 		r.mu.Lock()
 		r.Conn = wsConn
@@ -264,10 +294,15 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
-					logrus.Warn(string(resp), err)
-
 					switch msgType {
-					case websocket.TextMessage:
+					case websocket.TextMessage, websocket.BinaryMessage:
+						var err error
+						msg, err := r.GzipDecode(resp)
+						if err != nil {
+							log.Println(err)
+							return
+						}
+						logrus.Warn("HERE ", string(msg))
 						// data := Message{}
 						// err = ffjson.Unmarshal(resp, &data)
 						// if err != nil {
