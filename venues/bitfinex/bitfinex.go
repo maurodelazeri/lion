@@ -26,6 +26,7 @@ const (
 type Bitfinex struct {
 	venue.Base
 	*request.Handler
+	WebsocketSubdChannels map[int]WebsocketChanInfo
 }
 
 // Websocket is the overarching type across the Bitfinex package
@@ -63,6 +64,7 @@ type Websocket struct {
 func (r *Bitfinex) SetDefaults() {
 	r.Enabled = true
 	r.Base.LiveOrderBook = utils.NewConcurrentMap()
+	r.WebsocketSubdChannels = make(map[int]WebsocketChanInfo)
 }
 
 // Setup initialises the venue parameters with the current configuration
