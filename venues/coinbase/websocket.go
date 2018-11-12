@@ -458,7 +458,7 @@ func (r *Websocket) startReading() {
 									if total > r.base.MaxLevelsOrderBook {
 										continue
 									}
-									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
 									r.OrderBookMAP[product+"bids"][price] = amount
 									total++
 								}
@@ -474,7 +474,7 @@ func (r *Websocket) startReading() {
 									if total > r.base.MaxLevelsOrderBook {
 										continue
 									}
-									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
 									r.OrderBookMAP[product+"asks"][price] = amount
 									total++
 								}

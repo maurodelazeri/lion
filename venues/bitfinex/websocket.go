@@ -313,29 +313,53 @@ func (r *Websocket) startReading() {
 										for _, x := range data {
 											y := x.([]interface{})
 											if y[2].(float64) > 0 {
-												//b.RedisSession.HSet("exchange:"+b.Name+":book:"+strings.ToUpper(chanInfo.Pair)+":bids", b.FloatToString(y[0].(float64)), b.FloatToString(y[2].(float64)))
+												refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: y[0].(float64), Volume: y[2].(float64)})
+												r.OrderBookMAP[product+"bids"][y[0].(float64)] = y[2].(float64)
 											} else {
-												//b.RedisSession.HSet("exchange:"+b.Name+":book:"+strings.ToUpper(chanInfo.Pair)+":asks", b.FloatToString(y[0].(float64)), b.FloatToString(y[2].(float64)))
+												refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: y[0].(float64), Volume: y[2].(float64)})
+												r.OrderBookMAP[product+"asks"][y[0].(float64)] = y[2].(float64) * -1
 											}
 										}
 									} else {
 										// book updates
 										y := data
-										if y[2].(float64) > 0 {
-											if y[1].(float64) == 0 {
-												//b.RedisSession.HDel("exchange:"+b.Name+":book:"+strings.ToUpper(chanInfo.Pair)+":bids", b.FloatToString(y[0].(float64)))
-
+										if y[1].(float64) > 0 {
+											if y[2].(float64) > 0 {
+												price := y[0].(float64)
+												amount := y[2].(float64)
+												totalLevels := len(refLiveBook.GetBids())
+												if totalLevels == r.base.MaxLevelsOrderBook {
+													if price < refLiveBook.Bids[totalLevels-1].Price {
+														continue
+													}
+												}
+												updated = true
+												r.OrderBookMAP[product+"bids"][price] = amount
 											} else {
-												//b.RedisSession.HSet("exchange:"+b.Name+":book:"+strings.ToUpper(chanInfo.Pair)+":bids", b.FloatToString(y[0].(float64)), b.FloatToString(y[2].(float64)))
-
+												price := y[0].(float64)
+												amount := y[2].(float64) * -1
+												totalLevels := len(refLiveBook.GetAsks())
+												if totalLevels == r.base.MaxLevelsOrderBook {
+													if price > refLiveBook.Asks[totalLevels-1].Price {
+														continue
+													}
+												}
+												updated = true
+												r.OrderBookMAP[product+"asks"][price] = amount
 											}
-										} else {
-											if y[1].(float64) == 0 {
-
-												//b.RedisSession.HDel("exchange:"+b.Name+":book:"+strings.ToUpper(chanInfo.Pair)+":asks", b.FloatToString(y[0].(float64)))
-											} else {
-
-												//b.RedisSession.HSet("exchange:"+b.Name+":book:"+strings.ToUpper(chanInfo.Pair)+":asks", b.FloatToString(y[0].(float64)), b.FloatToString(y[2].(float64)))
+										} else if y[1].(float64) == 0 {
+											if y[2].(float64) == 1 {
+												price := y[0].(float64)
+												if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+													delete(r.OrderBookMAP[product+"bids"], price)
+													updated = true
+												}
+											} else if y[2].(float64) == -1 {
+												price := y[0].(float64) * -1
+												if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+													delete(r.OrderBookMAP[product+"asks"], price)
+													updated = true
+												}
 											}
 										}
 
@@ -408,7 +432,6 @@ func (r *Websocket) startReading() {
 											serialized = append(r.MessageType, serialized[:]...)
 											kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 										}
-
 									}
 								}
 							case "trades":
