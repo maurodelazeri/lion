@@ -303,7 +303,14 @@ func (r *Websocket) startReading() {
 								go func() {
 									refLiveBook.Bids = []*pbAPI.Item{}
 									for _, bids := range data.Data.Bids {
-										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: bids[0].(float64), Volume: bids[1].(float64)})
+										switch bids[0].(type) {
+										case string:
+											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(bids[0].(string)).Float64(), Volume: number.FromString(bids[1].(string)).Float64()})
+										case float64:
+											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: bids[0].(float64), Volume: bids[1].(float64)})
+										default:
+											logrus.Error("Order book type not found")
+										}
 									}
 									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
 										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
@@ -315,7 +322,14 @@ func (r *Websocket) startReading() {
 								go func() {
 									refLiveBook.Asks = []*pbAPI.Item{}
 									for _, asks := range data.Data.Asks {
-										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: asks[0].(float64), Volume: asks[1].(float64)})
+										switch asks[0].(type) {
+										case string:
+											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(asks[0].(string)).Float64(), Volume: number.FromString(asks[1].(string)).Float64()})
+										case float64:
+											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: asks[0].(float64), Volume: asks[1].(float64)})
+										default:
+											logrus.Error("Order book type not found")
+										}
 									}
 									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
 										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
@@ -353,9 +367,6 @@ func (r *Websocket) startReading() {
 									VenueType: pbAPI.VenueType_SPOT,
 								}
 								refLiveBook = book
-
-								logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
 
 								if r.base.Streaming {
 									serialized, err := proto.Marshal(book)
