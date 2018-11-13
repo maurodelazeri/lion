@@ -13,9 +13,15 @@ import (
 	"github.com/maurodelazeri/lion/venues/request"
 )
 
-const (
+var (
 	websocketURL = "real.okex.com:10441"
+	tradesBegin  = ""
+	tradesEnd    = ""
+	bookBegin    = ""
+	bookEnd      = ""
+)
 
+const (
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates
