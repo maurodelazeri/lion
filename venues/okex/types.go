@@ -12,9 +12,9 @@ type MessageBook struct {
 	Binary  int    `json:"binary,omitempty"`
 	Channel string `json:"channel,omitempty"`
 	Data    struct {
-		Asks      [][]string `json:"asks,omitempty"`
-		Bids      [][]string `json:"bids,omitempty"`
-		Timestamp int64      `json:"timestamp,omitempty"`
+		Asks      [][]interface{} `json:"asks,omitempty"`
+		Bids      [][]interface{} `json:"bids,omitempty"`
+		Timestamp int64           `json:"timestamp,omitempty"`
 	} `json:"data"`
 }
 

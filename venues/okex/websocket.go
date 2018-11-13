@@ -41,7 +41,7 @@ func (r *Websocket) Subscribe(products []string) error {
 		tradesBegin = "ok_sub_future"
 		tradesEnd = "_trade_this_week"
 		bookBegin = "ok_sub_future"
-		bookEnd = "_depth_week"
+		bookEnd = "_depth_quarter"
 	case "OKEX_INTERNATIONAL_SPOT":
 		tradesBegin = "ok_sub_spot_"
 		tradesEnd = "_deals"
@@ -264,6 +264,7 @@ func (r *Websocket) startReading() {
 							log.Println("Ops ", err)
 							continue
 						}
+
 						switch reflect.TypeOf(result).String() {
 						case "[]interface {}":
 							event := result.([]interface{})
@@ -273,6 +274,7 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							jsonString := string(jsonByte)
+
 							if strings.Contains(jsonString, "addChannel") {
 								continue
 							}
@@ -280,7 +282,7 @@ func (r *Websocket) startReading() {
 								data := MessageBook{}
 								err = ffjson.Unmarshal([]byte(jsonString), &data)
 								if err != nil {
-									logrus.Error("Unmarshal problem ", err)
+									logrus.Error("Unmarshal problem 1 ", err)
 									continue
 								}
 								symbol := strings.Replace(data.Channel, bookBegin, "", -1)
@@ -301,7 +303,7 @@ func (r *Websocket) startReading() {
 								go func() {
 									refLiveBook.Bids = []*pbAPI.Item{}
 									for _, bids := range data.Data.Bids {
-										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(bids[0]).Float64(), Volume: number.FromString(bids[1]).Float64()})
+										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: bids[0].(float64), Volume: bids[1].(float64)})
 									}
 									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
 										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
@@ -313,7 +315,7 @@ func (r *Websocket) startReading() {
 								go func() {
 									refLiveBook.Asks = []*pbAPI.Item{}
 									for _, asks := range data.Data.Asks {
-										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(asks[0]).Float64(), Volume: number.FromString(asks[1]).Float64()})
+										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: asks[0].(float64), Volume: asks[1].(float64)})
 									}
 									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
 										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
