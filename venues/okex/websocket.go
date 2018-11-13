@@ -296,17 +296,12 @@ func (r *Websocket) startReading() {
 								}
 								refLiveBook := refBook.(*pbAPI.Orderbook)
 
-								//									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
-
-								logrus.Warn(data.Data.Asks)
-
-								continue
 								var wg sync.WaitGroup
 								wg.Add(1)
 								go func() {
 									refLiveBook.Bids = []*pbAPI.Item{}
-									for price, amount := range r.OrderBookMAP[product+"bids"] {
-										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
+									for _, bids := range data.Data.Bids {
+										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(bids[0]).Float64(), Volume: number.FromString(bids[1]).Float64()})
 									}
 									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
 										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
@@ -317,8 +312,8 @@ func (r *Websocket) startReading() {
 								wg.Add(1)
 								go func() {
 									refLiveBook.Asks = []*pbAPI.Item{}
-									for price, amount := range r.OrderBookMAP[product+"asks"] {
-										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
+									for _, asks := range data.Data.Asks {
+										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(asks[0]).Float64(), Volume: number.FromString(asks[1]).Float64()})
 									}
 									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
 										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
