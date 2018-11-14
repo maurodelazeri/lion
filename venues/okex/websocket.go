@@ -24,6 +24,7 @@ import (
 	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -244,13 +245,13 @@ func (r *Websocket) startReading() {
 						var err error
 						msg, err := common.GzipDecode(resp)
 						if err != nil {
-							log.Println(err)
+							logrus.Error("Problem to gzip data ", err)
 							return
 						}
 						var result interface{}
 						err = common.JSONDecode(msg, &result)
 						if err != nil {
-							log.Println("Ops ", err)
+							logrus.Error("Ops ", err)
 							continue
 						}
 
@@ -367,10 +368,7 @@ func (r *Websocket) startReading() {
 									}
 									r.MessageType[0] = 1
 									serialized = append(r.MessageType, serialized[:]...)
-									if len(serialized) > 10 {
-
-									}
-									//kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 								}
 
 							} else {
@@ -433,10 +431,7 @@ func (r *Websocket) startReading() {
 								}
 								r.MessageType[0] = 0
 								serialized = append(r.MessageType, serialized[:]...)
-								if len(serialized) > 10 {
-
-								}
-								//kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 							}
 						}
 					}

@@ -6,7 +6,6 @@ import (
 
 	"errors"
 	"fmt"
-	"log"
 	"math/rand"
 	"net/http"
 	"time"
@@ -77,7 +76,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			}
 			subscribe = append(subscribe, book)
 			trade := MessageChannel{
-				Sub: fmt.Sprintf("market.%s.trades", product),
+				Sub: fmt.Sprintf("market.%s.trade.detail", product),
 				ID:  "trades",
 			}
 			subscribe = append(subscribe, trade)
@@ -85,7 +84,7 @@ func (r *Websocket) Subscribe(products []string) error {
 	} else {
 		for _, product := range products {
 			trade := MessageChannel{
-				Sub: fmt.Sprintf("market.%s.trades", product),
+				Sub: fmt.Sprintf("market.%s.trade.detail", product),
 				ID:  "trades",
 			}
 			subscribe = append(subscribe, trade)
@@ -261,18 +260,19 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
+					logrus.Info(string(resp))
 					switch msgType {
 					case websocket.TextMessage, websocket.BinaryMessage:
 						var err error
 						msg, err := common.GzipDecode(resp)
 						if err != nil {
-							log.Println(err)
+							logrus.Error("Problem to gzip data ", err)
 							return
 						}
 						var result interface{}
 						err = common.JSONDecode(msg, &result)
 						if err != nil {
-							log.Println("Ops ", err)
+							logrus.Error("Ops ", err)
 							continue
 						}
 						logrus.Warn(string(msg))
