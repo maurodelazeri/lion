@@ -28,3 +28,8 @@ type MessageChannel struct {
 		Channel string `json:"channel,omitempty"`
 	} `json:"data,omitempty"`
 }
+
+// PingPong ...
+type PingPong struct {
+	Event int64 `json:"event"`
+}

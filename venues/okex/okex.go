@@ -108,6 +108,7 @@ func (r *Okex) Start() {
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
 				go socket.WebsocketClient()
+				socket.Heartbeat()
 			}
 		}
 		if len(sharedSocket) > 0 {
@@ -116,6 +117,7 @@ func (r *Okex) Start() {
 			socket.base = r
 			socket.subscribedPairs = sharedSocket
 			go socket.WebsocketClient()
+			socket.Heartbeat()
 		}
 	}
 }

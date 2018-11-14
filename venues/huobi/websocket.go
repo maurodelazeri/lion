@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
@@ -33,24 +34,28 @@ import (
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
+
 	if r.base.Streaming {
 		for _, product := range products {
+			idBook, _ := uuid.NewV4()
 			book := MessageChannel{
 				Sub: fmt.Sprintf("market.%s.depth.%s", product, "step2"),
-				ID:  "book",
+				ID:  idBook.String(),
 			}
 			subscribe = append(subscribe, book)
+			idTrade, _ := uuid.NewV4()
 			trade := MessageChannel{
 				Sub: fmt.Sprintf("market.%s.trade.detail", product),
-				ID:  "trades",
+				ID:  idTrade.String(),
 			}
 			subscribe = append(subscribe, trade)
 		}
 	} else {
 		for _, product := range products {
+			idTrade, _ := uuid.NewV4()
 			trade := MessageChannel{
 				Sub: fmt.Sprintf("market.%s.trade.detail", product),
-				ID:  "trades",
+				ID:  idTrade.String(),
 			}
 			subscribe = append(subscribe, trade)
 		}
@@ -68,6 +73,27 @@ func (r *Websocket) Subscribe(products []string) error {
 		}
 	}
 	return nil
+}
+
+// Heartbeat ...
+func (r *Websocket) Heartbeat() {
+	go func() {
+		for {
+			if r.IsConnected() {
+				json, err := common.JSONEncode(PingPong{Ping: time.Now().Unix()})
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+				err = r.Conn.WriteMessage(websocket.TextMessage, json)
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+			}
+			time.Sleep(time.Second * 30)
+		}
+	}()
 }
 
 // Close closes the underlying network connection without

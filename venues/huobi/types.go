@@ -23,3 +23,8 @@ type Message struct {
 		} `json:"data,omitempty"`
 	} `json:"tick"`
 }
+
+// PingPong ...
+type PingPong struct {
+	Ping int64 `json:"ping"`
+}
