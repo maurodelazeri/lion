@@ -254,7 +254,6 @@ func (r *Websocket) startReading() {
 							logrus.Error("Ops ", err)
 							continue
 						}
-
 						switch reflect.TypeOf(result).String() {
 						case "[]interface {}":
 							event := result.([]interface{})
@@ -400,8 +399,8 @@ func (r *Websocket) startReading() {
 
 								switch reflect.TypeOf(data.Data[0][2]).String() {
 								case "string":
-									price = number.FromString(data.Data[0][2].(string)).Float64()
-									volume = number.FromString(data.Data[0][1].(string)).Float64()
+									price = number.FromString(data.Data[0][1].(string)).Float64()
+									volume = number.FromString(data.Data[0][2].(string)).Float64()
 								case "float64":
 									price = data.Data[0][2].(float64)
 									volume = data.Data[0][1].(float64)
