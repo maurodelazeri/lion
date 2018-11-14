@@ -4,12 +4,9 @@ import (
 
 	//"encoding/json"
 
-	"bytes"
-	"compress/flate"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
@@ -27,7 +24,6 @@ import (
 	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
-	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -164,13 +160,6 @@ func (r *Websocket) GetDialError() error {
 	return r.dialErr
 }
 
-// GzipDecode ...
-func (r *Websocket) GzipDecode(in []byte) ([]byte, error) {
-	reader := flate.NewReader(bytes.NewReader(in))
-	defer reader.Close()
-	return ioutil.ReadAll(reader)
-}
-
 func (r *Websocket) connect() {
 
 	r.setReadTimeOut(1)
@@ -253,7 +242,7 @@ func (r *Websocket) startReading() {
 					switch msgType {
 					case websocket.TextMessage, websocket.BinaryMessage:
 						var err error
-						msg, err := r.GzipDecode(resp)
+						msg, err := common.GzipDecode(resp)
 						if err != nil {
 							log.Println(err)
 							return
@@ -274,8 +263,11 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							jsonString := string(jsonByte)
-
 							if strings.Contains(jsonString, "addChannel") {
+								continue
+							}
+							if strings.Contains(jsonString, "error_msg") {
+								logrus.Error("Problem parsing ", string(msg))
 								continue
 							}
 							if strings.Contains(jsonString, bookEnd) {
@@ -375,10 +367,15 @@ func (r *Websocket) startReading() {
 									}
 									r.MessageType[0] = 1
 									serialized = append(r.MessageType, serialized[:]...)
-									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+									if len(serialized) > 10 {
+
+									}
+									//kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 								}
 
 							} else {
+								logrus.Warn(string(msg))
+
 								data := MessageTrade{}
 								err = ffjson.Unmarshal([]byte(jsonString), &data)
 								if err != nil {
@@ -403,24 +400,43 @@ func (r *Websocket) startReading() {
 								} else {
 									side = pbAPI.Side_SELL
 								}
+								var price, volume float64
+
+								switch reflect.TypeOf(data.Data[0][2]).String() {
+								case "string":
+									price = number.FromString(data.Data[0][2].(string)).Float64()
+									volume = number.FromString(data.Data[0][1].(string)).Float64()
+								case "float64":
+									price = data.Data[0][2].(float64)
+									volume = data.Data[0][1].(float64)
+								default:
+									logrus.Error("Order book type not found")
+								}
+
 								trades := &pbAPI.Trade{
 									Product:   pbAPI.Product((pbAPI.Product_value[product])),
 									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 									Timestamp: common.MakeTimestamp(),
-									Price:     number.FromString(data.Data[0][2]).Float64(),
+									Price:     price,
 									OrderSide: side,
-									Volume:    number.FromString(data.Data[0][1]).Float64(),
+									Volume:    volume,
 									VenueType: pbAPI.VenueType_SPOT,
 									Asks:      refLiveBook.Asks,
 									Bids:      refLiveBook.Bids,
 								}
+
+								//								logrus.Warn(trades)
+
 								serialized, err := proto.Marshal(trades)
 								if err != nil {
 									log.Fatal("proto.Marshal error: ", err)
 								}
 								r.MessageType[0] = 0
 								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								if len(serialized) > 10 {
+
+								}
+								//kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 							}
 						}
 					}

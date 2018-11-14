@@ -2,9 +2,9 @@ package okex
 
 // MessageTrade ...
 type MessageTrade struct {
-	Channel string     `json:"channel,omitempty"`
-	Data    [][]string `json:"data,omitempty"`
-	Binary  int        `json:"binary,omitempty"`
+	Channel string          `json:"channel,omitempty"`
+	Data    [][]interface{} `json:"data,omitempty"`
+	Binary  int             `json:"binary,omitempty"`
 }
 
 // MessageBook ...

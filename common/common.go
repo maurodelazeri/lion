@@ -651,3 +651,10 @@ func CompressZlib(data []byte) []byte {
 	w.Close()
 	return buf.Bytes()
 }
+
+// GzipDecode ...
+func GzipDecode(in []byte) ([]byte, error) {
+	reader := flate.NewReader(bytes.NewReader(in))
+	defer reader.Close()
+	return ioutil.ReadAll(reader)
+}

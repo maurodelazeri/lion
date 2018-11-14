@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	websocketURL = "wss://ws-feed.pro.huobi.com"
+	websocketURL = "wss://api.huobi.pro/ws"
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates
