@@ -9,64 +9,26 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
+	"sort"
+	"strings"
+	"sync"
 	"time"
 
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
-
-// Message ...
-type Message struct {
-	//Time          time.Time        `json:"time,string,omitempty"`
-	HiveTable     string           `json:"hivetable,omitempty"`
-	Type          string           `json:"type,omitempty"`
-	ProductID     string           `json:"product_id,omitempty"`
-	ProductIDs    []string         `json:"product_ids,omitempty"`
-	TradeID       int64            `json:"trade_id,number,omitempty"`
-	OrderID       string           `json:"order_id,omitempty"`
-	Sequence      int64            `json:"sequence,number,omitempty"`
-	MakerOrderID  string           `json:"maker_order_id,omitempty"`
-	TakerOrderID  string           `json:"taker_order_id,omitempty"`
-	RemainingSize float64          `json:"remaining_size,string,omitempty"`
-	NewSize       float64          `json:"new_size,string,omitempty"`
-	OldSize       float64          `json:"old_size,string,omitempty"`
-	Size          float64          `json:"size,string,omitempty"`
-	Price         float64          `json:"price,string,omitempty"`
-	Side          string           `json:"side,omitempty"`
-	Reason        string           `json:"reason,omitempty"`
-	OrderType     string           `json:"order_type,omitempty"`
-	Funds         float64          `json:"funds,string,omitempty"`
-	NewFunds      float64          `json:"new_funds,string,omitempty"`
-	OldFunds      float64          `json:"old_funds,string,omitempty"`
-	Message       string           `json:"message,omitempty"`
-	Bids          [][]string       `json:"bids,omitempty"`
-	Asks          [][]string       `json:"asks,omitempty"`
-	Changes       [][]string       `json:"changes,omitempty"`
-	LastSize      float64          `json:"last_size,string,omitempty"`
-	BestBid       float64          `json:"best_bid,string,omitempty"`
-	BestAsk       float64          `json:"best_ask,string,omitempty"`
-	Channels      []MessageChannel `json:"channels,omitempty"`
-	UserID        string           `json:"user_id,omitempty"`
-	ProfileID     string           `json:"profile_id,omitempty"`
-	Open24H       float64          `json:"open_24h,string,omitempty"`
-	Volume24H     float64          `json:"volume_24h,string,omitempty"`
-	Low24H        float64          `json:"low_24h,string,omitempty"`
-	High24H       float64          `json:"high_24h,string,omitempty"`
-	Volume30D     float64          `json:"volume_30d,string,omitempty"`
-}
-
-// MessageChannel ...
-type MessageChannel struct {
-	Sub string `json:"sub"`
-	ID  string `json:"id"`
-}
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
@@ -74,7 +36,7 @@ func (r *Websocket) Subscribe(products []string) error {
 	if r.base.Streaming {
 		for _, product := range products {
 			book := MessageChannel{
-				Sub: fmt.Sprintf("market.%s.depth.%s", product, "step5"),
+				Sub: fmt.Sprintf("market.%s.depth.%s", product, "step2"),
 				ID:  "book",
 			}
 			subscribe = append(subscribe, book)
@@ -270,23 +232,135 @@ func (r *Websocket) startReading() {
 						return
 					}
 					msg, err := ioutil.ReadAll(zr)
+					data := Message{}
+					err = ffjson.Unmarshal(msg, &data)
+					if err != nil {
+						logrus.Error(err)
+						continue
+					}
+					if strings.Contains(data.Ch, "depth") {
+						symbol := strings.Replace(data.Ch, "market.", "", -1)
+						symbol = strings.Replace(symbol, ".depth.step2", "", -1)
+						value, exist := r.pairsMapping.Get(symbol)
+						if !exist {
+							continue
+						}
+						product := value.(string)
 
-					// 					switch t := item.(type) {
-					// case *pbAPI.Trade:
+						refBook, ok := r.base.LiveOrderBook.Get(product)
+						if !ok {
+							continue
+						}
+						refLiveBook := refBook.(*pbAPI.Orderbook)
 
-					// }
-					logrus.Warn(string(msg))
-					// data := Message{}
-					// err = ffjson.Unmarshal(resp, &data)
-					// if err != nil {
-					// 	logrus.Error(err)
-					// 	continue
-					// }
-					// value, exist := r.pairsMapping.Get(data.ProductID)
-					// if !exist {
-					// 	continue
-					// }
-					// product := value.(string)
+						var wg sync.WaitGroup
+
+						wg.Add(1)
+						go func() {
+							refLiveBook.Bids = []*pbAPI.Item{}
+							for _, info := range data.Tick.Bids {
+								refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: info[0], Volume: info[1]})
+							}
+							sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+								return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+							})
+							wg.Done()
+						}()
+
+						wg.Add(1)
+						go func() {
+							refLiveBook.Asks = []*pbAPI.Item{}
+							for _, info := range data.Tick.Asks {
+								refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: info[0], Volume: info[1]})
+							}
+							sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+								return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+							})
+							wg.Done()
+						}()
+
+						wg.Wait()
+
+						wg.Add(1)
+						go func() {
+							totalBids := len(refLiveBook.Bids)
+							if totalBids > r.base.MaxLevelsOrderBook {
+								refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+							}
+							wg.Done()
+						}()
+						wg.Add(1)
+						go func() {
+							totalAsks := len(refLiveBook.Asks)
+							if totalAsks > r.base.MaxLevelsOrderBook {
+								refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+							}
+							wg.Done()
+						}()
+
+						wg.Wait()
+						book := &pbAPI.Orderbook{
+							Product:   pbAPI.Product((pbAPI.Product_value[product])),
+							Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+							Levels:    int32(r.base.MaxLevelsOrderBook),
+							Timestamp: common.MakeTimestamp(),
+							Asks:      refLiveBook.Asks,
+							Bids:      refLiveBook.Bids,
+							VenueType: pbAPI.VenueType_SPOT,
+						}
+						refLiveBook = book
+
+						if r.base.Streaming {
+							serialized, err := proto.Marshal(book)
+							if err != nil {
+								log.Fatal("proto.Marshal error: ", err)
+							}
+							r.MessageType[0] = 1
+							serialized = append(r.MessageType, serialized[:]...)
+							kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+						}
+
+					} else {
+						symbol := strings.Replace(data.Ch, "market.", "", -1)
+						symbol = strings.Replace(symbol, ".trade.detail", "", -1)
+						value, exist := r.pairsMapping.Get(symbol)
+						if !exist {
+							continue
+						}
+						product := value.(string)
+						for _, values := range data.Tick.Data {
+							var side pbAPI.Side
+							if values.Direction == "buy" {
+								side = pbAPI.Side_BUY
+							} else {
+								side = pbAPI.Side_SELL
+							}
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+							trades := &pbAPI.Trade{
+								Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Timestamp: common.MakeTimestamp(),
+								Price:     values.Price,
+								OrderSide: side,
+								Volume:    values.Amount,
+								VenueType: pbAPI.VenueType_SPOT,
+								Asks:      refLiveBook.Asks,
+								Bids:      refLiveBook.Bids,
+							}
+							serialized, err := proto.Marshal(trades)
+							if err != nil {
+								log.Fatal("proto.Marshal error: ", err)
+							}
+							r.MessageType[0] = 0
+							serialized = append(r.MessageType, serialized[:]...)
+							kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+						}
+					}
+
 				}
 			}
 		}
