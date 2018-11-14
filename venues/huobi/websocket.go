@@ -4,8 +4,11 @@ import (
 
 	//"encoding/json"
 
+	"bytes"
+	"compress/gzip"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"time"
@@ -254,40 +257,36 @@ func (r *Websocket) startReading() {
 			default:
 				if r.IsConnected() {
 					err := errors.New("websocket: not connected")
-					msgType, resp, err := r.Conn.ReadMessage()
+					_, resp, err := r.Conn.ReadMessage()
 					if err != nil {
 						logrus.Error(r.base.Name, " problem to read: ", err)
 						r.closeAndRecconect()
 						continue
 					}
-					logrus.Info(string(resp))
-					switch msgType {
-					case websocket.TextMessage, websocket.BinaryMessage:
-						var err error
-						msg, err := common.GzipDecode(resp)
-						if err != nil {
-							logrus.Error("Problem to gzip data ", err)
-							return
-						}
-						var result interface{}
-						err = common.JSONDecode(msg, &result)
-						if err != nil {
-							logrus.Error("Ops ", err)
-							continue
-						}
-						logrus.Warn(string(msg))
-						// data := Message{}
-						// err = ffjson.Unmarshal(resp, &data)
-						// if err != nil {
-						// 	logrus.Error(err)
-						// 	continue
-						// }
-						// value, exist := r.pairsMapping.Get(data.ProductID)
-						// if !exist {
-						// 	continue
-						// }
-						// product := value.(string)
+					reader := bytes.NewReader(resp)
+					zr, err := gzip.NewReader(reader)
+					if err != nil {
+						logrus.Error("zip decompress:", err)
+						return
 					}
+					msg, err := ioutil.ReadAll(zr)
+
+					// 					switch t := item.(type) {
+					// case *pbAPI.Trade:
+
+					// }
+					logrus.Warn(string(msg))
+					// data := Message{}
+					// err = ffjson.Unmarshal(resp, &data)
+					// if err != nil {
+					// 	logrus.Error(err)
+					// 	continue
+					// }
+					// value, exist := r.pairsMapping.Get(data.ProductID)
+					// if !exist {
+					// 	continue
+					// }
+					// product := value.(string)
 				}
 			}
 		}
