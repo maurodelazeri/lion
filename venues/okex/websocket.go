@@ -372,8 +372,6 @@ func (r *Websocket) startReading() {
 								}
 
 							} else {
-								logrus.Warn(string(msg))
-
 								data := MessageTrade{}
 								err = ffjson.Unmarshal([]byte(jsonString), &data)
 								if err != nil {
@@ -422,8 +420,6 @@ func (r *Websocket) startReading() {
 									Asks:      refLiveBook.Asks,
 									Bids:      refLiveBook.Bids,
 								}
-
-								//								logrus.Warn(trades)
 
 								serialized, err := proto.Marshal(trades)
 								if err != nil {
