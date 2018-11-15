@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -281,8 +282,70 @@ func (r *Websocket) startReading() {
 									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 								}
 							} else if data.Method == "depth.update" {
-								//			logrus.Warn("depth Product ", data.Params[1])
-								//			logrus.Warn("depth Data ", data.Params[2])
+								value, exist := r.pairsMapping.Get(data.Params[2].(string))
+								if !exist {
+									continue
+								}
+								product := value.(string)
+								refBook, ok := r.base.LiveOrderBook.Get(product)
+								if !ok {
+									continue
+								}
+								refLiveBook := refBook.(*pbAPI.Orderbook)
+								params := data.Params[1].(map[string]interface{})
+								for symbol, values := range params {
+									if symbol == "bids" {
+										for _, bids := range values.([]interface{}) {
+											values := bids.([]interface{})
+											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
+										}
+									} else {
+										for _, asks := range values.([]interface{}) {
+											values := asks.([]interface{})
+											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
+										}
+									}
+								}
+
+								var wg sync.WaitGroup
+								wg.Add(1)
+								go func() {
+									totalBids := len(refLiveBook.Bids)
+									if totalBids > r.base.MaxLevelsOrderBook {
+										refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+									}
+									wg.Done()
+								}()
+								wg.Add(1)
+								go func() {
+									totalAsks := len(refLiveBook.Asks)
+									if totalAsks > r.base.MaxLevelsOrderBook {
+										refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+									}
+									wg.Done()
+								}()
+
+								wg.Wait()
+								book := &pbAPI.Orderbook{
+									Product:   pbAPI.Product((pbAPI.Product_value[product])),
+									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+									Levels:    int32(r.base.MaxLevelsOrderBook),
+									Timestamp: common.MakeTimestamp(),
+									Asks:      refLiveBook.Asks,
+									Bids:      refLiveBook.Bids,
+									VenueType: pbAPI.VenueType_SPOT,
+								}
+								refLiveBook = book
+
+								if r.base.Streaming {
+									serialized, err := proto.Marshal(book)
+									if err != nil {
+										log.Fatal("proto.Marshal error: ", err)
+									}
+									r.MessageType[0] = 1
+									serialized = append(r.MessageType, serialized[:]...)
+									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+								}
 							}
 						}
 					}
