@@ -236,6 +236,7 @@ func (r *Websocket) startReading() {
 							logrus.Error(err)
 							continue
 						}
+						//https://github.com/daizhiqing/GccxtTrades/blob/master/gateio/ws_client.go
 						if data.Method == "trades.update" {
 							logrus.Warn("trades Product ", data.Params[0])
 							logrus.Warn("trades Data ", data.Params[1])

@@ -8,21 +8,20 @@ package api;
 	BITFINEX    			=  3;
 	BINANCE     			=  4;
 	GEMINI      			=  5;
-	BITTREX     			=  6;
-	OKEX_CHINA_FUT        	=  7;
-	OKEX_CHINA_SPOT        	=  8;
-	OKEX_INTERNATIONAL_FUT 	=  9;
-	OKEX_INTERNATIONAL_SPOT =  10;
-	BITSTAMP    			=  11;
-	HUOBIPRO    			=  12;
-	GATEIO      			=  13;
-	LBANK       			=  14;
-	POLONIEX    			=  15;
-	ZB          			=  16;
-	FOXBIT      			=  17;
-	BITCOINTOYOU    		=  18;
-	BITCAMBIO        		=  19;
-	DERIBIT                 =  20;
+	OKEX_CHINA_FUT        	=  6;
+	OKEX_CHINA_SPOT        	=  7;
+	OKEX_INTERNATIONAL_FUT 	=  8;
+	OKEX_INTERNATIONAL_SPOT =  9;
+	BITSTAMP    			=  10;
+	HUOBIPRO    			=  11;
+	GATEIO      			=  12;
+	LBANK       			=  13;
+	POLONIEX    			=  14;
+	ZB          			=  15;
+	FOXBIT      			=  16;
+	BITCOINTOYOU    		=  17;
+	BITCAMBIO        		=  18;
+	DERIBIT                 =  19;
    }
   
  enum SystemMode{
