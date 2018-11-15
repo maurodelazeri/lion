@@ -68,7 +68,6 @@ func (r *Websocket) Subscribe(products []string) error {
 			Params: params,
 		}
 		subscribe = append(subscribe, trade)
-
 	}
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
