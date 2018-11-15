@@ -83,9 +83,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			logrus.Error("Subscription ", err)
 			continue
 		}
-
 		newbook := strings.Replace(string(json), "\"20\"", "20", -1)
-
 		err = r.Conn.WriteMessage(websocket.TextMessage, []byte(newbook))
 		if err != nil {
 			logrus.Error("Subscription ", err)
