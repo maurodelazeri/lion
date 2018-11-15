@@ -5,16 +5,20 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
+	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -236,13 +240,50 @@ func (r *Websocket) startReading() {
 							logrus.Error(err)
 							continue
 						}
-						//https://github.com/daizhiqing/GccxtTrades/blob/master/gateio/ws_client.go
-						if data.Method == "trades.update" {
-							logrus.Warn("trades Product ", data.Params[0])
-							logrus.Warn("trades Data ", data.Params[1])
-						} else if data.Method == "depth.update" {
-							logrus.Warn("depth Product ", data.Params[1])
-							logrus.Warn("depth Data ", data.Params[2])
+						if len(data.Params) > 0 {
+							if data.Method == "trades.update" {
+								value, exist := r.pairsMapping.Get(data.Params[0].(string))
+								if !exist {
+									continue
+								}
+								product := value.(string)
+								refBook, ok := r.base.LiveOrderBook.Get(product)
+								if !ok {
+									continue
+								}
+								refLiveBook := refBook.(*pbAPI.Orderbook)
+								params := data.Params[1].([]interface{})
+								for _, p := range params {
+									mapData := p.(map[string]interface{})
+									var side pbAPI.Side
+									if mapData["type"].(string) == "buy" {
+										side = pbAPI.Side_BUY
+									} else {
+										side = pbAPI.Side_SELL
+									}
+									trades := &pbAPI.Trade{
+										Product:   pbAPI.Product((pbAPI.Product_value[product])),
+										Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+										Timestamp: common.MakeTimestamp(),
+										Price:     number.FromString(mapData["price"].(string)).Float64(),
+										OrderSide: side,
+										Volume:    number.FromString(mapData["amount"].(string)).Float64(),
+										VenueType: pbAPI.VenueType_SPOT,
+										Asks:      refLiveBook.Asks,
+										Bids:      refLiveBook.Bids,
+									}
+									serialized, err := proto.Marshal(trades)
+									if err != nil {
+										log.Fatal("proto.Marshal error: ", err)
+									}
+									r.MessageType[0] = 0
+									serialized = append(r.MessageType, serialized[:]...)
+									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								}
+							} else if data.Method == "depth.update" {
+								//			logrus.Warn("depth Product ", data.Params[1])
+								//			logrus.Warn("depth Data ", data.Params[2])
+							}
 						}
 					}
 				}
