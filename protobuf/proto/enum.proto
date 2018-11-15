@@ -10,16 +10,15 @@ package api;
 	GEMINI      			=  5;
 	OKEX_CHINA_FUT        	=  6;
 	OKEX_CHINA_SPOT        	=  7;
-	BITSTAMP    			=  8;
-	HUOBIPRO    			=  9;
-	GATEIO      			=  10;
-	LBANK       			=  11;
-	POLONIEX    			=  12;
-	ZB          			=  13;
-	FOXBIT      			=  14;
-	BITCOINTOYOU    		=  15;
-	BITCAMBIO        		=  16;
-	DERIBIT                 =  17;
+	HUOBIPRO    			=  8;
+	GATEIO      			=  9;
+	LBANK       			=  10;
+	POLONIEX    			=  11;
+	ZB          			=  12;
+	FOXBIT      			=  13;
+	BITCOINTOYOU    		=  14;
+	BITCAMBIO        		=  15;
+	DERIBIT                 =  16;
    }
   
  enum SystemMode{
