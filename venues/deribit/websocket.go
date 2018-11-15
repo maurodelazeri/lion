@@ -83,7 +83,7 @@ func (r *Websocket) Subscribe(products []string) error {
 				Event:      products,
 				Instrument: []string{"order_book", "trade"},
 			},
-			Sig: "KBLbvi7FYd7x.1542267385666.tdABDE3Ak4mVv3ys0n1IJBn5AyFUMF9uhz5hEsb4eV4=",
+			//Sig: "KBLbvi7FYd7x.1542267385666.tdABDE3Ak4mVv3ys0n1IJBn5AyFUMF9uhz5hEsb4eV4=",
 		}
 		subscribe = append(subscribe, data)
 	} else {
@@ -94,7 +94,7 @@ func (r *Websocket) Subscribe(products []string) error {
 				Event:      products,
 				Instrument: []string{"trade"},
 			},
-			Sig: "....",
+			//Sig: "....",
 		}
 		subscribe = append(subscribe, data)
 	}
@@ -104,6 +104,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			logrus.Error("Subscription ", err)
 			continue
 		}
+		logrus.Warn(string(json))
 		err = r.Conn.WriteMessage(websocket.TextMessage, json)
 		if err != nil {
 			logrus.Error("Subscription ", err)
