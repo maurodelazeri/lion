@@ -16,22 +16,9 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
-
-// Message ...
-type Message struct {
-	Method string        `json:"method"`
-	Params []interface{} `json:"params"`
-	ID     interface{}   `json:"id"`
-}
-
-// MessageChannel ...
-type MessageChannel struct {
-	ID     int64         `json:"id"`
-	Method string        `json:"method"`
-	Params []interface{} `json:"params"`
-}
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
@@ -242,13 +229,20 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Warn(string(resp))
-						// data := Message{}
-						// err = ffjson.Unmarshal(resp, &data)
-						// if err != nil {
-						// 	logrus.Error(err)
-						// 	continue
-						// }
+						//						logrus.Warn(string(resp))
+						data := Message{}
+						err = ffjson.Unmarshal(resp, &data)
+						if err != nil {
+							logrus.Error(err)
+							continue
+						}
+						if data.Method == "trades.update" {
+							logrus.Warn("trades Product ", data.Params[0])
+							logrus.Warn("trades Data ", data.Params[1])
+						} else if data.Method == "depth.update" {
+							logrus.Warn("depth Product ", data.Params[1])
+							logrus.Warn("depth Data ", data.Params[2])
+						}
 					}
 				}
 			}
