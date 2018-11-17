@@ -263,6 +263,7 @@ func (r *Websocket) startReading() {
 											book := value.([]interface{})
 											asks := book[0].(map[string]interface{})
 											bids := book[1].(map[string]interface{})
+
 											for price, volume := range asks {
 												refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(price).Float64(), Volume: number.FromString(volume.(string)).Float64()})
 											}
@@ -355,6 +356,7 @@ func (r *Websocket) startReading() {
 										}
 									case "t":
 										logrus.Warn("NEW TRADE ", finalData)
+
 										var side pbAPI.Side
 										if finalData[1] == "1" {
 											side = pbAPI.Side_BUY
@@ -370,7 +372,7 @@ func (r *Websocket) startReading() {
 											Product:   pbAPI.Product((pbAPI.Product_value[product])),
 											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 											Timestamp: common.MakeTimestamp(),
-											Price:     number.FromString(finalData[2].(string)).Float64(),
+											Price:     finalData[2].(float64),
 											OrderSide: side,
 											Volume:    number.FromString(finalData[3].(string)).Float64(),
 											VenueType: pbAPI.VenueType_SPOT,
@@ -385,7 +387,11 @@ func (r *Websocket) startReading() {
 										serialized = append(r.MessageType, serialized[:]...)
 										kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 									}
+
+								default:
+									logrus.Warn("DEF ", string(resp))
 								}
+
 							}
 							// we dont need to update the book if any level we care was changed
 							if !updated {
@@ -446,6 +452,8 @@ func (r *Websocket) startReading() {
 								VenueType: pbAPI.VenueType_SPOT,
 							}
 							refLiveBook = book
+							//logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+							logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
 
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)
