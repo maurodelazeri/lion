@@ -14,7 +14,9 @@ import (
 )
 
 const (
-	websocketURL = "wss://ws-feed.pro.gemini.com"
+	//websocketURL = "wss://ws-feed.pro.gemini.com/v1/marketdata/"
+	websocketURL = "wss://api.gemini.com/v1/marketdata/"
+
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates

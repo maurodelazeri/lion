@@ -7,35 +7,16 @@ import (
 	"errors"
 	"math/rand"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
-	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/sirupsen/logrus"
 )
-
-// Subscribe subsribe public and private endpoints
-func (r *Websocket) Subscribe(products []string) error {
-	subscribe := Message{}
-	if r.base.Streaming {
-
-	} else {
-
-	}
-	json, err := common.JSONEncode(subscribe)
-	if err != nil {
-		return err
-	}
-	err = r.Conn.WriteMessage(websocket.TextMessage, json)
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
 // Close closes the underlying network connection without
 // sending or waiting for a close frame.
@@ -145,7 +126,16 @@ func (r *Websocket) connect() {
 	for {
 		nextItvl := bb.Duration()
 
-		wsConn, httpResp, err := r.dialer.Dial(websocketURL, r.reqHeader)
+		currencies := []string{}
+		for _, x := range venueArrayPairs {
+			if r.base.Streaming {
+				currencies = append(currencies, strings.ToLower(x)+"?top_of_book=false&auctions=false")
+			} else {
+				currencies = append(currencies, strings.ToLower(x)+"?top_of_book=false&auctions=false")
+			}
+		}
+
+		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
 		r.mu.Lock()
 		r.Conn = wsConn
@@ -157,10 +147,6 @@ func (r *Websocket) connect() {
 		if err == nil {
 			if r.base.Verbose {
 				logrus.Printf("Dial: connection was successfully established with %s\n", websocketURL)
-			}
-			err = r.Subscribe(venueArrayPairs)
-			if err != nil {
-				logrus.Printf("Websocket subscription error: %s\n", err)
 			}
 			break
 		} else {
