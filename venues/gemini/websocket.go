@@ -5,6 +5,7 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"strings"
@@ -15,6 +16,7 @@ import (
 	"github.com/maurodelazeri/concurrency-map-slice"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
@@ -121,6 +123,9 @@ func (r *Websocket) connect() {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
 			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
 		}
+
+		// We have an idenvidual connection per product, so we can specify this here
+		r.product = sym
 	}
 
 	for {
@@ -129,11 +134,12 @@ func (r *Websocket) connect() {
 		currencies := []string{}
 		for _, x := range venueArrayPairs {
 			if r.base.Streaming {
-				currencies = append(currencies, strings.ToLower(x)+"?top_of_book=false&auctions=false")
+				currencies = append(currencies, strings.ToLower(x))
 			} else {
-				currencies = append(currencies, strings.ToLower(x)+"?top_of_book=false&auctions=false")
+				currencies = append(currencies, strings.ToLower(x))
 			}
 		}
+		logrus.Warn("CONNECTING ", websocketURL+strings.Join(currencies, "/"))
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
@@ -180,18 +186,32 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
+						data := Message{}
+						err = ffjson.Unmarshal(resp, &data)
+						if err != nil {
+							logrus.Error(err)
+							continue
+						}
+						switch data.Type {
+						case "update":
+							for _, values := range data.Events {
+								switch values.Type {
+								case "change":
+									switch values.Reason {
+									case "initial":
+
+									case "update":
+									}
+								case "trade":
+									logrus.Warn("TRADE ", string(resp))
+								}
+							}
+						default:
+							fmt.Println("NOT UPDATE ", string(resp))
+
+						}
+
 						logrus.Warn(string(resp))
-						// data := Message{}
-						// err = ffjson.Unmarshal(resp, &data)
-						// if err != nil {
-						// 	logrus.Error(err)
-						// 	continue
-						// }
-						// value, exist := r.pairsMapping.Get(data.ProductID)
-						// if !exist {
-						// 	continue
-						// }
-						// product := value.(string)
 
 					}
 				}
