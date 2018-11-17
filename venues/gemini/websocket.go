@@ -143,7 +143,6 @@ func (r *Websocket) connect() {
 				currencies = append(currencies, strings.ToLower(x))
 			}
 		}
-		logrus.Warn("CONNECTING ", websocketURL+strings.Join(currencies, "/"))
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
@@ -203,13 +202,11 @@ func (r *Websocket) startReading() {
 								case "change":
 									switch values.Reason {
 									case "initial":
-
+										logrus.Warn(values)
 									case "update":
+
 									}
 								case "trade":
-									//if values.Reason == ""
-									//	logrus.Warn("TRADE ", string(resp))
-
 									var side pbAPI.Side
 									if values.Side == "bid" {
 										side = pbAPI.Side_BUY
