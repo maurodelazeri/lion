@@ -1,4 +1,4 @@
-package zb
+package poloniex
 
 import (
 
@@ -15,7 +15,6 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
-	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
@@ -25,21 +24,21 @@ func (r *Websocket) Subscribe(products []string) error {
 	if r.base.Streaming {
 		for _, product := range products {
 			book := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_depth",
+				Command: "subscribe",
+				Channel: product,
 			}
 			subscribe = append(subscribe, book)
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_trades",
-			}
-			subscribe = append(subscribe, trade)
+			// trade := MessageChannel{
+			// 	Command: "subscribe",
+			// 	Channel: product,
+			// }
+			// subscribe = append(subscribe, trade)
 		}
 	} else {
 		for _, product := range products {
 			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_trades",
+				Command: "subscribe",
+				Channel: product,
 			}
 			subscribe = append(subscribe, trade)
 		}
@@ -216,13 +215,18 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						data := Message{}
-						err = ffjson.Unmarshal(resp, &data)
-						if err != nil {
-							logrus.Error(err)
-							continue
-						}
-						logrus.Warn(data)
+						logrus.Warn(string(resp))
+						// data := Message{}
+						// err = ffjson.Unmarshal(resp, &data)
+						// if err != nil {
+						// 	logrus.Error(err)
+						// 	continue
+						// }
+						// value, exist := r.pairsMapping.Get(data.ProductID)
+						// if !exist {
+						// 	continue
+						// }
+						// product := value.(string)
 
 					}
 				}

@@ -12,13 +12,12 @@ package api;
 	OKEX_CHINA_SPOT        	=  7;
 	HUOBIPRO    			=  8;
 	GATEIO      			=  9;
-	LBANK       			=  10;
-	POLONIEX    			=  11;
-	ZB          			=  12;
-	FOXBIT      			=  13;
-	BITCOINTOYOU    		=  14;
-	BITCAMBIO        		=  15;
-	DERIBIT                 =  16;
+	POLONIEX    			=  10;
+	ZB          			=  11;
+	FOXBIT      			=  12;
+	BITCOINTOYOU    		=  13;
+	BITCAMBIO        		=  14;
+	DERIBIT                 =  15;
    }
   
  enum SystemMode{

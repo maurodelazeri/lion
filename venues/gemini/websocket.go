@@ -1,4 +1,4 @@
-package zb
+package gemini
 
 import (
 
@@ -15,46 +15,24 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
-	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
-	subscribe := []MessageChannel{}
+	subscribe := Message{}
 	if r.base.Streaming {
-		for _, product := range products {
-			book := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_depth",
-			}
-			subscribe = append(subscribe, book)
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_trades",
-			}
-			subscribe = append(subscribe, trade)
-		}
+
 	} else {
-		for _, product := range products {
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_trades",
-			}
-			subscribe = append(subscribe, trade)
-		}
+
 	}
-	for _, channels := range subscribe {
-		json, err := common.JSONEncode(channels)
-		if err != nil {
-			logrus.Error("Subscription ", err)
-			continue
-		}
-		err = r.Conn.WriteMessage(websocket.TextMessage, json)
-		if err != nil {
-			logrus.Error("Subscription ", err)
-			continue
-		}
+	json, err := common.JSONEncode(subscribe)
+	if err != nil {
+		return err
+	}
+	err = r.Conn.WriteMessage(websocket.TextMessage, json)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -216,13 +194,18 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						data := Message{}
-						err = ffjson.Unmarshal(resp, &data)
-						if err != nil {
-							logrus.Error(err)
-							continue
-						}
-						logrus.Warn(data)
+						logrus.Warn(string(resp))
+						// data := Message{}
+						// err = ffjson.Unmarshal(resp, &data)
+						// if err != nil {
+						// 	logrus.Error(err)
+						// 	continue
+						// }
+						// value, exist := r.pairsMapping.Get(data.ProductID)
+						// if !exist {
+						// 	continue
+						// }
+						// product := value.(string)
 
 					}
 				}
