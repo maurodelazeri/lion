@@ -57,6 +57,8 @@ type Websocket struct {
 	subscribedPairs []string
 	pairsMapping    *utils.ConcurrentMap
 	MessageType     []byte
+
+	historyTrades bool
 }
 
 // SetDefaults sets default values for the venue

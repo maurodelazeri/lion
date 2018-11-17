@@ -9,14 +9,18 @@ import (
 	"math/rand"
 	"net/http"
 	"reflect"
+	"sort"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -154,6 +158,7 @@ func (r *Websocket) connect() {
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
+	r.historyTrades = false
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
@@ -225,36 +230,98 @@ func (r *Websocket) startReading() {
 							log.Println("Ops ", err)
 							continue
 						}
-						//						logrus.Warn(reflect.TypeOf(result).String())
 						switch reflect.TypeOf(result).String() {
 						case "map[string]interface {}":
-							streamData := result.(map[string]interface{})
-							stream, err := ffjson.Marshal(streamData)
-							if err != nil {
-								logrus.Error("Marshal streamData ", err)
-								continue
-							}
 							data := Message{}
-							err = ffjson.Unmarshal(stream, &data)
+							err = ffjson.Unmarshal(resp, &data)
 							if err != nil {
 								logrus.Error(err)
 								continue
 							}
-
 							if strings.Contains(data.Channel, "_depth") {
-								symbol := strings.Replace(streamData["channel"].(string), "_depth", "", -1)
+								symbol := strings.Replace(data.Channel, "_depth", "", -1)
 								value, exist := r.pairsMapping.Get(symbol)
 								if !exist {
 									continue
 								}
 								product := value.(string)
-								if len(product) > 0 {
 
+								refBook, ok := r.base.LiveOrderBook.Get(product)
+								if !ok {
+									continue
 								}
-								mauro, _ := ffjson.Marshal(streamData)
-								logrus.Warn(string(mauro))
+								refLiveBook := refBook.(*pbAPI.Orderbook)
+
+								var wg sync.WaitGroup
+
+								wg.Add(1)
+								go func() {
+									refLiveBook.Bids = []*pbAPI.Item{}
+									for _, info := range data.Bids {
+										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: info[0], Volume: info[1]})
+									}
+									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+									})
+									wg.Done()
+								}()
+
+								wg.Add(1)
+								go func() {
+									refLiveBook.Asks = []*pbAPI.Item{}
+									for _, info := range data.Asks {
+										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: info[0], Volume: info[1]})
+									}
+									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+									})
+									wg.Done()
+								}()
+
+								wg.Wait()
+
+								wg.Add(1)
+								go func() {
+									totalBids := len(refLiveBook.Bids)
+									if totalBids > r.base.MaxLevelsOrderBook {
+										refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+									}
+									wg.Done()
+								}()
+								wg.Add(1)
+								go func() {
+									totalAsks := len(refLiveBook.Asks)
+									if totalAsks > r.base.MaxLevelsOrderBook {
+										refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+									}
+									wg.Done()
+								}()
+
+								wg.Wait()
+								book := &pbAPI.Orderbook{
+									Product:   pbAPI.Product((pbAPI.Product_value[product])),
+									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+									Levels:    int32(r.base.MaxLevelsOrderBook),
+									Timestamp: common.MakeTimestamp(),
+									Asks:      refLiveBook.Asks,
+									Bids:      refLiveBook.Bids,
+									VenueType: pbAPI.VenueType_SPOT,
+								}
+								refLiveBook = book
+
+								if r.base.Streaming {
+									serialized, err := proto.Marshal(book)
+									if err != nil {
+										log.Fatal("proto.Marshal error: ", err)
+									}
+									r.MessageType[0] = 1
+									serialized = append(r.MessageType, serialized[:]...)
+									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+								}
+
 							} else {
-								symbol := strings.Replace(streamData["channel"].(string), "_trades", "", -1)
+								logrus.Warn("HERE ", string(resp))
+								symbol := strings.Replace(data.Channel, "_trades", "", -1)
 								value, exist := r.pairsMapping.Get(symbol)
 								if !exist {
 									continue
@@ -263,9 +330,43 @@ func (r *Websocket) startReading() {
 								if len(product) > 0 {
 
 								}
-								//logrus.Info("trades ", product, " - ", streamData)
-								///mauro, _ := ffjson.Marshal(streamData)
-								//logrus.Warn(string(mauro))
+
+								for _, values := range data.Data {
+									if r.historyTrades {
+										var side pbAPI.Side
+										if values.Type == "buy" {
+											side = pbAPI.Side_BUY
+										} else {
+											side = pbAPI.Side_SELL
+										}
+										refBook, ok := r.base.LiveOrderBook.Get(product)
+										if !ok {
+											continue
+										}
+										refLiveBook := refBook.(*pbAPI.Orderbook)
+										trades := &pbAPI.Trade{
+											Product:   pbAPI.Product((pbAPI.Product_value[product])),
+											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+											Timestamp: common.MakeTimestamp(),
+											Price:     values.Price,
+											OrderSide: side,
+											Volume:    values.Amount,
+											VenueType: pbAPI.VenueType_SPOT,
+											Asks:      refLiveBook.Asks,
+											Bids:      refLiveBook.Bids,
+										}
+										logrus.Warn(trades)
+										serialized, err := proto.Marshal(trades)
+										if err != nil {
+											log.Fatal("proto.Marshal error: ", err)
+										}
+										r.MessageType[0] = 0
+										serialized = append(r.MessageType, serialized[:]...)
+										kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+									}
+								}
+
+								r.historyTrades = true
 							}
 						}
 					}
