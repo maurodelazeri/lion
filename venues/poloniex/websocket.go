@@ -316,13 +316,11 @@ func (r *Websocket) startReading() {
 
 									}
 								case "float64", "string":
-
 									switch finalData[0] {
 									case "o":
 
 									case "t":
 										logrus.Warn("NEW TRADE ", finalData)
-									default:
 										var side pbAPI.Side
 										if finalData[1] == "1" {
 											side = pbAPI.Side_BUY
@@ -338,9 +336,9 @@ func (r *Websocket) startReading() {
 											Product:   pbAPI.Product((pbAPI.Product_value[product])),
 											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 											Timestamp: common.MakeTimestamp(),
-											//	Price:      number.FromString(finalData[2].(string)).Float64(),
+											Price:     number.FromString(finalData[2].(string)).Float64(),
 											OrderSide: side,
-											//Volume:     number.FromString(finalData[1].(string)).Float64(),
+											Volume:    number.FromString(finalData[1].(string)).Float64(),
 											VenueType: pbAPI.VenueType_SPOT,
 											Asks:      refLiveBook.Asks,
 											Bids:      refLiveBook.Bids,
