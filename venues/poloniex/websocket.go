@@ -315,7 +315,8 @@ func (r *Websocket) startReading() {
 								case "float64", "string":
 									switch finalData[0] {
 									case "o":
-										if finalData[1] == "1" {
+										//										logrus.Warn(reflect.TypeOf(finalData[1]).String())
+										if finalData[1].(float64) == 1 {
 											if number.FromString(finalData[3].(string)).Float64() == 0 {
 												price := number.FromString(finalData[2].(string)).Float64()
 												if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
@@ -453,7 +454,7 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook = book
 							//logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-							logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
+							//		logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
 
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)
