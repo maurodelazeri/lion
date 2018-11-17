@@ -243,9 +243,6 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							product := value.(string)
-							if len(product) > 0 {
-
-							}
 							refBook, ok := r.base.LiveOrderBook.Get(product)
 							if !ok {
 								continue

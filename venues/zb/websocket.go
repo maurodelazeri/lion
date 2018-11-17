@@ -5,8 +5,11 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
+	"reflect"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -216,14 +219,55 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						data := Message{}
-						err = ffjson.Unmarshal(resp, &data)
+						var result interface{}
+						err := common.JSONDecode(resp, &result)
 						if err != nil {
-							logrus.Error(err)
+							log.Println("Ops ", err)
 							continue
 						}
-						logrus.Warn(data)
+						//						logrus.Warn(reflect.TypeOf(result).String())
+						switch reflect.TypeOf(result).String() {
+						case "map[string]interface {}":
+							streamData := result.(map[string]interface{})
+							stream, err := ffjson.Marshal(streamData)
+							if err != nil {
+								logrus.Error("Marshal streamData ", err)
+								continue
+							}
+							data := Message{}
+							err = ffjson.Unmarshal(stream, &data)
+							if err != nil {
+								logrus.Error(err)
+								continue
+							}
 
+							if strings.Contains(data.Channel, "_depth") {
+								symbol := strings.Replace(streamData["channel"].(string), "_depth", "", -1)
+								value, exist := r.pairsMapping.Get(symbol)
+								if !exist {
+									continue
+								}
+								product := value.(string)
+								if len(product) > 0 {
+
+								}
+								mauro, _ := ffjson.Marshal(streamData)
+								logrus.Warn(string(mauro))
+							} else {
+								symbol := strings.Replace(streamData["channel"].(string), "_trades", "", -1)
+								value, exist := r.pairsMapping.Get(symbol)
+								if !exist {
+									continue
+								}
+								product := value.(string)
+								if len(product) > 0 {
+
+								}
+								//logrus.Info("trades ", product, " - ", streamData)
+								///mauro, _ := ffjson.Marshal(streamData)
+								//logrus.Warn(string(mauro))
+							}
+						}
 					}
 				}
 			}
