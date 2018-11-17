@@ -203,7 +203,8 @@ func (r *Websocket) startReading() {
 									case "update":
 									}
 								case "trade":
-									logrus.Warn("TRADE ", string(resp))
+									//if values.Reason == ""
+									logrus.Warn("TRADE ", values.Reason)
 								}
 							}
 						default:
