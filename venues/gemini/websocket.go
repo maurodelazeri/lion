@@ -5,16 +5,20 @@ import (
 	//"encoding/json"
 
 	"errors"
-	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
+	number "github.com/maurodelazeri/go-number"
+	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -204,16 +208,41 @@ func (r *Websocket) startReading() {
 									}
 								case "trade":
 									//if values.Reason == ""
-									logrus.Warn("TRADE ", values.Reason)
+									//	logrus.Warn("TRADE ", string(resp))
+
+									var side pbAPI.Side
+									if values.Side == "bid" {
+										side = pbAPI.Side_BUY
+									} else {
+										side = pbAPI.Side_SELL
+									}
+									refBook, ok := r.base.LiveOrderBook.Get(r.product)
+									if !ok {
+										continue
+									}
+									refLiveBook := refBook.(*pbAPI.Orderbook)
+									trades := &pbAPI.Trade{
+										Product:   pbAPI.Product((pbAPI.Product_value[r.product])),
+										Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+										Timestamp: common.MakeTimestamp(),
+										Price:     number.FromString(values.Price).Float64(),
+										OrderSide: side,
+										Volume:    number.FromString(values.Amount).Float64(),
+										VenueType: pbAPI.VenueType_SPOT,
+										Asks:      refLiveBook.Asks,
+										Bids:      refLiveBook.Bids,
+									}
+
+									serialized, err := proto.Marshal(trades)
+									if err != nil {
+										log.Fatal("proto.Marshal error: ", err)
+									}
+									r.MessageType[0] = 0
+									serialized = append(r.MessageType, serialized[:]...)
+									kafkaproducer.PublishMessageAsync(r.product+"."+r.base.Name+".trade", serialized, 1, false)
 								}
 							}
-						default:
-							fmt.Println("NOT UPDATE ", string(resp))
-
 						}
-
-						logrus.Warn(string(resp))
-
 					}
 				}
 			}
