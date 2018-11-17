@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	websocketURL = "wss://ws-feed.pro.poloniex.com"
+	websocketURL = "wss://api2.poloniex.com"
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates

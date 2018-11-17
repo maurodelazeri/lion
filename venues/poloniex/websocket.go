@@ -18,6 +18,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// https://poloniex.com/support/api/#reference_currencypairs
+
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
@@ -49,6 +51,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			logrus.Error("Subscription ", err)
 			continue
 		}
+		logrus.Warn(string(json))
 		err = r.Conn.WriteMessage(websocket.TextMessage, json)
 		if err != nil {
 			logrus.Error("Subscription ", err)
