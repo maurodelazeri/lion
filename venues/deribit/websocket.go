@@ -15,32 +15,36 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
-	if r.base.Streaming {
-		data := MessageChannel{
-			Jsonrpc: "2.0",
-			ID:      time.Now().Unix(),
-			Method:  "public/subscribe",
-			Params: Params{
-				Channels: []string{"book.BTC-PERPETUAL.raw"},
-			},
+	for _, product := range products {
+		if r.base.Streaming {
+			data := MessageChannel{
+				Jsonrpc: "2.0",
+				ID:      time.Now().Unix(),
+				Method:  "public/subscribe",
+				Params: Params{
+					//Channels: []string{"trades." + product + ".raw"},
+					Channels: []string{"book." + product + ".raw", "trades." + product + ".raw"},
+				},
+			}
+			subscribe = append(subscribe, data)
+		} else {
+			data := MessageChannel{
+				Jsonrpc: "2.0",
+				ID:      time.Now().Unix(),
+				Method:  "public/subscribe",
+				Params: Params{
+					Channels: []string{"trades." + product + ".raw"},
+				},
+			}
+			subscribe = append(subscribe, data)
 		}
-		subscribe = append(subscribe, data)
-	} else {
-		data := MessageChannel{
-			Jsonrpc: "2.0",
-			ID:      time.Now().Unix(),
-			Method:  "public/subscribe",
-			Params: Params{
-				Channels: []string{"book.BTC-PERPETUAL.raw"},
-			},
-		}
-		subscribe = append(subscribe, data)
 	}
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
@@ -48,7 +52,6 @@ func (r *Websocket) Subscribe(products []string) error {
 			logrus.Error("Subscription ", err)
 			continue
 		}
-		logrus.Warn(string(json))
 		err = r.Conn.WriteMessage(websocket.TextMessage, json)
 		if err != nil {
 			logrus.Error("Subscription ", err)
@@ -217,13 +220,14 @@ func (r *Websocket) startReading() {
 
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Warn(string(resp))
-						// data := Message{}
-						// err = ffjson.Unmarshal(resp, &data)
-						// if err != nil {
-						// 	logrus.Error(err)
-						// 	continue
-						// }
+						data := Message{}
+						err = ffjson.Unmarshal(resp, &data)
+						if err != nil {
+							logrus.Error(err)
+							continue
+						}
+
+						logrus.Warn(data)
 					}
 				}
 			}
