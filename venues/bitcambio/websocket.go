@@ -199,6 +199,7 @@ func (r *Websocket) connect() {
 }
 
 //https://blinktrade.com/docs/#subscribe-to-orderbook
+// https://github.com/blinktrade/BlinkTradeJS/blob/3bba1a4154a5f1d69638938e2846ba2a6b77c58e/test/websocket.spec.js
 
 // startReading is a helper method for getting a reader
 // using NextReader and reading from that reader to a buffer.
@@ -218,16 +219,22 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
+					//	logrus.Warn(string(resp))
+
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Warn(string(resp))
 						message := Message{}
 						err = ffjson.Unmarshal(resp, &message)
 						if err != nil {
 							logrus.Error("Problem Unmarshal ", err)
 							continue
 						}
-						logrus.Warn(message.Symbol)
+
+						logrus.Warn(len(message.MDFullGrp))
+
+						if len(message.MDFullGrp) > 0 {
+							logrus.Warn(message.MDFullGrp[0].MDEntryPx/1e8, " - ", message.MDFullGrp[0].MDEntrySize/1e8)
+						}
 					}
 				}
 			}
