@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -233,13 +234,38 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						data := Message{}
-						err = ffjson.Unmarshal(resp, &data)
+						logrus.Warn(string(resp))
+						message := Message{}
+						err = ffjson.Unmarshal(resp, &message)
 						if err != nil {
-							logrus.Error(err)
+							logrus.Error("Problem Unmarshal ", err)
 							continue
 						}
-						logrus.Warn(data)
+						stream := Stream{}
+						err := ffjson.Unmarshal([]byte("{\"streaming\":"+message.O+"}"), &stream)
+						if err != nil {
+							logrus.Error("Problem Unmarshal ", err)
+							continue
+						}
+						logrus.Warn(len(stream.Streaming))
+
+						if strings.Contains(message.N, "SubscribeLevel2") {
+							// symbol := strings.Replace(data.Ch, "market.", "", -1)
+							// symbol = strings.Replace(symbol, ".depth.step2", "", -1)
+							// value, exist := r.pairsMapping.Get(symbol)
+							// if !exist {
+							// 	continue
+							// }
+							// product := value.(string)
+
+							// refBook, ok := r.base.LiveOrderBook.Get(product)
+							// if !ok {
+							// 	continue
+							// }
+							// refLiveBook := refBook.(*pbAPI.Orderbook)
+						} else if strings.Contains(message.N, "SubscribeTrades") {
+
+						}
 
 					}
 				}

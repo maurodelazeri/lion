@@ -19,8 +19,13 @@ type Payload struct {
 
 // Message ...
 type Message struct {
-	M int         `json:"m"`
-	I int         `json:"i"`
-	N string      `json:"n"`
-	O interface{} `json:"o"`
+	M int    `json:"m"`
+	I int    `json:"i"`
+	N string `json:"n"`
+	O string `json:"o"`
+}
+
+// Stream ...
+type Stream struct {
+	Streaming [][]interface{} `json:"streaming"`
 }
