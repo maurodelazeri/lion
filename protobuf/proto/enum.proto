@@ -53,7 +53,11 @@ package api;
 	 XRM   = 13;
 	 OMG   = 14;
 	 DASH  = 15;
-	 NEO   = 16;	 	 	 	 
+	 NEO   = 16;
+	 USDT  = 17;
+	 USDC  = 18;
+	 PAX   = 19;
+	 TUSD  = 20;
    }
    
    enum Product{
