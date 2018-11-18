@@ -105,7 +105,23 @@ package api;
 	 DASH_ETH 		= 41;
 	 NEO_USD 		= 42;
 	 NEO_BTC 		= 43;
-	 NEO_ETH 		= 44;	 	 	 
+	 NEO_ETH 		= 44;
+	 BTC_USDT 		= 45;
+	 ETH_USDT 		= 46;
+	 EOS_USDT 		= 47;
+	 XRP_USDT 		= 48;
+	 BCH_USDT 		= 49;
+	 LTC_USDT 		= 50;
+	 XLM_USDT 		= 51;
+	 ADA_USDT 		= 52;
+	 ZEC_USDT 		= 53;
+	 QTUM_USDT 		= 54;
+	 NANO_USDT 		= 55;
+	 ETC_USDT 		= 56;
+	 XMR_USDT 		= 57;
+	 OMG_USDT 		= 58;
+	 DASH_USDT 		= 59;
+	 NEO_USDT 		= 60;	 
    }
   
    enum OrderState {
