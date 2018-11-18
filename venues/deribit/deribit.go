@@ -14,7 +14,8 @@ import (
 )
 
 const (
-	websocketURL = "wss://www.deribit.com/ws/api/v1/"
+	websocketURL = "wss://www.deribit.com/ws/api/v2/"
+
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates

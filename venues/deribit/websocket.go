@@ -58,18 +58,17 @@ type Message struct {
 	Volume30D     float64          `json:"volume_30d,string,omitempty"`
 }
 
-// MessageChannel ...
-type MessageChannel struct {
-	ID        int64      `json:"id"`
-	Action    string     `json:"action"`
-	Arguments Instrument `json:"arguments"`
-	Sig       string     `json:"sig"`
+// Params ...
+type Params struct {
+	Channels []string `json:"channels"`
 }
 
-// Instrument ...
-type Instrument struct {
-	Instrument []string `json:"instrument"`
-	Event      []string `json:"event"`
+// MessageChannel ...
+type MessageChannel struct {
+	Jsonrpc string `json:"jsonrpc"`
+	ID      int64  `json:"id"`
+	Method  string `json:"method"`
+	Params  Params `json:"params"`
 }
 
 // Subscribe subsribe public and private endpoints
@@ -77,24 +76,22 @@ func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
 	if r.base.Streaming {
 		data := MessageChannel{
-			ID:     time.Now().Unix(),
-			Action: "/api/v1/private/subscribe",
-			Arguments: Instrument{
-				Event:      products,
-				Instrument: []string{"order_book", "trade"},
+			Jsonrpc: "2.0",
+			ID:      time.Now().Unix(),
+			Method:  "public/subscribe",
+			Params: Params{
+				Channels: []string{"book.BTC-PERPETUAL.raw"},
 			},
-			//Sig: "KBLbvi7FYd7x.1542267385666.tdABDE3Ak4mVv3ys0n1IJBn5AyFUMF9uhz5hEsb4eV4=",
 		}
 		subscribe = append(subscribe, data)
 	} else {
 		data := MessageChannel{
-			ID:     time.Now().Unix(),
-			Action: "/api/v1/private/subscribe",
-			Arguments: Instrument{
-				Event:      products,
-				Instrument: []string{"trade"},
+			Jsonrpc: "2.0",
+			ID:      time.Now().Unix(),
+			Method:  "public/subscribe",
+			Params: Params{
+				Channels: []string{"book.BTC-PERPETUAL.raw"},
 			},
-			//Sig: "....",
 		}
 		subscribe = append(subscribe, data)
 	}
@@ -269,6 +266,8 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
+					logrus.Warn(string(resp))
+
 					switch msgType {
 					case websocket.TextMessage:
 						logrus.Warn(string(resp))
