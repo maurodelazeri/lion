@@ -58,6 +58,9 @@ package api;
 	 USDC  = 18;
 	 PAX   = 19;
 	 TUSD  = 20;
+	 BRL   = 21;
+	 JPY   = 22;
+	 WON   = 23;
    }
    
    enum Product{
@@ -121,7 +124,8 @@ package api;
 	 XMR_USDT 		= 57;
 	 OMG_USDT 		= 58;
 	 DASH_USDT 		= 59;
-	 NEO_USDT 		= 60;	 
+	 NEO_USDT 		= 60;
+     BTC_BRL 		= 61;	 	 
    }
   
    enum OrderState {
