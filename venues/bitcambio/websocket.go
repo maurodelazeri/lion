@@ -8,12 +8,15 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"sort"
+	"sync"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
+	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/streaming/kafka/producer"
@@ -230,12 +233,15 @@ func (r *Websocket) startReading() {
 							logrus.Error("Problem Unmarshal ", err)
 							continue
 						}
+						var wg sync.WaitGroup
+
 						if len(message.MDIncGrp) > 0 {
 							value, exist := r.pairsMapping.Get(message.MDIncGrp[0].Symbol)
 							if !exist {
 								continue
 							}
 							product := value.(string)
+
 							for _, data := range message.MDIncGrp {
 								switch data.MDEntryType {
 								case "0":
@@ -254,13 +260,14 @@ func (r *Websocket) startReading() {
 										continue
 									}
 									refLiveBook := refBook.(*pbAPI.Orderbook)
+
 									trades := &pbAPI.Trade{
 										Product:   pbAPI.Product((pbAPI.Product_value[product])),
 										Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 										Timestamp: common.MakeTimestamp(),
-										Price:     float64(data.MDEntryPx / 1e8),
+										Price:     number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
 										OrderSide: side,
-										Volume:    float64(data.MDEntrySize / 1e8),
+										Volume:    number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
 										VenueType: pbAPI.VenueType_SPOT,
 										Asks:      refLiveBook.Asks,
 										Bids:      refLiveBook.Bids,
@@ -277,11 +284,64 @@ func (r *Websocket) startReading() {
 							}
 						} else if len(message.MDFullGrp) > 0 {
 
-						}
+							value, exist := r.pairsMapping.Get(message.Symbol)
+							if !exist {
+								continue
+							}
+							product := value.(string)
 
-						// if len(message.MDFullGrp) > 0 {
-						// 	logrus.Warn(message.MDFullGrp[0].MDEntryPx/1e8, " - ", message.MDFullGrp[0].MDEntrySize/1e8)
-						// }
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+
+							for _, values := range message.MDFullGrp {
+								if values.MDEntryType == "0" {
+									//	refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+								} else if values.MDEntryType == "1" {
+									//	refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+								}
+							}
+							wg.Add(1)
+							go func() {
+								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+									return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+								})
+								wg.Done()
+							}()
+
+							wg.Add(1)
+							go func() {
+								sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+									return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+								})
+								wg.Done()
+							}()
+							wg.Wait()
+
+							if len(refLiveBook.Asks) > 20 && len(refLiveBook.Bids) > 20 {
+								refLiveBook.Asks = refLiveBook.Asks[0:20]
+								refLiveBook.Bids = refLiveBook.Bids[0:20]
+							}
+
+							wg.Add(1)
+							go func() {
+								for _, value := range refLiveBook.Asks {
+									r.OrderBookMAP[product+"asks"][value.Price] = value.Volume
+								}
+								wg.Done()
+							}()
+
+							wg.Add(1)
+							go func() {
+								for _, value := range refLiveBook.Bids {
+									r.OrderBookMAP[product+"bids"][value.Price] = value.Volume
+								}
+								wg.Done()
+							}()
+							wg.Wait()
+						}
 					}
 				}
 			}

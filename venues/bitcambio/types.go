@@ -27,29 +27,29 @@ type Message struct {
 		Broker            string `json:"Broker,omitempty"`
 		MDEntryType       string `json:"MDEntryType,omitempty"`
 		MDEntryPositionNo int    `json:"MDEntryPositionNo,omitempty"`
-		MDEntrySize       int    `json:"MDEntrySize,omitempty"`
+		MDEntrySize       int64  `json:"MDEntrySize,omitempty"`
 		Side              string `json:"Side,omitempty"`
 		MDEntryID         int    `json:"MDEntryID,omitempty"`
 		MDEntryDate       string `json:"MDEntryDate,omitempty"`
 	} `json:"MDIncGrp,omitempty"`
 	MDFullGrp []struct {
 		MDUpdateAction    string  `json:"MDUpdateAction,omitempty"`
-		MDEntryPositionNo int     `json:"MDEntryPositionNo,omitempty"`
+		MDEntryPositionNo int64   `json:"MDEntryPositionNo,omitempty"`
 		MDEntrySize       float64 `json:"MDEntrySize,omitempty"`
 		MDEntryPx         float64 `json:"MDEntryPx,omitempty"`
-		MDEntryID         int     `json:"MDEntryID,omitempty"`
+		MDEntryID         int64   `json:"MDEntryID,omitempty"`
 		MDEntryTime       string  `json:"MDEntryTime,omitempty"`
 		MDEntryDate       string  `json:"MDEntryDate,omitempty"`
-		UserID            int     `json:"UserID,omitempty"`
-		OrderID           int     `json:"OrderID,omitempty"`
+		UserID            int64   `json:"UserID,omitempty"`
+		OrderID           int64   `json:"OrderID,omitempty"`
 		MDEntryType       string  `json:"MDEntryType,omitempty"`
 		Broker            string  `json:"Broker,omitempty"`
-		MDEntryBuyerID    int     `json:"MDEntryBuyerID,omitempty"`
+		MDEntryBuyerID    int64   `json:"MDEntryBuyerID,omitempty"`
 		Side              string  `json:"Side,omitempty"`
-		TradeID           int     `json:"TradeID,omitempty"`
+		TradeID           int64   `json:"TradeID,omitempty"`
 		Symbol            string  `json:"Symbol,omitempty"`
-		MDEntrySellerID   int     `json:"MDEntrySellerID,omitempty"`
-		SecondaryOrderID  int     `json:"SecondaryOrderID,omitempty"`
+		MDEntrySellerID   int64   `json:"MDEntrySellerID,omitempty"`
+		SecondaryOrderID  int64   `json:"SecondaryOrderID,omitempty"`
 		BRL               int64   `json:"BRL,omitempty"`
 		BTC               int64   `json:"BTC,omitempty"`
 	} `json:"MDFullGrp,omitempty"`
