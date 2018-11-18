@@ -7,6 +7,7 @@ import (
 	"errors"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -22,39 +23,38 @@ import (
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
+	count := 0
 	if r.base.Streaming {
 		for _, product := range products {
-			payload, _ := ffjson.Marshal(Payload{Symbol: product, OMSID: 1, IncludeLastCount: 0})
-			trade := MessageChannel{
-				M: 2,
-				I: 0,
-				N: "SubscribeTrades",
-				O: string(payload),
-			}
-			subscribe = append(subscribe, trade)
-			logrus.Warn("PAYLOAD ", string(payload))
-
-			// 			{
-			//     "OMSId": 1,
-			//     "InstrumentId": 1,
-			//     "IncludeLastCount": 100
-			// }
-
-			// payload, _ = ffjson.Marshal(Payload{Symbol: product, OMSID: 1, Depth: 20})
-			// book := MessageChannel{
-			// 	M: 2,
-			// 	I: 0,
-			// 	N: "SubscribeLevel2",
+			i, _ := strconv.Atoi(product)
+			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
+			// count++
+			// trade := MessageChannel{
+			// 	M: 0,
+			// 	I: count,
+			// 	N: "SubscribeTrades",
 			// 	O: string(payload),
 			// }
-			// subscribe = append(subscribe, book)
+			// subscribe = append(subscribe, trade)
+
+			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+			count++
+			book := MessageChannel{
+				M: 0,
+				I: count,
+				N: "SubscribeLevel2",
+				O: string(payload),
+			}
+			subscribe = append(subscribe, book)
 		}
 	} else {
 		for _, product := range products {
-			payload, _ := ffjson.Marshal(Payload{Symbol: product, OMSID: 1})
+			i, _ := strconv.Atoi(product)
+			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
+			count++
 			trade := MessageChannel{
 				M: 2,
-				I: 0,
+				I: count,
 				N: "SubscribeTrades",
 				O: string(payload),
 			}
@@ -233,13 +233,13 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Warn(string(resp))
-						// data := Message{}
-						// err = ffjson.Unmarshal(resp, &data)
-						// if err != nil {
-						// 	logrus.Error(err)
-						// 	continue
-						// }
+						data := Message{}
+						err = ffjson.Unmarshal(resp, &data)
+						if err != nil {
+							logrus.Error(err)
+							continue
+						}
+						logrus.Warn(data)
 
 					}
 				}
