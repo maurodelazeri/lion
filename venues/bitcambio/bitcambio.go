@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	websocketURL = "wss://ws.blinktrade.com/trade/"
+	websocketURL = "wss://bitcambio_api.blinktrade.com/trade/"
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates

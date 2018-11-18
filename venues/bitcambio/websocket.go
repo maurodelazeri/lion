@@ -22,28 +22,24 @@ import (
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
 	if r.base.Streaming {
-		for _, product := range products {
-			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
-			// count++
-			// trade := MessageChannel{
-			// 	M: 0,
-			// 	I: count,
-			// 	N: "SubscribeTrades",
-			// 	O: string(payload),
-			// }
-			// subscribe = append(subscribe, trade)
+		// trade := MessageChannel{
+		// 	MsgType:                 "e",
+		// 	SecurityStatusReqID:     960751,
+		// 	SubscriptionRequestType: "2",
+		// }
+		// subscribe = append(subscribe, trade)
 
-			book := MessageChannel{
-				MsgType:                 "V",
-				MDReqID:                 9894272,
-				SubscriptionRequestType: "1",
-				MarketDepth:             "0",
-				MDUpdateType:            "1",
-				MDEntryTypes:            []string{"0", "1", "2"},
-				Instruments:             []string{product},
-			}
-			subscribe = append(subscribe, book)
+		book := MessageChannel{
+			MsgType:                 "V",
+			MDReqID:                 time.Now().Unix(),
+			SubscriptionRequestType: "1",
+			MarketDepth:             "0",
+			MDUpdateType:            "1",
+			MDEntryTypes:            []string{"0", "1", "2"},
+			Instruments:             products,
 		}
+		subscribe = append(subscribe, book)
+
 	} else {
 		// for _, product := range products {
 		// 	i, _ := strconv.Atoi(product)

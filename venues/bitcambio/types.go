@@ -2,13 +2,14 @@ package bitcambio
 
 // MessageChannel ...
 type MessageChannel struct {
-	MsgType                 string   `json:"MsgType"`
-	MDReqID                 int      `json:"MDReqID"`
-	SubscriptionRequestType string   `json:"SubscriptionRequestType"`
-	MarketDepth             string   `json:"MarketDepth"`
-	MDUpdateType            string   `json:"MDUpdateType"`
-	MDEntryTypes            []string `json:"MDEntryTypes"`
-	Instruments             []string `json:"Instruments"`
+	MsgType                 string   `json:"MsgType,omitempty"`
+	MDReqID                 int64    `json:"MDReqID,omitempty"`
+	SubscriptionRequestType string   `json:"SubscriptionRequestType,omitempty"`
+	MarketDepth             string   `json:"MarketDepth,omitempty"`
+	MDUpdateType            string   `json:"MDUpdateType,omitempty"`
+	MDEntryTypes            []string `json:"MDEntryTypes,omitempty"`
+	Instruments             []string `json:"Instruments,omitempty"`
+	SecurityStatusReqID     int      `json:"SecurityStatusReqID,omitempty"`
 }
 
 // Message ...
