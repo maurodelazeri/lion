@@ -200,10 +200,20 @@ func (r *Websocket) startReading() {
 							for _, values := range data.Events {
 								switch values.Type {
 								case "change":
+
 									switch values.Reason {
 									case "initial":
-										logrus.Warn(values)
-									case "update":
+
+										// refBook, ok := r.base.LiveOrderBook.Get(r.product)
+										// if !ok {
+										// 	continue
+										// }
+										// refLiveBook := refBook.(*pbAPI.Orderbook)
+
+									case "cancel":
+										logrus.Warn("CANCEL ", values)
+									case "place":
+										logrus.Warn("Place ", values)
 
 									}
 								case "trade":
