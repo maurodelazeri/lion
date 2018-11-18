@@ -1,4 +1,4 @@
-package foxbit
+package bitcambio
 
 import (
 
@@ -7,8 +7,6 @@ import (
 	"errors"
 	"math/rand"
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -17,17 +15,14 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
-	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
-	count := 0
 	if r.base.Streaming {
 		for _, product := range products {
-			i, _ := strconv.Atoi(product)
 			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
 			// count++
 			// trade := MessageChannel{
@@ -38,29 +33,30 @@ func (r *Websocket) Subscribe(products []string) error {
 			// }
 			// subscribe = append(subscribe, trade)
 
-			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
-			count++
 			book := MessageChannel{
-				M: 0,
-				I: count,
-				N: "SubscribeLevel2",
-				O: string(payload),
+				MsgType:                 "V",
+				MDReqID:                 9894272,
+				SubscriptionRequestType: "1",
+				MarketDepth:             "0",
+				MDUpdateType:            "1",
+				MDEntryTypes:            []string{"0", "1", "2"},
+				Instruments:             []string{product},
 			}
 			subscribe = append(subscribe, book)
 		}
 	} else {
-		for _, product := range products {
-			i, _ := strconv.Atoi(product)
-			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
-			count++
-			trade := MessageChannel{
-				M: 2,
-				I: count,
-				N: "SubscribeTrades",
-				O: string(payload),
-			}
-			subscribe = append(subscribe, trade)
-		}
+		// for _, product := range products {
+		// 	i, _ := strconv.Atoi(product)
+		// 	payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
+		// 	count++
+		// 	trade := MessageChannel{
+		// 		M: 2,
+		// 		I: count,
+		// 		N: "SubscribeTrades",
+		// 		O: string(payload),
+		// 	}
+		// 	subscribe = append(subscribe, trade)
+		// }
 	}
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
@@ -214,7 +210,7 @@ func (r *Websocket) connect() {
 	}
 }
 
-//https://docs.foxbit.com.br/EN/websocket_intro.html#
+//https://docs.bitcambio.com.br/EN/websocket_intro.html#
 
 // startReading is a helper method for getting a reader
 // using NextReader and reading from that reader to a buffer.
@@ -237,37 +233,12 @@ func (r *Websocket) startReading() {
 					switch msgType {
 					case websocket.TextMessage:
 						logrus.Warn(string(resp))
-						message := Message{}
-						err = ffjson.Unmarshal(resp, &message)
-						if err != nil {
-							logrus.Error("Problem Unmarshal ", err)
-							continue
-						}
-						stream := Stream{}
-						err := ffjson.Unmarshal([]byte("{\"streaming\":"+message.O+"}"), &stream)
-						if err != nil {
-							logrus.Error("Problem Unmarshal ", err)
-							continue
-						}
-						logrus.Warn(len(stream.Streaming))
-
-						if strings.Contains(message.N, "SubscribeLevel2") {
-							// symbol := strings.Replace(data.Ch, "market.", "", -1)
-							// symbol = strings.Replace(symbol, ".depth.step2", "", -1)
-							// value, exist := r.pairsMapping.Get(symbol)
-							// if !exist {
-							// 	continue
-							// }
-							// product := value.(string)
-
-							// refBook, ok := r.base.LiveOrderBook.Get(product)
-							// if !ok {
-							// 	continue
-							// }
-							// refLiveBook := refBook.(*pbAPI.Orderbook)
-						} else if strings.Contains(message.N, "SubscribeTrades") {
-
-						}
+						// message := Message{}
+						// err = ffjson.Unmarshal(resp, &message)
+						// if err != nil {
+						// 	logrus.Error("Problem Unmarshal ", err)
+						// 	continue
+						// }
 
 					}
 				}
