@@ -15,20 +15,15 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
+	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
+	// book contain all data, including trades
 	subscribe := []MessageChannel{}
 	if r.base.Streaming {
-		// trade := MessageChannel{
-		// 	MsgType:                 "e",
-		// 	SecurityStatusReqID:     960751,
-		// 	SubscriptionRequestType: "2",
-		// }
-		// subscribe = append(subscribe, trade)
-
 		book := MessageChannel{
 			MsgType:                 "V",
 			MDReqID:                 time.Now().Unix(),
@@ -39,20 +34,17 @@ func (r *Websocket) Subscribe(products []string) error {
 			Instruments:             products,
 		}
 		subscribe = append(subscribe, book)
-
 	} else {
-		// for _, product := range products {
-		// 	i, _ := strconv.Atoi(product)
-		// 	payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
-		// 	count++
-		// 	trade := MessageChannel{
-		// 		M: 2,
-		// 		I: count,
-		// 		N: "SubscribeTrades",
-		// 		O: string(payload),
-		// 	}
-		// 	subscribe = append(subscribe, trade)
-		// }
+		book := MessageChannel{
+			MsgType:                 "V",
+			MDReqID:                 time.Now().Unix(),
+			SubscriptionRequestType: "1",
+			MarketDepth:             "0",
+			MDUpdateType:            "1",
+			MDEntryTypes:            []string{"0", "1", "2"},
+			Instruments:             products,
+		}
+		subscribe = append(subscribe, book)
 	}
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
@@ -206,7 +198,7 @@ func (r *Websocket) connect() {
 	}
 }
 
-//https://docs.bitcambio.com.br/EN/websocket_intro.html#
+//https://blinktrade.com/docs/#subscribe-to-orderbook
 
 // startReading is a helper method for getting a reader
 // using NextReader and reading from that reader to a buffer.
@@ -229,13 +221,13 @@ func (r *Websocket) startReading() {
 					switch msgType {
 					case websocket.TextMessage:
 						logrus.Warn(string(resp))
-						// message := Message{}
-						// err = ffjson.Unmarshal(resp, &message)
-						// if err != nil {
-						// 	logrus.Error("Problem Unmarshal ", err)
-						// 	continue
-						// }
-
+						message := Message{}
+						err = ffjson.Unmarshal(resp, &message)
+						if err != nil {
+							logrus.Error("Problem Unmarshal ", err)
+							continue
+						}
+						logrus.Warn(message.Symbol)
 					}
 				}
 			}
