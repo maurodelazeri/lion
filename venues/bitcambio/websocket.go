@@ -5,15 +5,18 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -41,7 +44,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			SubscriptionRequestType: "1",
 			MarketDepth:             "0",
 			MDUpdateType:            "1",
-			MDEntryTypes:            []string{"0", "1", "2"},
+			MDEntryTypes:            []string{"2"},
 			Instruments:             products,
 		}
 		subscribe = append(subscribe, book)
@@ -219,8 +222,6 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
-					//	logrus.Warn(string(resp))
-
 					switch msgType {
 					case websocket.TextMessage:
 						message := Message{}
@@ -229,12 +230,58 @@ func (r *Websocket) startReading() {
 							logrus.Error("Problem Unmarshal ", err)
 							continue
 						}
+						if len(message.MDIncGrp) > 0 {
+							value, exist := r.pairsMapping.Get(message.MDIncGrp[0].Symbol)
+							if !exist {
+								continue
+							}
+							product := value.(string)
+							for _, data := range message.MDIncGrp {
+								switch data.MDEntryType {
+								case "0":
+								//	logrus.Info("0 ", data)
+								case "1":
+								//	logrus.Info("1 ", data)
+								case "2":
+									var side pbAPI.Side
+									if data.Side == "buy" {
+										side = pbAPI.Side_BUY
+									} else {
+										side = pbAPI.Side_SELL
+									}
+									refBook, ok := r.base.LiveOrderBook.Get(product)
+									if !ok {
+										continue
+									}
+									refLiveBook := refBook.(*pbAPI.Orderbook)
+									trades := &pbAPI.Trade{
+										Product:   pbAPI.Product((pbAPI.Product_value[product])),
+										Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+										Timestamp: common.MakeTimestamp(),
+										Price:     float64(data.MDEntryPx / 1e8),
+										OrderSide: side,
+										Volume:    float64(data.MDEntrySize / 1e8),
+										VenueType: pbAPI.VenueType_SPOT,
+										Asks:      refLiveBook.Asks,
+										Bids:      refLiveBook.Bids,
+									}
+									logrus.Warn(trades)
+									serialized, err := proto.Marshal(trades)
+									if err != nil {
+										log.Fatal("proto.Marshal error: ", err)
+									}
+									r.MessageType[0] = 0
+									serialized = append(r.MessageType, serialized[:]...)
+									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								}
+							}
+						} else if len(message.MDFullGrp) > 0 {
 
-						logrus.Warn(len(message.MDFullGrp))
-
-						if len(message.MDFullGrp) > 0 {
-							logrus.Warn(message.MDFullGrp[0].MDEntryPx/1e8, " - ", message.MDFullGrp[0].MDEntrySize/1e8)
 						}
+
+						// if len(message.MDFullGrp) > 0 {
+						// 	logrus.Warn(message.MDFullGrp[0].MDEntryPx/1e8, " - ", message.MDFullGrp[0].MDEntrySize/1e8)
+						// }
 					}
 				}
 			}
