@@ -250,10 +250,124 @@ func (r *Websocket) startReading() {
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 
 							if !r.snapshot {
+								for _, values := range data.Params.Data.Bids {
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+								}
+
+								for _, values := range data.Params.Data.Asks {
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+								}
+								wg.Add(1)
+								go func() {
+									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+									})
+									wg.Done()
+								}()
+
+								wg.Add(1)
+								go func() {
+									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+									})
+									wg.Done()
+								}()
+								wg.Wait()
+
+								if len(refLiveBook.Asks) > 20 && len(refLiveBook.Bids) > 20 {
+									refLiveBook.Asks = refLiveBook.Asks[0:20]
+									refLiveBook.Bids = refLiveBook.Bids[0:20]
+								}
+
+								wg.Add(1)
+								go func() {
+									for _, value := range refLiveBook.Asks {
+										r.OrderBookMAP[product+"asks"][value.Price] = value.Volume
+									}
+									wg.Done()
+								}()
+
+								wg.Add(1)
+								go func() {
+									for _, value := range refLiveBook.Bids {
+										r.OrderBookMAP[product+"bids"][value.Price] = value.Volume
+									}
+									wg.Done()
+								}()
+								wg.Wait()
 
 								r.snapshot = true
 							} else {
+								wg.Add(1)
+								go func(Bids [][]interface{}) {
+									for _, bids := range Bids {
+										switch bids[0].(string) {
+										case "change":
+											price := bids[1].(float64)
+											amount := bids[2].(float64)
+											if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+												r.OrderBookMAP[product+"bids"][price] = amount
+												updated = true
+											}
+										case "delete":
+											price := bids[1].(float64)
+											if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+												delete(r.OrderBookMAP[product+"bids"], price)
+												updated = true
+											}
+										case "new":
+											price := bids[1].(float64)
+											amount := bids[2].(float64)
+											totalLevels := len(refLiveBook.GetBids())
+											if totalLevels == r.base.MaxLevelsOrderBook {
+												if price < refLiveBook.Bids[totalLevels-1].Price {
+													continue
+												}
+											}
+											updated = true
+											r.OrderBookMAP[product+"bids"][price] = amount
 
+										default:
+											logrus.Warn("API BETA, new case found")
+										}
+									}
+									wg.Done()
+								}(data.Params.Data.Bids)
+
+								wg.Add(1)
+								go func(Asks [][]interface{}) {
+									for _, asks := range Asks {
+										switch asks[0].(string) {
+										case "change":
+											price := asks[1].(float64)
+											amount := asks[2].(float64)
+											if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+												r.OrderBookMAP[product+"asks"][price] = amount
+												updated = true
+											}
+										case "delete":
+											price := asks[1].(float64)
+											if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+												delete(r.OrderBookMAP[product+"asks"], price)
+												updated = true
+											}
+										case "new":
+											price := asks[1].(float64)
+											amount := asks[2].(float64)
+											totalLevels := len(refLiveBook.GetAsks())
+											if totalLevels == r.base.MaxLevelsOrderBook {
+												if price > refLiveBook.Asks[totalLevels-1].Price {
+													continue
+												}
+											}
+											updated = true
+											r.OrderBookMAP[product+"asks"][price] = amount
+										default:
+											logrus.Warn("API BETA, new case found")
+										}
+									}
+									wg.Done()
+								}(data.Params.Data.Asks)
 							}
 
 							// we dont need to update the book if any level we care was changed
@@ -315,6 +429,9 @@ func (r *Websocket) startReading() {
 								VenueType: pbAPI.VenueType_SPOT,
 							}
 							refLiveBook = book
+
+							logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+							logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
 
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)

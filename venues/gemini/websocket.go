@@ -267,8 +267,10 @@ func (r *Websocket) startReading() {
 												}
 											} else {
 												price := number.FromString(values.Price).Float64()
-												r.OrderBookMAP[r.product+"asks"][price] = number.FromString(values.Remaining).Float64()
-												updated = true
+												if _, ok := r.OrderBookMAP[r.product+"asks"][price]; ok {
+													r.OrderBookMAP[r.product+"asks"][price] = number.FromString(values.Remaining).Float64()
+													updated = true
+												}
 											}
 										} else {
 											if number.FromString(values.Remaining).Float64() == 0 {
@@ -279,8 +281,10 @@ func (r *Websocket) startReading() {
 												}
 											} else {
 												price := number.FromString(values.Price).Float64()
-												r.OrderBookMAP[r.product+"bids"][price] = number.FromString(values.Remaining).Float64()
-												updated = true
+												if _, ok := r.OrderBookMAP[r.product+"bids"][price]; ok {
+													r.OrderBookMAP[r.product+"bids"][price] = number.FromString(values.Remaining).Float64()
+													updated = true
+												}
 											}
 										}
 									case "place":
