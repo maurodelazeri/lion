@@ -227,7 +227,7 @@ func (r *Websocket) startReading() {
 							continue
 						}
 
-						logrus.Warn(data)
+						logrus.Warn(data.Params.Data.Bids)
 					}
 				}
 			}
