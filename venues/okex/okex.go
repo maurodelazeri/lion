@@ -64,6 +64,8 @@ type Websocket struct {
 	subscribedPairs []string
 	pairsMapping    *utils.ConcurrentMap
 	MessageType     []byte
+
+	venueType pbAPI.VenueType
 }
 
 // SetDefaults sets default values for the venue
@@ -90,6 +92,7 @@ func (r *Okex) Setup(venueName string, config config.VenueConfig, streaming bool
 // Start ...
 func (r *Okex) Start() {
 	var dedicatedSocket, sharedSocket []string
+
 	// Individual system order book for each product
 	venueConf, ok := r.VenueConfig.Get(r.GetName())
 	if ok {
@@ -107,6 +110,14 @@ func (r *Okex) Start() {
 				socket.MessageType = make([]byte, 4)
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
+
+				switch r.GetName() {
+				case "OKEX_INTERNATIONAL_FUT":
+					socket.venueType = pbAPI.VenueType_FUTURES
+				case "OKEX_INTERNATIONAL_SPOT":
+					socket.venueType = pbAPI.VenueType_SPOT
+				}
+
 				go socket.WebsocketClient()
 				socket.Heartbeat()
 			}

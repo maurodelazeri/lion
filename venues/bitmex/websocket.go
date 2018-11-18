@@ -460,7 +460,7 @@ func (r *Websocket) startReading() {
 								Timestamp: common.MakeTimestamp(),
 								Asks:      refLiveBook.Asks,
 								Bids:      refLiveBook.Bids,
-								VenueType: pbAPI.VenueType_SPOT,
+								VenueType: pbAPI.VenueType_FUTURES,
 							}
 							refLiveBook = book
 

@@ -298,76 +298,70 @@ func (r *Websocket) startReading() {
 
 								r.snapshot = true
 							} else {
-								wg.Add(1)
-								go func(Bids [][]interface{}) {
-									for _, bids := range Bids {
-										switch bids[0].(string) {
-										case "change":
-											price := bids[1].(float64)
-											amount := bids[2].(float64)
-											if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
-												r.OrderBookMAP[product+"bids"][price] = amount
-												updated = true
-											}
-										case "delete":
-											price := bids[1].(float64)
-											if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
-												delete(r.OrderBookMAP[product+"bids"], price)
-												updated = true
-											}
-										case "new":
-											price := bids[1].(float64)
-											amount := bids[2].(float64)
-											totalLevels := len(refLiveBook.GetBids())
-											if totalLevels == r.base.MaxLevelsOrderBook {
-												if price < refLiveBook.Bids[totalLevels-1].Price {
-													continue
-												}
-											}
-											updated = true
+
+								for _, bids := range data.Params.Data.Bids {
+									switch bids[0].(string) {
+									case "change":
+										price := bids[1].(float64)
+										amount := bids[2].(float64)
+										if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
 											r.OrderBookMAP[product+"bids"][price] = amount
-
-										default:
-											logrus.Warn("API BETA, new case found")
-										}
-									}
-									wg.Done()
-								}(data.Params.Data.Bids)
-
-								wg.Add(1)
-								go func(Asks [][]interface{}) {
-									for _, asks := range Asks {
-										switch asks[0].(string) {
-										case "change":
-											price := asks[1].(float64)
-											amount := asks[2].(float64)
-											if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
-												r.OrderBookMAP[product+"asks"][price] = amount
-												updated = true
-											}
-										case "delete":
-											price := asks[1].(float64)
-											if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
-												delete(r.OrderBookMAP[product+"asks"], price)
-												updated = true
-											}
-										case "new":
-											price := asks[1].(float64)
-											amount := asks[2].(float64)
-											totalLevels := len(refLiveBook.GetAsks())
-											if totalLevels == r.base.MaxLevelsOrderBook {
-												if price > refLiveBook.Asks[totalLevels-1].Price {
-													continue
-												}
-											}
 											updated = true
-											r.OrderBookMAP[product+"asks"][price] = amount
-										default:
-											logrus.Warn("API BETA, new case found")
 										}
+									case "delete":
+										price := bids[1].(float64)
+										if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+											delete(r.OrderBookMAP[product+"bids"], price)
+											updated = true
+										}
+									case "new":
+										price := bids[1].(float64)
+										amount := bids[2].(float64)
+										totalLevels := len(refLiveBook.GetBids())
+										if totalLevels == r.base.MaxLevelsOrderBook {
+											if price < refLiveBook.Bids[totalLevels-1].Price {
+												continue
+											}
+										}
+										updated = true
+										r.OrderBookMAP[product+"bids"][price] = amount
+
+									default:
+										logrus.Warn("API BETA, new case found")
 									}
-									wg.Done()
-								}(data.Params.Data.Asks)
+								}
+
+								for _, asks := range data.Params.Data.Asks {
+									switch asks[0].(string) {
+									case "change":
+										price := asks[1].(float64)
+										amount := asks[2].(float64)
+										if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+											r.OrderBookMAP[product+"asks"][price] = amount
+											updated = true
+										}
+									case "delete":
+										price := asks[1].(float64)
+										if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+											delete(r.OrderBookMAP[product+"asks"], price)
+											updated = true
+										}
+									case "new":
+										price := asks[1].(float64)
+										amount := asks[2].(float64)
+										totalLevels := len(refLiveBook.GetAsks())
+										if totalLevels == r.base.MaxLevelsOrderBook {
+											if price > refLiveBook.Asks[totalLevels-1].Price {
+												continue
+											}
+										}
+										updated = true
+										r.OrderBookMAP[product+"asks"][price] = amount
+									default:
+										logrus.Warn("API BETA, new case found")
+									}
+								}
+
 							}
 
 							// we dont need to update the book if any level we care was changed
@@ -426,12 +420,9 @@ func (r *Websocket) startReading() {
 								Timestamp: common.MakeTimestamp(),
 								Asks:      refLiveBook.Asks,
 								Bids:      refLiveBook.Bids,
-								VenueType: pbAPI.VenueType_SPOT,
+								VenueType: pbAPI.VenueType_FUTURES,
 							}
 							refLiveBook = book
-
-							logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-							logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
 
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)
@@ -443,6 +434,7 @@ func (r *Websocket) startReading() {
 								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 							}
 						} else {
+
 							symbol := strings.Replace(data.Params.Channel, "trades.", "", -1)
 							symbol = strings.Replace(symbol, ".raw", "", -1)
 							value, exist := r.pairsMapping.Get(symbol)
@@ -457,9 +449,34 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 
-							if refLiveBook != nil {
-
+							var side pbAPI.Side
+							if data.Params.Data.Direction == "buy" {
+								side = pbAPI.Side_BUY
+							} else {
+								side = pbAPI.Side_SELL
 							}
+
+							trades := &pbAPI.Trade{
+								Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Timestamp: common.MakeTimestamp(),
+								Price:     data.Params.Data.Price,
+								OrderSide: side,
+								Volume:    data.Params.Data.Amount,
+								VenueType: pbAPI.VenueType_FUTURES,
+								Asks:      refLiveBook.Asks,
+								Bids:      refLiveBook.Bids,
+							}
+							logrus.Warn(trades)
+
+							serialized, err := proto.Marshal(trades)
+							if err != nil {
+								log.Fatal("proto.Marshal error: ", err)
+							}
+							r.MessageType[0] = 0
+							serialized = append(r.MessageType, serialized[:]...)
+							kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+
 						}
 
 					}
