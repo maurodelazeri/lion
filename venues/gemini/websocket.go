@@ -197,7 +197,6 @@ func (r *Websocket) startReading() {
 							logrus.Error(err)
 							continue
 						}
-						//logrus.Warn(string(resp))
 						var wg sync.WaitGroup
 						updated := false
 
@@ -259,10 +258,55 @@ func (r *Websocket) startReading() {
 										wg.Wait()
 
 									case "cancel":
-									//	logrus.Warn("CANCEL ", values)
+										if values.Side == "ask" {
+											if number.FromString(values.Remaining).Float64() == 0 {
+												price := number.FromString(values.Price).Float64()
+												if _, ok := r.OrderBookMAP[r.product+"asks"][price]; ok {
+													delete(r.OrderBookMAP[r.product+"asks"], price)
+													updated = true
+												}
+											} else {
+												price := number.FromString(values.Price).Float64()
+												r.OrderBookMAP[r.product+"asks"][price] = number.FromString(values.Remaining).Float64()
+												updated = true
+											}
+										} else {
+											if number.FromString(values.Remaining).Float64() == 0 {
+												price := number.FromString(values.Price).Float64()
+												if _, ok := r.OrderBookMAP[r.product+"bids"][price]; ok {
+													delete(r.OrderBookMAP[r.product+"bids"], price)
+													updated = true
+												}
+											} else {
+												price := number.FromString(values.Price).Float64()
+												r.OrderBookMAP[r.product+"bids"][price] = number.FromString(values.Remaining).Float64()
+												updated = true
+											}
+										}
 									case "place":
-										//logrus.Warn("Place ", values)
-
+										if values.Side == "ask" {
+											price := number.FromString(values.Price).Float64()
+											amount := number.FromString(values.Remaining).Float64()
+											totalLevels := len(refLiveBook.GetAsks())
+											if totalLevels == r.base.MaxLevelsOrderBook {
+												if price > refLiveBook.Asks[totalLevels-1].Price {
+													continue
+												}
+											}
+											updated = true
+											r.OrderBookMAP[r.product+"asks"][price] = amount
+										} else {
+											price := number.FromString(values.Price).Float64()
+											amount := number.FromString(values.Remaining).Float64()
+											totalLevels := len(refLiveBook.GetBids())
+											if totalLevels == r.base.MaxLevelsOrderBook {
+												if price < refLiveBook.Bids[totalLevels-1].Price {
+													continue
+												}
+											}
+											updated = true
+											r.OrderBookMAP[r.product+"bids"][price] = amount
+										}
 									}
 								case "trade":
 									var side pbAPI.Side
@@ -359,6 +403,8 @@ func (r *Websocket) startReading() {
 						}
 						refLiveBook = book
 
+						logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+						logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
 						if r.base.Streaming {
 							serialized, err := proto.Marshal(book)
 							if err != nil {
