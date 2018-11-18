@@ -58,6 +58,8 @@ type Websocket struct {
 	subscribedPairs []string
 	pairsMapping    *utils.ConcurrentMap
 	MessageType     []byte
+
+	snapshot bool
 }
 
 // SetDefaults sets default values for the venue

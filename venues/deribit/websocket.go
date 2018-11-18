@@ -5,15 +5,21 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"log"
 	"math/rand"
 	"net/http"
+	"sort"
+	"strings"
+	"sync"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/streaming/kafka/producer"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -153,6 +159,7 @@ func (r *Websocket) connect() {
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
+	r.snapshot = false
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
@@ -216,8 +223,6 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
-					logrus.Warn(string(resp))
-
 					switch msgType {
 					case websocket.TextMessage:
 						data := Message{}
@@ -226,8 +231,120 @@ func (r *Websocket) startReading() {
 							logrus.Error(err)
 							continue
 						}
+						var wg sync.WaitGroup
+						updated := false
 
-						logrus.Warn(data.Params.Data.Bids)
+						if strings.Contains(data.Params.Channel, "book") {
+							symbol := strings.Replace(data.Params.Channel, "book.", "", -1)
+							symbol = strings.Replace(symbol, ".raw", "", -1)
+							value, exist := r.pairsMapping.Get(symbol)
+							if !exist {
+								continue
+							}
+							product := value.(string)
+
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+
+							if !r.snapshot {
+
+								r.snapshot = true
+							} else {
+
+							}
+
+							// we dont need to update the book if any level we care was changed
+							if !updated {
+								continue
+							}
+
+							wg.Add(1)
+							go func() {
+								refLiveBook.Bids = []*pbAPI.Item{}
+								for price, amount := range r.OrderBookMAP[product+"bids"] {
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
+								}
+								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+									return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+								})
+								wg.Done()
+							}()
+
+							wg.Add(1)
+							go func() {
+								refLiveBook.Asks = []*pbAPI.Item{}
+								for price, amount := range r.OrderBookMAP[product+"asks"] {
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
+								}
+								sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+									return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+								})
+								wg.Done()
+							}()
+
+							wg.Wait()
+
+							wg.Add(1)
+							go func() {
+								totalBids := len(refLiveBook.Bids)
+								if totalBids > r.base.MaxLevelsOrderBook {
+									refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
+							wg.Add(1)
+							go func() {
+								totalAsks := len(refLiveBook.Asks)
+								if totalAsks > r.base.MaxLevelsOrderBook {
+									refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
+
+							wg.Wait()
+							book := &pbAPI.Orderbook{
+								Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Levels:    int32(r.base.MaxLevelsOrderBook),
+								Timestamp: common.MakeTimestamp(),
+								Asks:      refLiveBook.Asks,
+								Bids:      refLiveBook.Bids,
+								VenueType: pbAPI.VenueType_SPOT,
+							}
+							refLiveBook = book
+
+							if r.base.Streaming {
+								serialized, err := proto.Marshal(book)
+								if err != nil {
+									log.Fatal("proto.Marshal error: ", err)
+								}
+								r.MessageType[0] = 1
+								serialized = append(r.MessageType, serialized[:]...)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+							}
+						} else {
+							symbol := strings.Replace(data.Params.Channel, "trades.", "", -1)
+							symbol = strings.Replace(symbol, ".raw", "", -1)
+							value, exist := r.pairsMapping.Get(symbol)
+							if !exist {
+								continue
+							}
+							product := value.(string)
+
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+
+							if refLiveBook != nil {
+
+							}
+						}
+
 					}
 				}
 			}
