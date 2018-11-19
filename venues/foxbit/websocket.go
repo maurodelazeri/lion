@@ -33,25 +33,25 @@ func (r *Websocket) Subscribe(products []string) error {
 	if r.base.Streaming {
 		for _, product := range products {
 			i, _ := strconv.Atoi(product)
-			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
-			// count++
-			// trade := MessageChannel{
-			// 	M: 0,
-			// 	I: count,
-			// 	N: "SubscribeTrades",
-			// 	O: string(payload),
-			// }
-			// subscribe = append(subscribe, trade)
-
-			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
 			count++
-			book := MessageChannel{
+			trade := MessageChannel{
 				M: 0,
 				I: count,
-				N: "SubscribeLevel2",
+				N: "SubscribeTrades",
 				O: string(payload),
 			}
-			subscribe = append(subscribe, book)
+			subscribe = append(subscribe, trade)
+
+			// payload, _ = ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+			// count++
+			// book := MessageChannel{
+			// 	M: 0,
+			// 	I: count,
+			// 	N: "SubscribeLevel2",
+			// 	O: string(payload),
+			// }
+			// subscribe = append(subscribe, book)
 		}
 	} else {
 		for _, product := range products {
@@ -241,7 +241,6 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-
 						message := Message{}
 						err = ffjson.Unmarshal(resp, &message)
 						if err != nil {
@@ -406,8 +405,39 @@ func (r *Websocket) startReading() {
 								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 							}
 
-						} else if strings.Contains(message.N, "SubscribeTrades") {
-
+						} else if strings.Contains(message.N, "TradeDataUpdateEvent") {
+							for _, values := range stream.Streaming {
+								var side pbAPI.Side
+								if values[9].(float64) == 0 {
+									side = pbAPI.Side_BUY
+								} else {
+									side = pbAPI.Side_SELL
+								}
+								refBook, ok := r.base.LiveOrderBook.Get(product)
+								if !ok {
+									continue
+								}
+								refLiveBook := refBook.(*pbAPI.Orderbook)
+								trades := &pbAPI.Trade{
+									Product:   pbAPI.Product((pbAPI.Product_value[product])),
+									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+									Timestamp: common.MakeTimestamp(),
+									Price:     values[6].(float64),
+									OrderSide: side,
+									Volume:    values[8].(float64),
+									VenueType: pbAPI.VenueType_SPOT,
+									Asks:      refLiveBook.Asks,
+									Bids:      refLiveBook.Bids,
+								}
+								logrus.Warn(trades)
+								serialized, err := proto.Marshal(trades)
+								if err != nil {
+									log.Fatal("proto.Marshal error: ", err)
+								}
+								r.MessageType[0] = 0
+								serialized = append(r.MessageType, serialized[:]...)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+							}
 						} else if strings.Contains(message.N, "SubscribeLevel2") {
 							for _, values := range stream.Streaming {
 								if values[9].(float64) == 0 {

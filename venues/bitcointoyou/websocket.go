@@ -54,7 +54,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
 			count++
 			trade := MessageChannel{
-				M: 2,
+				M: 0,
 				I: count,
 				N: "SubscribeTrades",
 				O: string(payload),
@@ -249,7 +249,6 @@ func (r *Websocket) startReading() {
 							logrus.Error("Problem Unmarshal ", err)
 							continue
 						}
-						logrus.Warn(len(stream.Streaming))
 
 						if strings.Contains(message.N, "SubscribeLevel2") {
 							// symbol := strings.Replace(data.Ch, "market.", "", -1)
