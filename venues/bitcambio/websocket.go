@@ -235,7 +235,6 @@ func (r *Websocket) startReading() {
 						}
 						var wg sync.WaitGroup
 						updated := false
-
 						if len(message.MDIncGrp) > 0 {
 							value, exist := r.pairsMapping.Get(message.MDIncGrp[0].Symbol)
 							if !exist {
