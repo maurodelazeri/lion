@@ -156,15 +156,15 @@ func (r *Websocket) connect() {
 
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	r.OrderBookMAP = make(map[string]map[float64]float64)
+	r.OrderBookMAP = make(map[string]map[int64]BookItem)
 	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
-		r.OrderBookMAP[sym+"bids"] = make(map[float64]float64)
-		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
+		r.OrderBookMAP[sym+"bids"] = make(map[int64]BookItem)
+		r.OrderBookMAP[sym+"asks"] = make(map[int64]BookItem)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
@@ -243,11 +243,28 @@ func (r *Websocket) startReading() {
 							product := value.(string)
 
 							for _, data := range message.MDIncGrp {
-								switch data.MDEntryType {
+								switch data.MDEntryType { // “0” = Bid, “1” = Offer, “2” = Trade
 								case "0":
-								//	logrus.Info("0 ", data)
+									switch data.MDUpdateAction { // “0” = New, “1” = Update, “2” = Delete, “3” = Delete Thru
+									case "0":
+										logrus.Info("ADDING ", string(resp))
+									case "1":
+									case "2":
+										logrus.Info("DELETING ", string(resp))
+									case "3":
+										logrus.Info("DELETING  Thru ", string(resp))
+									}
+									logrus.Info("0 ", string(resp))
 								case "1":
-								//	logrus.Info("1 ", data)
+									switch data.MDUpdateAction { // “0” = New, “1” = Update, “2” = Delete, “3” = Delete Thru
+									case "0":
+										logrus.Info("ADDING ", string(resp))
+									case "1":
+									case "2":
+										logrus.Info("DELETING ", string(resp))
+									case "3":
+										logrus.Info("DELETING  Thru ", string(resp))
+									}
 								case "2":
 									var side pbAPI.Side
 									if data.Side == "buy" {
@@ -280,7 +297,10 @@ func (r *Websocket) startReading() {
 									r.MessageType[0] = 0
 									serialized = append(r.MessageType, serialized[:]...)
 									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								case "3":
+									logrus.Info("3 ", string(resp))
 								}
+
 							}
 						} else if len(message.MDFullGrp) > 0 {
 
@@ -298,9 +318,9 @@ func (r *Websocket) startReading() {
 
 							for _, values := range message.MDFullGrp {
 								if values.MDEntryType == "0" {
-									//	refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Id: values.MDEntryID, Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
 								} else if values.MDEntryType == "1" {
-									//	refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Id: values.MDEntryID, Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
 								}
 							}
 							wg.Add(1)
@@ -328,7 +348,7 @@ func (r *Websocket) startReading() {
 							wg.Add(1)
 							go func() {
 								for _, value := range refLiveBook.Asks {
-									r.OrderBookMAP[product+"asks"][value.Price] = value.Volume
+									r.OrderBookMAP[product+"asks"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
 								}
 								wg.Done()
 							}()
@@ -336,7 +356,7 @@ func (r *Websocket) startReading() {
 							wg.Add(1)
 							go func() {
 								for _, value := range refLiveBook.Bids {
-									r.OrderBookMAP[product+"bids"][value.Price] = value.Volume
+									r.OrderBookMAP[product+"bids"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
 								}
 								wg.Done()
 							}()
