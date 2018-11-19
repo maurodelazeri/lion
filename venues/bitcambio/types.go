@@ -29,7 +29,7 @@ type Message struct {
 		MDEntryPositionNo int    `json:"MDEntryPositionNo,omitempty"`
 		MDEntrySize       int64  `json:"MDEntrySize,omitempty"`
 		Side              string `json:"Side,omitempty"`
-		MDEntryID         int    `json:"MDEntryID,omitempty"`
+		MDEntryID         int64  `json:"MDEntryID,omitempty"`
 		MDEntryDate       string `json:"MDEntryDate,omitempty"`
 	} `json:"MDIncGrp,omitempty"`
 	MDFullGrp []struct {
