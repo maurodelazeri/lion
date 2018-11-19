@@ -207,6 +207,9 @@ func (r *Websocket) connect() {
 //https://blinktrade.com/docs/#subscribe-to-orderbook
 // https://github.com/blinktrade/BlinkTradeJS/blob/3bba1a4154a5f1d69638938e2846ba2a6b77c58e/test/websocket.spec.js
 
+//CODE EXA
+// https://github.com/Judahh/cryptobot/blob/09780a8fb33abc8762ac236c37cdc300d7eb9410/api/apiConnection/foxbit/webSocket/foxbit.ts
+
 // startReading is a helper method for getting a reader
 // using NextReader and reading from that reader to a buffer.
 // If the connection is closed an error is returned
