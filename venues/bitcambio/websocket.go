@@ -265,12 +265,14 @@ func (r *Websocket) startReading() {
 									case "1":
 										logrus.Warn("NOT SURE WHAT EXPECT HERE ", string(resp))
 									case "2":
+										logrus.Warn("DELETE 2 ", string(resp))
 										ID := data.MDEntryID
 										if _, ok := r.OrderBookMAP[product+"bids"][ID]; ok {
 											delete(r.OrderBookMAP[product+"bids"], ID)
 											updated = true
 										}
 									case "3":
+										logrus.Warn("DELETE 3 ", string(resp))
 										ID := data.MDEntryID
 										if _, ok := r.OrderBookMAP[product+"asks"][ID]; ok {
 											delete(r.OrderBookMAP[product+"asks"], ID)
@@ -293,12 +295,14 @@ func (r *Websocket) startReading() {
 									case "1":
 										logrus.Warn("NOT SURE WHAT EXPECT HERE ", string(resp))
 									case "2":
+										logrus.Warn("DELETE 2 ", string(resp))
 										ID := data.MDEntryID
 										if _, ok := r.OrderBookMAP[product+"asks"][ID]; ok {
 											delete(r.OrderBookMAP[product+"asks"], ID)
 											updated = true
 										}
 									case "3":
+										logrus.Warn("DELETE 3 ", string(resp))
 										ID := data.MDEntryID
 										if _, ok := r.OrderBookMAP[product+"asks"][ID]; ok {
 											delete(r.OrderBookMAP[product+"asks"], ID)
@@ -410,6 +414,7 @@ func (r *Websocket) startReading() {
 
 							}
 						} else if len(message.MDFullGrp) > 0 {
+							continue
 
 							value, exist := r.pairsMapping.Get(message.Symbol)
 							if !exist {
@@ -425,11 +430,30 @@ func (r *Websocket) startReading() {
 
 							for _, values := range message.MDFullGrp {
 								if values.MDEntryType == "0" {
-									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Id: values.MDEntryID, Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
+									//if val, ok := dict["foo"]; ok {
+
+									r.OrderBookMAP[product+"bids"][values.MDEntryID] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 								} else if values.MDEntryType == "1" {
-									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Id: values.MDEntryID, Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
+									r.OrderBookMAP[product+"asks"][values.MDEntryID] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 								}
 							}
+
+							go func() {
+								for _, value := range refLiveBook.Asks {
+									r.OrderBookMAP[product+"asks"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
+								}
+								wg.Done()
+							}()
+
+							wg.Add(1)
+							go func() {
+								//	for _, value := range r.OrderBookMAP[product+"bids"] {
+								//r.OrderBookMAP[product+"bids"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
+								//refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
+								//	}
+								wg.Done()
+							}()
+
 							wg.Add(1)
 							go func() {
 								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
@@ -445,29 +469,9 @@ func (r *Websocket) startReading() {
 								})
 								wg.Done()
 							}()
+
 							wg.Wait()
 
-							if len(refLiveBook.Asks) > 20 && len(refLiveBook.Bids) > 20 {
-								refLiveBook.Asks = refLiveBook.Asks[0:20]
-								refLiveBook.Bids = refLiveBook.Bids[0:20]
-							}
-
-							wg.Add(1)
-							go func() {
-								for _, value := range refLiveBook.Asks {
-									r.OrderBookMAP[product+"asks"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
-								}
-								wg.Done()
-							}()
-
-							wg.Add(1)
-							go func() {
-								for _, value := range refLiveBook.Bids {
-									r.OrderBookMAP[product+"bids"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
-								}
-								wg.Done()
-							}()
-							wg.Wait()
 						}
 					}
 				}

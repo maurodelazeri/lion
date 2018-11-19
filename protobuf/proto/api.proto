@@ -290,14 +290,13 @@ message SubscriptionItems {
 }
 
 message Orderbook {
-  int64             id          = 1;
-  Product           product     = 2;
-  Venue             venue       = 3;
-  int64             timestamp   = 4;
-  int32             levels      = 5;
-  repeated Item     asks        = 6;
-  repeated Item     bids        = 7;
-  VenueType         venue_type  = 8;
+  Product           product     = 1;
+  Venue             venue       = 2;
+  int64             timestamp   = 3;
+  int32             levels      = 4;
+  repeated Item     asks        = 5;
+  repeated Item     bids        = 6;
+  VenueType         venue_type  = 7;
 };
 
 message Trade {
