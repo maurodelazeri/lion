@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"sort"
 	"strconv"
-	"strings"
 	"sync"
 	"time"
 
@@ -43,7 +42,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			}
 			subscribe = append(subscribe, trade)
 
-			// payload, _ = ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
 			// count++
 			// book := MessageChannel{
 			// 	M: 0,
@@ -241,7 +240,9 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						message := Message{}
+						logrus.Info(string(resp))
+
+						message := MessageChannel{}
 						err = ffjson.Unmarshal(resp, &message)
 						if err != nil {
 							logrus.Error("Problem Unmarshal ", err)
@@ -258,14 +259,20 @@ func (r *Websocket) startReading() {
 						var product string
 
 						if len(stream.Streaming) > 0 {
-							value, exist := r.pairsMapping.Get(strconv.Itoa(int(stream.Streaming[0][7].(float64))))
+							index := 7
+							if message.N == "TradeDataUpdateEvent" {
+								index = 1
+							}
+							value, exist := r.pairsMapping.Get(strconv.Itoa(int(stream.Streaming[0][index].(float64))))
 							if !exist {
+								logrus.Warn("shit could not find the product")
 								continue
 							}
 							product = value.(string)
 						}
 						refBook, ok := r.base.LiveOrderBook.Get(product)
 						if !ok {
+							logrus.Warn("GOT HERE SHIT ", string(resp))
 							continue
 						}
 						refLiveBook := refBook.(*pbAPI.Orderbook)
@@ -287,9 +294,9 @@ func (r *Websocket) startReading() {
 						// 2 - quando o size vem 0 eu poss remover o nivel de preco?"
 						// -> Pode sim, significa que a ordem não possue mais amount
 
-						if strings.Contains(message.N, "Level2UpdateEvent") {
+						switch message.N {
+						case "Level2UpdateEvent":
 							for _, values := range stream.Streaming {
-								logrus.Info("ActionType ", values[3].(float64), " Price ", values[6].(float64), " Size ", values[8].(float64))
 								if values[8].(float64) == 0 {
 									price := values[6].(float64)
 									switch values[9].(float64) {
@@ -328,6 +335,11 @@ func (r *Websocket) startReading() {
 										}
 										updated = true
 										r.OrderBookMAP[product+"asks"][price] = amount
+
+									case 2:
+										logrus.Warn("orderbook case 2 ", string(resp))
+									default:
+										logrus.Warn("orderbook default case ", string(resp))
 									}
 								}
 							}
@@ -404,17 +416,17 @@ func (r *Websocket) startReading() {
 								serialized = append(r.MessageType, serialized[:]...)
 								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 							}
-
-						} else if strings.Contains(message.N, "TradeDataUpdateEvent") {
+						case "TradeDataUpdateEvent":
 							for _, values := range stream.Streaming {
 								var side pbAPI.Side
-								if values[9].(float64) == 0 {
+								if values[8].(float64) == 0 {
 									side = pbAPI.Side_BUY
 								} else {
 									side = pbAPI.Side_SELL
 								}
 								refBook, ok := r.base.LiveOrderBook.Get(product)
 								if !ok {
+									logrus.Warn("PROD NOT FOUND  ", string(resp))
 									continue
 								}
 								refLiveBook := refBook.(*pbAPI.Orderbook)
@@ -422,9 +434,9 @@ func (r *Websocket) startReading() {
 									Product:   pbAPI.Product((pbAPI.Product_value[product])),
 									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 									Timestamp: common.MakeTimestamp(),
-									Price:     values[6].(float64),
+									Price:     values[3].(float64),
 									OrderSide: side,
-									Volume:    values[8].(float64),
+									Volume:    values[2].(float64),
 									VenueType: pbAPI.VenueType_SPOT,
 									Asks:      refLiveBook.Asks,
 									Bids:      refLiveBook.Bids,
@@ -438,7 +450,7 @@ func (r *Websocket) startReading() {
 								serialized = append(r.MessageType, serialized[:]...)
 								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 							}
-						} else if strings.Contains(message.N, "SubscribeLevel2") {
+						case "SubscribeLevel2":
 							for _, values := range stream.Streaming {
 								if values[9].(float64) == 0 {
 									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values[6].(float64), Volume: values[8].(float64)})
@@ -481,7 +493,6 @@ func (r *Websocket) startReading() {
 								wg.Wait()
 							}
 						}
-
 					}
 				}
 			}

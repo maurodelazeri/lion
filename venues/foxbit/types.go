@@ -17,14 +17,6 @@ type Payload struct {
 	InstrumentID     int    `json:"InstrumentId,omitempty"`
 }
 
-// Message ...
-type Message struct {
-	M int    `json:"m"`
-	I int    `json:"i"`
-	N string `json:"n"`
-	O string `json:"o"`
-}
-
 // Stream ...
 type Stream struct {
 	Streaming [][]interface{} `json:"streaming"`
