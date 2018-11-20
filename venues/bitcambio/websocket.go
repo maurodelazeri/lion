@@ -157,7 +157,7 @@ func (r *Websocket) connect() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	r.OrderBookMAP = make(map[string]map[int64]BookItem)
-	r.OrderBookOrdersIDS = make(map[string]map[int64]float64)
+	r.OrderBookOrdersIDS = make(map[string]map[int64]BookItem)
 
 	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
@@ -435,14 +435,18 @@ func (r *Websocket) startReading() {
 							for _, values := range message.MDFullGrp {
 								if val, ok := r.OrderBookMAP[product+"bids"][values.MDEntryPx]; ok {
 									if values.MDEntryType == "0" {
+										r.OrderBookOrdersIDS[product+"bids"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
 										r.OrderBookMAP[product+"bids"][values.MDEntryPx] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
 									} else if values.MDEntryType == "0" {
+										r.OrderBookOrdersIDS[product+"asks"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
 										r.OrderBookMAP[product+"asks"][values.MDEntryPx] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
 									}
 								} else {
 									if values.MDEntryType == "0" {
+										r.OrderBookOrdersIDS[product+"bids"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
 										r.OrderBookMAP[product+"bids"][values.MDEntryPx] = BookItem{Price: 11, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 									} else if values.MDEntryType == "0" {
+										r.OrderBookOrdersIDS[product+"asks"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
 										r.OrderBookMAP[product+"asks"][values.MDEntryPx] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 									}
 								}
