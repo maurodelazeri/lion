@@ -8,7 +8,6 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"sort"
 	"sync"
 	"time"
 
@@ -16,7 +15,6 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
-	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/streaming/kafka/producer"
@@ -240,6 +238,7 @@ func (r *Websocket) startReading() {
 						}
 						var wg sync.WaitGroup
 						updated := false
+
 						if len(message.MDIncGrp) > 0 {
 							value, exist := r.pairsMapping.Get(message.MDIncGrp[0].Symbol)
 							if !exist {
@@ -251,149 +250,41 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
+							if refLiveBook == nil {
 
-							for _, data := range message.MDIncGrp {
-								//logrus.Warn(string(resp))
-
-								switch data.MDEntryType { // “0” = Bid, “1” = Offer, “2” = Trade
-								case "0":
-									switch data.MDUpdateAction { // “0” = New, “1” = Update, “2” = Delete, “3” = Delete Thru
+							}
+							logrus.Warn(string(resp))
+							switch message.MsgType {
+							case "f":
+							case "W":
+								for _, data := range message.MDIncGrp {
+									switch data.MDEntryType {
 									case "0":
-										price := number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64()
-										amount := number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()
-										totalLevels := len(refLiveBook.GetBids())
-										if totalLevels == r.base.MaxLevelsOrderBook {
-											if price < refLiveBook.Bids[totalLevels-1].Price {
-												continue
-											}
-										}
-										updated = true
-										r.OrderBookMAP[product+"bids"][data.MDEntryID] = BookItem{Price: price, Volume: amount}
 									case "1":
-										logrus.Warn("NOT SURE WHAT EXPECT HERE ", string(resp))
 									case "2":
-										ID := data.MDEntryID
-										if _, ok := r.OrderBookMAP[product+"bids"][ID]; ok {
-											delete(r.OrderBookMAP[product+"bids"], ID)
-											updated = true
-										}
-									case "3":
-										logrus.Warn("DELETE 3 ", string(resp))
-										ID := data.MDEntryID
-										if _, ok := r.OrderBookMAP[product+"asks"][ID]; ok {
-											delete(r.OrderBookMAP[product+"asks"], ID)
-											updated = true
-										}
+										logrus.Warn("trade on book ", data)
 									}
-								case "1":
-									switch data.MDUpdateAction { // “0” = New, “1” = Update, “2” = Delete, “3” = Delete Thru
-									case "0":
-										price := number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64()
-										amount := number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()
-										totalLevels := len(refLiveBook.GetAsks())
-										if totalLevels == r.base.MaxLevelsOrderBook {
-											if price > refLiveBook.Asks[totalLevels-1].Price {
-												continue
-											}
-										}
+								}
+							case "X":
+								for _, data := range message.MDIncGrp {
+									switch data.MDEntryType {
+									case "0": // Bid
+									case "1": // Ask
 										updated = true
-										r.OrderBookMAP[product+"asks"][data.MDEntryID] = BookItem{Price: price, Volume: amount}
-									case "1":
-										logrus.Warn("NOT SURE WHAT EXPECT HERE ", string(resp))
-									case "2":
-										ID := data.MDEntryID
-										if _, ok := r.OrderBookMAP[product+"asks"][ID]; ok {
-											delete(r.OrderBookMAP[product+"asks"], ID)
-											updated = true
+										switch data.MDUpdateAction {
+										case "0": //onMDNewOrder_
+										case "1": //onMDUpdateOrder_
+										case "2": //onMDDeleteOrder_
+										case "3": //onMDDeleteOrderThru_
 										}
-									case "3":
-										logrus.Warn("DELETE 3 ", string(resp))
-										ID := data.MDEntryID
-										if _, ok := r.OrderBookMAP[product+"asks"][ID]; ok {
-											delete(r.OrderBookMAP[product+"asks"], ID)
-											updated = true
-										}
+									case "2": // Trade
 									}
-								case "2":
-									var side pbAPI.Side
-									if data.Side == "buy" {
-										side = pbAPI.Side_BUY
-									} else {
-										side = pbAPI.Side_SELL
-									}
-									refBook, ok := r.base.LiveOrderBook.Get(product)
-									if !ok {
-										continue
-									}
-									refLiveBook := refBook.(*pbAPI.Orderbook)
-
-									trades := &pbAPI.Trade{
-										Product:   pbAPI.Product((pbAPI.Product_value[product])),
-										Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-										Timestamp: common.MakeTimestamp(),
-										Price:     number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
-										OrderSide: side,
-										Volume:    number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
-										VenueType: pbAPI.VenueType_SPOT,
-										Asks:      refLiveBook.Asks,
-										Bids:      refLiveBook.Bids,
-									}
-									serialized, err := proto.Marshal(trades)
-									if err != nil {
-										log.Fatal("proto.Marshal error: ", err)
-									}
-									r.MessageType[0] = 0
-									serialized = append(r.MessageType, serialized[:]...)
-									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 								}
 
 								// we dont need to update the book if any level we care was changed
 								if !updated {
 									continue
 								}
-
-								wg.Add(1)
-								go func() {
-									refLiveBook.Bids = []*pbAPI.Item{}
-									for _, values := range r.OrderBookMAP[product+"bids"] {
-										refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
-									}
-									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-									})
-									wg.Done()
-								}()
-
-								wg.Add(1)
-								go func() {
-									refLiveBook.Asks = []*pbAPI.Item{}
-									for _, values := range r.OrderBookMAP[product+"asks"] {
-										refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
-									}
-									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-									})
-									wg.Done()
-								}()
-
-								wg.Wait()
-
-								wg.Add(1)
-								go func() {
-									totalBids := len(refLiveBook.Bids)
-									if totalBids > r.base.MaxLevelsOrderBook {
-										refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-									}
-									wg.Done()
-								}()
-								wg.Add(1)
-								go func() {
-									totalAsks := len(refLiveBook.Asks)
-									if totalAsks > r.base.MaxLevelsOrderBook {
-										refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
-									}
-									wg.Done()
-								}()
 
 								wg.Wait()
 								book := &pbAPI.Orderbook{
@@ -407,9 +298,6 @@ func (r *Websocket) startReading() {
 								}
 								refLiveBook = book
 
-								logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
-
 								if r.base.Streaming {
 									serialized, err := proto.Marshal(book)
 									if err != nil {
@@ -420,7 +308,10 @@ func (r *Websocket) startReading() {
 									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 								}
 
+							default:
+								logrus.Warn("DEFAULT CASE  ", string(resp))
 							}
+
 						} else if len(message.MDFullGrp) > 0 {
 
 							value, exist := r.pairsMapping.Get(message.Symbol)
@@ -434,36 +325,11 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
+							if refLiveBook == nil {
 
-							for _, values := range message.MDFullGrp {
-								if values.MDEntryType == "0" {
-									r.OrderBookMAP[product+"bids"][values.MDEntryPx] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
-									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
-								} else if values.MDEntryType == "1" {
-									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
-									r.OrderBookMAP[product+"asks"][values.MDEntryPx] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
-								}
 							}
-
-							wg.Add(1)
-							go func() {
-								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-									return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-								})
-								wg.Done()
-							}()
-
-							wg.Add(1)
-							go func() {
-								sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-									return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-								})
-								wg.Done()
-							}()
-
-							wg.Wait()
-
 						}
+
 					}
 				}
 			}
