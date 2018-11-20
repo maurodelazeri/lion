@@ -60,4 +60,11 @@ type Message struct {
 type BookItem struct {
 	Price  float64
 	Volume float64
+	Side   string
+}
+
+type BookItem2 struct {
+	Price  int64
+	Volume int64
+	Side   string
 }

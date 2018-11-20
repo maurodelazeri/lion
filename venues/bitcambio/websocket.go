@@ -157,7 +157,6 @@ func (r *Websocket) connect() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	r.OrderBookMAP = make(map[string]map[int64]BookItem)
-	r.OrderBookOrdersIDS = make(map[string]map[int64]BookItem)
 
 	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
@@ -167,6 +166,7 @@ func (r *Websocket) connect() {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
 		r.OrderBookMAP[sym+"bids"] = make(map[int64]BookItem)
 		r.OrderBookMAP[sym+"asks"] = make(map[int64]BookItem)
+
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
@@ -253,6 +253,8 @@ func (r *Websocket) startReading() {
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 
 							for _, data := range message.MDIncGrp {
+								//logrus.Warn(string(resp))
+
 								switch data.MDEntryType { // “0” = Bid, “1” = Offer, “2” = Trade
 								case "0":
 									switch data.MDUpdateAction { // “0” = New, “1” = Update, “2” = Delete, “3” = Delete Thru
@@ -270,7 +272,6 @@ func (r *Websocket) startReading() {
 									case "1":
 										logrus.Warn("NOT SURE WHAT EXPECT HERE ", string(resp))
 									case "2":
-										logrus.Warn("DELETE 2 ", string(resp))
 										ID := data.MDEntryID
 										if _, ok := r.OrderBookMAP[product+"bids"][ID]; ok {
 											delete(r.OrderBookMAP[product+"bids"], ID)
@@ -300,7 +301,6 @@ func (r *Websocket) startReading() {
 									case "1":
 										logrus.Warn("NOT SURE WHAT EXPECT HERE ", string(resp))
 									case "2":
-										logrus.Warn("DELETE 2 ", string(resp))
 										ID := data.MDEntryID
 										if _, ok := r.OrderBookMAP[product+"asks"][ID]; ok {
 											delete(r.OrderBookMAP[product+"asks"], ID)
@@ -407,6 +407,9 @@ func (r *Websocket) startReading() {
 								}
 								refLiveBook = book
 
+								logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
+
 								if r.base.Streaming {
 									serialized, err := proto.Marshal(book)
 									if err != nil {
@@ -433,40 +436,14 @@ func (r *Websocket) startReading() {
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 
 							for _, values := range message.MDFullGrp {
-								if val, ok := r.OrderBookMAP[product+"bids"][values.MDEntryPx]; ok {
-									if values.MDEntryType == "0" {
-										r.OrderBookOrdersIDS[product+"bids"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
-										r.OrderBookMAP[product+"bids"][values.MDEntryPx] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
-									} else if values.MDEntryType == "0" {
-										r.OrderBookOrdersIDS[product+"asks"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
-										r.OrderBookMAP[product+"asks"][values.MDEntryPx] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
-									}
-								} else {
-									if values.MDEntryType == "0" {
-										r.OrderBookOrdersIDS[product+"bids"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
-										r.OrderBookMAP[product+"bids"][values.MDEntryPx] = BookItem{Price: 11, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
-									} else if values.MDEntryType == "0" {
-										r.OrderBookOrdersIDS[product+"asks"][values.OrderID] = BookItem{Price: val.Price, Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64() + val.Volume}
-										r.OrderBookMAP[product+"asks"][values.MDEntryPx] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
-									}
+								if values.MDEntryType == "0" {
+									r.OrderBookMAP[product+"bids"][values.MDEntryPx] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
+								} else if values.MDEntryType == "1" {
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
+									r.OrderBookMAP[product+"asks"][values.MDEntryPx] = BookItem{Price: number.NewDecimal(values.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(values.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 								}
 							}
-
-							go func() {
-								for _, value := range refLiveBook.Asks {
-									r.OrderBookMAP[product+"asks"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
-								}
-								wg.Done()
-							}()
-
-							wg.Add(1)
-							go func() {
-								//	for _, value := range r.OrderBookMAP[product+"bids"] {
-								//r.OrderBookMAP[product+"bids"][value.Id] = BookItem{Price: value.Price, Volume: value.Volume}
-								//refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values.Price, Volume: values.Volume})
-								//	}
-								wg.Done()
-							}()
 
 							wg.Add(1)
 							go func() {
