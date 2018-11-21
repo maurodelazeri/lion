@@ -303,8 +303,7 @@ func (r *Websocket) startReading() {
 
 								case "2": // Trade
 									var side pbAPI.Side
-									logrus.Warn("RAW ", string(resp))
-									if data.MDEntryType == "1" {
+									if data.Side == "1" {
 										side = pbAPI.Side_BUY
 									} else {
 										side = pbAPI.Side_SELL
