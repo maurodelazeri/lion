@@ -15,6 +15,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
+	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/streaming/kafka/producer"
@@ -230,6 +231,7 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
+
 						message := Message{}
 						err = ffjson.Unmarshal(resp, &message)
 						if err != nil {
@@ -238,8 +240,35 @@ func (r *Websocket) startReading() {
 						}
 						var wg sync.WaitGroup
 						updated := false
-
-						if len(message.MDIncGrp) > 0 {
+						switch message.MsgType {
+						case "f":
+						case "W":
+							for _, data := range message.MDFullGrp {
+								value, exist := r.pairsMapping.Get(message.Symbol)
+								if !exist {
+									continue
+								}
+								product := value.(string)
+								refBook, ok := r.base.LiveOrderBook.Get(product)
+								if !ok {
+									continue
+								}
+								refLiveBook := refBook.(*pbAPI.Orderbook)
+								switch data.MDEntryType {
+								case "0":
+								case "1":
+									logrus.Info("INSERT ON ", data.MDEntryPositionNo)
+									if data.MDEntryType == "0" {
+										refLiveBook.Bids[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+									} else if data.MDEntryType == "1" {
+										refLiveBook.Asks[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+									}
+									logrus.Info("asks ", refLiveBook.Asks)
+								case "2":
+									//logrus.Warn("trade on book ", data)
+								}
+							}
+						case "X":
 							value, exist := r.pairsMapping.Get(message.MDIncGrp[0].Symbol)
 							if !exist {
 								continue
@@ -250,86 +279,78 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
-							if refLiveBook == nil {
 
-							}
-							logrus.Warn(string(resp))
-							switch message.MsgType {
-							case "f":
-							case "W":
-								for _, data := range message.MDIncGrp {
-									switch data.MDEntryType {
-									case "0":
-									case "1":
-									case "2":
-										logrus.Warn("trade on book ", data)
-									}
-								}
-							case "X":
-								for _, data := range message.MDIncGrp {
-									switch data.MDEntryType {
-									case "0": // Bid
-									case "1": // Ask
-										updated = true
-										switch data.MDUpdateAction {
-										case "0": //onMDNewOrder_
-										case "1": //onMDUpdateOrder_
-										case "2": //onMDDeleteOrder_
-										case "3": //onMDDeleteOrderThru_
+							for _, data := range message.MDIncGrp {
+								switch data.MDEntryType {
+								case "0": // Bid
+								case "1": // Ask
+									updated = true
+									switch data.MDUpdateAction {
+									case "0": //onMDNewOrder_
+										if data.Side == "0" {
+											refLiveBook.Bids[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+										} else if data.Side == "1" {
+											refLiveBook.Asks[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 										}
-									case "2": // Trade
+									case "1": //onMDUpdateOrder_
+										if data.Side == "0" {
+											refLiveBook.Bids[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: refLiveBook.Bids[data.MDEntryPositionNo].Price, Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+										} else if data.Side == "1" {
+											refLiveBook.Asks[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: refLiveBook.Asks[data.MDEntryPositionNo].Price, Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+										}
+									case "2": //onMDDeleteOrder_
+
+										if data.Side == "0" {
+											refLiveBook.Bids[data.MDEntryPositionNo-1] = refLiveBook.Asks[len(refLiveBook.Asks)-1]
+										} else if data.Side == "1" {
+											refLiveBook.Asks[data.MDEntryPositionNo-1] = refLiveBook.Asks[len(refLiveBook.Asks)-1]
+										}
+									case "3": //onMDDeleteOrderThru_
+										if data.Side == "0" {
+											refLiveBook.Bids[data.MDEntryPositionNo] = refLiveBook.Asks[len(refLiveBook.Asks)-1]
+										} else if data.Side == "1" {
+											refLiveBook.Asks[data.MDEntryPositionNo] = refLiveBook.Asks[len(refLiveBook.Asks)-1]
+										}
 									}
+								case "2": // Trade
 								}
-
-								// we dont need to update the book if any level we care was changed
-								if !updated {
-									continue
-								}
-
-								wg.Wait()
-								book := &pbAPI.Orderbook{
-									Product:   pbAPI.Product((pbAPI.Product_value[product])),
-									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-									Levels:    int32(r.base.MaxLevelsOrderBook),
-									Timestamp: common.MakeTimestamp(),
-									Asks:      refLiveBook.Asks,
-									Bids:      refLiveBook.Bids,
-									VenueType: pbAPI.VenueType_SPOT,
-								}
-								refLiveBook = book
-
-								if r.base.Streaming {
-									serialized, err := proto.Marshal(book)
-									if err != nil {
-										log.Fatal("proto.Marshal error: ", err)
-									}
-									r.MessageType[0] = 1
-									serialized = append(r.MessageType, serialized[:]...)
-									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
-								}
-
-							default:
-								logrus.Warn("DEFAULT CASE  ", string(resp))
 							}
 
-						} else if len(message.MDFullGrp) > 0 {
-
-							value, exist := r.pairsMapping.Get(message.Symbol)
-							if !exist {
+							// we dont need to update the book if any level we care was changed
+							if !updated {
 								continue
 							}
-							product := value.(string)
 
-							refBook, ok := r.base.LiveOrderBook.Get(product)
-							if !ok {
-								continue
+							wg.Wait()
+							book := &pbAPI.Orderbook{
+								Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Levels:    int32(r.base.MaxLevelsOrderBook),
+								Timestamp: common.MakeTimestamp(),
+								Asks:      refLiveBook.Asks,
+								Bids:      refLiveBook.Bids,
+								VenueType: pbAPI.VenueType_SPOT,
 							}
-							refLiveBook := refBook.(*pbAPI.Orderbook)
-							if refLiveBook == nil {
+							refLiveBook = book
 
+							if len(book.Bids) > 0 && len(book.Asks) > 0 {
+								logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
 							}
+
+							if r.base.Streaming {
+								serialized, err := proto.Marshal(book)
+								if err != nil {
+									log.Fatal("proto.Marshal error: ", err)
+								}
+								r.MessageType[0] = 1
+								serialized = append(r.MessageType, serialized[:]...)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+							}
+
+						default:
+							logrus.Warn("DEFAULT CASE  ", string(resp))
 						}
-
 					}
 				}
 			}
