@@ -64,6 +64,8 @@ func (r *Websocket) WebsocketClient() {
 	// Start reading from the socket
 	r.startReading()
 
+	r.FetchEnabledOrderBooks()
+
 	go func() {
 		r.connect()
 	}()
@@ -107,6 +109,7 @@ func (r *Websocket) GetDialError() error {
 
 // FetchEnabledOrderBooks gets the initial orderbook
 func (r *Websocket) FetchEnabledOrderBooks() {
+	logrus.Info("Feching orderbooks")
 	go func() {
 		for _, sym := range r.subscribedPairs {
 			venueConf, _ := r.base.VenueConfig.Get(r.base.GetName())
@@ -130,7 +133,6 @@ func (r *Websocket) FetchEnabledOrderBooks() {
 				price, _ := strconv.ParseFloat(book[0].(string), 64)
 				r.OrderBookMAP[sym+"asks"][price] = amount
 			}
-
 			r.LockTillBookFetchToFinish[venueConf.(config.VenueConfig).Products[sym].VenueName+"@depth"] = sym
 		}
 	}()
@@ -175,8 +177,6 @@ func (r *Websocket) connect() {
 				currencies = append(currencies, strings.ToLower(x)+"@depth")
 			}
 		}
-
-		r.FetchEnabledOrderBooks()
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
