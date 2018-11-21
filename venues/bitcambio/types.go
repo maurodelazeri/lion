@@ -26,7 +26,7 @@ type Message struct {
 		UserID            int64  `json:"UserID"`
 		Broker            string `json:"Broker,omitempty"`
 		MDEntryType       string `json:"MDEntryType,omitempty"`
-		MDEntryPositionNo int    `json:"MDEntryPositionNo,omitempty"`
+		MDEntryPositionNo int64  `json:"MDEntryPositionNo,omitempty"`
 		MDEntrySize       int64  `json:"MDEntrySize,omitempty"`
 		Side              string `json:"Side,omitempty"`
 		MDEntryID         int64  `json:"MDEntryID,omitempty"`
