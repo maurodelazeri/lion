@@ -249,7 +249,6 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							product := value.(string)
-
 							for _, data := range message.MDFullGrp {
 								switch data.MDEntryType {
 								case "0":
@@ -257,7 +256,6 @@ func (r *Websocket) startReading() {
 								case "1":
 									r.OrderBookMAP[product+"asks"][data.MDEntryPositionNo-1] = BookItem{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 								case "2":
-
 								}
 							}
 						case "X":
@@ -286,10 +284,8 @@ func (r *Websocket) startReading() {
 									case "2": //onMDDeleteOrder_
 										delete(r.OrderBookMAP[product+"bids"], data.MDEntryPositionNo-1)
 										//logrus.Info("delete bids ", string(resp))
-
 									case "3": //onMDDeleteOrderThru_
 										delete(r.OrderBookMAP[product+"bids"], data.MDEntryPositionNo-1)
-
 									}
 								case "1": // Ask
 									switch data.MDUpdateAction {
@@ -298,98 +294,17 @@ func (r *Websocket) startReading() {
 									case "1": //onMDUpdateOrder_
 										r.OrderBookMAP[product+"asks"][data.MDEntryPositionNo-1] = BookItem{Price: r.OrderBookMAP[product+"asks"][data.MDEntryPositionNo-1].Price, Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 										//logrus.Info("update asks ", string(resp))
-
 									case "2": //onMDDeleteOrder_
 										delete(r.OrderBookMAP[product+"asks"], data.MDEntryPositionNo-1)
 										//logrus.Info("delete asks ", string(resp))
-
 									case "3": //onMDDeleteOrderThru_
 										delete(r.OrderBookMAP[product+"asks"], data.MDEntryPositionNo-1)
 									}
 
-									// we dont need to update the book if any level we care was changed
-									if !updated {
-										continue
-									}
-
-									wg.Add(1)
-									go func() {
-										refLiveBook.Bids = []*pbAPI.Item{}
-										for _, value := range r.OrderBookMAP[product+"bids"] {
-											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: value.Price, Volume: value.Volume})
-										}
-										sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-											return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-										})
-										wg.Done()
-									}()
-
-									wg.Add(1)
-									go func() {
-										refLiveBook.Asks = []*pbAPI.Item{}
-										for _, value := range r.OrderBookMAP[product+"asks"] {
-											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: value.Price, Volume: value.Volume})
-										}
-										sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-											return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-										})
-										wg.Done()
-									}()
-
-									wg.Wait()
-
-									wg.Add(1)
-									go func() {
-										totalBids := len(refLiveBook.Bids)
-										if totalBids > r.base.MaxLevelsOrderBook {
-											refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-										}
-										wg.Done()
-									}()
-									wg.Add(1)
-									go func() {
-										totalAsks := len(refLiveBook.Asks)
-										if totalAsks > r.base.MaxLevelsOrderBook {
-											refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
-										}
-										wg.Done()
-									}()
-
-									wg.Wait()
-									book := &pbAPI.Orderbook{
-										Product:   pbAPI.Product((pbAPI.Product_value[product])),
-										Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-										Levels:    int32(r.base.MaxLevelsOrderBook),
-										Timestamp: common.MakeTimestamp(),
-										Asks:      refLiveBook.Asks,
-										Bids:      refLiveBook.Bids,
-										VenueType: pbAPI.VenueType_SPOT,
-									}
-									refLiveBook = book
-
-									if len(book.Bids) > 0 && len(book.Asks) > 0 {
-										//	logrus.Warn("SPREAD: ", book.Asks[0].Price-book.Bids[0].Price)
-
-										// logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-										// logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
-
-										//logrus.Warn("BIDS: ", book.Bids[0].Volume, book.Bids[0].Price, book.Bids[0].Volume, book.Bids[0].Volume, book.Bids[0].Volume, book.Bids[0].Volume)
-										//logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
-									}
-
-									if r.base.Streaming {
-										serialized, err := proto.Marshal(book)
-										if err != nil {
-											log.Fatal("proto.Marshal error: ", err)
-										}
-										r.MessageType[0] = 1
-										serialized = append(r.MessageType, serialized[:]...)
-										kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
-									}
-
 								case "2": // Trade
 									var side pbAPI.Side
-									if data.MDEntryType == "0" {
+									logrus.Warn("RAW ", string(resp))
+									if data.MDEntryType == "1" {
 										side = pbAPI.Side_BUY
 									} else {
 										side = pbAPI.Side_SELL
@@ -421,6 +336,87 @@ func (r *Websocket) startReading() {
 									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 								}
 							}
+
+							// we dont need to update the book if any level we care was changed
+							if !updated {
+								continue
+							}
+
+							wg.Add(1)
+							go func() {
+								refLiveBook.Bids = []*pbAPI.Item{}
+								for _, value := range r.OrderBookMAP[product+"bids"] {
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: value.Price, Volume: value.Volume})
+								}
+								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+									return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+								})
+								wg.Done()
+							}()
+
+							wg.Add(1)
+							go func() {
+								refLiveBook.Asks = []*pbAPI.Item{}
+								for _, value := range r.OrderBookMAP[product+"asks"] {
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: value.Price, Volume: value.Volume})
+								}
+								sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+									return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+								})
+								wg.Done()
+							}()
+
+							wg.Wait()
+
+							wg.Add(1)
+							go func() {
+								totalBids := len(refLiveBook.Bids)
+								if totalBids > r.base.MaxLevelsOrderBook {
+									refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
+							wg.Add(1)
+							go func() {
+								totalAsks := len(refLiveBook.Asks)
+								if totalAsks > r.base.MaxLevelsOrderBook {
+									refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
+
+							wg.Wait()
+							book := &pbAPI.Orderbook{
+								Product:   pbAPI.Product((pbAPI.Product_value[product])),
+								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Levels:    int32(r.base.MaxLevelsOrderBook),
+								Timestamp: common.MakeTimestamp(),
+								Asks:      refLiveBook.Asks,
+								Bids:      refLiveBook.Bids,
+								VenueType: pbAPI.VenueType_SPOT,
+							}
+							refLiveBook = book
+
+							if len(book.Bids) > 0 && len(book.Asks) > 0 {
+								// logrus.Warn("SPREAD: ", book.Asks[0].Price-book.Bids[0].Price)
+
+								// logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+								// logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
+
+								//logrus.Warn("BIDS: ", book.Bids[0].Volume, book.Bids[0].Price, book.Bids[0].Volume, book.Bids[0].Volume, book.Bids[0].Volume, book.Bids[0].Volume)
+								//logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
+							}
+
+							if r.base.Streaming {
+								serialized, err := proto.Marshal(book)
+								if err != nil {
+									log.Fatal("proto.Marshal error: ", err)
+								}
+								r.MessageType[0] = 1
+								serialized = append(r.MessageType, serialized[:]...)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+							}
+
 						default:
 							logrus.Warn("DEFAULT CASE  ", string(resp))
 						}
