@@ -243,25 +243,28 @@ func (r *Websocket) startReading() {
 						switch message.MsgType {
 						case "f":
 						case "W":
+							value, exist := r.pairsMapping.Get(message.Symbol)
+							if !exist {
+								continue
+							}
+							product := value.(string)
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+							refLiveBook.Bids = []*pbAPI.Item{}
+							refLiveBook.Asks = []*pbAPI.Item{}
+
 							for _, data := range message.MDFullGrp {
-								value, exist := r.pairsMapping.Get(message.Symbol)
-								if !exist {
-									continue
-								}
-								product := value.(string)
-								refBook, ok := r.base.LiveOrderBook.Get(product)
-								if !ok {
-									continue
-								}
-								refLiveBook := refBook.(*pbAPI.Orderbook)
 								switch data.MDEntryType {
 								case "0":
 								case "1":
 									logrus.Info("INSERT ON ", data.MDEntryPositionNo)
 									if data.MDEntryType == "0" {
-										refLiveBook.Bids[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+										refLiveBook.Bids[0] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 									} else if data.MDEntryType == "1" {
-										refLiveBook.Asks[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+										refLiveBook.Asks[0] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
 									}
 									logrus.Info("asks ", refLiveBook.Asks)
 								case "2":
