@@ -38,11 +38,11 @@ func (r *Websocket) Subscribe(products []string) error {
 				Channel: product,
 			}
 			subscribe = append(subscribe, book)
-			// trade := MessageChannel{
-			// 	Command: "subscribe",
-			// 	Channel: product,
-			// }
-			// subscribe = append(subscribe, trade)
+			trade := MessageChannel{
+				Command: "subscribe",
+				Channel: product,
+			}
+			subscribe = append(subscribe, trade)
 		}
 	} else {
 		for _, product := range products {
