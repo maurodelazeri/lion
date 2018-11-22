@@ -185,7 +185,7 @@ func (r *Websocket) startReading() {
 					err := errors.New("websocket: not connected")
 					msgType, resp, err := r.Conn.ReadMessage()
 					if err != nil {
-						logrus.Error(r.base.Name, " problem to read: ", err)
+						logrus.Error(r.base.Name, " problem to read: ", err, " - ", time.Now())
 						r.closeAndRecconect()
 						continue
 					}
