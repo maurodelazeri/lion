@@ -263,6 +263,12 @@ func (r *Websocket) startReading() {
 										price = values[0].(float64)
 										volume = values[1].(float64)
 									}
+									switch reflect.TypeOf(values[1]).String() {
+									case "string":
+										volume = number.FromString(values[1].(string)).Float64()
+									case "float64":
+										volume = values[1].(float64)
+									}
 									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: volume})
 								}
 
@@ -275,6 +281,12 @@ func (r *Websocket) startReading() {
 										volume = number.FromString(values[1].(string)).Float64()
 									case "float64":
 										price = values[0].(float64)
+										volume = values[1].(float64)
+									}
+									switch reflect.TypeOf(values[1]).String() {
+									case "string":
+										volume = number.FromString(values[1].(string)).Float64()
+									case "float64":
 										volume = values[1].(float64)
 									}
 									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: volume})
