@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"reflect"
 	"sort"
 	"strings"
 	"sync"
@@ -256,7 +257,17 @@ func (r *Websocket) startReading() {
 								}
 
 								for _, values := range data.Params.Data.Asks {
-									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
+									price := 0.0
+									volume := 0.0
+									switch reflect.TypeOf(values[0]).String() {
+									case "string":
+										price = number.FromString(values[0].(string)).Float64()
+										volume = number.FromString(values[1].(string)).Float64()
+									case "float64":
+										price = values[0].(float64)
+										volume = values[1].(float64)
+									}
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: volume})
 								}
 								wg.Add(1)
 								go func() {
