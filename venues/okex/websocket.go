@@ -380,7 +380,6 @@ func (r *Websocket) startReading() {
 									VenueType: r.venueType,
 								}
 								refLiveBook = book
-
 								if r.base.Streaming {
 									serialized, err := proto.Marshal(book)
 									if err != nil {
