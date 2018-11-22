@@ -179,6 +179,7 @@ func (r *Websocket) connect() {
 		}
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
+		logrus.Warn("YAHHH HERE IM")
 
 		r.mu.Lock()
 		r.Conn = wsConn

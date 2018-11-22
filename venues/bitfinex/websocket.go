@@ -197,6 +197,7 @@ func (r *Websocket) connect() {
 	}
 
 	for {
+
 		nextItvl := bb.Duration()
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL, r.reqHeader)
@@ -222,7 +223,6 @@ func (r *Websocket) connect() {
 				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 			}
 		}
-
 		time.Sleep(nextItvl)
 	}
 }
