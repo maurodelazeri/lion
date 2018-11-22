@@ -368,11 +368,11 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook = book
 
-							if len(book.Bids) > 0 && len(book.Asks) > 0 {
-								logrus.Warn("SPREAD: ", book.Asks[0].Price-book.Bids[0].Price)
-								logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-								logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
-							}
+							// if len(book.Bids) > 0 && len(book.Asks) > 0 {
+							// 	logrus.Warn("SPREAD: ", book.Asks[0].Price-book.Bids[0].Price)
+							// 	logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
+							// 	logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
+							// }
 
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)
