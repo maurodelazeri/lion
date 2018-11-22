@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"reflect"
 	"sort"
-	"strconv"
 	"sync"
 	"time"
 
@@ -238,7 +237,7 @@ func (r *Websocket) startReading() {
 							updated := false
 
 							chanData := result.([]interface{})
-							value, exist := r.pairsMapping.Get(strconv.Itoa(int(chanData[0].(float64))))
+							value, exist := r.pairsMapping.Get(chanData[0].(string))
 							if !exist {
 								continue
 							}
