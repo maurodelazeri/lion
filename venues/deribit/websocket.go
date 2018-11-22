@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
+	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/streaming/kafka/producer"
@@ -251,11 +252,11 @@ func (r *Websocket) startReading() {
 
 							if !r.snapshot {
 								for _, values := range data.Params.Data.Bids {
-									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
 								}
 
 								for _, values := range data.Params.Data.Asks {
-									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: values[0].(float64), Volume: values[1].(float64)})
+									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
 								}
 								wg.Add(1)
 								go func() {
