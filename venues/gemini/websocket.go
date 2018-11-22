@@ -26,6 +26,27 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Heartbeat ...
+func (r *Websocket) Heartbeat() {
+	go func() {
+		for {
+			if r.IsConnected() {
+				json, err := common.JSONEncode(PingPong{Ping: time.Now().Unix()})
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+				err = r.Conn.WriteMessage(websocket.TextMessage, json)
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+			}
+			time.Sleep(time.Second * 10)
+		}
+	}()
+}
+
 // Close closes the underlying network connection without
 // sending or waiting for a close frame.
 func (r *Websocket) Close() {
@@ -140,12 +161,11 @@ func (r *Websocket) connect() {
 		currencies := []string{}
 		for _, x := range venueArrayPairs {
 			if r.base.Streaming {
-				currencies = append(currencies, strings.ToLower(x))
+				currencies = append(currencies, x)
 			} else {
 				currencies = append(currencies, strings.ToLower(x))
 			}
 		}
-
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
 		r.mu.Lock()
@@ -313,6 +333,8 @@ func (r *Websocket) startReading() {
 										}
 									}
 								case "trade":
+									logrus.Info(string(resp))
+
 									var side pbAPI.Side
 									if values.Side == "bid" {
 										side = pbAPI.Side_BUY
@@ -335,6 +357,8 @@ func (r *Websocket) startReading() {
 										Asks:      refLiveBook.Asks,
 										Bids:      refLiveBook.Bids,
 									}
+
+									//logrus.Warn("NEW TRADe ", trades)
 
 									serialized, err := proto.Marshal(trades)
 									if err != nil {
