@@ -378,13 +378,14 @@ func (r *Websocket) startReading() {
 											Product:   pbAPI.Product((pbAPI.Product_value[product])),
 											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 											Timestamp: common.MakeTimestamp(),
-											Price:     finalData[2].(float64),
+											Price:     number.FromString(finalData[3].(string)).Float64(),
 											OrderSide: side,
-											Volume:    number.FromString(finalData[3].(string)).Float64(),
+											Volume:    number.FromString(finalData[4].(string)).Float64(),
 											VenueType: pbAPI.VenueType_SPOT,
 											Asks:      refLiveBook.Asks,
 											Bids:      refLiveBook.Bids,
 										}
+
 										serialized, err := proto.Marshal(trades)
 										if err != nil {
 											log.Fatal("proto.Marshal error: ", err)
