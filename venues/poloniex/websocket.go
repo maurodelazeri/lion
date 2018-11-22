@@ -353,8 +353,6 @@ func (r *Websocket) startReading() {
 											}
 										}
 									case "t":
-										logrus.Warn("NEW TRADE ", finalData)
-
 										var side pbAPI.Side
 										if finalData[1] == "1" {
 											side = pbAPI.Side_BUY
