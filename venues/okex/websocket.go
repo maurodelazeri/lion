@@ -95,7 +95,6 @@ func (r *Websocket) Heartbeat() {
 					logrus.Error("Subscription ", err)
 					continue
 				}
-				logrus.Info("HERE ", string(json))
 				err = r.Conn.WriteMessage(websocket.TextMessage, json)
 				if err != nil {
 					logrus.Error("Subscription ", err)
