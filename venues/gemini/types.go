@@ -19,8 +19,3 @@ type Message struct {
 		Reason    string `json:"reason,omitempty"`
 	} `json:"events,omitempty"`
 }
-
-// PingPong ...
-type PingPong struct {
-	Ping int64 `json:"ping"`
-}

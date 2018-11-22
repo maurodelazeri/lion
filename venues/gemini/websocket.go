@@ -26,27 +26,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Heartbeat ...
-func (r *Websocket) Heartbeat() {
-	go func() {
-		for {
-			if r.IsConnected() {
-				json, err := common.JSONEncode(PingPong{Ping: time.Now().Unix()})
-				if err != nil {
-					logrus.Error("Subscription ", err)
-					continue
-				}
-				err = r.Conn.WriteMessage(websocket.TextMessage, json)
-				if err != nil {
-					logrus.Error("Subscription ", err)
-					continue
-				}
-			}
-			time.Sleep(time.Second * 10)
-		}
-	}()
-}
-
 // Close closes the underlying network connection without
 // sending or waiting for a close frame.
 func (r *Websocket) Close() {
@@ -358,7 +337,7 @@ func (r *Websocket) startReading() {
 										Bids:      refLiveBook.Bids,
 									}
 
-									//logrus.Warn("NEW TRADe ", trades)
+									logrus.Warn("NEW TRADe ", trades)
 
 									serialized, err := proto.Marshal(trades)
 									if err != nil {

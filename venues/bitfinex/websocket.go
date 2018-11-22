@@ -200,7 +200,6 @@ func (r *Websocket) connect() {
 		nextItvl := bb.Duration()
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL, r.reqHeader)
-
 		r.mu.Lock()
 		r.Conn = wsConn
 		r.dialErr = err

@@ -105,7 +105,6 @@ func (r *Gemini) Start() {
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
 				go socket.WebsocketClient()
-				socket.Heartbeat()
 
 			}
 		}
@@ -115,7 +114,6 @@ func (r *Gemini) Start() {
 			socket.base = r
 			socket.subscribedPairs = sharedSocket
 			go socket.WebsocketClient()
-			socket.Heartbeat()
 		}
 	}
 }
