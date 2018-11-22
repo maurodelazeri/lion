@@ -253,7 +253,17 @@ func (r *Websocket) startReading() {
 
 							if !r.snapshot {
 								for _, values := range data.Params.Data.Bids {
-									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
+									price := 0.0
+									volume := 0.0
+									switch reflect.TypeOf(values[0]).String() {
+									case "string":
+										price = number.FromString(values[0].(string)).Float64()
+										volume = number.FromString(values[1].(string)).Float64()
+									case "float64":
+										price = values[0].(float64)
+										volume = values[1].(float64)
+									}
+									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: volume})
 								}
 
 								for _, values := range data.Params.Data.Asks {
