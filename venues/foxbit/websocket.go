@@ -240,7 +240,6 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Info(string(resp))
 
 						message := MessageChannel{}
 						err = ffjson.Unmarshal(resp, &message)
@@ -272,7 +271,6 @@ func (r *Websocket) startReading() {
 						}
 						refBook, ok := r.base.LiveOrderBook.Get(product)
 						if !ok {
-							logrus.Warn("GOT HERE SHIT ", string(resp))
 							continue
 						}
 						refLiveBook := refBook.(*pbAPI.Orderbook)
@@ -441,7 +439,6 @@ func (r *Websocket) startReading() {
 									Asks:      refLiveBook.Asks,
 									Bids:      refLiveBook.Bids,
 								}
-								logrus.Warn(trades)
 								serialized, err := proto.Marshal(trades)
 								if err != nil {
 									log.Fatal("proto.Marshal error: ", err)
