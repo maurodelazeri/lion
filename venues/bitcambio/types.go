@@ -58,7 +58,7 @@ type Message struct {
 
 // BookItem ...
 type BookItem struct {
-	Price  float64
-	Volume float64
-	Side   string
+	Price     float64
+	Volume    float64
+	MDEntryID int64
 }

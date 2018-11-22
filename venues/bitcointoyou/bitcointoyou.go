@@ -15,6 +15,8 @@ import (
 
 const (
 	websocketURL = "wss://bitcointoyou.alphapoint.com/WSGateway/"
+	//websocketURL = "wss://apibitcointoyouprodlb.alphapoint.com/WSGateway/"
+
 	// Public endpoints
 	// Authenticated endpoints
 	// authenticated and unauthenticated limit rates

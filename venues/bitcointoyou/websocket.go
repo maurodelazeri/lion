@@ -28,25 +28,25 @@ func (r *Websocket) Subscribe(products []string) error {
 	if r.base.Streaming {
 		for _, product := range products {
 			i, _ := strconv.Atoi(product)
-			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
-			// count++
-			// trade := MessageChannel{
-			// 	M: 0,
-			// 	I: count,
-			// 	N: "SubscribeTrades",
-			// 	O: string(payload),
-			// }
-			// subscribe = append(subscribe, trade)
-
-			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
 			count++
-			book := MessageChannel{
+			trade := MessageChannel{
 				M: 0,
 				I: count,
-				N: "SubscribeLevel2",
+				N: "SubscribeTrades",
 				O: string(payload),
 			}
-			subscribe = append(subscribe, book)
+			subscribe = append(subscribe, trade)
+
+			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+			// count++
+			// book := MessageChannel{
+			// 	M: 0,
+			// 	I: count,
+			// 	N: "SubscribeLevel2",
+			// 	O: string(payload),
+			// }
+			// subscribe = append(subscribe, book)
 		}
 	} else {
 		for _, product := range products {
@@ -54,7 +54,7 @@ func (r *Websocket) Subscribe(products []string) error {
 			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
 			count++
 			trade := MessageChannel{
-				M: 0,
+				M: 2,
 				I: count,
 				N: "SubscribeTrades",
 				O: string(payload),
