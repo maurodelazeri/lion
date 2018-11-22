@@ -258,10 +258,8 @@ func (r *Websocket) startReading() {
 									switch reflect.TypeOf(values[0]).String() {
 									case "string":
 										price = number.FromString(values[0].(string)).Float64()
-										volume = number.FromString(values[1].(string)).Float64()
 									case "float64":
 										price = values[0].(float64)
-										volume = values[1].(float64)
 									}
 									switch reflect.TypeOf(values[1]).String() {
 									case "string":
@@ -278,10 +276,8 @@ func (r *Websocket) startReading() {
 									switch reflect.TypeOf(values[0]).String() {
 									case "string":
 										price = number.FromString(values[0].(string)).Float64()
-										volume = number.FromString(values[1].(string)).Float64()
 									case "float64":
 										price = values[0].(float64)
-										volume = values[1].(float64)
 									}
 									switch reflect.TypeOf(values[1]).String() {
 									case "string":
