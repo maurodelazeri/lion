@@ -104,8 +104,6 @@ func (r *Websocket) GetDialError() error {
 
 func (r *Websocket) connect() {
 
-	r.setReadTimeOut(1)
-
 	bb := &backoff.Backoff{
 		Min:    r.RecIntvlMin,
 		Max:    r.RecIntvlMax,
@@ -127,11 +125,12 @@ func (r *Websocket) connect() {
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
+			r.product = venueConf.(config.VenueConfig).Products[sym].VenueName
+
 			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
 		}
 
 		// We have an idenvidual connection per product, so we can specify this here
-		r.product = sym
 	}
 
 	for {
@@ -142,7 +141,7 @@ func (r *Websocket) connect() {
 			if r.base.Streaming {
 				currencies = append(currencies, x)
 			} else {
-				currencies = append(currencies, strings.ToLower(x))
+				currencies = append(currencies, x)
 			}
 		}
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
@@ -155,9 +154,9 @@ func (r *Websocket) connect() {
 		r.mu.Unlock()
 
 		if err == nil {
-			if r.base.Verbose {
-				logrus.Printf("Dial: connection was successfully established with %s\n", websocketURL)
-			}
+			//if r.base.Verbose {
+			logrus.Printf("Dial: connection was successfully established with %s\n", websocketURL+strings.Join(currencies, "/"))
+			//	}
 			break
 		} else {
 			if r.base.Verbose {
@@ -193,7 +192,7 @@ func (r *Websocket) startReading() {
 						data := Message{}
 						err = ffjson.Unmarshal(resp, &data)
 						if err != nil {
-							logrus.Error(err)
+							logrus.Error("Unmarshal ", err)
 							continue
 						}
 						var wg sync.WaitGroup
@@ -201,9 +200,12 @@ func (r *Websocket) startReading() {
 
 						refBook, ok := r.base.LiveOrderBook.Get(r.product)
 						if !ok {
+							logrus.Info("product not found  ", r.product)
 							continue
 						}
 						refLiveBook := refBook.(*pbAPI.Orderbook)
+
+						logrus.Info(string(resp))
 
 						switch data.Type {
 						case "update":
@@ -424,12 +426,4 @@ func (r *Websocket) startReading() {
 			}
 		}
 	}()
-}
-
-func (r *Websocket) setReadTimeOut(timeout int) {
-	if r.Conn != nil && timeout != 0 {
-		readTimeout := time.Duration(timeout) * time.Second
-		r.Conn.SetReadDeadline(time.Now().Add(readTimeout))
-	}
-
 }
