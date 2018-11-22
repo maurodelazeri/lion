@@ -42,15 +42,15 @@ func (r *Websocket) Subscribe(products []string) error {
 			}
 			subscribe = append(subscribe, trade)
 
-			// payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
-			// count++
-			// book := MessageChannel{
-			// 	M: 0,
-			// 	I: count,
-			// 	N: "SubscribeLevel2",
-			// 	O: string(payload),
-			// }
-			// subscribe = append(subscribe, book)
+			payload, _ = ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+			count++
+			book := MessageChannel{
+				M: 0,
+				I: count,
+				N: "SubscribeLevel2",
+				O: string(payload),
+			}
+			subscribe = append(subscribe, book)
 		}
 	} else {
 		for _, product := range products {
