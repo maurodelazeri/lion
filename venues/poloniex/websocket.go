@@ -256,6 +256,9 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 
+							if len(chanData) <= 2 {
+								continue
+							}
 							arrData := chanData[2].([]interface{})
 							for _, data := range arrData {
 								finalData := data.([]interface{})
