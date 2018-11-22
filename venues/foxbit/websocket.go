@@ -255,15 +255,21 @@ func (r *Websocket) startReading() {
 						var wg sync.WaitGroup
 						updated := false
 						var product string
-
 						if len(stream.Streaming) > 0 {
-							index := 7
-							if message.N == "TradeDataUpdateEvent" {
+							var index int
+							switch message.N {
+							case "Level2UpdateEvent":
+								index = 7
+							case "TradeDataUpdateEvent":
 								index = 1
+							case "SubscribeLevel2":
+								index = 1
+							case "SubscribeTrades":
+								continue
 							}
 							value, exist := r.pairsMapping.Get(strconv.Itoa(int(stream.Streaming[0][index].(float64))))
 							if !exist {
-								logrus.Warn("shit could not find the product")
+								logrus.Error("shit could not find the product")
 								continue
 							}
 							product = value.(string)
