@@ -296,7 +296,6 @@ func (r *Websocket) startReading() {
 						// -> 0=New, 1=Update, 2=Delete
 						// 2 - quando o size vem 0 eu poss remover o nivel de preco?"
 						// -> Pode sim, significa que a ordem não possue mais amount
-						logrus.Info("product  ", product)
 						switch message.N {
 						case "Level2UpdateEvent":
 							for _, values := range stream.Streaming {
