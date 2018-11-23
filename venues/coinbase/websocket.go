@@ -141,8 +141,6 @@ func (r *Websocket) GetDialError() error {
 
 func (r *Websocket) connect() {
 
-	r.setReadTimeOut(1)
-
 	bb := &backoff.Backoff{
 		Min:    r.RecIntvlMin,
 		Max:    r.RecIntvlMax,
@@ -458,12 +456,4 @@ func (r *Websocket) startReading() {
 			}
 		}
 	}()
-}
-
-func (r *Websocket) setReadTimeOut(timeout int) {
-	if r.Conn != nil && timeout != 0 {
-		readTimeout := time.Duration(timeout) * time.Second
-		r.Conn.SetReadDeadline(time.Now().Add(readTimeout))
-	}
-
 }
