@@ -337,8 +337,6 @@ func (r *Websocket) startReading() {
 										Bids:      refLiveBook.Bids,
 									}
 
-									logrus.Warn("NEW TRADe ", trades)
-
 									serialized, err := proto.Marshal(trades)
 									if err != nil {
 										log.Fatal("proto.Marshal error: ", err)
