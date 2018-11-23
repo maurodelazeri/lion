@@ -159,7 +159,6 @@ func (r *Websocket) connect() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
-	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
 	r.snapshot = false
 

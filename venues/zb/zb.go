@@ -96,6 +96,9 @@ func (r *Zb) Start() {
 				sharedSocket = append(sharedSocket, product)
 			}
 		}
+
+		r.LiveOrderBook = utils.NewConcurrentMap()
+
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
 				socket := new(Websocket)

@@ -98,14 +98,17 @@ func (r *Gemini) Start() {
 				sharedSocket = append(sharedSocket, product)
 			}
 		}
+
+		r.LiveOrderBook = utils.NewConcurrentMap()
+
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
 				socket := new(Websocket)
 				socket.MessageType = make([]byte, 4)
 				socket.base = r
+				socket.product = pair
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
 				go socket.WebsocketClient()
-
 			}
 		}
 		if len(sharedSocket) > 0 {

@@ -156,7 +156,6 @@ func (r *Websocket) connect() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
-	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
 	r.historyTrades = false
 
@@ -320,7 +319,6 @@ func (r *Websocket) startReading() {
 								}
 
 							} else {
-								logrus.Warn("HERE ", string(resp))
 								symbol := strings.Replace(data.Channel, "_trades", "", -1)
 								value, exist := r.pairsMapping.Get(symbol)
 								if !exist {

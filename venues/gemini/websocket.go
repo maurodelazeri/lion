@@ -114,7 +114,6 @@ func (r *Websocket) connect() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
-	r.base.LiveOrderBook = utils.NewConcurrentMap()
 	r.pairsMapping = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
@@ -141,7 +140,6 @@ func (r *Websocket) connect() {
 			} else {
 				currencies = append(currencies, x)
 			}
-			r.product = x
 		}
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
@@ -206,8 +204,6 @@ func (r *Websocket) startReading() {
 							continue
 						}
 						refLiveBook := refBook.(*pbAPI.Orderbook)
-
-						logrus.Info(string(resp))
 
 						switch data.Type {
 						case "update":
