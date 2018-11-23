@@ -211,6 +211,7 @@ func (r *Websocket) connect() {
 	for {
 		nextItvl := bb.Duration()
 		u := url.URL{Scheme: "wss", Host: websocketURL, Path: "/websocket", RawQuery: "compress=true"}
+
 		wsConn, httpResp, err := r.dialer.Dial(u.String(), r.reqHeader)
 
 		r.mu.Lock()
@@ -285,7 +286,7 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							if strings.Contains(jsonString, "error_msg") {
-								logrus.Error("Problem parsing ", string(msg))
+								//logrus.Error("Problem parsing ", string(msg))
 								continue
 							}
 							if strings.Contains(jsonString, bookEnd) {
@@ -441,9 +442,11 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									log.Fatal("proto.Marshal error: ", err)
 								}
-								r.MessageType[0] = 0
-								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								if 1 > 2 {
+									r.MessageType[0] = 0
+									serialized = append(r.MessageType, serialized[:]...)
+									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+								}
 							}
 						}
 					}
