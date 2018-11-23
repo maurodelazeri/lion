@@ -154,9 +154,12 @@ func (r *Websocket) connect() {
 		r.mu.Unlock()
 
 		if err == nil {
-			//if r.base.Verbose {
-			logrus.Printf("Dial: connection was successfully established with %s\n", websocketURL+strings.Join(currencies, "/"))
-			//	}
+			if r.base.Verbose {
+				logrus.Printf("Dial: connection was successfully established with %s\n", websocketURL)
+			}
+			if err != nil {
+				logrus.Printf("Websocket subscription error: %s\n", err)
+			}
 			break
 		} else {
 			if r.base.Verbose {

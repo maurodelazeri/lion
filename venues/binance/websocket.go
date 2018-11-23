@@ -179,7 +179,6 @@ func (r *Websocket) connect() {
 		}
 
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
-		logrus.Warn("YAHHH HERE IM")
 
 		r.mu.Lock()
 		r.Conn = wsConn
@@ -188,7 +187,15 @@ func (r *Websocket) connect() {
 		r.httpResp = httpResp
 		r.mu.Unlock()
 
-		if err != nil {
+		if err == nil {
+			if r.base.Verbose {
+				logrus.Printf("Dial: connection was successfully established with %s\n", websocketURL)
+			}
+			if err != nil {
+				logrus.Printf("Websocket subscription error: %s\n", err)
+			}
+			break
+		} else {
 			if r.base.Verbose {
 				logrus.Println(err)
 				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
