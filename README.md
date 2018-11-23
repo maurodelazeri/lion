@@ -17,3 +17,26 @@ sed  -i "s/Hostname=Zabbix server/Hostname=${hostname}/g" /etc/zabbix/zabbix_age
 systemctl restart zabbix-agent
 systemctl enable zabbix-agent
 ```
+
+```
+hostname=$(hostname -s | tr '[:lower:]' '[:upper:]')
+```
+
+```
+/root/work/src/github.com/maurodelazeri/winter/winter --venues $(hostname -s | tr '[:lower:]' '[:upper:]')
+```
+
+```
+#!/bin/bash
+
+# -x flag only match processes whose name (or command line if -f is
+# specified) exactly match the pattern.
+
+if pgrep -x "winter" > /dev/null
+then
+    echo "Running"
+else
+    echo "Stopped"
+    /root/work/src/github.com/maurodelazeri/winter/winter --venues $(hostname -s | tr '[:lower:]' '[:upper:]')
+fi
+```
