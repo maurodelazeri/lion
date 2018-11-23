@@ -2,22 +2,22 @@ syntax = "proto3";
 package api;
 
  enum Venue{
-	DARKPOOL    			=  0;
-	COINBASEPRO 			=  1;  // 192.168.1.204
-	BITMEX      			=  2;  // 192.168.1.205
-	BITFINEX    			=  3;  // 192.168.1.206
-	BINANCE     			=  4;  // 192.168.1.203
-	GEMINI      			=  5;  // 192.168.1.211 
-	OKEX_CHINA_FUT        	=  6;  // 192.168.1.208
-	OKEX_CHINA_SPOT        	=  7;  // 192.168.1.207
-	HUOBIPRO    			=  8;  // 192.168.1.209
-	GATEIO      			=  9;  // 192.168.1.210
-	POLONIEX    			=  10; // 192.168.1.212
-	ZB          			=  11; // 192.168.1.213
-	FOXBIT      			=  12; // 192.168.1.214
-	BITCOINTOYOU    		=  13; // 192.168.1.215
-	BITCAMBIO        		=  14; // 192.168.1.216
-	DERIBIT                 =  15; // 192.168.1.217
+	DARKPOOL    					=  0;
+	COINBASEPRO 					=  1;  // 192.168.1.204
+	BITMEX      					=  2;  // 192.168.1.205
+	BITFINEX    					=  3;  // 192.168.1.206
+	BINANCE     					=  4;  // 192.168.1.203
+	GEMINI      					=  5;  // 192.168.1.211 
+	OKEX_INTERNATIONAL_FUT        	=  6;  // 192.168.1.208
+	OKEX_INTERNATIONAL_SPOT        	=  7;  // 192.168.1.207
+	HUOBIPRO    					=  8;  // 192.168.1.209
+	GATEIO      					=  9;  // 192.168.1.210
+	POLONIEX    					=  10; // 192.168.1.212
+	ZB          					=  11; // 192.168.1.213
+	FOXBIT      					=  12; // 192.168.1.214
+	BITCOINTOYOU    				=  13; // 192.168.1.215
+	BITCAMBIO        				=  14; // 192.168.1.216
+	DERIBIT                			 =  15; // 192.168.1.217
    }
   
  enum SystemMode{
