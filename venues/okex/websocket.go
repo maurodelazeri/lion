@@ -442,11 +442,9 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									log.Fatal("proto.Marshal error: ", err)
 								}
-								if 1 > 2 {
-									r.MessageType[0] = 0
-									serialized = append(r.MessageType, serialized[:]...)
-									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
-								}
+								r.MessageType[0] = 0
+								serialized = append(r.MessageType, serialized[:]...)
+								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 							}
 						}
 					}
