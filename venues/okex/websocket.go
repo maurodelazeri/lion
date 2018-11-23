@@ -273,6 +273,7 @@ func (r *Websocket) startReading() {
 							logrus.Error("Ops ", err)
 							continue
 						}
+
 						switch reflect.TypeOf(result).String() {
 						case "[]interface {}":
 							event := result.([]interface{})
@@ -289,6 +290,7 @@ func (r *Websocket) startReading() {
 								//logrus.Error("Problem parsing ", string(msg))
 								continue
 							}
+
 							if strings.Contains(jsonString, bookEnd) {
 								data := MessageBook{}
 								err = ffjson.Unmarshal([]byte(jsonString), &data)
@@ -399,11 +401,13 @@ func (r *Websocket) startReading() {
 								symbol = strings.Replace(symbol, tradesEnd, "", -1)
 								value, exist := r.pairsMapping.Get(symbol)
 								if !exist {
+									logrus.Info("pair does not exist ", symbol)
 									continue
 								}
 								product := value.(string)
 								refBook, ok := r.base.LiveOrderBook.Get(product)
 								if !ok {
+									logrus.Info("pair book does not exist ", symbol)
 									continue
 								}
 								refLiveBook := refBook.(*pbAPI.Orderbook)
@@ -446,6 +450,8 @@ func (r *Websocket) startReading() {
 								serialized = append(r.MessageType, serialized[:]...)
 								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
 							}
+						default:
+							logrus.Warn("DEFAULT CASE ", string(msg))
 						}
 					}
 				}
