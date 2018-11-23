@@ -436,6 +436,7 @@ func (r *Websocket) startReading() {
 									Asks:      refLiveBook.Asks,
 									Bids:      refLiveBook.Bids,
 								}
+
 								serialized, err := proto.Marshal(trades)
 								if err != nil {
 									log.Fatal("proto.Marshal error: ", err)
