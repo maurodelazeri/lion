@@ -125,8 +125,6 @@ func (r *Websocket) connect() {
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
-			r.product = venueConf.(config.VenueConfig).Products[sym].VenueName
-
 			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
 		}
 
@@ -143,6 +141,7 @@ func (r *Websocket) connect() {
 			} else {
 				currencies = append(currencies, x)
 			}
+			r.product = x
 		}
 		wsConn, httpResp, err := r.dialer.Dial(websocketURL+strings.Join(currencies, "/"), r.reqHeader)
 
