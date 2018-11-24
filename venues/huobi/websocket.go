@@ -91,7 +91,7 @@ func (r *Websocket) Heartbeat() {
 					continue
 				}
 			}
-			time.Sleep(time.Second * 30)
+			time.Sleep(time.Second * 15)
 		}
 	}()
 }
