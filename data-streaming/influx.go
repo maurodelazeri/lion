@@ -3,6 +3,7 @@ package streaming
 import (
 	"time"
 
+	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 
 	"github.com/influxdata/influxdb/client/v2"
@@ -38,7 +39,7 @@ func (s *Streaming) InfluxWorker(item interface{}) {
 			"side":       pbAPI.Side_value[t.GetOrderSide().String()],
 			"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
 		}
-		s.InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Nanosecond)))
+		s.InsertInflux("trade", tags, fields, common.MakeTimestampFromInt64(t.Timestamp))
 	default:
 		logrus.Error("Influx not found a correct type ", t)
 	}

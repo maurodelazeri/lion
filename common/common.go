@@ -528,20 +528,20 @@ func LogError(format string, v ...interface{}) {
 // CheckNanoSecondTimeDiff event must be provided as microsecond
 func CheckNanoSecondTimeDiff(event int64) time.Duration {
 	now := time.Now()
-	timeFromTS := time.Unix(0, event*int64(time.Nanosecond))
+	timeFromTS := time.Unix(0, event*int64(time.Nanosecond)).UTC()
 	return now.Sub(timeFromTS)
 }
 
 // CheckSecondTimeDiff event must be provided as seconds
 func CheckSecondTimeDiff(event int64) time.Duration {
 	now := time.Now()
-	timeFromTS := time.Unix(0, event*int64(time.Second))
+	timeFromTS := time.Unix(0, event*int64(time.Second)).UTC()
 	return now.Sub(timeFromTS)
 }
 
 // MakeTimestampFromInt64 create standart timestamp
 func MakeTimestampFromInt64(ref int64) time.Time {
-	return time.Unix(0, ref*int64(time.Nanosecond))
+	return time.Unix(0, ref*int64(time.Nanosecond)).UTC()
 }
 
 // MakeTimestampFromTime create standart timestamp
