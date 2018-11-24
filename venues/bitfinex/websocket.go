@@ -85,7 +85,7 @@ func (r *Websocket) Subscribe(products []string) error {
 // WebsocketSubdChannels map in bitfinex.go (Bitfinex struct)
 func (r *Websocket) WebsocketAddSubscriptionChannel(chanID int, channel, pair string) {
 	chanInfo := WebsocketChanInfo{Pair: pair, Channel: channel}
-	r.base.WebsocketSubdChannels[chanID] = chanInfo
+	r.WebsocketSubdChannels[chanID] = chanInfo
 	if r.base.Verbose {
 		log.Printf("Subscribed to Channel: %s Pair: %s ChannelID: %d\n", channel, pair, chanID)
 	}
@@ -271,7 +271,7 @@ func (r *Websocket) startReading() {
 						case "[]interface {}":
 							chanData := result.([]interface{})
 							chanID := int(chanData[0].(float64))
-							chanInfo, ok := r.base.WebsocketSubdChannels[chanID]
+							chanInfo, ok := r.WebsocketSubdChannels[chanID]
 							if !ok {
 								log.Printf("Unable to locate chanID: %d\n", chanID)
 							}

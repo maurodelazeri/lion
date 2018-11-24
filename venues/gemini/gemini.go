@@ -66,7 +66,7 @@ type Websocket struct {
 // SetDefaults sets default values for the venue
 func (r *Gemini) SetDefaults() {
 	r.Enabled = true
-	r.Base.LiveOrderBook = utils.NewConcurrentMap()
+	r.LiveOrderBook = utils.NewConcurrentMap()
 }
 
 // Setup initialises the venue parameters with the current configuration

@@ -26,7 +26,6 @@ const (
 type Bitfinex struct {
 	venue.Base
 	*request.Handler
-	WebsocketSubdChannels map[int]WebsocketChanInfo
 }
 
 // Websocket is the overarching type across the Bitfinex package
@@ -54,17 +53,17 @@ type Websocket struct {
 	// default to 2 seconds
 	HandshakeTimeout time.Duration
 
-	OrderBookMAP    map[string]map[float64]float64
-	subscribedPairs []string
-	pairsMapping    *utils.ConcurrentMap
-	MessageType     []byte
+	OrderBookMAP          map[string]map[float64]float64
+	subscribedPairs       []string
+	pairsMapping          *utils.ConcurrentMap
+	MessageType           []byte
+	WebsocketSubdChannels map[int]WebsocketChanInfo
 }
 
 // SetDefaults sets default values for the venue
 func (r *Bitfinex) SetDefaults() {
 	r.Enabled = true
-	r.Base.LiveOrderBook = utils.NewConcurrentMap()
-	r.WebsocketSubdChannels = make(map[int]WebsocketChanInfo)
+	r.LiveOrderBook = utils.NewConcurrentMap()
 }
 
 // Setup initialises the venue parameters with the current configuration
