@@ -35,7 +35,7 @@ func (s *Streaming) InfluxWorker(item interface{}) {
 		fields := map[string]interface{}{
 			"price":      t.GetPrice(),
 			"size":       t.GetVolume(),
-			"side":       pbAPI.OrderType_value[t.GetOrderSide().String()],
+			"side":       pbAPI.Side_value[t.GetOrderSide().String()],
 			"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
 		}
 		s.InsertInflux("trade", tags, fields, time.Unix(0, int64(t.Timestamp)*int64(time.Nanosecond)))

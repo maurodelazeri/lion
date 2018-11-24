@@ -327,7 +327,8 @@ func (r *Websocket) startReading() {
 							} else {
 
 								for _, bids := range data.Params.Data.Bids {
-									switch bids[0].(string) {
+
+									switch bids[0].(string) { //panic: interface conversion: interface {} is float64, not string
 									case "change":
 										price := bids[1].(float64)
 										amount := bids[2].(float64)
