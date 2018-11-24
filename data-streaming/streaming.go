@@ -36,7 +36,7 @@ func InitKafkaConnection(topics []string, groupID string) *Streaming {
 		"session.timeout.ms":              6000,
 		"go.events.channel.enable":        true,
 		"go.application.rebalance.enable": true,
-		"default.topic.config":            kafka.ConfigMap{"auto.offset.reset": "latest"}})
+		"default.topic.config":            kafka.ConfigMap{"auto.offset.reset": "earliest"}})
 	if err != nil {
 		logrus.Error("No connection with kafka, ", err)
 		os.Exit(1)
