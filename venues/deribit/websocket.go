@@ -327,69 +327,77 @@ func (r *Websocket) startReading() {
 							} else {
 
 								for _, bids := range data.Params.Data.Bids {
-
-									switch bids[0].(string) { //panic: interface conversion: interface {} is float64, not string
-									case "change":
-										price := bids[1].(float64)
-										amount := bids[2].(float64)
-										if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
-											r.OrderBookMAP[product+"bids"][price] = amount
-											updated = true
-										}
-									case "delete":
-										price := bids[1].(float64)
-										if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
-											delete(r.OrderBookMAP[product+"bids"], price)
-											updated = true
-										}
-									case "new":
-										price := bids[1].(float64)
-										amount := bids[2].(float64)
-										totalLevels := len(refLiveBook.GetBids())
-										if totalLevels == r.base.MaxLevelsOrderBook {
-											if price < refLiveBook.Bids[totalLevels-1].Price {
-												continue
+									switch reflect.TypeOf(bids[0]).String() {
+									case "string":
+										switch bids[0].(string) { //panic: interface conversion: interface {} is float64, not string
+										case "change":
+											price := bids[1].(float64)
+											amount := bids[2].(float64)
+											if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+												r.OrderBookMAP[product+"bids"][price] = amount
+												updated = true
 											}
-										}
-										updated = true
-										r.OrderBookMAP[product+"bids"][price] = amount
+										case "delete":
+											price := bids[1].(float64)
+											if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+												delete(r.OrderBookMAP[product+"bids"], price)
+												updated = true
+											}
+										case "new":
+											price := bids[1].(float64)
+											amount := bids[2].(float64)
+											totalLevels := len(refLiveBook.GetBids())
+											if totalLevels == r.base.MaxLevelsOrderBook {
+												if price < refLiveBook.Bids[totalLevels-1].Price {
+													continue
+												}
+											}
+											updated = true
+											r.OrderBookMAP[product+"bids"][price] = amount
 
-									default:
-										logrus.Warn("API BETA, new case found")
+										default:
+											logrus.Warn("API BETA, new case found")
+										}
+									case "float64":
+										logrus.Info("MAURO ", string(resp))
 									}
 								}
 
 								for _, asks := range data.Params.Data.Asks {
-									switch asks[0].(string) {
-									case "change":
-										price := asks[1].(float64)
-										amount := asks[2].(float64)
-										if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
-											r.OrderBookMAP[product+"asks"][price] = amount
-											updated = true
-										}
-									case "delete":
-										price := asks[1].(float64)
-										if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
-											delete(r.OrderBookMAP[product+"asks"], price)
-											updated = true
-										}
-									case "new":
-										price := asks[1].(float64)
-										amount := asks[2].(float64)
-										totalLevels := len(refLiveBook.GetAsks())
-										if totalLevels == r.base.MaxLevelsOrderBook {
-											if price > refLiveBook.Asks[totalLevels-1].Price {
-												continue
+									switch reflect.TypeOf(asks[0]).String() {
+									case "string":
+										switch asks[0].(string) {
+										case "change":
+											price := asks[1].(float64)
+											amount := asks[2].(float64)
+											if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+												r.OrderBookMAP[product+"asks"][price] = amount
+												updated = true
 											}
+										case "delete":
+											price := asks[1].(float64)
+											if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+												delete(r.OrderBookMAP[product+"asks"], price)
+												updated = true
+											}
+										case "new":
+											price := asks[1].(float64)
+											amount := asks[2].(float64)
+											totalLevels := len(refLiveBook.GetAsks())
+											if totalLevels == r.base.MaxLevelsOrderBook {
+												if price > refLiveBook.Asks[totalLevels-1].Price {
+													continue
+												}
+											}
+											updated = true
+											r.OrderBookMAP[product+"asks"][price] = amount
+										default:
+											logrus.Warn("API BETA, new case found")
 										}
-										updated = true
-										r.OrderBookMAP[product+"asks"][price] = amount
-									default:
-										logrus.Warn("API BETA, new case found")
+									case "float64":
+										logrus.Info("MAURO ", string(resp))
 									}
 								}
-
 							}
 
 							// we dont need to update the book if any level we care was changed
