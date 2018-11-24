@@ -15,5 +15,5 @@ then
     echo "Running"
 else
     echo "Stopped"
-    /root/work/src/github.com/maurodelazeri/winter/winter --venues $(hostname -s | tr '[:lower:]' '[:upper:]') 2>&1 | tee /var/log/winter.log
+    /root/work/src/github.com/maurodelazeri/winter/winter --venues $(hostname -s | tr '[:lower:]' '[:upper:]') 2>&1 | tee -a /var/log/winter.log
 fi
