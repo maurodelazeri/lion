@@ -7,9 +7,6 @@ export MONGODB_CONNECTION="192.168.1.100:27017"
 export MONGODB_USERNAME="mongo-admin"
 export MONGODB_PASSWORD="Br@sa154"
 
-# -x flag only match processes whose name (or command line if -f is
-# specified) exactly match the pattern.
-
 if pgrep -x "winter" > /dev/null
 then
     echo "Running"
