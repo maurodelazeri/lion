@@ -1,0 +1,17 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+
+// The API service definition.
+service API {   
+  rpc GetVenues(VenuesRequest) returns (VenuesResult) {}
+} 
+
+message VenuesRequest { 
+}
+
+message VenuesResult { 
+   Retcode                      retcode                   = 1;  
+   repeated Venue               venues                    = 2;
+   string                       comment                   = 3;
+}
