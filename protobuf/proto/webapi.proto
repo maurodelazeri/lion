@@ -4,13 +4,13 @@ import "enum.proto";
 
 // The API service definition.
 service API {   
-  rpc GetVenues(VenuesRequest) returns (VenuesResult) {}
+  rpc GetVenues(VenuesRequest) returns (VenuesResponse) {}
 } 
 
 message VenuesRequest { 
 }
 
-message VenuesResult { 
+message VenuesResponse { 
    Retcode                      retcode                   = 1;  
    repeated Venue               venues                    = 2;
    string                       comment                   = 3;
