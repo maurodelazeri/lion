@@ -14,9 +14,8 @@ message CurrencyRequest {
 }
 
 message CurrencyInfo{ 
-   int32                        id                    = 1;
-   string                       name                  = 2;  
-   int32                        currency_id           = 3;
+   string                       name                  = 1;  
+   int32                        currency_id           = 2;
 }
 
 message CurrencyResponse { 
@@ -30,9 +29,8 @@ message ProductRequest {
 }
 
 message ProductInfo{ 
-   int32                        id                    = 1;
-   string                       name                  = 2;  
-   int32                        product_id            = 3;
+   string                       name                  = 1;  
+   int32                        product_id            = 2;
 }
 
 message ProductResponse { 
@@ -46,9 +44,8 @@ message VenuesRequest {
 }
 
 message VenuesInfo{ 
-   int32                        id                    = 1;
-   string                       name                  = 2;  
-   int32                        venue_id              = 3;
+   string                       name                  = 1;  
+   int32                        venue_id              = 2;
 }
 
 message VenuesResponse { 
