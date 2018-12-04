@@ -10,8 +10,14 @@ service API {
 message VenuesRequest { 
 }
 
+message VenuesInfo{ 
+   int32                        id                    = 1;
+   string                       name                  = 2;  
+   int32                        symbol_id             = 3;
+}
+
 message VenuesResponse { 
-   Retcode                      retcode                   = 1;  
-   repeated Venue               venues                    = 2;
-   string                       comment                   = 3;
+   Retcode                      retcode                = 1;  
+   repeated VenuesInfo          venues                 = 2;
+   string                       comment                = 3;
 }
