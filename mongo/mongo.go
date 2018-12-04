@@ -19,17 +19,14 @@ var (
 )
 
 func init() {
-	InitEngine()
-}
-
-// InitEngine initializes our Database Connection
-func InitEngine() {
 	var err error
 	var CS = connstring.ConnString{
 		Hosts:    []string{os.Getenv("MONGODB_CONNECTION")},
 		Username: os.Getenv("MONGODB_USERNAME"),
 		Password: os.Getenv("MONGODB_PASSWORD"),
 	}
+	logrus.Info("MAURO IM HERE ")
+
 	Client, err = mongo.NewClientFromConnString(CS)
 	if err != nil {
 		logrus.Error("Problem to connect with mongo ", err)
