@@ -4,16 +4,51 @@ import "enum.proto";
 
 // The API service definition.
 service API {   
+  rpc GetCurrencies(CurrencyRequest) returns (CurrencyResponse) {}
+  rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc GetVenues(VenuesRequest) returns (VenuesResponse) {}
 } 
 
+// Currency
+message CurrencyRequest { 
+}
+
+message CurrencyInfo{ 
+   int32                        id                    = 1;
+   string                       name                  = 2;  
+   int32                        currency_id           = 3;
+}
+
+message CurrencyResponse { 
+   Retcode                      retcode                = 1;  
+   repeated CurrencyInfo        currencies             = 2;
+   string                       comment                = 3;
+}
+
+// Products
+message ProductRequest { 
+}
+
+message ProductInfo{ 
+   int32                        id                    = 1;
+   string                       name                  = 2;  
+   int32                        product_id            = 3;
+}
+
+message ProductResponse { 
+   Retcode                      retcode                = 1;  
+   repeated ProductInfo         products               = 2;
+   string                       comment                = 3;
+}
+
+// Venues
 message VenuesRequest { 
 }
 
 message VenuesInfo{ 
    int32                        id                    = 1;
    string                       name                  = 2;  
-   int32                        symbol_id             = 3;
+   int32                        venue_id              = 3;
 }
 
 message VenuesResponse { 
