@@ -64,17 +64,6 @@ message VenueDetailedRequest {
        int32                             venue_id               = 1;  
 }
 
-message VenueDetailedInfo{ 
-   int32                                  id                    = 1;  
-   string                                 name                  = 2;  
-   int32                                  venue_id              = 3;
-   bool                                   enabled               = 4;
-   string                                 api_key               = 5;
-   string                                 api_secret            = 6;
-   string                                 passphrase            = 7;
-   repeated VenueDetailedProducts         product_info          = 8;
-}
-
 message VenueDetailedProducts{ 
    int32                        product                  = 1;  
    bool                         enabled                  = 2;  
@@ -89,7 +78,14 @@ message VenueDetailedProducts{
 }
 
 message VenueDetailedResponse { 
-   Retcode                      retcode                = 1;  
-   VenueDetailedInfo            venue_detail           = 2;
-   string                       comment                = 3;
+   Retcode                                retcode               = 1;  
+   int32                                  id                    = 2;  
+   string                                 name                  = 3;  
+   int32                                  venue_id              = 4;
+   bool                                   enabled               = 5;
+   string                                 api_key               = 6;
+   string                                 api_secret            = 7;
+   string                                 passphrase            = 8;
+   repeated VenueDetailedProducts         product_info          = 9;
+   string                                 comment               = 10;
 }
