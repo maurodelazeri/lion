@@ -7,6 +7,7 @@ service API {
   rpc GetCurrencies(CurrencyRequest) returns (CurrencyResponse) {}
   rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc GetVenues(VenuesRequest) returns (VenuesResponse) {}
+  rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
 } 
 
 // Currency
@@ -49,10 +50,46 @@ message VenuesInfo{
    int32                        id                    = 1;  
    string                       name                  = 2;  
    int32                        venue_id              = 3;
+   bool                         enabled               = 4;
 }
 
 message VenuesResponse { 
    Retcode                      retcode                = 1;  
    repeated VenuesInfo          venues                 = 2;
+   string                       comment                = 3;
+}
+
+// Venues Detailed
+message VenueDetailedRequest {
+       int32                             venue_id               = 1;  
+}
+
+message VenueDetailedInfo{ 
+   int32                                  id                    = 1;  
+   string                                 name                  = 2;  
+   int32                                  venue_id              = 3;
+   bool                                   enabled               = 4;
+   string                                 api_key               = 5;
+   string                                 api_secret            = 6;
+   string                                 passphrase            = 7;
+   repeated VenueDetailedProducts         product_info          = 8;
+}
+
+message VenueDetailedProducts{ 
+   int32                        product                  = 1;  
+   bool                         enabled                  = 2;  
+   bool                         individual_connection    = 3;
+   string                       venue_name               = 4;
+   string                       api_name                 = 5;
+   double                       minimum_orders_size      = 6;
+   double                       step_size                = 7;
+   double                       maker_fee                = 8;
+   double                       taker_fee                = 9;
+
+}
+
+message VenueDetailedResponse { 
+   Retcode                      retcode                = 1;  
+   VenueDetailedInfo            venue_detail           = 2;
    string                       comment                = 3;
 }
