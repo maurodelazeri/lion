@@ -8,6 +8,7 @@ service API {
   rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc GetVenues(VenuesRequest) returns (VenuesResponse) {}
   rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
+  rpc GetVenueProductDetail(VenueProductRequest) returns (VenueProductResponse) {}
 } 
 
 // Currency
@@ -61,7 +62,7 @@ message VenuesResponse {
 
 // Venues Detailed
 message VenueDetailedRequest {
-       int32                             venue_id               = 1;  
+       string                             venue_name               = 1;  
 }
 
 message VenueDetailedResponse { 
@@ -73,12 +74,11 @@ message VenueDetailedResponse {
    string                                 api_key               = 6;
    string                                 api_secret            = 7;
    string                                 passphrase            = 8;
-   repeated VenueDetailedProducts         product_info          = 9;
+   repeated VenueDetailedProduct          product_info          = 9;
    string                                 comment               = 10;
 }
 
-
-message VenueDetailedProducts{
+message VenueDetailedProduct{
    int32                        id                       = 1;  
    int32                        product                  = 2;  
    bool                         enabled                  = 3;  
@@ -89,4 +89,16 @@ message VenueDetailedProducts{
    double                       step_size                = 8;
    double                       maker_fee                = 9;
    double                       taker_fee                = 10;
+}
+
+// Venue Product
+message VenueProductRequest {
+       string                             venue_name               = 1;  
+       string                             product_name             = 2;  
+}
+
+message VenueProductResponse { 
+   Retcode                      retcode                                = 1;  
+   VenueDetailedProduct         venue_detailed_product                 = 2;
+   string                       comment                                = 3;
 }
