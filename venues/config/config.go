@@ -69,17 +69,12 @@ type VenueConfig struct {
 }
 
 // LoadConfig loads your configuration file into your configuration object
-func (c *Config) LoadConfig(enabledCheck ...bool) error {
+func (c *Config) LoadConfig() error {
 	coll := mongodb.MongoDB.Collection("venue_products")
 	filter := bson.NewDocument(bson.EC.Boolean("enabled", true))
 	cursor, err := coll.Find(context.Background(), filter)
 	if err != nil {
 		return err
-	}
-
-	var validateEnabled bool
-	if len(enabledCheck) > 0 {
-		validateEnabled = enabledCheck[0]
 	}
 
 	for cursor.Next(context.Background()) {
@@ -89,7 +84,7 @@ func (c *Config) LoadConfig(enabledCheck ...bool) error {
 			log.Fatal(err)
 		}
 		for _, prods := range item.Product {
-			if prods.Enabled || !validateEnabled {
+			if prods.Enabled {
 				venueConf[prods.APIName] = Product{
 					IndividualConnection: prods.IndividualConnection,
 					VenueName:            prods.VenueName,
