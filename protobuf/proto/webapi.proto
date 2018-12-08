@@ -19,7 +19,7 @@ message VenuesResponse {
 }
 
 message VenuesPostRequest { 
-   int32                                  venue_id              = 1;
+   string                                 venue_id              = 1;
    bool                                   enabled               = 2;
    string                                 api_key               = 3;
    string                                 api_secret            = 4;
@@ -39,7 +39,7 @@ message VenueDetailedResponse {
    Retcode                                retcode               = 1;  
    string                                 id                    = 2;  
    string                                 name                  = 3;  
-   int32                                  venue_id              = 4;
+   Venue                                  venue                 = 4;
    bool                                   enabled               = 5;
    string                                 api_key               = 6;
    string                                 api_secret            = 7;
