@@ -1,6 +1,7 @@
 syntax = "proto3";
 package api;
 import "enum.proto";
+import "webapi.proto";
 
 
 // https://www.mql5.com/en/docs/standardlibrary/tradeclasses/ctrade/ctradepositionclose
@@ -17,6 +18,11 @@ service API {
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
   rpc GetBacktestingToken(BacktestingTokenRequest) returns (BacktestingTokenResponse) {}
   rpc Backtesting(stream BacktestingRequest) returns (stream BacktestingResponse) {}
+
+  rpc GetVenues(VenuesRequest) returns (VenuesResponse) {}
+  rpc PostVenues(VenuesPostRequest) returns (VenuesPostResponse) {}
+  rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
+  rpc GetVenueProductDetail(VenueProductRequest) returns (VenueProductResponse) {}
 } 
 
   message Orders { 
@@ -196,7 +202,7 @@ message BacktestingResponse {
 }
 
 message ClientInitilization {
-  SystemMode                        system_mode            = 1; 
+  AccountMode                       account_mode           = 1; 
   Subscription                      subscription           = 2;
   repeated Balance                  balances               = 3; 
   int64                             start_date             = 4;

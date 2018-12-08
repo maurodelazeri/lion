@@ -17,10 +17,10 @@ package api;
 	FOXBIT      					=  12; // 192.168.1.214
 	BITCOINTOYOU    				=  13; // 192.168.1.215
 	BITCAMBIO        				=  14; // 192.168.1.216
-	DERIBIT                			 =  15; // 192.168.1.217
+	DERIBIT                			=  15; // 192.168.1.217
    }
   
- enum SystemMode{
+ enum AccountMode{
 	DEMO               = 0;
 	LIVE               = 1;
 	BACKTESTING        = 2;
