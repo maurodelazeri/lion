@@ -8,8 +8,8 @@ package api;
 	BITFINEX    					=  3;  // 192.168.1.206
 	BINANCE     					=  4;  // 192.168.1.203
 	GEMINI      					=  5;  // 192.168.1.211 
-	OKEX_INTERNATIONAL_FUT        	=  6;  // 192.168.1.208
-	OKEX_INTERNATIONAL_SPOT        	=  7;  // 192.168.1.207
+	OKEX_INTERNATIONAL_SPOT        	=  6;  // 192.168.1.207
+	OKEX_INTERNATIONAL_FUT        	=  7;  // 192.168.1.208
 	HUOBIPRO    					=  8;  // 192.168.1.209
 	GATEIO      					=  9;  // 192.168.1.210
 	POLONIEX    					=  10; // 192.168.1.212

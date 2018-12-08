@@ -33,7 +33,7 @@ message VenuesPostResponse {
 
 // Venues Detailed
 message VenueDetailedRequest {
-   string                                venue_name             = 1;  
+   Venue                                   venue                 = 1;  
 }
 message VenueDetailedResponse { 
    Retcode                                retcode               = 1;  
@@ -49,24 +49,7 @@ message VenueDetailedResponse {
 }
 message VenueDetailedProduct{
    string                       id                       = 1;  
-   int32                        product                  = 2;  
-   bool                         enabled                  = 3;  
-   bool                         individual_connection    = 4;
-   string                       venue_name               = 5;
-   string                       api_name                 = 6;
-   double                       minimum_orders_size      = 7;
-   double                       step_size                = 8;
-   double                       maker_fee                = 9;
-   double                       taker_fee                = 10;
-}
-// Venue Product
-message VenueProductRequest {
-   string                      venue_name                = 1;  
-   string                      product                   = 2;  
-}
-message VenueProductResponse { 
-   Retcode                      retcode                  = 1;  
-   string                       id                       = 2;  
+   string                       venue_id                 = 2;  
    int32                        product                  = 3;  
    bool                         enabled                  = 4;  
    bool                         individual_connection    = 5;
@@ -76,5 +59,24 @@ message VenueProductResponse {
    double                       step_size                = 9;
    double                       maker_fee                = 10;
    double                       taker_fee                = 11;
-   string                       comment                  = 12;
+}
+// Venue Product
+message VenueProductRequest {
+   Venue                       venue                       = 1;  
+   Product                     product                     = 2;  
+}
+message VenueProductResponse { 
+   Retcode                      retcode                  = 1;  
+   string                       id                       = 2;  
+   string                       venue_id                 = 3;  
+   int32                        product                  = 4;  
+   bool                         enabled                  = 5;  
+   bool                         individual_connection    = 6;
+   string                       venue_name               = 7;
+   string                       api_name                 = 8;
+   double                       minimum_orders_size      = 9;
+   double                       step_size                = 10;
+   double                       maker_fee                = 11;
+   double                       taker_fee                = 12;
+   string                       comment                  = 13;
 }
