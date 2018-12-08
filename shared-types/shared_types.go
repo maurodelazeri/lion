@@ -1,13 +1,16 @@
 package shared
 
+import "github.com/mongodb/mongo-go-driver/bson/objectid"
+
 // MongoVenues ...
 type MongoVenues struct {
-	Protobuf   int32  `bson:"protobuf"`
-	Enabled    bool   `bson:"enabled"`
-	APIKey     string `bson:"api_key"`
-	APISecret  string `bson:"api_secret"`
-	Passphrase string `bson:"passphrase"`
-	Name       string `bson:"name"`
+	ID         objectid.ObjectID `bson:"_id"`
+	Protobuf   int32             `bson:"protobuf"`
+	Enabled    bool              `bson:"enabled"`
+	APIKey     string            `bson:"api_key"`
+	APISecret  string            `bson:"api_secret"`
+	Passphrase string            `bson:"passphrase"`
+	Name       string            `bson:"name"`
 	Product    []struct {
 		Product              int32   `bson:"product"`
 		Enabled              bool    `bson:"enabled"`
