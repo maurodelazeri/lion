@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -33,15 +31,14 @@ func (*VenuesRequest) ProtoMessage()    {}
 func (*VenuesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{0}
 }
-
 func (m *VenuesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesRequest.Unmarshal(m, b)
 }
 func (m *VenuesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesRequest.Marshal(b, m, deterministic)
 }
-func (m *VenuesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesRequest.Merge(m, src)
+func (dst *VenuesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesRequest.Merge(dst, src)
 }
 func (m *VenuesRequest) XXX_Size() int {
 	return xxx_messageInfo_VenuesRequest.Size(m)
@@ -55,7 +52,7 @@ var xxx_messageInfo_VenuesRequest proto.InternalMessageInfo
 type VenuesInfo struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	VenueId              int32    `protobuf:"varint,3,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
+	Venue                Venue    `protobuf:"varint,3,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
 	Enabled              bool     `protobuf:"varint,4,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -68,15 +65,14 @@ func (*VenuesInfo) ProtoMessage()    {}
 func (*VenuesInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{1}
 }
-
 func (m *VenuesInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesInfo.Unmarshal(m, b)
 }
 func (m *VenuesInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesInfo.Marshal(b, m, deterministic)
 }
-func (m *VenuesInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesInfo.Merge(m, src)
+func (dst *VenuesInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesInfo.Merge(dst, src)
 }
 func (m *VenuesInfo) XXX_Size() int {
 	return xxx_messageInfo_VenuesInfo.Size(m)
@@ -101,11 +97,11 @@ func (m *VenuesInfo) GetName() string {
 	return ""
 }
 
-func (m *VenuesInfo) GetVenueId() int32 {
+func (m *VenuesInfo) GetVenue() Venue {
 	if m != nil {
-		return m.VenueId
+		return m.Venue
 	}
-	return 0
+	return Venue_DARKPOOL
 }
 
 func (m *VenuesInfo) GetEnabled() bool {
@@ -130,15 +126,14 @@ func (*VenuesResponse) ProtoMessage()    {}
 func (*VenuesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{2}
 }
-
 func (m *VenuesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesResponse.Unmarshal(m, b)
 }
 func (m *VenuesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesResponse.Marshal(b, m, deterministic)
 }
-func (m *VenuesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesResponse.Merge(m, src)
+func (dst *VenuesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesResponse.Merge(dst, src)
 }
 func (m *VenuesResponse) XXX_Size() int {
 	return xxx_messageInfo_VenuesResponse.Size(m)
@@ -171,7 +166,7 @@ func (m *VenuesResponse) GetComment() string {
 }
 
 type VenuesPostRequest struct {
-	VenueId              string   `protobuf:"bytes,1,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
+	Venue                Venue    `protobuf:"varint,1,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
 	Enabled              bool     `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	ApiKey               string   `protobuf:"bytes,3,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
 	ApiSecret            string   `protobuf:"bytes,4,opt,name=api_secret,json=apiSecret,proto3" json:"api_secret,omitempty"`
@@ -187,15 +182,14 @@ func (*VenuesPostRequest) ProtoMessage()    {}
 func (*VenuesPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{3}
 }
-
 func (m *VenuesPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesPostRequest.Unmarshal(m, b)
 }
 func (m *VenuesPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesPostRequest.Marshal(b, m, deterministic)
 }
-func (m *VenuesPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesPostRequest.Merge(m, src)
+func (dst *VenuesPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesPostRequest.Merge(dst, src)
 }
 func (m *VenuesPostRequest) XXX_Size() int {
 	return xxx_messageInfo_VenuesPostRequest.Size(m)
@@ -206,11 +200,11 @@ func (m *VenuesPostRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_VenuesPostRequest proto.InternalMessageInfo
 
-func (m *VenuesPostRequest) GetVenueId() string {
+func (m *VenuesPostRequest) GetVenue() Venue {
 	if m != nil {
-		return m.VenueId
+		return m.Venue
 	}
-	return ""
+	return Venue_DARKPOOL
 }
 
 func (m *VenuesPostRequest) GetEnabled() bool {
@@ -255,15 +249,14 @@ func (*VenuesPostResponse) ProtoMessage()    {}
 func (*VenuesPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{4}
 }
-
 func (m *VenuesPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesPostResponse.Unmarshal(m, b)
 }
 func (m *VenuesPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesPostResponse.Marshal(b, m, deterministic)
 }
-func (m *VenuesPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesPostResponse.Merge(m, src)
+func (dst *VenuesPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesPostResponse.Merge(dst, src)
 }
 func (m *VenuesPostResponse) XXX_Size() int {
 	return xxx_messageInfo_VenuesPostResponse.Size(m)
@@ -302,15 +295,14 @@ func (*VenueDetailedRequest) ProtoMessage()    {}
 func (*VenueDetailedRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{5}
 }
-
 func (m *VenueDetailedRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueDetailedRequest.Unmarshal(m, b)
 }
 func (m *VenueDetailedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueDetailedRequest.Marshal(b, m, deterministic)
 }
-func (m *VenueDetailedRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedRequest.Merge(m, src)
+func (dst *VenueDetailedRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueDetailedRequest.Merge(dst, src)
 }
 func (m *VenueDetailedRequest) XXX_Size() int {
 	return xxx_messageInfo_VenueDetailedRequest.Size(m)
@@ -350,15 +342,14 @@ func (*VenueDetailedResponse) ProtoMessage()    {}
 func (*VenueDetailedResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{6}
 }
-
 func (m *VenueDetailedResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueDetailedResponse.Unmarshal(m, b)
 }
 func (m *VenueDetailedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueDetailedResponse.Marshal(b, m, deterministic)
 }
-func (m *VenueDetailedResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedResponse.Merge(m, src)
+func (dst *VenueDetailedResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueDetailedResponse.Merge(dst, src)
 }
 func (m *VenueDetailedResponse) XXX_Size() int {
 	return xxx_messageInfo_VenueDetailedResponse.Size(m)
@@ -441,8 +432,8 @@ func (m *VenueDetailedResponse) GetComment() string {
 
 type VenueDetailedProduct struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	VenueId              string   `protobuf:"bytes,2,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
-	Product              int32    `protobuf:"varint,3,opt,name=product,proto3" json:"product,omitempty"`
+	Venue                Venue    `protobuf:"varint,2,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
+	Product              Product  `protobuf:"varint,3,opt,name=product,proto3,enum=api.Product" json:"product,omitempty"`
 	Enabled              bool     `protobuf:"varint,4,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	IndividualConnection bool     `protobuf:"varint,5,opt,name=individual_connection,json=individualConnection,proto3" json:"individual_connection,omitempty"`
 	VenueName            string   `protobuf:"bytes,6,opt,name=venue_name,json=venueName,proto3" json:"venue_name,omitempty"`
@@ -462,15 +453,14 @@ func (*VenueDetailedProduct) ProtoMessage()    {}
 func (*VenueDetailedProduct) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{7}
 }
-
 func (m *VenueDetailedProduct) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueDetailedProduct.Unmarshal(m, b)
 }
 func (m *VenueDetailedProduct) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueDetailedProduct.Marshal(b, m, deterministic)
 }
-func (m *VenueDetailedProduct) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedProduct.Merge(m, src)
+func (dst *VenueDetailedProduct) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueDetailedProduct.Merge(dst, src)
 }
 func (m *VenueDetailedProduct) XXX_Size() int {
 	return xxx_messageInfo_VenueDetailedProduct.Size(m)
@@ -488,18 +478,18 @@ func (m *VenueDetailedProduct) GetId() string {
 	return ""
 }
 
-func (m *VenueDetailedProduct) GetVenueId() string {
+func (m *VenueDetailedProduct) GetVenue() Venue {
 	if m != nil {
-		return m.VenueId
+		return m.Venue
 	}
-	return ""
+	return Venue_DARKPOOL
 }
 
-func (m *VenueDetailedProduct) GetProduct() int32 {
+func (m *VenueDetailedProduct) GetProduct() Product {
 	if m != nil {
 		return m.Product
 	}
-	return 0
+	return Product_BTC_USD
 }
 
 func (m *VenueDetailedProduct) GetEnabled() bool {
@@ -573,15 +563,14 @@ func (*VenueProductRequest) ProtoMessage()    {}
 func (*VenueProductRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{8}
 }
-
 func (m *VenueProductRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueProductRequest.Unmarshal(m, b)
 }
 func (m *VenueProductRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueProductRequest.Marshal(b, m, deterministic)
 }
-func (m *VenueProductRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueProductRequest.Merge(m, src)
+func (dst *VenueProductRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueProductRequest.Merge(dst, src)
 }
 func (m *VenueProductRequest) XXX_Size() int {
 	return xxx_messageInfo_VenueProductRequest.Size(m)
@@ -609,8 +598,8 @@ func (m *VenueProductRequest) GetProduct() Product {
 type VenueProductResponse struct {
 	Retcode              Retcode  `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
 	Id                   string   `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	VenueId              string   `protobuf:"bytes,3,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
-	Product              int32    `protobuf:"varint,4,opt,name=product,proto3" json:"product,omitempty"`
+	Venue                Venue    `protobuf:"varint,3,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
+	Product              Product  `protobuf:"varint,4,opt,name=product,proto3,enum=api.Product" json:"product,omitempty"`
 	Enabled              bool     `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
 	IndividualConnection bool     `protobuf:"varint,6,opt,name=individual_connection,json=individualConnection,proto3" json:"individual_connection,omitempty"`
 	VenueName            string   `protobuf:"bytes,7,opt,name=venue_name,json=venueName,proto3" json:"venue_name,omitempty"`
@@ -631,15 +620,14 @@ func (*VenueProductResponse) ProtoMessage()    {}
 func (*VenueProductResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{9}
 }
-
 func (m *VenueProductResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueProductResponse.Unmarshal(m, b)
 }
 func (m *VenueProductResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueProductResponse.Marshal(b, m, deterministic)
 }
-func (m *VenueProductResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueProductResponse.Merge(m, src)
+func (dst *VenueProductResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueProductResponse.Merge(dst, src)
 }
 func (m *VenueProductResponse) XXX_Size() int {
 	return xxx_messageInfo_VenueProductResponse.Size(m)
@@ -664,18 +652,18 @@ func (m *VenueProductResponse) GetId() string {
 	return ""
 }
 
-func (m *VenueProductResponse) GetVenueId() string {
+func (m *VenueProductResponse) GetVenue() Venue {
 	if m != nil {
-		return m.VenueId
+		return m.Venue
 	}
-	return ""
+	return Venue_DARKPOOL
 }
 
-func (m *VenueProductResponse) GetProduct() int32 {
+func (m *VenueProductResponse) GetProduct() Product {
 	if m != nil {
 		return m.Product
 	}
-	return 0
+	return Product_BTC_USD
 }
 
 func (m *VenueProductResponse) GetEnabled() bool {
@@ -743,17 +731,16 @@ func (m *VenueProductResponse) GetComment() string {
 
 type ProductPostRequest struct {
 	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	VenueId              string   `protobuf:"bytes,2,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
-	VenueProtobuf        int32    `protobuf:"varint,3,opt,name=venue_protobuf,json=venueProtobuf,proto3" json:"venue_protobuf,omitempty"`
-	Product              int32    `protobuf:"varint,4,opt,name=product,proto3" json:"product,omitempty"`
-	Enabled              bool     `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	IndividualConnection bool     `protobuf:"varint,6,opt,name=individual_connection,json=individualConnection,proto3" json:"individual_connection,omitempty"`
-	VenueName            string   `protobuf:"bytes,7,opt,name=venue_name,json=venueName,proto3" json:"venue_name,omitempty"`
-	ApiName              string   `protobuf:"bytes,8,opt,name=api_name,json=apiName,proto3" json:"api_name,omitempty"`
-	MinimumOrdersSize    float64  `protobuf:"fixed64,9,opt,name=minimum_orders_size,json=minimumOrdersSize,proto3" json:"minimum_orders_size,omitempty"`
-	StepSize             float64  `protobuf:"fixed64,10,opt,name=step_size,json=stepSize,proto3" json:"step_size,omitempty"`
-	MakerFee             float64  `protobuf:"fixed64,11,opt,name=maker_fee,json=makerFee,proto3" json:"maker_fee,omitempty"`
-	TakerFee             float64  `protobuf:"fixed64,12,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
+	Venue                Venue    `protobuf:"varint,2,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
+	Product              Product  `protobuf:"varint,3,opt,name=product,proto3,enum=api.Product" json:"product,omitempty"`
+	Enabled              bool     `protobuf:"varint,4,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	IndividualConnection bool     `protobuf:"varint,5,opt,name=individual_connection,json=individualConnection,proto3" json:"individual_connection,omitempty"`
+	VenueName            string   `protobuf:"bytes,6,opt,name=venue_name,json=venueName,proto3" json:"venue_name,omitempty"`
+	ApiName              string   `protobuf:"bytes,7,opt,name=api_name,json=apiName,proto3" json:"api_name,omitempty"`
+	MinimumOrdersSize    float64  `protobuf:"fixed64,8,opt,name=minimum_orders_size,json=minimumOrdersSize,proto3" json:"minimum_orders_size,omitempty"`
+	StepSize             float64  `protobuf:"fixed64,9,opt,name=step_size,json=stepSize,proto3" json:"step_size,omitempty"`
+	MakerFee             float64  `protobuf:"fixed64,10,opt,name=maker_fee,json=makerFee,proto3" json:"maker_fee,omitempty"`
+	TakerFee             float64  `protobuf:"fixed64,11,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -765,15 +752,14 @@ func (*ProductPostRequest) ProtoMessage()    {}
 func (*ProductPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{10}
 }
-
 func (m *ProductPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductPostRequest.Unmarshal(m, b)
 }
 func (m *ProductPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ProductPostRequest.Marshal(b, m, deterministic)
 }
-func (m *ProductPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProductPostRequest.Merge(m, src)
+func (dst *ProductPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProductPostRequest.Merge(dst, src)
 }
 func (m *ProductPostRequest) XXX_Size() int {
 	return xxx_messageInfo_ProductPostRequest.Size(m)
@@ -791,25 +777,18 @@ func (m *ProductPostRequest) GetId() string {
 	return ""
 }
 
-func (m *ProductPostRequest) GetVenueId() string {
+func (m *ProductPostRequest) GetVenue() Venue {
 	if m != nil {
-		return m.VenueId
+		return m.Venue
 	}
-	return ""
+	return Venue_DARKPOOL
 }
 
-func (m *ProductPostRequest) GetVenueProtobuf() int32 {
-	if m != nil {
-		return m.VenueProtobuf
-	}
-	return 0
-}
-
-func (m *ProductPostRequest) GetProduct() int32 {
+func (m *ProductPostRequest) GetProduct() Product {
 	if m != nil {
 		return m.Product
 	}
-	return 0
+	return Product_BTC_USD
 }
 
 func (m *ProductPostRequest) GetEnabled() bool {
@@ -882,15 +861,14 @@ func (*ProductPostResponse) ProtoMessage()    {}
 func (*ProductPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9f696248df6cc389, []int{11}
 }
-
 func (m *ProductPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductPostResponse.Unmarshal(m, b)
 }
 func (m *ProductPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ProductPostResponse.Marshal(b, m, deterministic)
 }
-func (m *ProductPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProductPostResponse.Merge(m, src)
+func (dst *ProductPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProductPostResponse.Merge(dst, src)
 }
 func (m *ProductPostResponse) XXX_Size() int {
 	return xxx_messageInfo_ProductPostResponse.Size(m)
@@ -933,47 +911,45 @@ func init() {
 func init() { proto.RegisterFile("webapi.proto", fileDescriptor_9f696248df6cc389) }
 
 var fileDescriptor_9f696248df6cc389 = []byte{
-	// 669 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x95, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0xc7, 0x65, 0xe7, 0xd3, 0x93, 0x34, 0x55, 0xb7, 0xad, 0x70, 0x41, 0xa0, 0xc8, 0x12, 0x90,
-	0x53, 0x0f, 0xed, 0x85, 0x03, 0x37, 0x10, 0x52, 0x85, 0x04, 0xd5, 0x56, 0x2a, 0x47, 0xcb, 0x89,
-	0x27, 0x62, 0xd5, 0x7a, 0x6d, 0xbc, 0x76, 0x51, 0xcb, 0x4b, 0xf0, 0x08, 0xbc, 0x00, 0xcf, 0xc2,
-	0x83, 0xf0, 0x12, 0xc8, 0xb3, 0xeb, 0xc4, 0x4e, 0x9b, 0xc8, 0x11, 0x1c, 0xb9, 0x65, 0xe7, 0xbf,
-	0x1f, 0x33, 0xff, 0xdf, 0x4c, 0x0c, 0xc3, 0xaf, 0x38, 0x0d, 0x12, 0x71, 0x9c, 0xa4, 0x71, 0x16,
-	0xb3, 0x56, 0x90, 0x88, 0xc7, 0x80, 0x32, 0x8f, 0x74, 0xc0, 0xdb, 0x85, 0x9d, 0x4b, 0x94, 0x39,
-	0x2a, 0x8e, 0x5f, 0x72, 0x54, 0x99, 0x87, 0x00, 0x3a, 0x70, 0x26, 0xe7, 0x31, 0x1b, 0x81, 0x2d,
-	0x42, 0xd7, 0x1a, 0x5b, 0x13, 0x87, 0xdb, 0x22, 0x64, 0x0c, 0xda, 0x32, 0x88, 0xd0, 0xb5, 0x29,
-	0x42, 0xbf, 0xd9, 0x11, 0xf4, 0x6f, 0x8a, 0x13, 0xbe, 0x08, 0xdd, 0xd6, 0xd8, 0x9a, 0x74, 0x78,
-	0x8f, 0xd6, 0x67, 0x21, 0x73, 0xa1, 0x87, 0x32, 0x98, 0x5e, 0x63, 0xe8, 0xb6, 0xc7, 0xd6, 0xa4,
-	0xcf, 0xcb, 0xa5, 0xf7, 0x0d, 0x46, 0xe5, 0xbb, 0x2a, 0x89, 0xa5, 0x42, 0xf6, 0x02, 0x7a, 0x29,
-	0x66, 0xb3, 0x38, 0x44, 0x7a, 0x6f, 0x74, 0x32, 0x3c, 0x2e, 0xf2, 0xe6, 0x3a, 0xc6, 0x4b, 0x91,
-	0xbd, 0x84, 0x2e, 0x5d, 0xaf, 0x5c, 0x7b, 0xdc, 0x9a, 0x0c, 0x4e, 0x76, 0x69, 0xdb, 0x32, 0x67,
-	0x6e, 0xe4, 0xe2, 0xf1, 0x59, 0x1c, 0x45, 0x28, 0x33, 0x4a, 0xcb, 0xe1, 0xe5, 0xd2, 0xfb, 0x61,
-	0xc1, 0x9e, 0x3e, 0x70, 0x1e, 0xab, 0xcc, 0x54, 0x5e, 0xab, 0x43, 0x57, 0xfc, 0x50, 0x1d, 0x76,
-	0xad, 0x0e, 0xf6, 0x08, 0x7a, 0x41, 0x22, 0xfc, 0x2b, 0xbc, 0x35, 0x8f, 0x74, 0x83, 0x44, 0xbc,
-	0xc7, 0x5b, 0xf6, 0x14, 0xa0, 0x10, 0x14, 0xce, 0x52, 0xcc, 0xa8, 0x7a, 0x87, 0x3b, 0x41, 0x22,
-	0x2e, 0x28, 0xc0, 0x9e, 0x01, 0x24, 0x81, 0x52, 0xc9, 0xe7, 0x34, 0x50, 0xe8, 0x76, 0x48, 0xae,
-	0x44, 0xbc, 0x4b, 0x60, 0xd5, 0x0c, 0xb7, 0xf4, 0xa8, 0x52, 0xba, 0x5d, 0x2f, 0xfd, 0x15, 0x1c,
-	0xd0, 0xbd, 0x6f, 0x31, 0x0b, 0xc4, 0x35, 0x86, 0x65, 0xf1, 0x63, 0xe8, 0x50, 0xb1, 0xe6, 0x5e,
-	0x58, 0x9a, 0xca, 0xb5, 0xe0, 0xfd, 0xb2, 0xe1, 0x70, 0xe5, 0xe8, 0x96, 0x59, 0xe9, 0x66, 0xb2,
-	0xef, 0x35, 0x53, 0xab, 0xd2, 0x4c, 0x8b, 0x3c, 0xda, 0x6b, 0xf2, 0xa8, 0xb2, 0xe8, 0xac, 0x65,
-	0xd1, 0xdd, 0xc0, 0xa2, 0xb7, 0x99, 0x45, 0x7f, 0x95, 0x05, 0x7b, 0x0d, 0xc3, 0x24, 0x8d, 0xc3,
-	0x7c, 0x96, 0xf9, 0x42, 0xce, 0x63, 0xd7, 0xa1, 0xbe, 0x3b, 0x5a, 0xa6, 0x56, 0x3a, 0x72, 0xae,
-	0x77, 0xf1, 0x81, 0xd9, 0x4e, 0x23, 0x54, 0x61, 0x01, 0x75, 0x16, 0xbf, 0xed, 0x15, 0x18, 0xe6,
-	0xfc, 0xbd, 0xa9, 0xab, 0x76, 0xa6, 0x7d, 0xaf, 0x33, 0xcd, 0x63, 0xe5, 0xec, 0x99, 0xe5, 0xfa,
-	0xd9, 0x63, 0xa7, 0x70, 0x28, 0x64, 0x28, 0x6e, 0x44, 0x98, 0x07, 0xd7, 0xfe, 0x2c, 0x96, 0x12,
-	0x67, 0x99, 0x88, 0xa5, 0xf1, 0xf3, 0x60, 0x29, 0xbe, 0x59, 0x68, 0x85, 0x87, 0x3a, 0x07, 0x42,
-	0xa6, 0xfd, 0x75, 0x28, 0xf2, 0xc1, 0xfc, 0x09, 0x14, 0x16, 0x93, 0xa8, 0x0d, 0x2e, 0x58, 0x90,
-	0x74, 0x0c, 0xfb, 0x91, 0x90, 0x22, 0xca, 0x23, 0x3f, 0x4e, 0x43, 0x4c, 0x95, 0xaf, 0xc4, 0x9d,
-	0xf6, 0xd9, 0xe2, 0x7b, 0x46, 0xfa, 0x48, 0xca, 0x85, 0xb8, 0x43, 0xf6, 0x04, 0x1c, 0x95, 0x61,
-	0xa2, 0x77, 0x39, 0xb4, 0xab, 0x5f, 0x04, 0x4a, 0x31, 0x0a, 0xae, 0x30, 0xf5, 0xe7, 0x88, 0xe4,
-	0xa7, 0xc5, 0xfb, 0x14, 0x78, 0x87, 0x24, 0x66, 0x0b, 0x71, 0xa0, 0xc5, 0xcc, 0x88, 0x9e, 0x0f,
-	0xfb, 0x64, 0x76, 0x09, 0xa9, 0x69, 0xe3, 0x17, 0xed, 0x5d, 0x5a, 0x6c, 0x57, 0xda, 0xbb, 0xbc,
-	0xa7, 0x14, 0xbd, 0x9f, 0x2d, 0x83, 0x73, 0xf1, 0xc2, 0x5f, 0xce, 0xc7, 0xea, 0x1f, 0xeb, 0xc3,
-	0xd8, 0xdb, 0x6b, 0xb1, 0x77, 0x1a, 0x62, 0xef, 0x36, 0xc6, 0xde, 0xdb, 0x84, 0xbd, 0xdf, 0x08,
-	0xbb, 0xd3, 0x08, 0x3b, 0x6c, 0xc2, 0x3e, 0xd8, 0x84, 0x7d, 0x58, 0xc7, 0x5e, 0x1d, 0xbf, 0x9d,
-	0xfa, 0xf8, 0x7d, 0x6f, 0x01, 0x33, 0xa8, 0xaa, 0x9f, 0x81, 0x2d, 0x86, 0xef, 0x39, 0x8c, 0xb4,
-	0x44, 0xdf, 0xd2, 0x69, 0x3e, 0x37, 0x33, 0xb8, 0x73, 0x63, 0xda, 0x80, 0x82, 0xff, 0x61, 0x35,
-	0x85, 0xe5, 0x7d, 0x82, 0xfd, 0x1a, 0x91, 0x7f, 0xf5, 0xd9, 0x9b, 0x76, 0x89, 0xd0, 0xe9, 0x9f,
-	0x00, 0x00, 0x00, 0xff, 0xff, 0xd3, 0x62, 0xfa, 0x7a, 0x0e, 0x09, 0x00, 0x00,
+	// 640 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x96, 0xcf, 0x6e, 0xd3, 0x40,
+	0x10, 0xc6, 0x65, 0xe7, 0xaf, 0x27, 0x69, 0xaa, 0x6e, 0x5b, 0xe1, 0x82, 0x40, 0x91, 0x0f, 0x25,
+	0xa7, 0x1e, 0xda, 0x0b, 0x07, 0x6e, 0x20, 0x24, 0x84, 0x04, 0xd5, 0x56, 0x2a, 0x47, 0x6b, 0x1b,
+	0x4f, 0xc5, 0xaa, 0xf1, 0xae, 0xf1, 0x6e, 0x8a, 0x5a, 0x2e, 0xbc, 0x0d, 0xef, 0xc1, 0x0b, 0xf0,
+	0x46, 0x08, 0x79, 0xd6, 0x4e, 0x9c, 0x96, 0x06, 0x57, 0x20, 0x4e, 0xdc, 0xe2, 0xf9, 0x76, 0x77,
+	0x66, 0x7f, 0xf3, 0x8d, 0x1d, 0x18, 0x7e, 0xc2, 0x33, 0x91, 0xc9, 0x83, 0x2c, 0xd7, 0x56, 0xb3,
+	0x96, 0xc8, 0xe4, 0x43, 0x40, 0x35, 0x4f, 0x5d, 0x20, 0xda, 0x84, 0x8d, 0x53, 0x54, 0x73, 0x34,
+	0x1c, 0x3f, 0xce, 0xd1, 0xd8, 0x68, 0x06, 0xe0, 0x02, 0xaf, 0xd5, 0xb9, 0x66, 0x23, 0xf0, 0x65,
+	0x12, 0x7a, 0x63, 0x6f, 0x12, 0x70, 0x5f, 0x26, 0x8c, 0x41, 0x5b, 0x89, 0x14, 0x43, 0x9f, 0x22,
+	0xf4, 0x9b, 0x8d, 0xa1, 0x73, 0x59, 0xec, 0x08, 0x5b, 0x63, 0x6f, 0x32, 0x3a, 0x84, 0x83, 0x22,
+	0x1d, 0x9d, 0xc1, 0x9d, 0xc0, 0x42, 0xe8, 0xa1, 0x12, 0x67, 0x33, 0x4c, 0xc2, 0xf6, 0xd8, 0x9b,
+	0xf4, 0x79, 0xf5, 0x18, 0x7d, 0x86, 0x51, 0x95, 0xde, 0x64, 0x5a, 0x19, 0x64, 0xfb, 0xd0, 0xcb,
+	0xd1, 0x4e, 0x75, 0x82, 0x94, 0x76, 0x74, 0x38, 0xa4, 0xf3, 0xb8, 0x8b, 0xf1, 0x4a, 0x64, 0x4f,
+	0xa1, 0x4b, 0x87, 0x9b, 0xd0, 0x1f, 0xb7, 0x26, 0x83, 0xc3, 0xcd, 0x65, 0x5a, 0x2a, 0x9d, 0x97,
+	0x72, 0x91, 0x7c, 0xaa, 0xd3, 0x14, 0x95, 0xa5, 0x02, 0x03, 0x5e, 0x3d, 0x46, 0x5f, 0x3d, 0xd8,
+	0x72, 0x1b, 0x8e, 0xb5, 0xb1, 0x25, 0x80, 0xe5, 0x75, 0xbc, 0x06, 0xd7, 0xf1, 0x57, 0xae, 0xc3,
+	0x1e, 0x40, 0x4f, 0x64, 0x32, 0xbe, 0xc0, 0xab, 0x32, 0x57, 0x57, 0x64, 0xf2, 0x0d, 0x5e, 0xb1,
+	0xc7, 0x00, 0x85, 0x60, 0x70, 0x9a, 0xa3, 0x25, 0x08, 0x01, 0x0f, 0x44, 0x26, 0x4f, 0x28, 0xc0,
+	0x9e, 0x00, 0x64, 0xc2, 0x98, 0xec, 0x43, 0x2e, 0x0c, 0x86, 0x1d, 0x92, 0x6b, 0x91, 0xe8, 0x14,
+	0x58, 0xbd, 0xd0, 0x7b, 0xa2, 0xaa, 0x11, 0xf0, 0x57, 0x09, 0x3c, 0x83, 0x1d, 0x3a, 0xf7, 0x25,
+	0x5a, 0x21, 0x67, 0x98, 0x34, 0x66, 0x10, 0x7d, 0xf7, 0x61, 0xf7, 0xc6, 0xd6, 0x7b, 0x56, 0xe5,
+	0xac, 0xe5, 0xdf, 0xb2, 0x56, 0xeb, 0x57, 0xd6, 0x6a, 0x37, 0xe8, 0x45, 0xe7, 0xce, 0x5e, 0x74,
+	0xd7, 0xf4, 0xa2, 0xb7, 0xbe, 0x17, 0xfd, 0x9b, 0xbd, 0x60, 0xcf, 0x61, 0x98, 0xe5, 0x3a, 0x99,
+	0x4f, 0x6d, 0x2c, 0xd5, 0xb9, 0x0e, 0x03, 0xb2, 0xdf, 0xde, 0xb2, 0xb4, 0x8a, 0xc8, 0xb1, 0x5b,
+	0xc5, 0x07, 0xe5, 0x72, 0x1a, 0xa8, 0x5a, 0x2f, 0x60, 0xb5, 0x17, 0x5f, 0x5a, 0x37, 0x9a, 0x51,
+	0xee, 0xbf, 0x35, 0x83, 0x0b, 0x28, 0xfe, 0x5d, 0x50, 0xf6, 0xa1, 0x57, 0xe6, 0x2c, 0x67, 0xd2,
+	0xb5, 0xa0, 0x2a, 0xa8, 0x12, 0xef, 0x9e, 0x4b, 0x76, 0x04, 0xbb, 0x52, 0x25, 0xf2, 0x52, 0x26,
+	0x73, 0x31, 0x8b, 0xa7, 0x5a, 0x29, 0x9c, 0x5a, 0xa9, 0x55, 0x09, 0x79, 0x67, 0x29, 0xbe, 0x58,
+	0x68, 0x05, 0x58, 0xca, 0x1f, 0x53, 0x1f, 0x1d, 0xf4, 0x80, 0x22, 0x6f, 0x8b, 0x66, 0xee, 0x41,
+	0xbf, 0xe0, 0x4e, 0xa2, 0xa3, 0x5e, 0x34, 0x88, 0xa4, 0x03, 0xd8, 0x4e, 0xa5, 0x92, 0xe9, 0x3c,
+	0x8d, 0x75, 0x9e, 0x60, 0x6e, 0x62, 0x23, 0xaf, 0x1d, 0x7c, 0x8f, 0x6f, 0x95, 0xd2, 0x3b, 0x52,
+	0x4e, 0xe4, 0x35, 0xb2, 0x47, 0x10, 0x18, 0x8b, 0x99, 0x5b, 0x15, 0xd0, 0xaa, 0x7e, 0x11, 0xa8,
+	0xc4, 0x54, 0x5c, 0x60, 0x1e, 0x9f, 0x23, 0x12, 0x64, 0x8f, 0xf7, 0x29, 0xf0, 0x0a, 0x49, 0xb4,
+	0x0b, 0x71, 0xe0, 0x44, 0x5b, 0x8a, 0x51, 0x0c, 0xdb, 0xc4, 0xb1, 0x02, 0xd5, 0xf8, 0x8d, 0x50,
+	0x03, 0xee, 0xaf, 0x01, 0x1e, 0x7d, 0xab, 0x7a, 0xbc, 0xc8, 0xf0, 0x87, 0x43, 0xf3, 0xfb, 0x77,
+	0x6f, 0xad, 0xb4, 0x76, 0x43, 0x2f, 0x74, 0x1a, 0x7a, 0xa1, 0xdb, 0xd8, 0x0b, 0xbd, 0x75, 0x5e,
+	0xe8, 0x37, 0xf2, 0x42, 0xd0, 0xc8, 0x0b, 0xb0, 0xce, 0x0b, 0x83, 0x75, 0x5e, 0x18, 0xae, 0x7a,
+	0xa1, 0x3e, 0xa8, 0x1b, 0xab, 0x83, 0xfa, 0xc3, 0x07, 0x56, 0xe2, 0xab, 0x7f, 0x37, 0xfe, 0x8f,
+	0xe9, 0xbf, 0x1a, 0xd3, 0xf7, 0xb0, 0xbd, 0xc2, 0xff, 0x6f, 0x7d, 0x0e, 0xcf, 0xba, 0xf4, 0x9f,
+	0xe8, 0xe8, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0x81, 0x88, 0x89, 0x82, 0x34, 0x09, 0x00, 0x00,
 }

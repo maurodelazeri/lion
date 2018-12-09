@@ -7,95 +7,93 @@ message VenuesRequest {
 }
 
 message VenuesInfo{ 
-   string                       id                    = 1;  
-   string                       name                  = 2;  
-   int32                        venue_id              = 3;
-   bool                         enabled               = 4;
+   string                                id                    = 1;  
+   string                                name                  = 2;  
+   Venue                                 venue                 = 3;
+   bool                                  enabled               = 4;
 }
 message VenuesResponse { 
-   Retcode                      retcode                = 1;  
-   repeated VenuesInfo          venues                 = 2;
-   string                       comment                = 3;
+   Retcode                               retcode                = 1;  
+   repeated VenuesInfo                   venues                 = 2;
+   string                                comment                = 3;
 }
 
 message VenuesPostRequest { 
-   string                                 venue_id              = 1;
-   bool                                   enabled               = 2;
-   string                                 api_key               = 3;
-   string                                 api_secret            = 4;
-   string                                 passphrase            = 5;
+   Venue                                 venue                 = 1;
+   bool                                  enabled               = 2;
+   string                                api_key               = 3;
+   string                                api_secret            = 4;
+   string                                passphrase            = 5;
 }
 message VenuesPostResponse { 
-   Retcode                      retcode                = 1;  
-   string                       comment                = 2;   
+   Retcode                               retcode                = 1;  
+   string                                comment                = 2;   
 }
-
 
 // Venues Detailed
 message VenueDetailedRequest {
-   Venue                                   venue                 = 1;  
+   Venue                                 venue                   = 1;  
 }
 message VenueDetailedResponse { 
-   Retcode                                retcode               = 1;  
-   string                                 id                    = 2;  
-   string                                 name                  = 3;  
-   Venue                                  venue                 = 4;
-   bool                                   enabled               = 5;
-   string                                 api_key               = 6;
-   string                                 api_secret            = 7;
-   string                                 passphrase            = 8;
-   repeated VenueDetailedProduct          product_info          = 9;
-   string                                 comment               = 10;
+   Retcode                               retcode                 = 1;  
+   string                                id                      = 2;  
+   string                                name                    = 3;  
+   Venue                                 venue                   = 4;
+   bool                                  enabled                 = 5;
+   string                                api_key                 = 6;
+   string                                api_secret              = 7;
+   string                                passphrase              = 8;
+   repeated VenueDetailedProduct         product_info            = 9;
+   string                                comment                 = 10;
 }
 message VenueDetailedProduct{
-   string                       id                       = 1;  
-   string                       venue_id                 = 2;  
-   int32                        product                  = 3;  
-   bool                         enabled                  = 4;  
-   bool                         individual_connection    = 5;
-   string                       venue_name               = 6;
-   string                       api_name                 = 7;
-   double                       minimum_orders_size      = 8;
-   double                       step_size                = 9;
-   double                       maker_fee                = 10;
-   double                       taker_fee                = 11;
+   string                                id                       = 1;  
+   Venue                                 venue                    = 2;  
+   Product                               product                  = 3;  
+   bool                                  enabled                  = 4;  
+   bool                                  individual_connection    = 5;
+   string                                venue_name               = 6;
+   string                                api_name                 = 7;
+   double                                minimum_orders_size      = 8;
+   double                                step_size                = 9;
+   double                                maker_fee                = 10;
+   double                                taker_fee                = 11;
 }
 // Venue Product
 message VenueProductRequest {
-   Venue                       venue                       = 1;  
-   Product                     product                     = 2;  
-}
+   Venue                                 venue                    = 1;  
+   Product                               product                  = 2;  
+   }
 message VenueProductResponse { 
-   Retcode                      retcode                  = 1;  
-   string                       id                       = 2;  
-   string                       venue_id                 = 3;  
-   int32                        product                  = 4;  
-   bool                         enabled                  = 5;  
-   bool                         individual_connection    = 6;
-   string                       venue_name               = 7;
-   string                       api_name                 = 8;
-   double                       minimum_orders_size      = 9;
-   double                       step_size                = 10;
-   double                       maker_fee                = 11;
-   double                       taker_fee                = 12;
-   string                       comment                  = 13;
+   Retcode                               retcode                  = 1;  
+   string                                id                       = 2;  
+   Venue                                 venue                    = 3;  
+   Product                               product                  = 4;  
+   bool                                  enabled                  = 5;  
+   bool                                  individual_connection    = 6;
+   string                                venue_name               = 7;
+   string                                api_name                 = 8;
+   double                                minimum_orders_size      = 9;
+   double                                step_size                = 10;
+   double                                maker_fee                = 11;
+   double                                taker_fee                = 12;
+   string                                comment                  = 13;
 }
 
 message ProductPostRequest { 
-   string                       id                       = 1;
-   string                       venue_id                 = 2; 
-   int32                        venue_protobuf           = 3; 
-   int32                        product                  = 4;  
-   bool                         enabled                  = 5;  
-   bool                         individual_connection    = 6;
-   string                       venue_name               = 7;
-   string                       api_name                 = 8;
-   double                       minimum_orders_size      = 9;
-   double                       step_size                = 10;
-   double                       maker_fee                = 11;
-   double                       taker_fee                = 12;
+   string                               id                       = 1;
+   Venue                                venue                    = 2; 
+   Product                              product                  = 3;  
+   bool                                 enabled                  = 4;  
+   bool                                 individual_connection    = 5;
+   string                               venue_name               = 6;
+   string                               api_name                 = 7;
+   double                               minimum_orders_size      = 8;
+   double                               step_size                = 9;
+   double                               maker_fee                = 10;
+   double                               taker_fee                = 11;
 }
 message ProductPostResponse { 
-   Retcode                      retcode                = 1;  
-   string                       comment                = 2;   
+   Retcode                             retcode                   = 1;  
+   string                              comment                   = 2;   
 }

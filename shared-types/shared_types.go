@@ -5,7 +5,7 @@ import "github.com/mongodb/mongo-go-driver/bson/objectid"
 // MongoVenue ...
 type MongoVenue struct {
 	ID         objectid.ObjectID `bson:"_id"`
-	Protobuf   int32             `bson:"protobuf"`
+	Venue      int32             `bson:"venue"`
 	Enabled    bool              `bson:"enabled"`
 	APIKey     string            `bson:"api_key"`
 	APISecret  string            `bson:"api_secret"`
@@ -16,7 +16,7 @@ type MongoVenue struct {
 // MongoProduct ...
 type MongoProduct struct {
 	ID                   objectid.ObjectID `bson:"_id"`
-	VenueID              objectid.ObjectID `bson:"venue_id"`
+	VenueID              int32             `bson:"venue_id"`
 	Product              int32             `bson:"product"`
 	Enabled              bool              `bson:"enabled"`
 	IndividualConnection bool              `bson:"individual_connection"`
