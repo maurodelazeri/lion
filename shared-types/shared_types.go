@@ -5,7 +5,7 @@ import "github.com/mongodb/mongo-go-driver/bson/objectid"
 // MongoVenue ...
 type MongoVenue struct {
 	ID         objectid.ObjectID `bson:"_id"`
-	Venue      int32             `bson:"venue"`
+	Venue      int32             `bson:"protobuf"`
 	Enabled    bool              `bson:"enabled"`
 	APIKey     string            `bson:"api_key"`
 	APISecret  string            `bson:"api_secret"`
