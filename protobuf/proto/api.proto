@@ -23,6 +23,7 @@ service API {
   rpc PostVenues(VenuesPostRequest) returns (VenuesPostResponse) {}
   rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
   rpc GetVenueProductDetail(VenueProductRequest) returns (VenueProductResponse) {}
+  rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}
 } 
 
   message Orders { 

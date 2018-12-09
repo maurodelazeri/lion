@@ -80,3 +80,22 @@ message VenueProductResponse {
    double                       taker_fee                = 12;
    string                       comment                  = 13;
 }
+
+message ProductPostRequest { 
+   string                       id                       = 1;
+   string                       venue_id                 = 2; 
+   int32                        venue_protobuf           = 3; 
+   int32                        product                  = 4;  
+   bool                         enabled                  = 5;  
+   bool                         individual_connection    = 6;
+   string                       venue_name               = 7;
+   string                       api_name                 = 8;
+   double                       minimum_orders_size      = 9;
+   double                       step_size                = 10;
+   double                       maker_fee                = 11;
+   double                       taker_fee                = 12;
+}
+message ProductPostResponse { 
+   Retcode                      retcode                = 1;  
+   string                       comment                = 2;   
+}
