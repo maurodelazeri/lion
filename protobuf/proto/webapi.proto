@@ -32,7 +32,7 @@ message VenuesPostResponse {
 
 // Venues Detailed
 message VenueDetailedRequest {
-   Venue                                 venue                   = 1;  
+   string                                id                       = 1;
 }
 message VenueDetailedResponse { 
    Retcode                               retcode                 = 1;  
@@ -61,9 +61,8 @@ message VenueDetailedProduct{
 }
 // Venue Product
 message VenueProductRequest {
-   Venue                                 venue                    = 1;  
-   Product                               product                  = 2;  
-   }
+   string                                id                       = 1;
+}
 message VenueProductResponse { 
    Retcode                               retcode                  = 1;  
    string                                id                       = 2;  

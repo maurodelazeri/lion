@@ -21,7 +21,6 @@ type MongoProduct struct {
 	Enabled              bool              `bson:"enabled"`
 	IndividualConnection bool              `bson:"individual_connection"`
 	VenueName            string            `bson:"venue_name"`
-	APIName              string            `bson:"api_name"`
 	MinimumOrdersSize    float64           `bson:"minimum_orders_size"`
 	StepSize             float64           `bson:"step_size"`
 	MakerFee             float64           `bson:"maker_fee"`
