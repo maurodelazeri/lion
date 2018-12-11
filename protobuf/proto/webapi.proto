@@ -32,7 +32,7 @@ message VenuesPostResponse {
 
 // Venues Detailed
 message VenueDetailedRequest {
-   string                                id                       = 1;
+   Venue                                venue                   = 1;
 }
 message VenueDetailedResponse { 
    Retcode                               retcode                 = 1;  
