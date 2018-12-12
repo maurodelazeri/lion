@@ -91,6 +91,7 @@ message ProductPostRequest {
    double                               step_size                = 9;
    double                               maker_fee                = 10;
    double                               taker_fee                = 11;
+   Action                               action                   = 12;
 }
 message ProductPostResponse { 
    Retcode                             retcode                   = 1;  

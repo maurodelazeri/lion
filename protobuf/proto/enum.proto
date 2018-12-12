@@ -380,3 +380,14 @@ package api;
 	NEXT       = 1;
 	FINISHED   = 2;
   };
+
+
+
+
+  enum Action{
+	INSERT   = 0;
+	UPDATE   = 1;
+	DELETE   = 2;
+  };
+
+  
