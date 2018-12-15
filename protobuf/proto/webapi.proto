@@ -106,6 +106,7 @@ message LoginRequest {
 
 
 message LoginResponse { 
-   Retcode                             retcode                   = 1;  
-   string                              comment                   = 2;   
+   Retcode                             retcode                   = 1; 
+   string                              token                     = 2;   
+   string                              comment                   = 3;   
 }
