@@ -26,3 +26,12 @@ type MongoProduct struct {
 	MakerFee             float64           `bson:"maker_fee"`
 	TakerFee             float64           `bson:"taker_fee"`
 }
+
+// MongoUser ...
+type MongoUser struct {
+	ID       objectid.ObjectID `bson:"_id"`
+	Email    string            `bson:"email"`
+	Username string            `bson:"username"`
+	Password string            `bson:"password"`
+	Active   bool              `bson:"active"`
+}

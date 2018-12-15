@@ -24,6 +24,9 @@ service API {
   rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
   rpc GetVenueProductDetail(VenueProductRequest) returns (VenueProductResponse) {}
   rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}
+
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+
 } 
 
   message Orders { 
