@@ -118,7 +118,7 @@ message AccountsRequest {
 
 message AccountsResponse { 
    Retcode                             retcode                   = 1; 
-   string                              comment                   = 3;   
+   string                              comment                   = 2;   
 }
 
 message AccountsPostRequest { 
@@ -128,5 +128,5 @@ message AccountsPostRequest {
 
 message AccountsPostResponse { 
    Retcode                             retcode                   = 1; 
-   string                              comment                   = 3;   
+   string                              comment                   = 2;   
 }
