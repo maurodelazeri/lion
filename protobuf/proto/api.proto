@@ -27,6 +27,9 @@ service API {
 
   rpc Login(LoginRequest) returns (LoginResponse) {}
 
+  rpc GetAccounts(AccountsRequest) returns (AccountsResponse) {}
+  rpc PostAccounts(AccountsPostRequest) returns (AccountsPostResponse) {}
+
 } 
 
   message Orders { 

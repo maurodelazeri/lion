@@ -98,15 +98,35 @@ message ProductPostResponse {
    string                              comment                   = 2;   
 }
 
-
+// Login
 message LoginRequest { 
    string                              user                      = 1;   
    string                              password                  = 2;   
 }
 
-
 message LoginResponse { 
    Retcode                             retcode                   = 1; 
    string                              token                     = 2;   
+   string                              comment                   = 3;   
+}
+
+// Account
+message AccountsRequest { 
+   string                              user                      = 1;   
+   AccountMode                         account_mode              = 2;   
+}
+
+message AccountsResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 3;   
+}
+
+message AccountsPostRequest { 
+   string                              user                      = 1; 
+   Action                              action                    = 2;  
+}
+
+message AccountsPostResponse { 
+   Retcode                             retcode                   = 1; 
    string                              comment                   = 3;   
 }
