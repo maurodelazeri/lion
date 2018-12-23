@@ -13,7 +13,6 @@ service API {
   // Order request - A simple RPC 
   rpc OrderSend(OrderRequest) returns (OrderResult) {}
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
-  rpc GetAccount(AccountRequest) returns (AccountResult) {}
   rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
   rpc GetBacktestingToken(BacktestingTokenRequest) returns (BacktestingTokenResponse) {}
@@ -117,16 +116,6 @@ message PositionsResult {
    string                       comment                   = 3; 
 }
 
-message AccountRequest { 
-  Venue                         venue                = 1; 
-}
-
-message AccountResult { 
-   Retcode                      retcode                   = 1;  
-   Account                      account                   = 2;  
-   string                       comment                   = 3;
-}
-
 message ProductRequest { 
   Venue                           venue                = 1;
   Product                         product              = 2;
@@ -158,18 +147,6 @@ message HistoricalTradesResult {
    Retcode                      retcode                   = 1; 
    Trade                        trades                    = 2;
    string                       comment                   = 3;
-}
-
-message User {
-  string           id       = 1;
-  repeated Account accounts = 2;
-}
-
-message Account {
-  string                     account_id   = 1;
-  AccountType                account_type = 2;
-  bool                       active       = 3;
-  repeated Balance           balances     = 4;
 }
 
 message Balance  {

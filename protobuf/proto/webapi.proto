@@ -111,19 +111,28 @@ message LoginResponse {
 }
 
 // Account
+message Account { 
+   string                              id                        = 1; 
+   string                              user_id                   = 2; 
+   AccountMode                         account_mode              = 3; 
+   AccountType                         account_type              = 4; 
+   bool                                enabled                   = 5; 
+}
+
 message AccountsRequest { 
-   string                              user                      = 1; 
+   string                              user_id                   = 1; 
    string                              account                   = 2;     
    AccountMode                         account_mode              = 3;   
 }
 
 message AccountsResponse { 
-   Retcode                             retcode                   = 1; 
-   string                              comment                   = 2;   
+   Retcode                             retcode                   = 1;
+   repeated Account                    account                   = 2; 
+   string                              comment                   = 3;   
 }
 
 message AccountsPostRequest { 
-   string                              account                   = 1; 
+   string                              account_id                = 1; 
    Action                              action                    = 2;  
 }
 

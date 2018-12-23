@@ -36,11 +36,11 @@ type MongoUser struct {
 	Active   bool              `bson:"active"`
 }
 
-// Account ...
-type Account struct {
+// MongoAccount ...
+type MongoAccount struct {
 	ID          objectid.ObjectID `bson:"_id"`
 	UserID      objectid.ObjectID `bson:"user_id"`
 	AccountMode int32             `bson:"account_mode"`
 	AccountType int32             `bson:"account_type"`
-	Active      bool              `bson:"active"`
+	Enabled     bool              `bson:"enabled"`
 }
