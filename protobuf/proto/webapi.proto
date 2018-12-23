@@ -112,8 +112,9 @@ message LoginResponse {
 
 // Account
 message AccountsRequest { 
-   string                              user                      = 1;   
-   AccountMode                         account_mode              = 2;   
+   string                              user                      = 1; 
+   string                              account                   = 2;     
+   AccountMode                         account_mode              = 3;   
 }
 
 message AccountsResponse { 
@@ -122,7 +123,7 @@ message AccountsResponse {
 }
 
 message AccountsPostRequest { 
-   string                              user                      = 1; 
+   string                              account                   = 1; 
    Action                              action                    = 2;  
 }
 
