@@ -1,0 +1,52 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+import "marketdata.proto";
+import "balance.proto";
+
+message Subscription {
+  repeated SubscriptionItems  subscribe  = 1;
+}
+
+message SubscriptionItems {
+  Venue            venue         = 1;
+  Product          product       = 2;
+  bool             orderbook     = 3;
+}
+
+message BacktestingTokenRequest {
+  ClientInitilization     initialization     = 1;
+}
+
+message BacktestingTokenResponse { 
+   Retcode                      retcode                   = 1; 
+   string                       token                     = 2;
+   string                       comment                   = 3;
+}
+
+message BacktestingRequest {
+  string                          account              = 1; 
+  Subscription                    subscription         = 2;
+  int64                           start_date           = 3;
+  int64                           end_date             = 4;
+  BacktestingCode                 code                 = 5; 
+}
+
+message BacktestingResponse { 
+   Retcode                      retcode                = 1; 
+   BacktestingCode              code                   = 2; 
+   Trade                        trade                  = 3;
+   Orderbook                    orderbook              = 4;
+   string                       comment                = 5;
+}
+
+message ClientInitilization {
+  AccountMode                       account_mode           = 1; 
+  Subscription                      subscription           = 2;
+  repeated Balance                  balances               = 3; 
+  int64                             start_date             = 4;
+  int64                             end_date               = 5;  
+  string                            candle_granularity     = 6;
+  CandleGroupBy                     candle_group_by        = 7;
+  bool                              verbose                = 8; 
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-protoc -I proto/ proto/enum.proto proto/api.proto proto/webapi.proto  \
+protoc -I proto/ proto/*.proto  \
     --go_out=plugins=grpc:api \
     --plugin=protoc-gen-ts=../../siberia/app/node_modules/.bin/protoc-gen-ts \
     --ts_out=service=true:../../siberia/app/src/api \

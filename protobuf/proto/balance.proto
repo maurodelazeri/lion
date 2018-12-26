@@ -1,0 +1,12 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+
+message Balance  {
+  Venue      venue           = 1; 
+  Currency   currency        = 2;
+  double     available       = 3; 
+  int64      Timestamp       = 4;
+  string     position        = 5;
+  string     order           = 6;
+}

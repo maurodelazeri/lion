@@ -1,0 +1,24 @@
+
+syntax = "proto3";
+package api;
+import "enum.proto";
+
+message ProductRequest { 
+  Venue                           venue                = 1;
+  Product                         product              = 2;
+}
+
+message ProductResult { 
+   Retcode                      retcode                   = 1; 
+   VenueProduct                 venue_products            = 2;
+   string                       comment                   = 3;
+}
+
+message VenueProduct {
+  bool                    enabled                   = 1;
+  bool                    individual_connection     = 2;
+  double                  minimum_orders_size       = 3;
+  double                  step_size                 = 4;
+  double                  maker_fee                 = 5;
+  double                  taker_fee                 = 6;
+}

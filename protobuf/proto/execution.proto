@@ -1,0 +1,88 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+
+  message Orders { 
+    Venue                         venue                    = 1;  
+    OrderType                     type                     = 2;
+    Side                          side                     = 3;    
+    OrderState                    state                    = 4;  
+    int64                         time_expiration          = 5;  
+    int64                         time_setup               = 6;  
+    OrderTypeFilling              type_filling             = 7;  
+    OrderTypeTime                 type_time                = 8;  
+    Reason                        reason                   = 9;   
+    Product                       product                  = 10;  
+    string                        venue_execution_id       = 11;  
+    double                        volume                   = 12;  
+    double                        price                    = 13;  
+    double                        fee                      = 14; 
+    double                        left_volume              = 15;
+    OrderEntryType                entry_type               = 16;   
+    string                        comment                  = 17;  
+   }
+
+ message OrderRequest { 
+   TradeAction                   action               = 1;  // Trade operation type 
+   Venue                         venue                = 2;  // Venue where the order is being send
+   Product                       product              = 3;  // Trade product
+   double                        volume               = 4;  // Requested volume for a deal in lots 
+   double                        price                = 5;  // Price 
+   double                        stoplimit            = 6;  // StopLimit level of the order 
+   double                        sl                   = 7;  // Stop Loss level of the order 
+   double                        tp                   = 8;  // Take Profit level of the order 
+   double                        trailling_percent    = 9; // Once hit, follows to profit based on this percentage  
+   double                        deviation            = 10; // Maximal possible deviation from the requested price 
+   OrderType                     order_type           = 11; // Order type
+   Side                          order_side           = 12; // Order side  
+   OrderTypeFilling              order_type_filling   = 13; // Order execution type 
+   OrderTypeTime                 order_type_time      = 14; // Order expiration type 
+   Reason                        order_reason         = 15; // Order reason
+   int64                         expiration           = 16; // Order expiration time (for the orders of ORDER_TIME_SPECIFIED type) 
+   string                        comment              = 17; // Order comment 
+   string                        position             = 18; // Position ticket 
+  }
+
+message OrderResult { 
+   Retcode                      retcode                   = 1; // Operation return code    
+   double                       price                     = 2; // Deal price, confirmed by broker
+   double                       volume                    = 3; // Deal volume, confirmed by broker    
+   double                       fee                       = 4; // Trade fee
+   OrderState                   state                     = 5; // Order state
+   string                       position_id               = 6; // position id placed 
+   string                       broker_execution_id       = 7; // Return code of an external trading system 
+   string                       comment                   = 8; // Broker comment to operation (by default it is filled by description of trade server return code)    
+  }
+
+message Position {
+  string                        position_id              = 1;
+	string                        account_id               = 2;
+	Venue                         venue                    = 3; 
+	Product                       product                  = 4;
+	double                        price_open               = 5;
+	double                        weighted_price           = 6;
+	double                        volume                   = 7;
+  int64                         position_time            = 8;
+	int64                         closing_time             = 9;
+	Side                          position_side            = 10; 
+	Reason                        position_reason          = 11;
+	double                        sl                       = 12;
+	double                        tp                       = 13;  
+	double                        swap                     = 14;
+	double                        trailling_percent        = 15;  
+	string                        comment                  = 16;
+	double                        profit_liquid            = 17;
+	double                        cumulative_fees          = 18;
+  repeated  Orders              Orders                   = 19;
+  }
+
+message PositionRequest { 
+  Venue                        venue                  = 1;
+  Product                      product                = 2;
+}
+
+message PositionsResult { 
+   Retcode                      retcode                   = 1;
+   repeated Position            positions                 = 2;  
+   string                       comment                   = 3; 
+}
