@@ -11,7 +11,7 @@ message Account {
 }
 
 message AccountsRequest { 
-   string                              user_id                   = 1; 
+   string                              token                     = 1;  
    string                              account_id                = 2;     
    AccountMode                         account_mode              = 3;   
 }
@@ -22,8 +22,8 @@ message AccountsResponse {
    string                              comment                   = 3;   
 }
 
-message AccountsPostRequest { 
-   string                              account_id                = 1; 
+message AccountsPostRequest {
+   string                              token                     = 1;   
    Action                              action                    = 2;  
 }
 
