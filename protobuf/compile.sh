@@ -11,17 +11,15 @@ case "$(uname -s)" in
 
    Darwin)
      echo 'Mac OS X'
-        sed -i "" '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/webapi_pb.js
-        sed -i "" '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/api_pb_service.js
-        sed -i "" '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/enum_pb.js
-        sed -i "" '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/api_pb.js
+        ls ../../siberia/app/src/api/* | while read line;do
+        sed -i "" '1s/^/\/* eslint-disable *\/ /' $line
+        done
      ;;
    Linux)
      echo 'Linux'
-        sed -i '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/webapi_pb.js
-        sed -i '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/api_pb_service.js
-        sed -i '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/enum_pb.js
-        sed -i '1s/^/\/* eslint-disable *\/ /' ../../siberia/app/src/api/api_pb.js
+        ls ../../siberia/app/src/api/* | while read line;do
+        sed -i '1s/^/\/* eslint-disable *\/ /' $line
+        done
      ;;
    *)
      echo 'other OS' 

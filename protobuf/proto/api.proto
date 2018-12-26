@@ -1,10 +1,11 @@
 syntax = "proto3";
 package api;
-import "webapi.proto";
+import "auth.proto";
+import "venues.proto";
 import "execution.proto";
 import "backtesting.proto";
 import "reports.proto";
-import "general.proto";
+import "accounts.proto";
 
 // https://www.mql5.com/en/docs/standardlibrary/tradeclasses/ctrade/ctradepositionclose
 
@@ -15,7 +16,6 @@ service API {
   // Order request - A simple RPC 
   rpc OrderSend(OrderRequest) returns (OrderResult) {}
   rpc GetPositions(PositionRequest) returns (PositionsResult) {}
-  rpc GetProductDetails(ProductRequest) returns (ProductResult) {}
   rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
   rpc GetBacktestingToken(BacktestingTokenRequest) returns (BacktestingTokenResponse) {}
   rpc Backtesting(stream BacktestingRequest) returns (stream BacktestingResponse) {}
