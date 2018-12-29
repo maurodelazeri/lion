@@ -17,6 +17,7 @@ message VenuesResponse {
    Retcode                               retcode                = 1;  
    repeated VenuesInfo                   venues                 = 2;
    string                                comment                = 3;
+   string                                elapsed                = 4;
 }
 
 message VenuesPostRequest {
@@ -30,6 +31,7 @@ message VenuesPostRequest {
 message VenuesPostResponse { 
    Retcode                               retcode                = 1;  
    string                                comment                = 2;   
+   string                                elapsed                = 3;
 }
 
 // Venues Detailed
@@ -48,6 +50,7 @@ message VenueDetailedResponse {
    string                                passphrase              = 8;
    repeated VenueDetailedProduct         product_info            = 9;
    string                                comment                 = 10;
+   string                                elapsed                 = 11;
 }
 message VenueDetailedProduct{
    string                                token                    = 1;  
@@ -82,6 +85,7 @@ message VenueProductResponse {
    double                                maker_fee                = 11;
    double                                taker_fee                = 12;
    string                                comment                  = 13;
+   string                                elapsed                  = 14;
 }
 
 message ProductPostRequest { 
@@ -102,5 +106,6 @@ message ProductPostRequest {
 message ProductPostResponse { 
    Retcode                             retcode                   = 1;  
    string                              comment                   = 2;   
+   string                              elapsed                   = 3;
 }
 
