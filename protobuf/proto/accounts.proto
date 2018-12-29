@@ -13,21 +13,23 @@ message Account {
 message AccountsRequest { 
    string                              token                     = 1;  
    string                              account_id                = 2;     
-   AccountMode                         account_mode              = 3;   
+   AccountMode                         account_mode              = 3; 
 }
 
 message AccountsResponse { 
    Retcode                             retcode                   = 1;
-   repeated Account                    account                   = 2; 
+   repeated Account                    accounts                  = 2; 
    string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
 }
 
 message AccountsPostRequest {
    string                              token                     = 1;   
-   Action                              action                    = 2;  
+   Action                              action                    = 2;
 }
 
 message AccountsPostResponse { 
    Retcode                             retcode                   = 1; 
    string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
 }
