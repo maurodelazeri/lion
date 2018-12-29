@@ -12,4 +12,5 @@ message LoginResponse {
    Retcode                             retcode                   = 1; 
    string                              token                     = 2;   
    string                              comment                   = 3;   
+   string                              elapsed                   = 4;
 }
