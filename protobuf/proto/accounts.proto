@@ -4,10 +4,11 @@ import "enum.proto";
 
 message Account { 
    string                              id                        = 1; 
-   string                              user_id                   = 2; 
-   AccountMode                         account_mode              = 3; 
-   AccountType                         account_type              = 4; 
-   bool                                enabled                   = 5; 
+   string                              user_id                   = 2;
+   string                              description               = 3; 
+   AccountMode                         account_mode              = 4; 
+   AccountType                         account_type              = 5; 
+   bool                                enabled                   = 6; 
 }
 
 message AccountsRequest { 

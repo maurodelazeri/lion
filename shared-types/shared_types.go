@@ -40,6 +40,7 @@ type MongoUser struct {
 type MongoAccount struct {
 	ID          objectid.ObjectID `bson:"_id"`
 	UserID      objectid.ObjectID `bson:"user_id"`
+	Description string            `bson:"description"`
 	AccountMode int32             `bson:"account_mode"`
 	AccountType int32             `bson:"account_type"`
 	Enabled     bool              `bson:"enabled"`
