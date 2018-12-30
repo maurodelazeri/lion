@@ -15,6 +15,7 @@ message AccountsRequest {
    string                              token                     = 1;  
    string                              account_id                = 2;     
    AccountMode                         account_mode              = 3; 
+   AccountType                         account_type              = 4; 
 }
 
 message AccountsResponse { 
