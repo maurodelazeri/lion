@@ -45,3 +45,13 @@ type MongoAccount struct {
 	AccountType int32             `bson:"account_type"`
 	Enabled     bool              `bson:"enabled"`
 }
+
+// MongoAccountBalances ...
+type MongoAccountBalances struct {
+	ID        objectid.ObjectID `bson:"_id"`
+	UserID    objectid.ObjectID `bson:"user_id"`
+	Currency  int32             `bson:"currency"`
+	Venue     int32             `bson:"venue"`
+	Available float64           `bson:"available"`
+	Hold      float64           `bson:"hold"`
+}
