@@ -1,6 +1,8 @@
 package shared
 
-import "github.com/mongodb/mongo-go-driver/bson/objectid"
+import (
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+)
 
 // MongoVenue ...
 type MongoVenue struct {

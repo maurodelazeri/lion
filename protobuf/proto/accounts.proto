@@ -46,6 +46,6 @@ message AccountBalanceResponse {
    Retcode                             retcode                   = 1;
    string                              comment                   = 2;    
    Account                             account                   = 3;   
-   repeated  Balance                   balance                   = 4; 
+   repeated  Balance                   balances                  = 4; 
    string                              elapsed                   = 5; 
 }
