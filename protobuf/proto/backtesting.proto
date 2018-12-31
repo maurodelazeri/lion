@@ -2,7 +2,7 @@ syntax = "proto3";
 package api;
 import "enum.proto";
 import "marketdata.proto";
-import "balance.proto";
+import "balances.proto";
 
 message Subscription {
   repeated SubscriptionItems  subscribe  = 1;

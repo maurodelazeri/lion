@@ -4,7 +4,7 @@ import "enum.proto";
 import "marketdata.proto";
 import "execution.proto";
 import "backtesting.proto";
-import "balance.proto";
+import "balances.proto";
 
 message HistoricalTradesRequest { 
   Venue                          venue                = 1;
