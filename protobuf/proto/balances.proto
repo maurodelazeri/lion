@@ -25,3 +25,15 @@ message BalanceResponse  {
    Balance                             balance                   = 3;   
    string                              elapsed                   = 4; 
 }
+
+message BalancePostRequest {
+   string                              token                     = 1; 
+   Balance                             balance                   = 2;     
+   Action                              action                    = 3;
+}
+
+message BalancePostResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
+}
