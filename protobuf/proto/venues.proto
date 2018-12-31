@@ -12,6 +12,7 @@ message VenuesInfo{
    string                                name                  = 2;  
    Venue                                 venue                 = 3;
    bool                                  enabled               = 4;
+   VenueType                             venue_type            = 5;
 }
 message VenuesResponse { 
    Retcode                               retcode                = 1;  
@@ -27,6 +28,7 @@ message VenuesPostRequest {
    string                                api_key               = 4;
    string                                api_secret            = 5;
    string                                passphrase            = 6;
+   VenueType                             venue_type            = 7;
 }
 message VenuesPostResponse { 
    Retcode                               retcode                = 1;  
@@ -48,9 +50,10 @@ message VenueDetailedResponse {
    string                                api_key                 = 6;
    string                                api_secret              = 7;
    string                                passphrase              = 8;
-   repeated VenueDetailedProduct         product_info            = 9;
-   string                                comment                 = 10;
-   string                                elapsed                 = 11;
+   VenueType                             venue_type              = 9;
+   repeated VenueDetailedProduct         product_info            = 10;
+   string                                comment                 = 11;
+   string                                elapsed                 = 12;
 }
 message VenueDetailedProduct{
    string                                token                    = 1;  

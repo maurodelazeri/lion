@@ -13,6 +13,7 @@ type MongoVenue struct {
 	APISecret  string            `bson:"api_secret"`
 	Passphrase string            `bson:"passphrase"`
 	Name       string            `bson:"name"`
+	VenueType  int32             `bson:"venue_type"`
 }
 
 // MongoProduct ...
