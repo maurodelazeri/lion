@@ -3,10 +3,11 @@ package api;
 import "enum.proto";
 
 message Balance  {
-  Venue      venue           = 1; 
-  Currency   currency        = 2;
-  double     available       = 3; 
-  int64      Timestamp       = 4;
-  string     position        = 5;
-  string     order           = 6;
+  string     id              = 1; 
+  string     user_id         = 2; 
+  Venue      venue           = 3; 
+  Currency   currency        = 4;
+  double     available       = 5; 
+  double     hold            = 6; 
+  int64      last_change     = 7;
 }
