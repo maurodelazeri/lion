@@ -30,7 +30,7 @@ service API {
 
   rpc GetAccounts(AccountsRequest) returns (AccountsResponse) {}
   rpc GetAccountBalance(AccountBalanceRequest) returns (AccountBalanceResponse) {}
-  rpc PostAccounts(AccountsPostRequest) returns (AccountsPostResponse) {}
+  rpc PostAccount(AccountsPostRequest) returns (AccountsPostResponse) {}
 
 } 
 
