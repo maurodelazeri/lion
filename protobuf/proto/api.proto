@@ -6,6 +6,7 @@ import "execution.proto";
 import "backtesting.proto";
 import "reports.proto";
 import "accounts.proto";
+import "balances.proto";
 
 // https://www.mql5.com/en/docs/standardlibrary/tradeclasses/ctrade/ctradepositionclose
 
@@ -29,7 +30,8 @@ service API {
   rpc Login(LoginRequest) returns (LoginResponse) {}
 
   rpc GetAccounts(AccountsRequest) returns (AccountsResponse) {}
-  rpc GetAccountBalance(AccountBalanceRequest) returns (AccountBalanceResponse) {}
+  rpc GetAccountBalances(AccountBalanceRequest) returns (AccountBalanceResponse) {}
+  rpc GetBalance(BalanceRequest) returns (BalanceResponse) {}
   rpc PostAccount(AccountsPostRequest) returns (AccountsPostResponse) {}
 
 } 

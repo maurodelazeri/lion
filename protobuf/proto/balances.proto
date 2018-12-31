@@ -11,3 +11,16 @@ message Balance  {
   double     hold            = 6; 
   int64      last_change     = 7;
 }
+
+message BalanceRequest  {
+   string                              token                     = 1;   
+   Venue                               venue                     = 2;
+   Currency                            currency                  = 3;
+}
+
+message BalanceResponse  {
+   Retcode                             retcode                   = 1;
+   string                              comment                   = 2;    
+   Balance                             balance                   = 3;   
+   string                              elapsed                   = 4; 
+}
