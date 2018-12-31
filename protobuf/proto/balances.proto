@@ -14,8 +14,9 @@ message Balance  {
 
 message BalanceRequest  {
    string                              token                     = 1;   
-   Venue                               venue                     = 2;
-   Currency                            currency                  = 3;
+   string                              account_id                = 2;
+   Venue                               venue                     = 3;
+   Currency                            currency                  = 4;
 }
 
 message BalanceResponse  {
