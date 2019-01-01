@@ -4,12 +4,12 @@ import "enum.proto";
 
 message Balance  {
   string     id              = 1; 
-  string     user_id         = 2; 
-  Venue      venue           = 3; 
-  Currency   currency        = 4;
-  double     available       = 5; 
-  double     hold            = 6; 
-  int64      last_change     = 7;
+  string     user_id         = 2;
+  string     account_id      = 3;  
+  Venue      venue           = 4; 
+  Currency   currency        = 5;
+  double     available       = 6; 
+  double     hold            = 7; 
 }
 
 message BalanceRequest  {
