@@ -12,7 +12,7 @@ import "enum.proto";
     OrderTypeFilling              type_filling             = 7;  
     OrderTypeTime                 type_time                = 8;  
     Reason                        reason                   = 9;   
-    Product                       product                  = 10;  
+    string                        product                  = 10;  
     string                        venue_execution_id       = 11;  
     double                        volume                   = 12;  
     double                        price                    = 13;  
@@ -25,7 +25,7 @@ import "enum.proto";
  message OrderRequest { 
    TradeAction                   action               = 1;  // Trade operation type 
    Venue                         venue                = 2;  // Venue where the order is being send
-   Product                       product              = 3;  // Trade product
+   string                        product              = 3;  // Trade product
    double                        volume               = 4;  // Requested volume for a deal in lots 
    double                        price                = 5;  // Price 
    double                        stoplimit            = 6;  // StopLimit level of the order 
@@ -58,7 +58,7 @@ message Position {
   string                        position_id              = 1;
 	string                        account_id               = 2;
 	Venue                         venue                    = 3; 
-	Product                       product                  = 4;
+	string                        product                  = 4;
 	double                        price_open               = 5;
 	double                        weighted_price           = 6;
 	double                        volume                   = 7;
@@ -78,7 +78,7 @@ message Position {
 
 message PositionRequest { 
   Venue                        venue                  = 1;
-  Product                      product                = 2;
+  string                       product                = 2;
 }
 
 message PositionsResult { 

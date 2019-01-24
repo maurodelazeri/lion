@@ -10,7 +10,7 @@ message Item {
 };
 
 message Orderbook {
-  Product           product     = 1;
+  string            product     = 1;
   Venue             venue       = 2;
   int64             timestamp   = 3;
   int32             levels      = 4;
@@ -20,7 +20,7 @@ message Orderbook {
 };
 
 message Trade {
-  Product         product       = 1;
+  string          product       = 1;
   Venue           venue         = 2;
   int64           timestamp     = 3;
   double          price         = 4;
@@ -32,7 +32,7 @@ message Trade {
 };
 
 message Ticker {
-  Product     product       = 1;
+  string      product       = 1;
   Venue       venue         = 2;
   int64       timestamp     = 3;
   double      price         = 4;
@@ -44,7 +44,7 @@ message Ticker {
 
 message Candle {
   Venue         venue        = 1;
-  Product       product      = 2;
+  string        product      = 2;
   int32         granularity  = 3;
   int64         point        = 4;
   double        open         = 5;

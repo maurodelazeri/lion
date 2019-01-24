@@ -8,7 +8,7 @@ import "balances.proto";
 
 message HistoricalTradesRequest { 
   Venue                          venue                = 1;
-  Product                        product              = 2;
+  string                         product              = 2;
   int64                          begin                = 3;
   int64                          end                  = 4;
 }

@@ -34,100 +34,10 @@ package api;
  enum VenueType{
    SPOT       = 0;
    FUTURES    = 1;
+   OPTIONS    = 2;
   };
   
- enum Currency{
-	 BTC   = 0;
-	 USD   = 1;
-	 ETH   = 2;
-	 EOS   = 3;
-	 XRP   = 4;
-	 BCH   = 5;
-	 LTC   = 6;
-	 XLM   = 7;
-	 ADA   = 8;
-	 ZEC   = 9;
-	 QTUM  = 10;
-	 NANO  = 11;
-	 ETC   = 12;
-	 XRM   = 13;
-	 OMG   = 14;
-	 DASH  = 15;
-	 NEO   = 16;
-	 USDT  = 17;
-	 USDC  = 18;
-	 PAX   = 19;
-	 TUSD  = 20;
-	 BRL   = 21;
-	 JPY   = 22;
-	 WON   = 23;
-   }
-   
-   enum Product{
-	 BTC_USD 		= 0;
-	 ETH_BTC 		= 1;
-	 ETH_USD 		= 2;
-	 EOS_USD 		= 3;
-	 EOS_BTC 		= 4;
-	 EOS_ETH 		= 5;
-	 XRP_USD 		= 6;
-	 XRP_BTC 		= 7;
-	 XRP_ETH 		= 8;
-	 BCH_USD 		= 9;
-	 BCH_BTC 		= 10;
-	 BCH_ETH 		= 11;
-	 LTC_USD 		= 12;
-	 LTC_BTC 		= 13;
-	 LTC_ETH 		= 14;
-	 XLM_USD 		= 15;
-	 XLM_BTC 		= 16;
-	 XLM_ETH 		= 17;
-	 ADA_USD 		= 18;
-	 ADA_BTC 		= 19;
-	 ADA_ETH 		= 20;
-	 ZEC_USD 		= 21;
-	 ZEC_BTC 		= 22;
-	 ZEC_ETH 		= 23;
-	 QTUM_USD 		= 24;
-	 QTUM_BTC 		= 25;
-	 QTUM_ETH 		= 26;
-	 NANO_USD 		= 27;
-	 NANO_BTC 		= 28;
-	 NANO_ETH 		= 29;
-	 ETC_USD 		= 30;
-	 ETC_BTC 		= 31;
-	 ETC_ETH 		= 32;
-	 XMR_USD 		= 33;
-	 XMR_BTC 		= 34;
-	 XMR_ETH 		= 35;
-	 OMG_USD 		= 36;
-	 OMG_BTC 		= 37;
-	 OMG_ETH 		= 38;
-	 DASH_USD 		= 39;
-	 DASH_BTC 		= 40;
-	 DASH_ETH 		= 41;
-	 NEO_USD 		= 42;
-	 NEO_BTC 		= 43;
-	 NEO_ETH 		= 44;
-	 BTC_USDT 		= 45;
-	 ETH_USDT 		= 46;
-	 EOS_USDT 		= 47;
-	 XRP_USDT 		= 48;
-	 BCH_USDT 		= 49;
-	 LTC_USDT 		= 50;
-	 XLM_USDT 		= 51;
-	 ADA_USDT 		= 52;
-	 ZEC_USDT 		= 53;
-	 QTUM_USDT 		= 54;
-	 NANO_USDT 		= 55;
-	 ETC_USDT 		= 56;
-	 XMR_USDT 		= 57;
-	 OMG_USDT 		= 58;
-	 DASH_USDT 		= 59;
-	 NEO_USDT 		= 60;
-     BTC_BRL 		= 61;	 	 
-   }
-  
+ 
    enum OrderState {
 	STARTED           = 0;
 	PLACED            = 1;
