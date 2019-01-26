@@ -7,20 +7,13 @@ import "backtesting.proto";
 import "reports.proto";
 import "accounts.proto";
 import "balances.proto";
+import "currencies.proto";
+import "products.proto";
 
 // https://www.mql5.com/en/docs/standardlibrary/tradeclasses/ctrade/ctradepositionclose
 
 // The API service definition.
 service API {   
-  // Get all Order for a user with filter - A server-to-client streaming RPC.
- // rpc GetOrders(OrderFilter) returns (stream Order) {}
-  // Order request - A simple RPC 
-  rpc OrderSend(OrderRequest) returns (OrderResult) {}
-  rpc GetPositions(PositionRequest) returns (PositionsResult) {}
-  rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
-  rpc GetBacktestingToken(BacktestingTokenRequest) returns (BacktestingTokenResponse) {}
-  rpc Backtesting(stream BacktestingRequest) returns (stream BacktestingResponse) {}
-
   rpc Login(LoginRequest) returns (LoginResponse) {}
 
   rpc GetCurrencies(CurrencyRequest) returns (CurrencyResponse) {}
@@ -39,6 +32,16 @@ service API {
   rpc GetAccountBalances(AccountBalanceRequest) returns (AccountBalanceResponse) {}
   rpc GetBalance(BalanceRequest) returns (BalanceResponse) {}
   rpc PostBalance(BalancePostRequest) returns (BalancePostResponse) {}
+
+
+  // Get all Order for a user with filter - A server-to-client streaming RPC.
+ // rpc GetOrders(OrderFilter) returns (stream Order) {}
+  // Order request - A simple RPC 
+  rpc OrderSend(OrderRequest) returns (OrderResult) {}
+  rpc GetPositions(PositionRequest) returns (PositionsResult) {}
+  rpc GetHistoticalTrades(HistoricalTradesRequest) returns (stream HistoricalTradesResult) {}
+  rpc GetBacktestingToken(BacktestingTokenRequest) returns (BacktestingTokenResponse) {}
+  rpc Backtesting(stream BacktestingRequest) returns (stream BacktestingResponse) {}
 
 } 
 

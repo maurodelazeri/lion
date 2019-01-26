@@ -3,24 +3,37 @@ package api;
 import "enum.proto";
 
 message Currency { 
-   string                              id                        = 1; 
-   string                              user_id                   = 2;
-   string                              description               = 3; 
-   AccountMode                         account_mode              = 4; 
-   AccountType                         account_type              = 5; 
-   bool                                enabled                   = 6; 
+   int32                               currency_id              = 1; 
+   string                              name                     = 2;
+   string                              currency_description     = 3; 
+   int32                               min_confirmation         = 4; 
+   bool                                active                   = 5; 
+   double                              tx_fee                   = 6; 
+   string                              create_date              = 7; 
+   string                              last_update              = 8; 
 }
 
 message CurrencyRequest { 
    string                              token                     = 1;  
-   string                              account_id                = 2;     
-   AccountMode                         account_mode              = 3; 
-   AccountType                         account_type              = 4; 
+   int32                               currency_id               = 2;     
+   string                              name                      = 3; 
 }
 
 message CurrencyResponse { 
    Retcode                             retcode                   = 1;
-   repeated Account                    accounts                  = 2; 
+   repeated Currency                   currencies                = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
+}
+
+message CurrencyPostRequest {
+   string                              token                     = 1; 
+   Currency                            currency                  = 2;     
+   Action                              action                    = 3;
+}
+
+message CurrencyPostResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
 }
