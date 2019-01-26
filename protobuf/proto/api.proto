@@ -21,13 +21,18 @@ service API {
   rpc GetBacktestingToken(BacktestingTokenRequest) returns (BacktestingTokenResponse) {}
   rpc Backtesting(stream BacktestingRequest) returns (stream BacktestingResponse) {}
 
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+
+  rpc GetCurrencies(CurrencyRequest) returns (CurrencyResponse) {}
+  rpc PostCurrencie(CurrencyPostRequest) returns (CurrencyPostResponse) {}
+
   rpc GetVenues(VenuesRequest) returns (VenuesResponse) {}
   rpc PostVenues(VenuesPostRequest) returns (VenuesPostResponse) {}
   rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
   rpc GetVenueProductDetail(VenueProductRequest) returns (VenueProductResponse) {}
+  
+  rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}
-
-  rpc Login(LoginRequest) returns (LoginResponse) {}
 
   rpc GetAccounts(AccountsRequest) returns (AccountsResponse) {}
   rpc PostAccount(AccountsPostRequest) returns (AccountsPostResponse) {}
