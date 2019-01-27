@@ -13,8 +13,6 @@ message Venue {
    bool                                spot                     = 8; 
    bool                                futures                  = 9; 
    bool                                options                  = 10; 
-   string                              create_date              = 11; 
-   string                              last_update              = 12; 
 }
 
 message VenueRequest { 

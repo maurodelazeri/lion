@@ -9,8 +9,6 @@ message Currency {
    int32                               min_confirmation         = 4; 
    bool                                enabled                  = 5; 
    double                              tx_fee                   = 6; 
-   string                              create_date              = 7; 
-   string                              last_update              = 8; 
 }
 
 message CurrencyRequest { 
