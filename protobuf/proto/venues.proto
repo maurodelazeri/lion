@@ -10,8 +10,11 @@ message Venue {
    string                              api_secret               = 5; 
    string                              passphrase               = 6; 
    bool                                enabled                  = 7; 
-   string                              create_date              = 8; 
-   string                              last_update              = 9; 
+   bool                                spot                     = 8; 
+   bool                                futures                  = 9; 
+   bool                                options                  = 10; 
+   string                              create_date              = 11; 
+   string                              last_update              = 12; 
 }
 
 message VenueRequest { 
