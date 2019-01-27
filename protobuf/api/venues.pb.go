@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -34,15 +32,14 @@ func (*VenuesRequest) ProtoMessage()    {}
 func (*VenuesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{0}
 }
-
 func (m *VenuesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesRequest.Unmarshal(m, b)
 }
 func (m *VenuesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesRequest.Marshal(b, m, deterministic)
 }
-func (m *VenuesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesRequest.Merge(m, src)
+func (dst *VenuesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesRequest.Merge(dst, src)
 }
 func (m *VenuesRequest) XXX_Size() int {
 	return xxx_messageInfo_VenuesRequest.Size(m)
@@ -77,15 +74,14 @@ func (*VenuesInfo) ProtoMessage()    {}
 func (*VenuesInfo) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{1}
 }
-
 func (m *VenuesInfo) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesInfo.Unmarshal(m, b)
 }
 func (m *VenuesInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesInfo.Marshal(b, m, deterministic)
 }
-func (m *VenuesInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesInfo.Merge(m, src)
+func (dst *VenuesInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesInfo.Merge(dst, src)
 }
 func (m *VenuesInfo) XXX_Size() int {
 	return xxx_messageInfo_VenuesInfo.Size(m)
@@ -147,15 +143,14 @@ func (*VenuesResponse) ProtoMessage()    {}
 func (*VenuesResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{2}
 }
-
 func (m *VenuesResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesResponse.Unmarshal(m, b)
 }
 func (m *VenuesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesResponse.Marshal(b, m, deterministic)
 }
-func (m *VenuesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesResponse.Merge(m, src)
+func (dst *VenuesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesResponse.Merge(dst, src)
 }
 func (m *VenuesResponse) XXX_Size() int {
 	return xxx_messageInfo_VenuesResponse.Size(m)
@@ -213,15 +208,14 @@ func (*VenuesPostRequest) ProtoMessage()    {}
 func (*VenuesPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{3}
 }
-
 func (m *VenuesPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesPostRequest.Unmarshal(m, b)
 }
 func (m *VenuesPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesPostRequest.Marshal(b, m, deterministic)
 }
-func (m *VenuesPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesPostRequest.Merge(m, src)
+func (dst *VenuesPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesPostRequest.Merge(dst, src)
 }
 func (m *VenuesPostRequest) XXX_Size() int {
 	return xxx_messageInfo_VenuesPostRequest.Size(m)
@@ -296,15 +290,14 @@ func (*VenuesPostResponse) ProtoMessage()    {}
 func (*VenuesPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{4}
 }
-
 func (m *VenuesPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuesPostResponse.Unmarshal(m, b)
 }
 func (m *VenuesPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuesPostResponse.Marshal(b, m, deterministic)
 }
-func (m *VenuesPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesPostResponse.Merge(m, src)
+func (dst *VenuesPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuesPostResponse.Merge(dst, src)
 }
 func (m *VenuesPostResponse) XXX_Size() int {
 	return xxx_messageInfo_VenuesPostResponse.Size(m)
@@ -351,15 +344,14 @@ func (*VenueDetailedRequest) ProtoMessage()    {}
 func (*VenueDetailedRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{5}
 }
-
 func (m *VenueDetailedRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueDetailedRequest.Unmarshal(m, b)
 }
 func (m *VenueDetailedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueDetailedRequest.Marshal(b, m, deterministic)
 }
-func (m *VenueDetailedRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedRequest.Merge(m, src)
+func (dst *VenueDetailedRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueDetailedRequest.Merge(dst, src)
 }
 func (m *VenueDetailedRequest) XXX_Size() int {
 	return xxx_messageInfo_VenueDetailedRequest.Size(m)
@@ -408,15 +400,14 @@ func (*VenueDetailedResponse) ProtoMessage()    {}
 func (*VenueDetailedResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{6}
 }
-
 func (m *VenueDetailedResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueDetailedResponse.Unmarshal(m, b)
 }
 func (m *VenueDetailedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueDetailedResponse.Marshal(b, m, deterministic)
 }
-func (m *VenueDetailedResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedResponse.Merge(m, src)
+func (dst *VenueDetailedResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueDetailedResponse.Merge(dst, src)
 }
 func (m *VenueDetailedResponse) XXX_Size() int {
 	return xxx_messageInfo_VenueDetailedResponse.Size(m)
@@ -535,15 +526,14 @@ func (*VenueDetailedProduct) ProtoMessage()    {}
 func (*VenueDetailedProduct) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{7}
 }
-
 func (m *VenueDetailedProduct) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueDetailedProduct.Unmarshal(m, b)
 }
 func (m *VenueDetailedProduct) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueDetailedProduct.Marshal(b, m, deterministic)
 }
-func (m *VenueDetailedProduct) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedProduct.Merge(m, src)
+func (dst *VenueDetailedProduct) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueDetailedProduct.Merge(dst, src)
 }
 func (m *VenueDetailedProduct) XXX_Size() int {
 	return xxx_messageInfo_VenueDetailedProduct.Size(m)
@@ -653,15 +643,14 @@ func (*VenueProductRequest) ProtoMessage()    {}
 func (*VenueProductRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{8}
 }
-
 func (m *VenueProductRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueProductRequest.Unmarshal(m, b)
 }
 func (m *VenueProductRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueProductRequest.Marshal(b, m, deterministic)
 }
-func (m *VenueProductRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueProductRequest.Merge(m, src)
+func (dst *VenueProductRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueProductRequest.Merge(dst, src)
 }
 func (m *VenueProductRequest) XXX_Size() int {
 	return xxx_messageInfo_VenueProductRequest.Size(m)
@@ -712,15 +701,14 @@ func (*VenueProductResponse) ProtoMessage()    {}
 func (*VenueProductResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{9}
 }
-
 func (m *VenueProductResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueProductResponse.Unmarshal(m, b)
 }
 func (m *VenueProductResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueProductResponse.Marshal(b, m, deterministic)
 }
-func (m *VenueProductResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueProductResponse.Merge(m, src)
+func (dst *VenueProductResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueProductResponse.Merge(dst, src)
 }
 func (m *VenueProductResponse) XXX_Size() int {
 	return xxx_messageInfo_VenueProductResponse.Size(m)

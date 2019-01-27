@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -33,15 +31,14 @@ func (*Subscription) ProtoMessage()    {}
 func (*Subscription) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cad29974f829cd17, []int{0}
 }
-
 func (m *Subscription) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Subscription.Unmarshal(m, b)
 }
 func (m *Subscription) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Subscription.Marshal(b, m, deterministic)
 }
-func (m *Subscription) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Subscription.Merge(m, src)
+func (dst *Subscription) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Subscription.Merge(dst, src)
 }
 func (m *Subscription) XXX_Size() int {
 	return xxx_messageInfo_Subscription.Size(m)
@@ -74,15 +71,14 @@ func (*SubscriptionItems) ProtoMessage()    {}
 func (*SubscriptionItems) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cad29974f829cd17, []int{1}
 }
-
 func (m *SubscriptionItems) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SubscriptionItems.Unmarshal(m, b)
 }
 func (m *SubscriptionItems) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SubscriptionItems.Marshal(b, m, deterministic)
 }
-func (m *SubscriptionItems) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SubscriptionItems.Merge(m, src)
+func (dst *SubscriptionItems) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SubscriptionItems.Merge(dst, src)
 }
 func (m *SubscriptionItems) XXX_Size() int {
 	return xxx_messageInfo_SubscriptionItems.Size(m)
@@ -127,15 +123,14 @@ func (*BacktestingTokenRequest) ProtoMessage()    {}
 func (*BacktestingTokenRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cad29974f829cd17, []int{2}
 }
-
 func (m *BacktestingTokenRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BacktestingTokenRequest.Unmarshal(m, b)
 }
 func (m *BacktestingTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BacktestingTokenRequest.Marshal(b, m, deterministic)
 }
-func (m *BacktestingTokenRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BacktestingTokenRequest.Merge(m, src)
+func (dst *BacktestingTokenRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BacktestingTokenRequest.Merge(dst, src)
 }
 func (m *BacktestingTokenRequest) XXX_Size() int {
 	return xxx_messageInfo_BacktestingTokenRequest.Size(m)
@@ -168,15 +163,14 @@ func (*BacktestingTokenResponse) ProtoMessage()    {}
 func (*BacktestingTokenResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cad29974f829cd17, []int{3}
 }
-
 func (m *BacktestingTokenResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BacktestingTokenResponse.Unmarshal(m, b)
 }
 func (m *BacktestingTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BacktestingTokenResponse.Marshal(b, m, deterministic)
 }
-func (m *BacktestingTokenResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BacktestingTokenResponse.Merge(m, src)
+func (dst *BacktestingTokenResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BacktestingTokenResponse.Merge(dst, src)
 }
 func (m *BacktestingTokenResponse) XXX_Size() int {
 	return xxx_messageInfo_BacktestingTokenResponse.Size(m)
@@ -225,15 +219,14 @@ func (*BacktestingRequest) ProtoMessage()    {}
 func (*BacktestingRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cad29974f829cd17, []int{4}
 }
-
 func (m *BacktestingRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BacktestingRequest.Unmarshal(m, b)
 }
 func (m *BacktestingRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BacktestingRequest.Marshal(b, m, deterministic)
 }
-func (m *BacktestingRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BacktestingRequest.Merge(m, src)
+func (dst *BacktestingRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BacktestingRequest.Merge(dst, src)
 }
 func (m *BacktestingRequest) XXX_Size() int {
 	return xxx_messageInfo_BacktestingRequest.Size(m)
@@ -296,15 +289,14 @@ func (*BacktestingResponse) ProtoMessage()    {}
 func (*BacktestingResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cad29974f829cd17, []int{5}
 }
-
 func (m *BacktestingResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BacktestingResponse.Unmarshal(m, b)
 }
 func (m *BacktestingResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BacktestingResponse.Marshal(b, m, deterministic)
 }
-func (m *BacktestingResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BacktestingResponse.Merge(m, src)
+func (dst *BacktestingResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BacktestingResponse.Merge(dst, src)
 }
 func (m *BacktestingResponse) XXX_Size() int {
 	return xxx_messageInfo_BacktestingResponse.Size(m)
@@ -370,15 +362,14 @@ func (*ClientInitilization) ProtoMessage()    {}
 func (*ClientInitilization) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cad29974f829cd17, []int{6}
 }
-
 func (m *ClientInitilization) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ClientInitilization.Unmarshal(m, b)
 }
 func (m *ClientInitilization) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ClientInitilization.Marshal(b, m, deterministic)
 }
-func (m *ClientInitilization) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ClientInitilization.Merge(m, src)
+func (dst *ClientInitilization) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ClientInitilization.Merge(dst, src)
 }
 func (m *ClientInitilization) XXX_Size() int {
 	return xxx_messageInfo_ClientInitilization.Size(m)
