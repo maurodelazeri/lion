@@ -1,7 +1,7 @@
 syntax = "proto3";
 package api;
 
- enum Venue{
+ enum Venues{
 	DARKPOOL    					=  0;
 	COINBASEPRO 					=  1;  // 192.168.1.204
 	BITMEX      					=  2;  // 192.168.1.205

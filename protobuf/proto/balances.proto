@@ -6,7 +6,7 @@ message Balance  {
   string     id              = 1; 
   string     user_id         = 2;
   string     account_id      = 3;  
-  Venue      venue           = 4; 
+  Venues     venue           = 4; 
   string     currency        = 5;
   double     available       = 6; 
   double     hold            = 7; 
@@ -15,7 +15,7 @@ message Balance  {
 message BalanceRequest  {
    string                              token                     = 1;   
    string                              account_id                = 2;
-   Venue                               venue                     = 3;
+   Venues                              venue                     = 3;
    string                              currency                  = 4;
 }
 

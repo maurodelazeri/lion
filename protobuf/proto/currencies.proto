@@ -7,7 +7,7 @@ message Currency {
    string                              name                     = 2;
    string                              currency_description     = 3; 
    int32                               min_confirmation         = 4; 
-   bool                                active                   = 5; 
+   bool                                enabled                  = 5; 
    double                              tx_fee                   = 6; 
    string                              create_date              = 7; 
    string                              last_update              = 8; 

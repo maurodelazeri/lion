@@ -29,7 +29,7 @@ message ProductResponse {
 message ProductPostRequest {
    string                               token                    = 1;  
    string                               id                       = 2;
-   Venue                                venue                    = 3; 
+   Venues                                venue                    = 3; 
    string                               product                  = 4;  
    bool                                 enabled                  = 5;  
    bool                                 individual_connection    = 6;

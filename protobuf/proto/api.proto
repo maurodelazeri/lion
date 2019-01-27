@@ -19,10 +19,10 @@ service API {
   rpc GetCurrencies(CurrencyRequest) returns (CurrencyResponse) {}
   rpc PostCurrencie(CurrencyPostRequest) returns (CurrencyPostResponse) {}
 
-  rpc GetVenues(VenuesRequest) returns (VenuesResponse) {}
-  rpc PostVenues(VenuesPostRequest) returns (VenuesPostResponse) {}
-  rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
-  rpc GetVenueProductDetail(VenueProductRequest) returns (VenueProductResponse) {}
+  rpc GetVenues(VenueRequest) returns (VenueResponse) {}
+  rpc PostVenues(VenuePostRequest) returns (VenuePostResponse) {}
+  // rpc GetVenueDetail(VenueDetailedRequest) returns (VenueDetailedResponse) {}
+  // rpc GetVenueProductDetail(VenueProductRequest) returns (VenueProductResponse) {}
   
   rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}

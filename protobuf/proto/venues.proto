@@ -2,91 +2,39 @@ syntax = "proto3";
 package api;
 import "enum.proto";
 
-// Venues
-message VenuesRequest {
-   string                                token                    = 1;  
+message Venue { 
+   int32                               venue_id                 = 1; 
+   string                              name                     = 2;
+   string                              venue_description        = 3; 
+   string                              api_key                  = 4; 
+   string                              api_secret               = 5; 
+   string                              passphrase               = 6; 
+   bool                                enabled                  = 7; 
+   string                              create_date              = 8; 
+   string                              last_update              = 9; 
 }
 
-message VenuesInfo{ 
-   string                                id                    = 1;  
-   string                                name                  = 2;  
-   Venue                                 venue                 = 3;
-   bool                                  enabled               = 4;
-   VenueType                             venue_type            = 5;
-}
-message VenuesResponse { 
-   Retcode                               retcode                = 1;  
-   repeated VenuesInfo                   venues                 = 2;
-   string                                comment                = 3;
-   string                                elapsed                = 4;
+message VenueRequest { 
+   string                              token                     = 1;  
+   int32                               venue_id                  = 2;     
+   string                              name                      = 3; 
 }
 
-message VenuesPostRequest {
-   string                                token                 = 1;   
-   Venue                                 venue                 = 2;
-   bool                                  enabled               = 3;
-   string                                api_key               = 4;
-   string                                api_secret            = 5;
-   string                                passphrase            = 6;
-   VenueType                             venue_type            = 7;
-}
-message VenuesPostResponse { 
-   Retcode                               retcode                = 1;  
-   string                                comment                = 2;   
-   string                                elapsed                = 3;
+message VenueResponse { 
+   Retcode                             retcode                   = 1;
+   repeated Venue                      venues                    = 2; 
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
 }
 
-// Venues Detailed
-message VenueDetailedRequest {
-   string                               token                   = 1;  
-   Venue                                venue                   = 2;
+message VenuePostRequest {
+   string                              token                     = 1; 
+   Venue                               venue                     = 2;     
+   Action                              action                    = 3;
 }
-message VenueDetailedResponse { 
-   Retcode                               retcode                 = 1;  
-   string                                id                      = 2;  
-   string                                name                    = 3;  
-   Venue                                 venue                   = 4;
-   bool                                  enabled                 = 5;
-   string                                api_key                 = 6;
-   string                                api_secret              = 7;
-   string                                passphrase              = 8;
-   VenueType                             venue_type              = 9;
-   repeated VenueDetailedProduct         product_info            = 10;
-   string                                comment                 = 11;
-   string                                elapsed                 = 12;
-}
-message VenueDetailedProduct{
-   string                                token                    = 1;  
-   string                                id                       = 2;  
-   Venue                                 venue                    = 3;  
-   string                               product                  = 4;  
-   bool                                  enabled                  = 5;  
-   bool                                  individual_connection    = 6;
-   string                                venue_name               = 7;
-   string                                api_name                 = 8;
-   double                                minimum_orders_size      = 9;
-   double                                step_size                = 10;
-   double                                maker_fee                = 11;
-   double                                taker_fee                = 12;
-}
-// Venue Product
-message VenueProductRequest {
-   string                                token                    = 1;  
-   string                                id                       = 2;
-}
-message VenueProductResponse { 
-   Retcode                               retcode                  = 1;  
-   string                                id                       = 2;  
-   Venue                                 venue                    = 3;  
-   string                                product                  = 4;  
-   bool                                  enabled                  = 5;  
-   bool                                  individual_connection    = 6;
-   string                                venue_name               = 7;
-   string                                api_name                 = 8;
-   double                                minimum_orders_size      = 9;
-   double                                step_size                = 10;
-   double                                maker_fee                = 11;
-   double                                taker_fee                = 12;
-   string                                comment                  = 13;
-   string                                elapsed                  = 14;
+
+message VenuePostResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
 }

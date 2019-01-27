@@ -18,264 +18,279 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-// Venues
-type VenuesRequest struct {
-	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+type Venue struct {
+	VenueId              int32    `protobuf:"varint,1,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
+	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	VenueDescription     string   `protobuf:"bytes,3,opt,name=venue_description,json=venueDescription,proto3" json:"venue_description,omitempty"`
+	ApiKey               string   `protobuf:"bytes,4,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+	ApiSecret            string   `protobuf:"bytes,5,opt,name=api_secret,json=apiSecret,proto3" json:"api_secret,omitempty"`
+	Passphrase           string   `protobuf:"bytes,6,opt,name=passphrase,proto3" json:"passphrase,omitempty"`
+	Enabled              bool     `protobuf:"varint,7,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	CreateDate           string   `protobuf:"bytes,8,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"`
+	LastUpdate           string   `protobuf:"bytes,9,opt,name=last_update,json=lastUpdate,proto3" json:"last_update,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *VenuesRequest) Reset()         { *m = VenuesRequest{} }
-func (m *VenuesRequest) String() string { return proto.CompactTextString(m) }
-func (*VenuesRequest) ProtoMessage()    {}
-func (*VenuesRequest) Descriptor() ([]byte, []int) {
+func (m *Venue) Reset()         { *m = Venue{} }
+func (m *Venue) String() string { return proto.CompactTextString(m) }
+func (*Venue) ProtoMessage()    {}
+func (*Venue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{0}
 }
-func (m *VenuesRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenuesRequest.Unmarshal(m, b)
+func (m *Venue) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Venue.Unmarshal(m, b)
 }
-func (m *VenuesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenuesRequest.Marshal(b, m, deterministic)
+func (m *Venue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Venue.Marshal(b, m, deterministic)
 }
-func (dst *VenuesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesRequest.Merge(dst, src)
+func (dst *Venue) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Venue.Merge(dst, src)
 }
-func (m *VenuesRequest) XXX_Size() int {
-	return xxx_messageInfo_VenuesRequest.Size(m)
+func (m *Venue) XXX_Size() int {
+	return xxx_messageInfo_Venue.Size(m)
 }
-func (m *VenuesRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenuesRequest.DiscardUnknown(m)
+func (m *Venue) XXX_DiscardUnknown() {
+	xxx_messageInfo_Venue.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_VenuesRequest proto.InternalMessageInfo
+var xxx_messageInfo_Venue proto.InternalMessageInfo
 
-func (m *VenuesRequest) GetToken() string {
+func (m *Venue) GetVenueId() int32 {
 	if m != nil {
-		return m.Token
+		return m.VenueId
 	}
-	return ""
+	return 0
 }
 
-type VenuesInfo struct {
-	Id                   string    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name                 string    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Venue                Venue     `protobuf:"varint,3,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
-	Enabled              bool      `protobuf:"varint,4,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	VenueType            VenueType `protobuf:"varint,5,opt,name=venue_type,json=venueType,proto3,enum=api.VenueType" json:"venue_type,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *VenuesInfo) Reset()         { *m = VenuesInfo{} }
-func (m *VenuesInfo) String() string { return proto.CompactTextString(m) }
-func (*VenuesInfo) ProtoMessage()    {}
-func (*VenuesInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{1}
-}
-func (m *VenuesInfo) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenuesInfo.Unmarshal(m, b)
-}
-func (m *VenuesInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenuesInfo.Marshal(b, m, deterministic)
-}
-func (dst *VenuesInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesInfo.Merge(dst, src)
-}
-func (m *VenuesInfo) XXX_Size() int {
-	return xxx_messageInfo_VenuesInfo.Size(m)
-}
-func (m *VenuesInfo) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenuesInfo.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenuesInfo proto.InternalMessageInfo
-
-func (m *VenuesInfo) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *VenuesInfo) GetName() string {
+func (m *Venue) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *VenuesInfo) GetVenue() Venue {
+func (m *Venue) GetVenueDescription() string {
 	if m != nil {
-		return m.Venue
-	}
-	return Venue_DARKPOOL
-}
-
-func (m *VenuesInfo) GetEnabled() bool {
-	if m != nil {
-		return m.Enabled
-	}
-	return false
-}
-
-func (m *VenuesInfo) GetVenueType() VenueType {
-	if m != nil {
-		return m.VenueType
-	}
-	return VenueType_SPOT
-}
-
-type VenuesResponse struct {
-	Retcode              Retcode       `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
-	Venues               []*VenuesInfo `protobuf:"bytes,2,rep,name=venues,proto3" json:"venues,omitempty"`
-	Comment              string        `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
-	Elapsed              string        `protobuf:"bytes,4,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
-}
-
-func (m *VenuesResponse) Reset()         { *m = VenuesResponse{} }
-func (m *VenuesResponse) String() string { return proto.CompactTextString(m) }
-func (*VenuesResponse) ProtoMessage()    {}
-func (*VenuesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{2}
-}
-func (m *VenuesResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenuesResponse.Unmarshal(m, b)
-}
-func (m *VenuesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenuesResponse.Marshal(b, m, deterministic)
-}
-func (dst *VenuesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesResponse.Merge(dst, src)
-}
-func (m *VenuesResponse) XXX_Size() int {
-	return xxx_messageInfo_VenuesResponse.Size(m)
-}
-func (m *VenuesResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenuesResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenuesResponse proto.InternalMessageInfo
-
-func (m *VenuesResponse) GetRetcode() Retcode {
-	if m != nil {
-		return m.Retcode
-	}
-	return Retcode_REJECTX
-}
-
-func (m *VenuesResponse) GetVenues() []*VenuesInfo {
-	if m != nil {
-		return m.Venues
-	}
-	return nil
-}
-
-func (m *VenuesResponse) GetComment() string {
-	if m != nil {
-		return m.Comment
+		return m.VenueDescription
 	}
 	return ""
 }
 
-func (m *VenuesResponse) GetElapsed() string {
-	if m != nil {
-		return m.Elapsed
-	}
-	return ""
-}
-
-type VenuesPostRequest struct {
-	Token                string    `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	Venue                Venue     `protobuf:"varint,2,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
-	Enabled              bool      `protobuf:"varint,3,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	ApiKey               string    `protobuf:"bytes,4,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
-	ApiSecret            string    `protobuf:"bytes,5,opt,name=api_secret,json=apiSecret,proto3" json:"api_secret,omitempty"`
-	Passphrase           string    `protobuf:"bytes,6,opt,name=passphrase,proto3" json:"passphrase,omitempty"`
-	VenueType            VenueType `protobuf:"varint,7,opt,name=venue_type,json=venueType,proto3,enum=api.VenueType" json:"venue_type,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
-	XXX_unrecognized     []byte    `json:"-"`
-	XXX_sizecache        int32     `json:"-"`
-}
-
-func (m *VenuesPostRequest) Reset()         { *m = VenuesPostRequest{} }
-func (m *VenuesPostRequest) String() string { return proto.CompactTextString(m) }
-func (*VenuesPostRequest) ProtoMessage()    {}
-func (*VenuesPostRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{3}
-}
-func (m *VenuesPostRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenuesPostRequest.Unmarshal(m, b)
-}
-func (m *VenuesPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenuesPostRequest.Marshal(b, m, deterministic)
-}
-func (dst *VenuesPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesPostRequest.Merge(dst, src)
-}
-func (m *VenuesPostRequest) XXX_Size() int {
-	return xxx_messageInfo_VenuesPostRequest.Size(m)
-}
-func (m *VenuesPostRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenuesPostRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenuesPostRequest proto.InternalMessageInfo
-
-func (m *VenuesPostRequest) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-func (m *VenuesPostRequest) GetVenue() Venue {
-	if m != nil {
-		return m.Venue
-	}
-	return Venue_DARKPOOL
-}
-
-func (m *VenuesPostRequest) GetEnabled() bool {
-	if m != nil {
-		return m.Enabled
-	}
-	return false
-}
-
-func (m *VenuesPostRequest) GetApiKey() string {
+func (m *Venue) GetApiKey() string {
 	if m != nil {
 		return m.ApiKey
 	}
 	return ""
 }
 
-func (m *VenuesPostRequest) GetApiSecret() string {
+func (m *Venue) GetApiSecret() string {
 	if m != nil {
 		return m.ApiSecret
 	}
 	return ""
 }
 
-func (m *VenuesPostRequest) GetPassphrase() string {
+func (m *Venue) GetPassphrase() string {
 	if m != nil {
 		return m.Passphrase
 	}
 	return ""
 }
 
-func (m *VenuesPostRequest) GetVenueType() VenueType {
+func (m *Venue) GetEnabled() bool {
 	if m != nil {
-		return m.VenueType
+		return m.Enabled
 	}
-	return VenueType_SPOT
+	return false
 }
 
-type VenuesPostResponse struct {
+func (m *Venue) GetCreateDate() string {
+	if m != nil {
+		return m.CreateDate
+	}
+	return ""
+}
+
+func (m *Venue) GetLastUpdate() string {
+	if m != nil {
+		return m.LastUpdate
+	}
+	return ""
+}
+
+type VenueRequest struct {
+	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	VenueId              int32    `protobuf:"varint,2,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
+	Name                 string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *VenueRequest) Reset()         { *m = VenueRequest{} }
+func (m *VenueRequest) String() string { return proto.CompactTextString(m) }
+func (*VenueRequest) ProtoMessage()    {}
+func (*VenueRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8c34a3f781dd794d, []int{1}
+}
+func (m *VenueRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_VenueRequest.Unmarshal(m, b)
+}
+func (m *VenueRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_VenueRequest.Marshal(b, m, deterministic)
+}
+func (dst *VenueRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueRequest.Merge(dst, src)
+}
+func (m *VenueRequest) XXX_Size() int {
+	return xxx_messageInfo_VenueRequest.Size(m)
+}
+func (m *VenueRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_VenueRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VenueRequest proto.InternalMessageInfo
+
+func (m *VenueRequest) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+func (m *VenueRequest) GetVenueId() int32 {
+	if m != nil {
+		return m.VenueId
+	}
+	return 0
+}
+
+func (m *VenueRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type VenueResponse struct {
+	Retcode              Retcode  `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
+	Venues               []*Venue `protobuf:"bytes,2,rep,name=venues,proto3" json:"venues,omitempty"`
+	Comment              string   `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
+	Elapsed              string   `protobuf:"bytes,4,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *VenueResponse) Reset()         { *m = VenueResponse{} }
+func (m *VenueResponse) String() string { return proto.CompactTextString(m) }
+func (*VenueResponse) ProtoMessage()    {}
+func (*VenueResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8c34a3f781dd794d, []int{2}
+}
+func (m *VenueResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_VenueResponse.Unmarshal(m, b)
+}
+func (m *VenueResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_VenueResponse.Marshal(b, m, deterministic)
+}
+func (dst *VenueResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueResponse.Merge(dst, src)
+}
+func (m *VenueResponse) XXX_Size() int {
+	return xxx_messageInfo_VenueResponse.Size(m)
+}
+func (m *VenueResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_VenueResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VenueResponse proto.InternalMessageInfo
+
+func (m *VenueResponse) GetRetcode() Retcode {
+	if m != nil {
+		return m.Retcode
+	}
+	return Retcode_REJECTX
+}
+
+func (m *VenueResponse) GetVenues() []*Venue {
+	if m != nil {
+		return m.Venues
+	}
+	return nil
+}
+
+func (m *VenueResponse) GetComment() string {
+	if m != nil {
+		return m.Comment
+	}
+	return ""
+}
+
+func (m *VenueResponse) GetElapsed() string {
+	if m != nil {
+		return m.Elapsed
+	}
+	return ""
+}
+
+type VenuePostRequest struct {
+	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Venue                *Venue   `protobuf:"bytes,2,opt,name=venue,proto3" json:"venue,omitempty"`
+	Action               Action   `protobuf:"varint,3,opt,name=action,proto3,enum=api.Action" json:"action,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *VenuePostRequest) Reset()         { *m = VenuePostRequest{} }
+func (m *VenuePostRequest) String() string { return proto.CompactTextString(m) }
+func (*VenuePostRequest) ProtoMessage()    {}
+func (*VenuePostRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8c34a3f781dd794d, []int{3}
+}
+func (m *VenuePostRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_VenuePostRequest.Unmarshal(m, b)
+}
+func (m *VenuePostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_VenuePostRequest.Marshal(b, m, deterministic)
+}
+func (dst *VenuePostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuePostRequest.Merge(dst, src)
+}
+func (m *VenuePostRequest) XXX_Size() int {
+	return xxx_messageInfo_VenuePostRequest.Size(m)
+}
+func (m *VenuePostRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_VenuePostRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VenuePostRequest proto.InternalMessageInfo
+
+func (m *VenuePostRequest) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+func (m *VenuePostRequest) GetVenue() *Venue {
+	if m != nil {
+		return m.Venue
+	}
+	return nil
+}
+
+func (m *VenuePostRequest) GetAction() Action {
+	if m != nil {
+		return m.Action
+	}
+	return Action_INSERT
+}
+
+type VenuePostResponse struct {
 	Retcode              Retcode  `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
 	Comment              string   `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty"`
 	Elapsed              string   `protobuf:"bytes,3,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
@@ -284,533 +299,45 @@ type VenuesPostResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *VenuesPostResponse) Reset()         { *m = VenuesPostResponse{} }
-func (m *VenuesPostResponse) String() string { return proto.CompactTextString(m) }
-func (*VenuesPostResponse) ProtoMessage()    {}
-func (*VenuesPostResponse) Descriptor() ([]byte, []int) {
+func (m *VenuePostResponse) Reset()         { *m = VenuePostResponse{} }
+func (m *VenuePostResponse) String() string { return proto.CompactTextString(m) }
+func (*VenuePostResponse) ProtoMessage()    {}
+func (*VenuePostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{4}
 }
-func (m *VenuesPostResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenuesPostResponse.Unmarshal(m, b)
+func (m *VenuePostResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_VenuePostResponse.Unmarshal(m, b)
 }
-func (m *VenuesPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenuesPostResponse.Marshal(b, m, deterministic)
+func (m *VenuePostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_VenuePostResponse.Marshal(b, m, deterministic)
 }
-func (dst *VenuesPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuesPostResponse.Merge(dst, src)
+func (dst *VenuePostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuePostResponse.Merge(dst, src)
 }
-func (m *VenuesPostResponse) XXX_Size() int {
-	return xxx_messageInfo_VenuesPostResponse.Size(m)
+func (m *VenuePostResponse) XXX_Size() int {
+	return xxx_messageInfo_VenuePostResponse.Size(m)
 }
-func (m *VenuesPostResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenuesPostResponse.DiscardUnknown(m)
+func (m *VenuePostResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_VenuePostResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_VenuesPostResponse proto.InternalMessageInfo
+var xxx_messageInfo_VenuePostResponse proto.InternalMessageInfo
 
-func (m *VenuesPostResponse) GetRetcode() Retcode {
+func (m *VenuePostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
 	return Retcode_REJECTX
 }
 
-func (m *VenuesPostResponse) GetComment() string {
+func (m *VenuePostResponse) GetComment() string {
 	if m != nil {
 		return m.Comment
 	}
 	return ""
 }
 
-func (m *VenuesPostResponse) GetElapsed() string {
-	if m != nil {
-		return m.Elapsed
-	}
-	return ""
-}
-
-// Venues Detailed
-type VenueDetailedRequest struct {
-	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	Venue                Venue    `protobuf:"varint,2,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *VenueDetailedRequest) Reset()         { *m = VenueDetailedRequest{} }
-func (m *VenueDetailedRequest) String() string { return proto.CompactTextString(m) }
-func (*VenueDetailedRequest) ProtoMessage()    {}
-func (*VenueDetailedRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{5}
-}
-func (m *VenueDetailedRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenueDetailedRequest.Unmarshal(m, b)
-}
-func (m *VenueDetailedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenueDetailedRequest.Marshal(b, m, deterministic)
-}
-func (dst *VenueDetailedRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedRequest.Merge(dst, src)
-}
-func (m *VenueDetailedRequest) XXX_Size() int {
-	return xxx_messageInfo_VenueDetailedRequest.Size(m)
-}
-func (m *VenueDetailedRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenueDetailedRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenueDetailedRequest proto.InternalMessageInfo
-
-func (m *VenueDetailedRequest) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-func (m *VenueDetailedRequest) GetVenue() Venue {
-	if m != nil {
-		return m.Venue
-	}
-	return Venue_DARKPOOL
-}
-
-type VenueDetailedResponse struct {
-	Retcode              Retcode                 `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
-	Id                   string                  `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Name                 string                  `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Venue                Venue                   `protobuf:"varint,4,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
-	Enabled              bool                    `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	ApiKey               string                  `protobuf:"bytes,6,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
-	ApiSecret            string                  `protobuf:"bytes,7,opt,name=api_secret,json=apiSecret,proto3" json:"api_secret,omitempty"`
-	Passphrase           string                  `protobuf:"bytes,8,opt,name=passphrase,proto3" json:"passphrase,omitempty"`
-	VenueType            VenueType               `protobuf:"varint,9,opt,name=venue_type,json=venueType,proto3,enum=api.VenueType" json:"venue_type,omitempty"`
-	ProductInfo          []*VenueDetailedProduct `protobuf:"bytes,10,rep,name=product_info,json=productInfo,proto3" json:"product_info,omitempty"`
-	Comment              string                  `protobuf:"bytes,11,opt,name=comment,proto3" json:"comment,omitempty"`
-	Elapsed              string                  `protobuf:"bytes,12,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *VenueDetailedResponse) Reset()         { *m = VenueDetailedResponse{} }
-func (m *VenueDetailedResponse) String() string { return proto.CompactTextString(m) }
-func (*VenueDetailedResponse) ProtoMessage()    {}
-func (*VenueDetailedResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{6}
-}
-func (m *VenueDetailedResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenueDetailedResponse.Unmarshal(m, b)
-}
-func (m *VenueDetailedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenueDetailedResponse.Marshal(b, m, deterministic)
-}
-func (dst *VenueDetailedResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedResponse.Merge(dst, src)
-}
-func (m *VenueDetailedResponse) XXX_Size() int {
-	return xxx_messageInfo_VenueDetailedResponse.Size(m)
-}
-func (m *VenueDetailedResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenueDetailedResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenueDetailedResponse proto.InternalMessageInfo
-
-func (m *VenueDetailedResponse) GetRetcode() Retcode {
-	if m != nil {
-		return m.Retcode
-	}
-	return Retcode_REJECTX
-}
-
-func (m *VenueDetailedResponse) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *VenueDetailedResponse) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *VenueDetailedResponse) GetVenue() Venue {
-	if m != nil {
-		return m.Venue
-	}
-	return Venue_DARKPOOL
-}
-
-func (m *VenueDetailedResponse) GetEnabled() bool {
-	if m != nil {
-		return m.Enabled
-	}
-	return false
-}
-
-func (m *VenueDetailedResponse) GetApiKey() string {
-	if m != nil {
-		return m.ApiKey
-	}
-	return ""
-}
-
-func (m *VenueDetailedResponse) GetApiSecret() string {
-	if m != nil {
-		return m.ApiSecret
-	}
-	return ""
-}
-
-func (m *VenueDetailedResponse) GetPassphrase() string {
-	if m != nil {
-		return m.Passphrase
-	}
-	return ""
-}
-
-func (m *VenueDetailedResponse) GetVenueType() VenueType {
-	if m != nil {
-		return m.VenueType
-	}
-	return VenueType_SPOT
-}
-
-func (m *VenueDetailedResponse) GetProductInfo() []*VenueDetailedProduct {
-	if m != nil {
-		return m.ProductInfo
-	}
-	return nil
-}
-
-func (m *VenueDetailedResponse) GetComment() string {
-	if m != nil {
-		return m.Comment
-	}
-	return ""
-}
-
-func (m *VenueDetailedResponse) GetElapsed() string {
-	if m != nil {
-		return m.Elapsed
-	}
-	return ""
-}
-
-type VenueDetailedProduct struct {
-	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	Id                   string   `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Venue                Venue    `protobuf:"varint,3,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
-	Product              string   `protobuf:"bytes,4,opt,name=product,proto3" json:"product,omitempty"`
-	Enabled              bool     `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	IndividualConnection bool     `protobuf:"varint,6,opt,name=individual_connection,json=individualConnection,proto3" json:"individual_connection,omitempty"`
-	VenueName            string   `protobuf:"bytes,7,opt,name=venue_name,json=venueName,proto3" json:"venue_name,omitempty"`
-	ApiName              string   `protobuf:"bytes,8,opt,name=api_name,json=apiName,proto3" json:"api_name,omitempty"`
-	MinimumOrdersSize    float64  `protobuf:"fixed64,9,opt,name=minimum_orders_size,json=minimumOrdersSize,proto3" json:"minimum_orders_size,omitempty"`
-	StepSize             float64  `protobuf:"fixed64,10,opt,name=step_size,json=stepSize,proto3" json:"step_size,omitempty"`
-	MakerFee             float64  `protobuf:"fixed64,11,opt,name=maker_fee,json=makerFee,proto3" json:"maker_fee,omitempty"`
-	TakerFee             float64  `protobuf:"fixed64,12,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *VenueDetailedProduct) Reset()         { *m = VenueDetailedProduct{} }
-func (m *VenueDetailedProduct) String() string { return proto.CompactTextString(m) }
-func (*VenueDetailedProduct) ProtoMessage()    {}
-func (*VenueDetailedProduct) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{7}
-}
-func (m *VenueDetailedProduct) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenueDetailedProduct.Unmarshal(m, b)
-}
-func (m *VenueDetailedProduct) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenueDetailedProduct.Marshal(b, m, deterministic)
-}
-func (dst *VenueDetailedProduct) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueDetailedProduct.Merge(dst, src)
-}
-func (m *VenueDetailedProduct) XXX_Size() int {
-	return xxx_messageInfo_VenueDetailedProduct.Size(m)
-}
-func (m *VenueDetailedProduct) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenueDetailedProduct.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenueDetailedProduct proto.InternalMessageInfo
-
-func (m *VenueDetailedProduct) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-func (m *VenueDetailedProduct) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *VenueDetailedProduct) GetVenue() Venue {
-	if m != nil {
-		return m.Venue
-	}
-	return Venue_DARKPOOL
-}
-
-func (m *VenueDetailedProduct) GetProduct() string {
-	if m != nil {
-		return m.Product
-	}
-	return ""
-}
-
-func (m *VenueDetailedProduct) GetEnabled() bool {
-	if m != nil {
-		return m.Enabled
-	}
-	return false
-}
-
-func (m *VenueDetailedProduct) GetIndividualConnection() bool {
-	if m != nil {
-		return m.IndividualConnection
-	}
-	return false
-}
-
-func (m *VenueDetailedProduct) GetVenueName() string {
-	if m != nil {
-		return m.VenueName
-	}
-	return ""
-}
-
-func (m *VenueDetailedProduct) GetApiName() string {
-	if m != nil {
-		return m.ApiName
-	}
-	return ""
-}
-
-func (m *VenueDetailedProduct) GetMinimumOrdersSize() float64 {
-	if m != nil {
-		return m.MinimumOrdersSize
-	}
-	return 0
-}
-
-func (m *VenueDetailedProduct) GetStepSize() float64 {
-	if m != nil {
-		return m.StepSize
-	}
-	return 0
-}
-
-func (m *VenueDetailedProduct) GetMakerFee() float64 {
-	if m != nil {
-		return m.MakerFee
-	}
-	return 0
-}
-
-func (m *VenueDetailedProduct) GetTakerFee() float64 {
-	if m != nil {
-		return m.TakerFee
-	}
-	return 0
-}
-
-// Venue Product
-type VenueProductRequest struct {
-	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	Id                   string   `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *VenueProductRequest) Reset()         { *m = VenueProductRequest{} }
-func (m *VenueProductRequest) String() string { return proto.CompactTextString(m) }
-func (*VenueProductRequest) ProtoMessage()    {}
-func (*VenueProductRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{8}
-}
-func (m *VenueProductRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenueProductRequest.Unmarshal(m, b)
-}
-func (m *VenueProductRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenueProductRequest.Marshal(b, m, deterministic)
-}
-func (dst *VenueProductRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueProductRequest.Merge(dst, src)
-}
-func (m *VenueProductRequest) XXX_Size() int {
-	return xxx_messageInfo_VenueProductRequest.Size(m)
-}
-func (m *VenueProductRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenueProductRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenueProductRequest proto.InternalMessageInfo
-
-func (m *VenueProductRequest) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-func (m *VenueProductRequest) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-type VenueProductResponse struct {
-	Retcode              Retcode  `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
-	Id                   string   `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	Venue                Venue    `protobuf:"varint,3,opt,name=venue,proto3,enum=api.Venue" json:"venue,omitempty"`
-	Product              string   `protobuf:"bytes,4,opt,name=product,proto3" json:"product,omitempty"`
-	Enabled              bool     `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	IndividualConnection bool     `protobuf:"varint,6,opt,name=individual_connection,json=individualConnection,proto3" json:"individual_connection,omitempty"`
-	VenueName            string   `protobuf:"bytes,7,opt,name=venue_name,json=venueName,proto3" json:"venue_name,omitempty"`
-	ApiName              string   `protobuf:"bytes,8,opt,name=api_name,json=apiName,proto3" json:"api_name,omitempty"`
-	MinimumOrdersSize    float64  `protobuf:"fixed64,9,opt,name=minimum_orders_size,json=minimumOrdersSize,proto3" json:"minimum_orders_size,omitempty"`
-	StepSize             float64  `protobuf:"fixed64,10,opt,name=step_size,json=stepSize,proto3" json:"step_size,omitempty"`
-	MakerFee             float64  `protobuf:"fixed64,11,opt,name=maker_fee,json=makerFee,proto3" json:"maker_fee,omitempty"`
-	TakerFee             float64  `protobuf:"fixed64,12,opt,name=taker_fee,json=takerFee,proto3" json:"taker_fee,omitempty"`
-	Comment              string   `protobuf:"bytes,13,opt,name=comment,proto3" json:"comment,omitempty"`
-	Elapsed              string   `protobuf:"bytes,14,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *VenueProductResponse) Reset()         { *m = VenueProductResponse{} }
-func (m *VenueProductResponse) String() string { return proto.CompactTextString(m) }
-func (*VenueProductResponse) ProtoMessage()    {}
-func (*VenueProductResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8c34a3f781dd794d, []int{9}
-}
-func (m *VenueProductResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VenueProductResponse.Unmarshal(m, b)
-}
-func (m *VenueProductResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VenueProductResponse.Marshal(b, m, deterministic)
-}
-func (dst *VenueProductResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueProductResponse.Merge(dst, src)
-}
-func (m *VenueProductResponse) XXX_Size() int {
-	return xxx_messageInfo_VenueProductResponse.Size(m)
-}
-func (m *VenueProductResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_VenueProductResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VenueProductResponse proto.InternalMessageInfo
-
-func (m *VenueProductResponse) GetRetcode() Retcode {
-	if m != nil {
-		return m.Retcode
-	}
-	return Retcode_REJECTX
-}
-
-func (m *VenueProductResponse) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *VenueProductResponse) GetVenue() Venue {
-	if m != nil {
-		return m.Venue
-	}
-	return Venue_DARKPOOL
-}
-
-func (m *VenueProductResponse) GetProduct() string {
-	if m != nil {
-		return m.Product
-	}
-	return ""
-}
-
-func (m *VenueProductResponse) GetEnabled() bool {
-	if m != nil {
-		return m.Enabled
-	}
-	return false
-}
-
-func (m *VenueProductResponse) GetIndividualConnection() bool {
-	if m != nil {
-		return m.IndividualConnection
-	}
-	return false
-}
-
-func (m *VenueProductResponse) GetVenueName() string {
-	if m != nil {
-		return m.VenueName
-	}
-	return ""
-}
-
-func (m *VenueProductResponse) GetApiName() string {
-	if m != nil {
-		return m.ApiName
-	}
-	return ""
-}
-
-func (m *VenueProductResponse) GetMinimumOrdersSize() float64 {
-	if m != nil {
-		return m.MinimumOrdersSize
-	}
-	return 0
-}
-
-func (m *VenueProductResponse) GetStepSize() float64 {
-	if m != nil {
-		return m.StepSize
-	}
-	return 0
-}
-
-func (m *VenueProductResponse) GetMakerFee() float64 {
-	if m != nil {
-		return m.MakerFee
-	}
-	return 0
-}
-
-func (m *VenueProductResponse) GetTakerFee() float64 {
-	if m != nil {
-		return m.TakerFee
-	}
-	return 0
-}
-
-func (m *VenueProductResponse) GetComment() string {
-	if m != nil {
-		return m.Comment
-	}
-	return ""
-}
-
-func (m *VenueProductResponse) GetElapsed() string {
+func (m *VenuePostResponse) GetElapsed() string {
 	if m != nil {
 		return m.Elapsed
 	}
@@ -818,60 +345,40 @@ func (m *VenueProductResponse) GetElapsed() string {
 }
 
 func init() {
-	proto.RegisterType((*VenuesRequest)(nil), "api.VenuesRequest")
-	proto.RegisterType((*VenuesInfo)(nil), "api.VenuesInfo")
-	proto.RegisterType((*VenuesResponse)(nil), "api.VenuesResponse")
-	proto.RegisterType((*VenuesPostRequest)(nil), "api.VenuesPostRequest")
-	proto.RegisterType((*VenuesPostResponse)(nil), "api.VenuesPostResponse")
-	proto.RegisterType((*VenueDetailedRequest)(nil), "api.VenueDetailedRequest")
-	proto.RegisterType((*VenueDetailedResponse)(nil), "api.VenueDetailedResponse")
-	proto.RegisterType((*VenueDetailedProduct)(nil), "api.VenueDetailedProduct")
-	proto.RegisterType((*VenueProductRequest)(nil), "api.VenueProductRequest")
-	proto.RegisterType((*VenueProductResponse)(nil), "api.VenueProductResponse")
+	proto.RegisterType((*Venue)(nil), "api.Venue")
+	proto.RegisterType((*VenueRequest)(nil), "api.VenueRequest")
+	proto.RegisterType((*VenueResponse)(nil), "api.VenueResponse")
+	proto.RegisterType((*VenuePostRequest)(nil), "api.VenuePostRequest")
+	proto.RegisterType((*VenuePostResponse)(nil), "api.VenuePostResponse")
 }
 
 func init() { proto.RegisterFile("venues.proto", fileDescriptor_8c34a3f781dd794d) }
 
 var fileDescriptor_8c34a3f781dd794d = []byte{
-	// 638 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x96, 0xdd, 0x6a, 0xdc, 0x3a,
-	0x10, 0xc7, 0xb1, 0x9d, 0xfd, 0xf0, 0x64, 0xb3, 0x87, 0x28, 0x09, 0xc7, 0x39, 0x87, 0x73, 0x58,
-	0x0c, 0x6d, 0xf7, 0xa6, 0x7b, 0x91, 0x5c, 0xb6, 0x77, 0x2d, 0x85, 0x52, 0x48, 0x83, 0x52, 0x7a,
-	0x6b, 0x94, 0xf5, 0x84, 0x8a, 0xac, 0x25, 0xd5, 0xd2, 0x06, 0x36, 0x4f, 0xd0, 0x17, 0x28, 0x14,
-	0xfa, 0x4e, 0x7d, 0x92, 0x3e, 0x44, 0xf1, 0xc8, 0xce, 0x7e, 0xb4, 0xbb, 0x49, 0x48, 0x2f, 0x7b,
-	0x67, 0xcd, 0x7f, 0x34, 0xd2, 0xfc, 0x7f, 0x1e, 0x63, 0xe8, 0x5d, 0xa1, 0x9a, 0xa2, 0x1d, 0x99,
-	0x52, 0x3b, 0xcd, 0x22, 0x61, 0xe4, 0x3f, 0x80, 0x6a, 0x5a, 0xf8, 0x40, 0xfa, 0x08, 0x76, 0xde,
-	0x53, 0x02, 0xc7, 0x8f, 0x53, 0xb4, 0x8e, 0xed, 0x43, 0xcb, 0xe9, 0x4b, 0x54, 0x49, 0x30, 0x08,
-	0x86, 0x31, 0xf7, 0x8b, 0xf4, 0x6b, 0x00, 0xe0, 0xf3, 0x5e, 0xab, 0x0b, 0xcd, 0xfa, 0x10, 0xca,
-	0xbc, 0xce, 0x08, 0x65, 0xce, 0x18, 0x6c, 0x29, 0x51, 0x60, 0x12, 0x52, 0x84, 0x9e, 0xd9, 0x00,
-	0x5a, 0x74, 0x74, 0x12, 0x0d, 0x82, 0x61, 0xff, 0x08, 0x46, 0xc2, 0xc8, 0x11, 0xd5, 0xe0, 0x5e,
-	0x60, 0x09, 0x74, 0x50, 0x89, 0xf3, 0x09, 0xe6, 0xc9, 0xd6, 0x20, 0x18, 0x76, 0x79, 0xb3, 0x64,
-	0x4f, 0x01, 0x28, 0x25, 0x73, 0x33, 0x83, 0x49, 0x8b, 0x0a, 0xf4, 0xe7, 0x05, 0xde, 0xcd, 0x0c,
-	0xf2, 0xf8, 0xaa, 0x79, 0x4c, 0x3f, 0x07, 0xd0, 0x6f, 0xba, 0xb0, 0x46, 0x2b, 0x8b, 0xec, 0x31,
-	0x74, 0x4a, 0x74, 0x63, 0x9d, 0x23, 0x5d, 0xb3, 0x7f, 0xd4, 0xa3, 0xed, 0xdc, 0xc7, 0x78, 0x23,
-	0xb2, 0x27, 0xd0, 0xf6, 0x06, 0x25, 0xe1, 0x20, 0x1a, 0x6e, 0x1f, 0xfd, 0x35, 0x3f, 0x85, 0x5a,
-	0xe5, 0xb5, 0x5c, 0x5d, 0x76, 0xac, 0x8b, 0x02, 0x95, 0xa3, 0x86, 0x62, 0xde, 0x2c, 0xa9, 0x8d,
-	0x89, 0x30, 0xb6, 0x6e, 0x23, 0xe6, 0xcd, 0x32, 0xfd, 0x1e, 0xc0, 0xae, 0x2f, 0x75, 0xaa, 0xad,
-	0xdb, 0xe8, 0xf0, 0xdc, 0xae, 0xf0, 0x0e, 0x76, 0x45, 0xcb, 0x76, 0xfd, 0x0d, 0x1d, 0x61, 0x64,
-	0x76, 0x89, 0xb3, 0xfa, 0x06, 0x6d, 0x61, 0xe4, 0x1b, 0x9c, 0xb1, 0xff, 0x00, 0x2a, 0xc1, 0xe2,
-	0xb8, 0x44, 0x47, 0x3e, 0xc6, 0x3c, 0x16, 0x46, 0x9e, 0x51, 0x80, 0xfd, 0x0f, 0x60, 0x84, 0xb5,
-	0xe6, 0x43, 0x29, 0x2c, 0x26, 0x6d, 0x92, 0x17, 0x22, 0x2b, 0x18, 0x3a, 0xb7, 0x61, 0x30, 0xc0,
-	0x16, 0xbb, 0xbd, 0x27, 0x89, 0x05, 0x83, 0xc3, 0xb5, 0x06, 0x47, 0xcb, 0x06, 0x9f, 0xc0, 0x3e,
-	0x9d, 0xf8, 0x12, 0x9d, 0x90, 0x13, 0xcc, 0x1f, 0x68, 0x71, 0xfa, 0x25, 0x82, 0x83, 0x95, 0x82,
-	0xf7, 0xec, 0xc2, 0x4f, 0x46, 0xf8, 0xd3, 0x64, 0x44, 0xbf, 0x9a, 0x8c, 0xad, 0x3b, 0xa0, 0x6e,
-	0xad, 0x45, 0xdd, 0xde, 0x80, 0xba, 0xb3, 0x19, 0x75, 0xf7, 0x16, 0xd4, 0xf1, 0x2d, 0xa8, 0xd9,
-	0x73, 0xe8, 0x99, 0x52, 0xe7, 0xd3, 0xb1, 0xcb, 0xa4, 0xba, 0xd0, 0x09, 0xd0, 0xf0, 0x1c, 0xce,
-	0x37, 0x34, 0x06, 0x9e, 0xfa, 0x2c, 0xbe, 0x5d, 0xa7, 0xd3, 0xe7, 0x63, 0x01, 0xf5, 0xf6, 0x5a,
-	0xd4, 0xbd, 0x65, 0xd4, 0x9f, 0xa2, 0x15, 0xd6, 0x75, 0xe5, 0x35, 0xac, 0x57, 0x39, 0xdc, 0xe9,
-	0x6b, 0x54, 0xdf, 0xb1, 0x19, 0xe3, 0x7a, 0xb9, 0x81, 0xc6, 0x31, 0x1c, 0x48, 0x95, 0xcb, 0x2b,
-	0x99, 0x4f, 0xc5, 0x24, 0x1b, 0x6b, 0xa5, 0x70, 0xec, 0xa4, 0x56, 0xc4, 0xa6, 0xcb, 0xf7, 0xe7,
-	0xe2, 0x8b, 0x1b, 0xad, 0x22, 0xe5, 0xad, 0xa6, 0x17, 0xa3, 0x26, 0x45, 0x91, 0x93, 0xea, 0xed,
-	0x38, 0x84, 0x6e, 0x05, 0x92, 0x44, 0xcf, 0xa9, 0x22, 0x4e, 0xd2, 0x08, 0xf6, 0x0a, 0xa9, 0x64,
-	0x31, 0x2d, 0x32, 0x5d, 0xe6, 0x58, 0xda, 0xcc, 0xca, 0x6b, 0x4f, 0x2b, 0xe0, 0xbb, 0xb5, 0xf4,
-	0x96, 0x94, 0x33, 0x79, 0x8d, 0xec, 0x5f, 0x88, 0xad, 0x43, 0xe3, 0xb3, 0x80, 0xb2, 0xba, 0x55,
-	0xa0, 0x11, 0x0b, 0x71, 0x89, 0x65, 0x76, 0x81, 0x48, 0x18, 0x02, 0xde, 0xa5, 0xc0, 0x2b, 0x24,
-	0xd1, 0xdd, 0x88, 0x3d, 0x2f, 0xba, 0x5a, 0x4c, 0x9f, 0xc1, 0x1e, 0x39, 0xd7, 0xb0, 0xdd, 0x38,
-	0x74, 0x2b, 0x20, 0xd2, 0x6f, 0x0d, 0xc7, 0x9b, 0xdd, 0x0f, 0x9c, 0xb0, 0x3f, 0x64, 0x7f, 0x1b,
-	0xd9, 0xc5, 0xc1, 0xdc, 0x59, 0x3b, 0x98, 0xfd, 0xa5, 0xc1, 0x3c, 0x6f, 0xd3, 0x8f, 0xc4, 0xf1,
-	0x8f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x74, 0x23, 0xcf, 0xc8, 0x69, 0x08, 0x00, 0x00,
+	// 398 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x92, 0x51, 0x8b, 0xd4, 0x30,
+	0x10, 0xc7, 0x69, 0x7b, 0x6d, 0xb7, 0xb3, 0xeb, 0x71, 0x17, 0x04, 0xa3, 0xa0, 0x96, 0x0a, 0x52,
+	0x10, 0xf6, 0x61, 0xfd, 0x04, 0xc2, 0xbd, 0x88, 0x2f, 0x92, 0x43, 0x5f, 0x4b, 0xae, 0x1d, 0x30,
+	0xec, 0x36, 0x89, 0x4d, 0x2a, 0xec, 0xa7, 0xf0, 0xd1, 0xaf, 0x2b, 0x9d, 0xb4, 0xee, 0x2e, 0xa8,
+	0x70, 0x6f, 0x9d, 0xff, 0xff, 0xd7, 0x99, 0xcc, 0x3f, 0x81, 0xcd, 0x0f, 0xd4, 0x23, 0xba, 0xad,
+	0x1d, 0x8c, 0x37, 0x2c, 0x91, 0x56, 0xbd, 0x00, 0xd4, 0x63, 0x1f, 0x84, 0xea, 0x57, 0x0c, 0xe9,
+	0xd7, 0x89, 0x60, 0xcf, 0x61, 0x45, 0x68, 0xa3, 0x3a, 0x1e, 0x95, 0x51, 0x9d, 0x8a, 0x9c, 0xea,
+	0x8f, 0x1d, 0x63, 0x70, 0xa5, 0x65, 0x8f, 0x3c, 0x2e, 0xa3, 0xba, 0x10, 0xf4, 0xcd, 0xde, 0xc1,
+	0x6d, 0xc0, 0x3b, 0x74, 0xed, 0xa0, 0xac, 0x57, 0x46, 0xf3, 0x84, 0x80, 0x1b, 0x32, 0xee, 0x4e,
+	0x3a, 0x7b, 0x06, 0xb9, 0xb4, 0xaa, 0xd9, 0xe3, 0x91, 0x5f, 0x11, 0x92, 0x49, 0xab, 0x3e, 0xe1,
+	0x91, 0xbd, 0x04, 0x98, 0x0c, 0x87, 0xed, 0x80, 0x9e, 0xa7, 0xe4, 0x15, 0xd2, 0xaa, 0x7b, 0x12,
+	0xd8, 0x2b, 0x00, 0x2b, 0x9d, 0xb3, 0xdf, 0x06, 0xe9, 0x90, 0x67, 0x64, 0x9f, 0x29, 0x8c, 0x43,
+	0x8e, 0x5a, 0x3e, 0x1c, 0xb0, 0xe3, 0x79, 0x19, 0xd5, 0x2b, 0xb1, 0x94, 0xec, 0x35, 0xac, 0xdb,
+	0x01, 0xa5, 0xc7, 0xa6, 0x93, 0x1e, 0xf9, 0x2a, 0xfc, 0x1a, 0xa4, 0x3b, 0xe9, 0x71, 0x02, 0x0e,
+	0xd2, 0xf9, 0x66, 0xb4, 0x04, 0x14, 0x01, 0x98, 0xa4, 0x2f, 0xa4, 0x54, 0xf7, 0xb0, 0xa1, 0x60,
+	0x04, 0x7e, 0x1f, 0xd1, 0x79, 0xf6, 0x14, 0x52, 0x6f, 0xf6, 0xa8, 0x29, 0x9c, 0x42, 0x84, 0xe2,
+	0x22, 0xb5, 0xf8, 0xef, 0xa9, 0x25, 0xa7, 0xd4, 0xaa, 0x9f, 0x11, 0x3c, 0x99, 0xbb, 0x3a, 0x6b,
+	0xb4, 0x43, 0xf6, 0x16, 0xf2, 0x01, 0x7d, 0x6b, 0x3a, 0xa4, 0xc6, 0xd7, 0xbb, 0xcd, 0x56, 0x5a,
+	0xb5, 0x15, 0x41, 0x13, 0x8b, 0xc9, 0x2a, 0xc8, 0xc2, 0x4d, 0xf2, 0xb8, 0x4c, 0xea, 0xf5, 0x0e,
+	0x08, 0x0b, 0xbd, 0x66, 0x67, 0x8a, 0xa3, 0x35, 0x7d, 0x8f, 0xda, 0xcf, 0x43, 0x97, 0x92, 0x82,
+	0x3a, 0x48, 0xeb, 0xb0, 0x9b, 0x2f, 0x60, 0x29, 0x2b, 0x03, 0x37, 0xd4, 0xe4, 0xb3, 0x71, 0xfe,
+	0xff, 0xab, 0x96, 0x90, 0xd2, 0x1c, 0xda, 0xf3, 0xf2, 0x00, 0xc1, 0x60, 0x6f, 0x20, 0x93, 0xed,
+	0x9f, 0x87, 0x70, 0xbd, 0x5b, 0x13, 0xf2, 0x81, 0x24, 0x31, 0x5b, 0x95, 0x81, 0xdb, 0xb3, 0x81,
+	0x8f, 0x4c, 0xe1, 0x6c, 0xc3, 0xf8, 0x9f, 0x1b, 0x26, 0x17, 0x1b, 0x3e, 0x64, 0xf4, 0xd2, 0xdf,
+	0xff, 0x0e, 0x00, 0x00, 0xff, 0xff, 0xc4, 0x5f, 0xba, 0x29, 0x0a, 0x03, 0x00, 0x00,
 }

@@ -9,7 +9,7 @@ message Subscription {
 }
 
 message SubscriptionItems {
-  Venue            venue         = 1;
+  Venues            Venues         = 1;
   string           product       = 2;
   bool             orderbook     = 3;
 }
