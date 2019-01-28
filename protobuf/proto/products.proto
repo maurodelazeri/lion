@@ -8,17 +8,18 @@ message Product {
    string                              kind                        = 3; 
    int32                               base_currency               = 4; 
    int32                               quote_currency              = 5; 
-   bool                                individual_connection       = 6; 
-   bool                                streaming_save              = 7; 
-   string                              venue_symbol_identifier     = 8; 
-   double                              minimum_orders_size         = 9; 
-   double                              step_size                   = 10; 
-   int32                               price_precision             = 11; 
-   double                              maker_fee                   = 12; 
-   double                              taker_fee                   = 13; 
-   bool                                enabled                     = 14; 
-   string                              settlement                  = 15; 
-   string                              expiration                  = 16; 
+   string                              system_symbol_identifier    = 6; 
+   bool                                individual_connection       = 7; 
+   bool                                streaming_save              = 8; 
+   string                              venue_symbol_identifier     = 9; 
+   double                              minimum_orders_size         = 10; 
+   double                              step_size                   = 11; 
+   int32                               price_precision             = 12; 
+   double                              maker_fee                   = 13; 
+   double                              taker_fee                   = 14; 
+   bool                                enabled                     = 15; 
+   string                              settlement                  = 16; 
+   string                              expiration                  = 17; 
 }
 
 message ProductRequest { 
