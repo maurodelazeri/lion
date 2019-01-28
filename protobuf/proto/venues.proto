@@ -45,9 +45,11 @@ message VenuePostResponse {
 // Venue Products
 message VenueProduct { 
    int32                               venue_id                  = 1;     
-   string                              venue                     = 2; 
+   string                              venue_description         = 2; 
    int32                               total                     = 3;
-   repeated Product                    products                  = 4;  
+   int32                               enabled                   = 4;
+   int32                               disabled                  = 5;
+   repeated Product                    products                  = 6;  
 }
 
 message VenueProductRequest { 
