@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -36,14 +38,15 @@ func (*Account) ProtoMessage()    {}
 func (*Account) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{0}
 }
+
 func (m *Account) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Account.Unmarshal(m, b)
 }
 func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Account.Marshal(b, m, deterministic)
 }
-func (dst *Account) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Account.Merge(dst, src)
+func (m *Account) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Account.Merge(m, src)
 }
 func (m *Account) XXX_Size() int {
 	return xxx_messageInfo_Account.Size(m)
@@ -112,14 +115,15 @@ func (*AccountsRequest) ProtoMessage()    {}
 func (*AccountsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{1}
 }
+
 func (m *AccountsRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountsRequest.Unmarshal(m, b)
 }
 func (m *AccountsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountsRequest.Marshal(b, m, deterministic)
 }
-func (dst *AccountsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsRequest.Merge(dst, src)
+func (m *AccountsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountsRequest.Merge(m, src)
 }
 func (m *AccountsRequest) XXX_Size() int {
 	return xxx_messageInfo_AccountsRequest.Size(m)
@@ -174,14 +178,15 @@ func (*AccountsResponse) ProtoMessage()    {}
 func (*AccountsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{2}
 }
+
 func (m *AccountsResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountsResponse.Unmarshal(m, b)
 }
 func (m *AccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountsResponse.Marshal(b, m, deterministic)
 }
-func (dst *AccountsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsResponse.Merge(dst, src)
+func (m *AccountsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountsResponse.Merge(m, src)
 }
 func (m *AccountsResponse) XXX_Size() int {
 	return xxx_messageInfo_AccountsResponse.Size(m)
@@ -235,14 +240,15 @@ func (*AccountsPostRequest) ProtoMessage()    {}
 func (*AccountsPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{3}
 }
+
 func (m *AccountsPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountsPostRequest.Unmarshal(m, b)
 }
 func (m *AccountsPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountsPostRequest.Marshal(b, m, deterministic)
 }
-func (dst *AccountsPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsPostRequest.Merge(dst, src)
+func (m *AccountsPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountsPostRequest.Merge(m, src)
 }
 func (m *AccountsPostRequest) XXX_Size() int {
 	return xxx_messageInfo_AccountsPostRequest.Size(m)
@@ -289,14 +295,15 @@ func (*AccountsPostResponse) ProtoMessage()    {}
 func (*AccountsPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{4}
 }
+
 func (m *AccountsPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountsPostResponse.Unmarshal(m, b)
 }
 func (m *AccountsPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountsPostResponse.Marshal(b, m, deterministic)
 }
-func (dst *AccountsPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsPostResponse.Merge(dst, src)
+func (m *AccountsPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountsPostResponse.Merge(m, src)
 }
 func (m *AccountsPostResponse) XXX_Size() int {
 	return xxx_messageInfo_AccountsPostResponse.Size(m)
@@ -342,14 +349,15 @@ func (*AccountBalanceRequest) ProtoMessage()    {}
 func (*AccountBalanceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{5}
 }
+
 func (m *AccountBalanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountBalanceRequest.Unmarshal(m, b)
 }
 func (m *AccountBalanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountBalanceRequest.Marshal(b, m, deterministic)
 }
-func (dst *AccountBalanceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountBalanceRequest.Merge(dst, src)
+func (m *AccountBalanceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountBalanceRequest.Merge(m, src)
 }
 func (m *AccountBalanceRequest) XXX_Size() int {
 	return xxx_messageInfo_AccountBalanceRequest.Size(m)
@@ -391,14 +399,15 @@ func (*AccountBalanceResponse) ProtoMessage()    {}
 func (*AccountBalanceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{6}
 }
+
 func (m *AccountBalanceResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountBalanceResponse.Unmarshal(m, b)
 }
 func (m *AccountBalanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountBalanceResponse.Marshal(b, m, deterministic)
 }
-func (dst *AccountBalanceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountBalanceResponse.Merge(dst, src)
+func (m *AccountBalanceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountBalanceResponse.Merge(m, src)
 }
 func (m *AccountBalanceResponse) XXX_Size() int {
 	return xxx_messageInfo_AccountBalanceResponse.Size(m)

@@ -15,6 +15,7 @@ message Venue {
    bool                                options                  = 10; 
 }
 
+// Venue
 message VenueRequest { 
    string                              token                     = 1;  
    int32                               venue_id                  = 2;     
@@ -38,4 +39,24 @@ message VenuePostResponse {
    Retcode                             retcode                   = 1; 
    string                              comment                   = 2;   
    string                              elapsed                   = 3; 
+}
+
+// Venue Products
+message VenueProduct { 
+   int32                               product_id                = 1;     
+   string                              name                      = 2; 
+   int32                               total                     = 3; 
+}
+
+message VenueProductRequest { 
+   string                              token                     = 1;  
+   int32                               venue_id                  = 2;     
+   string                              name                      = 3; 
+}
+
+message VenueProductResponse { 
+   Retcode                             retcode                   = 1;
+   repeated VenueProduct               venue_products            = 2; 
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
 }
