@@ -15,7 +15,7 @@ message Product {
 
 message ProductRequest { 
    string                              token                     = 1;  
-   string                              product_id               = 2;     
+   string                              product_id                = 2;     
    AccountMode                         name                      = 3; 
 }
 
@@ -27,19 +27,9 @@ message ProductResponse {
 }
 
 message ProductPostRequest {
-   string                               token                    = 1;  
-   string                               id                       = 2;
-   Venues                                venue                    = 3; 
-   string                               product                  = 4;  
-   bool                                 enabled                  = 5;  
-   bool                                 individual_connection    = 6;
-   string                               venue_name               = 7;
-   string                               api_name                 = 8;
-   double                               minimum_orders_size      = 9;
-   double                               step_size                = 10;
-   double                               maker_fee                = 11;
-   double                               taker_fee                = 12;
-   Action                               action                   = 13;
+   string                              token                     = 1; 
+   Product                             product                   = 2;     
+   Action                              action                    = 3;
 }
 
 message ProductPostResponse { 

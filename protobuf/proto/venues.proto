@@ -1,6 +1,7 @@
 syntax = "proto3";
 package api;
 import "enum.proto";
+import "products.proto";
 
 message Venue { 
    int32                               venue_id                 = 1; 
@@ -43,9 +44,10 @@ message VenuePostResponse {
 
 // Venue Products
 message VenueProduct { 
-   int32                               product_id                = 1;     
-   string                              name                      = 2; 
-   int32                               total                     = 3; 
+   int32                               venue_id                  = 1;     
+   string                              venue                     = 2; 
+   int32                               total                     = 3;
+   repeated Product                    products                  = 4;  
 }
 
 message VenueProductRequest { 
