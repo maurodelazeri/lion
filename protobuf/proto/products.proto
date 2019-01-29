@@ -24,13 +24,13 @@ message Product {
 
 message ProductRequest { 
    string                              token                     = 1;  
-   string                              product_id                = 2;     
+   int32                               product_id                = 2;     
    AccountMode                         name                      = 3; 
 }
 
 message ProductResponse { 
    Retcode                             retcode                   = 1;
-   repeated Product                    currencies                = 2; 
+   Product                             product                   = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
