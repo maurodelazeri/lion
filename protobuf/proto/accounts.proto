@@ -5,11 +5,10 @@ import "enum.proto";
 message Account { 
    int32                               account_id               = 1; 
    string                              account_description      = 2; 
-   int32                               venue_id                 = 3; 
-   int32                               user_id                  = 4;
-   string                              account_mode             = 5; 
-   string                              account_type             = 6; 
-   bool                                enabled                  = 7; 
+   int32                               user_id                  = 3;
+   string                              account_mode             = 4; 
+   string                              account_type             = 5; 
+   bool                                enabled                  = 6; 
 }
 
 message AccountRequest { 
