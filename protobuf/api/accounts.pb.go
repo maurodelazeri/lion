@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -21,15 +19,14 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type Account struct {
-	Id                   string      `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId               string      `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Description          string      `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	AccountMode          AccountMode `protobuf:"varint,4,opt,name=account_mode,json=accountMode,proto3,enum=api.AccountMode" json:"account_mode,omitempty"`
-	AccountType          AccountType `protobuf:"varint,5,opt,name=account_type,json=accountType,proto3,enum=api.AccountType" json:"account_type,omitempty"`
-	Enabled              bool        `protobuf:"varint,6,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
+	AccountId            int32    `protobuf:"varint,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	UserId               int32    `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AccountMode          string   `protobuf:"bytes,3,opt,name=account_mode,json=accountMode,proto3" json:"account_mode,omitempty"`
+	AccountType          string   `protobuf:"bytes,4,opt,name=account_type,json=accountType,proto3" json:"account_type,omitempty"`
+	Enabled              bool     `protobuf:"varint,5,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
 func (m *Account) Reset()         { *m = Account{} }
@@ -38,15 +35,14 @@ func (*Account) ProtoMessage()    {}
 func (*Account) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{0}
 }
-
 func (m *Account) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Account.Unmarshal(m, b)
 }
 func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Account.Marshal(b, m, deterministic)
 }
-func (m *Account) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Account.Merge(m, src)
+func (dst *Account) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Account.Merge(dst, src)
 }
 func (m *Account) XXX_Size() int {
 	return xxx_messageInfo_Account.Size(m)
@@ -57,39 +53,32 @@ func (m *Account) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Account proto.InternalMessageInfo
 
-func (m *Account) GetId() string {
+func (m *Account) GetAccountId() int32 {
 	if m != nil {
-		return m.Id
+		return m.AccountId
 	}
-	return ""
+	return 0
 }
 
-func (m *Account) GetUserId() string {
+func (m *Account) GetUserId() int32 {
 	if m != nil {
 		return m.UserId
 	}
-	return ""
+	return 0
 }
 
-func (m *Account) GetDescription() string {
-	if m != nil {
-		return m.Description
-	}
-	return ""
-}
-
-func (m *Account) GetAccountMode() AccountMode {
+func (m *Account) GetAccountMode() string {
 	if m != nil {
 		return m.AccountMode
 	}
-	return AccountMode_DEMO
+	return ""
 }
 
-func (m *Account) GetAccountType() AccountType {
+func (m *Account) GetAccountType() string {
 	if m != nil {
 		return m.AccountType
 	}
-	return AccountType_NET
+	return ""
 }
 
 func (m *Account) GetEnabled() bool {
@@ -99,133 +88,123 @@ func (m *Account) GetEnabled() bool {
 	return false
 }
 
-type AccountsRequest struct {
+type AccountRequest struct {
 	Token                string      `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	AccountId            string      `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	AccountMode          AccountMode `protobuf:"varint,3,opt,name=account_mode,json=accountMode,proto3,enum=api.AccountMode" json:"account_mode,omitempty"`
-	AccountType          AccountType `protobuf:"varint,4,opt,name=account_type,json=accountType,proto3,enum=api.AccountType" json:"account_type,omitempty"`
+	AccountId            int32       `protobuf:"varint,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	Name                 AccountMode `protobuf:"varint,3,opt,name=name,proto3,enum=api.AccountMode" json:"name,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
 	XXX_unrecognized     []byte      `json:"-"`
 	XXX_sizecache        int32       `json:"-"`
 }
 
-func (m *AccountsRequest) Reset()         { *m = AccountsRequest{} }
-func (m *AccountsRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountsRequest) ProtoMessage()    {}
-func (*AccountsRequest) Descriptor() ([]byte, []int) {
+func (m *AccountRequest) Reset()         { *m = AccountRequest{} }
+func (m *AccountRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountRequest) ProtoMessage()    {}
+func (*AccountRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{1}
 }
+func (m *AccountRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountRequest.Unmarshal(m, b)
+}
+func (m *AccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountRequest.Marshal(b, m, deterministic)
+}
+func (dst *AccountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountRequest.Merge(dst, src)
+}
+func (m *AccountRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountRequest.Size(m)
+}
+func (m *AccountRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountRequest.DiscardUnknown(m)
+}
 
-func (m *AccountsRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountsRequest.Unmarshal(m, b)
-}
-func (m *AccountsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountsRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsRequest.Merge(m, src)
-}
-func (m *AccountsRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountsRequest.Size(m)
-}
-func (m *AccountsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountsRequest.DiscardUnknown(m)
-}
+var xxx_messageInfo_AccountRequest proto.InternalMessageInfo
 
-var xxx_messageInfo_AccountsRequest proto.InternalMessageInfo
-
-func (m *AccountsRequest) GetToken() string {
+func (m *AccountRequest) GetToken() string {
 	if m != nil {
 		return m.Token
 	}
 	return ""
 }
 
-func (m *AccountsRequest) GetAccountId() string {
+func (m *AccountRequest) GetAccountId() int32 {
 	if m != nil {
 		return m.AccountId
 	}
-	return ""
+	return 0
 }
 
-func (m *AccountsRequest) GetAccountMode() AccountMode {
+func (m *AccountRequest) GetName() AccountMode {
 	if m != nil {
-		return m.AccountMode
+		return m.Name
 	}
 	return AccountMode_DEMO
 }
 
-func (m *AccountsRequest) GetAccountType() AccountType {
-	if m != nil {
-		return m.AccountType
-	}
-	return AccountType_NET
+type AccountResponse struct {
+	Retcode              Retcode  `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
+	Account              *Account `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	Comment              string   `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
+	Elapsed              string   `protobuf:"bytes,4,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
 }
 
-type AccountsResponse struct {
-	Retcode              Retcode    `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
-	Accounts             []*Account `protobuf:"bytes,2,rep,name=accounts,proto3" json:"accounts,omitempty"`
-	Comment              string     `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
-	Elapsed              string     `protobuf:"bytes,4,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
-}
-
-func (m *AccountsResponse) Reset()         { *m = AccountsResponse{} }
-func (m *AccountsResponse) String() string { return proto.CompactTextString(m) }
-func (*AccountsResponse) ProtoMessage()    {}
-func (*AccountsResponse) Descriptor() ([]byte, []int) {
+func (m *AccountResponse) Reset()         { *m = AccountResponse{} }
+func (m *AccountResponse) String() string { return proto.CompactTextString(m) }
+func (*AccountResponse) ProtoMessage()    {}
+func (*AccountResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{2}
 }
+func (m *AccountResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountResponse.Unmarshal(m, b)
+}
+func (m *AccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountResponse.Marshal(b, m, deterministic)
+}
+func (dst *AccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountResponse.Merge(dst, src)
+}
+func (m *AccountResponse) XXX_Size() int {
+	return xxx_messageInfo_AccountResponse.Size(m)
+}
+func (m *AccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountResponse.DiscardUnknown(m)
+}
 
-func (m *AccountsResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountsResponse.Unmarshal(m, b)
-}
-func (m *AccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountsResponse.Marshal(b, m, deterministic)
-}
-func (m *AccountsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsResponse.Merge(m, src)
-}
-func (m *AccountsResponse) XXX_Size() int {
-	return xxx_messageInfo_AccountsResponse.Size(m)
-}
-func (m *AccountsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountsResponse.DiscardUnknown(m)
-}
+var xxx_messageInfo_AccountResponse proto.InternalMessageInfo
 
-var xxx_messageInfo_AccountsResponse proto.InternalMessageInfo
-
-func (m *AccountsResponse) GetRetcode() Retcode {
+func (m *AccountResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
 	return Retcode_REJECTX
 }
 
-func (m *AccountsResponse) GetAccounts() []*Account {
+func (m *AccountResponse) GetAccount() *Account {
 	if m != nil {
-		return m.Accounts
+		return m.Account
 	}
 	return nil
 }
 
-func (m *AccountsResponse) GetComment() string {
+func (m *AccountResponse) GetComment() string {
 	if m != nil {
 		return m.Comment
 	}
 	return ""
 }
 
-func (m *AccountsResponse) GetElapsed() string {
+func (m *AccountResponse) GetElapsed() string {
 	if m != nil {
 		return m.Elapsed
 	}
 	return ""
 }
 
-type AccountsPostRequest struct {
+type AccountPostRequest struct {
 	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	Account              *Account `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
 	Action               Action   `protobuf:"varint,3,opt,name=action,proto3,enum=api.Action" json:"action,omitempty"`
@@ -234,53 +213,52 @@ type AccountsPostRequest struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountsPostRequest) Reset()         { *m = AccountsPostRequest{} }
-func (m *AccountsPostRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountsPostRequest) ProtoMessage()    {}
-func (*AccountsPostRequest) Descriptor() ([]byte, []int) {
+func (m *AccountPostRequest) Reset()         { *m = AccountPostRequest{} }
+func (m *AccountPostRequest) String() string { return proto.CompactTextString(m) }
+func (*AccountPostRequest) ProtoMessage()    {}
+func (*AccountPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{3}
 }
+func (m *AccountPostRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountPostRequest.Unmarshal(m, b)
+}
+func (m *AccountPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountPostRequest.Marshal(b, m, deterministic)
+}
+func (dst *AccountPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPostRequest.Merge(dst, src)
+}
+func (m *AccountPostRequest) XXX_Size() int {
+	return xxx_messageInfo_AccountPostRequest.Size(m)
+}
+func (m *AccountPostRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountPostRequest.DiscardUnknown(m)
+}
 
-func (m *AccountsPostRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountsPostRequest.Unmarshal(m, b)
-}
-func (m *AccountsPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountsPostRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountsPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsPostRequest.Merge(m, src)
-}
-func (m *AccountsPostRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountsPostRequest.Size(m)
-}
-func (m *AccountsPostRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountsPostRequest.DiscardUnknown(m)
-}
+var xxx_messageInfo_AccountPostRequest proto.InternalMessageInfo
 
-var xxx_messageInfo_AccountsPostRequest proto.InternalMessageInfo
-
-func (m *AccountsPostRequest) GetToken() string {
+func (m *AccountPostRequest) GetToken() string {
 	if m != nil {
 		return m.Token
 	}
 	return ""
 }
 
-func (m *AccountsPostRequest) GetAccount() *Account {
+func (m *AccountPostRequest) GetAccount() *Account {
 	if m != nil {
 		return m.Account
 	}
 	return nil
 }
 
-func (m *AccountsPostRequest) GetAction() Action {
+func (m *AccountPostRequest) GetAction() Action {
 	if m != nil {
 		return m.Action
 	}
 	return Action_INSERT
 }
 
-type AccountsPostResponse struct {
+type AccountPostResponse struct {
 	Retcode              Retcode  `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
 	Comment              string   `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty"`
 	Elapsed              string   `protobuf:"bytes,3,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
@@ -289,164 +267,45 @@ type AccountsPostResponse struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *AccountsPostResponse) Reset()         { *m = AccountsPostResponse{} }
-func (m *AccountsPostResponse) String() string { return proto.CompactTextString(m) }
-func (*AccountsPostResponse) ProtoMessage()    {}
-func (*AccountsPostResponse) Descriptor() ([]byte, []int) {
+func (m *AccountPostResponse) Reset()         { *m = AccountPostResponse{} }
+func (m *AccountPostResponse) String() string { return proto.CompactTextString(m) }
+func (*AccountPostResponse) ProtoMessage()    {}
+func (*AccountPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{4}
 }
+func (m *AccountPostResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_AccountPostResponse.Unmarshal(m, b)
+}
+func (m *AccountPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_AccountPostResponse.Marshal(b, m, deterministic)
+}
+func (dst *AccountPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPostResponse.Merge(dst, src)
+}
+func (m *AccountPostResponse) XXX_Size() int {
+	return xxx_messageInfo_AccountPostResponse.Size(m)
+}
+func (m *AccountPostResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AccountPostResponse.DiscardUnknown(m)
+}
 
-func (m *AccountsPostResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountsPostResponse.Unmarshal(m, b)
-}
-func (m *AccountsPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountsPostResponse.Marshal(b, m, deterministic)
-}
-func (m *AccountsPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountsPostResponse.Merge(m, src)
-}
-func (m *AccountsPostResponse) XXX_Size() int {
-	return xxx_messageInfo_AccountsPostResponse.Size(m)
-}
-func (m *AccountsPostResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountsPostResponse.DiscardUnknown(m)
-}
+var xxx_messageInfo_AccountPostResponse proto.InternalMessageInfo
 
-var xxx_messageInfo_AccountsPostResponse proto.InternalMessageInfo
-
-func (m *AccountsPostResponse) GetRetcode() Retcode {
+func (m *AccountPostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
 	return Retcode_REJECTX
 }
 
-func (m *AccountsPostResponse) GetComment() string {
+func (m *AccountPostResponse) GetComment() string {
 	if m != nil {
 		return m.Comment
 	}
 	return ""
 }
 
-func (m *AccountsPostResponse) GetElapsed() string {
-	if m != nil {
-		return m.Elapsed
-	}
-	return ""
-}
-
-type AccountBalanceRequest struct {
-	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	AccountId            string   `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *AccountBalanceRequest) Reset()         { *m = AccountBalanceRequest{} }
-func (m *AccountBalanceRequest) String() string { return proto.CompactTextString(m) }
-func (*AccountBalanceRequest) ProtoMessage()    {}
-func (*AccountBalanceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e1e7723af4c007b7, []int{5}
-}
-
-func (m *AccountBalanceRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountBalanceRequest.Unmarshal(m, b)
-}
-func (m *AccountBalanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountBalanceRequest.Marshal(b, m, deterministic)
-}
-func (m *AccountBalanceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountBalanceRequest.Merge(m, src)
-}
-func (m *AccountBalanceRequest) XXX_Size() int {
-	return xxx_messageInfo_AccountBalanceRequest.Size(m)
-}
-func (m *AccountBalanceRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountBalanceRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountBalanceRequest proto.InternalMessageInfo
-
-func (m *AccountBalanceRequest) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-func (m *AccountBalanceRequest) GetAccountId() string {
-	if m != nil {
-		return m.AccountId
-	}
-	return ""
-}
-
-type AccountBalanceResponse struct {
-	Retcode              Retcode    `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
-	Comment              string     `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty"`
-	Account              *Account   `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
-	Balances             []*Balance `protobuf:"bytes,4,rep,name=balances,proto3" json:"balances,omitempty"`
-	Elapsed              string     `protobuf:"bytes,5,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
-	XXX_unrecognized     []byte     `json:"-"`
-	XXX_sizecache        int32      `json:"-"`
-}
-
-func (m *AccountBalanceResponse) Reset()         { *m = AccountBalanceResponse{} }
-func (m *AccountBalanceResponse) String() string { return proto.CompactTextString(m) }
-func (*AccountBalanceResponse) ProtoMessage()    {}
-func (*AccountBalanceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e1e7723af4c007b7, []int{6}
-}
-
-func (m *AccountBalanceResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_AccountBalanceResponse.Unmarshal(m, b)
-}
-func (m *AccountBalanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_AccountBalanceResponse.Marshal(b, m, deterministic)
-}
-func (m *AccountBalanceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountBalanceResponse.Merge(m, src)
-}
-func (m *AccountBalanceResponse) XXX_Size() int {
-	return xxx_messageInfo_AccountBalanceResponse.Size(m)
-}
-func (m *AccountBalanceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountBalanceResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountBalanceResponse proto.InternalMessageInfo
-
-func (m *AccountBalanceResponse) GetRetcode() Retcode {
-	if m != nil {
-		return m.Retcode
-	}
-	return Retcode_REJECTX
-}
-
-func (m *AccountBalanceResponse) GetComment() string {
-	if m != nil {
-		return m.Comment
-	}
-	return ""
-}
-
-func (m *AccountBalanceResponse) GetAccount() *Account {
-	if m != nil {
-		return m.Account
-	}
-	return nil
-}
-
-func (m *AccountBalanceResponse) GetBalances() []*Balance {
-	if m != nil {
-		return m.Balances
-	}
-	return nil
-}
-
-func (m *AccountBalanceResponse) GetElapsed() string {
+func (m *AccountPostResponse) GetElapsed() string {
 	if m != nil {
 		return m.Elapsed
 	}
@@ -455,43 +314,35 @@ func (m *AccountBalanceResponse) GetElapsed() string {
 
 func init() {
 	proto.RegisterType((*Account)(nil), "api.Account")
-	proto.RegisterType((*AccountsRequest)(nil), "api.AccountsRequest")
-	proto.RegisterType((*AccountsResponse)(nil), "api.AccountsResponse")
-	proto.RegisterType((*AccountsPostRequest)(nil), "api.AccountsPostRequest")
-	proto.RegisterType((*AccountsPostResponse)(nil), "api.AccountsPostResponse")
-	proto.RegisterType((*AccountBalanceRequest)(nil), "api.AccountBalanceRequest")
-	proto.RegisterType((*AccountBalanceResponse)(nil), "api.AccountBalanceResponse")
+	proto.RegisterType((*AccountRequest)(nil), "api.AccountRequest")
+	proto.RegisterType((*AccountResponse)(nil), "api.AccountResponse")
+	proto.RegisterType((*AccountPostRequest)(nil), "api.AccountPostRequest")
+	proto.RegisterType((*AccountPostResponse)(nil), "api.AccountPostResponse")
 }
 
 func init() { proto.RegisterFile("accounts.proto", fileDescriptor_e1e7723af4c007b7) }
 
 var fileDescriptor_e1e7723af4c007b7 = []byte{
-	// 422 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0xdd, 0x6a, 0xdb, 0x30,
-	0x14, 0x46, 0x76, 0x12, 0x27, 0x27, 0xc5, 0x2b, 0x5a, 0xb7, 0x89, 0xc2, 0xc0, 0x78, 0x50, 0x7c,
-	0x95, 0x8b, 0xf6, 0x09, 0xb6, 0xbb, 0xc2, 0x06, 0x43, 0xec, 0xbe, 0x28, 0xd6, 0xb9, 0x30, 0x4b,
-	0x24, 0xcd, 0x92, 0x61, 0x7d, 0x93, 0x3d, 0xc6, 0x9e, 0x62, 0xcf, 0xb0, 0xc7, 0x19, 0x96, 0x25,
-	0xc7, 0x69, 0x59, 0xd8, 0x4f, 0x2f, 0xbf, 0x73, 0x74, 0xce, 0xf7, 0x63, 0xc9, 0x90, 0x8b, 0xba,
-	0xd6, 0x9d, 0x72, 0x76, 0x63, 0x5a, 0xed, 0x34, 0x4d, 0x85, 0x69, 0x2e, 0x01, 0x55, 0xb7, 0x1f,
-	0x0a, 0x97, 0xf9, 0x56, 0xec, 0x84, 0xaa, 0x31, 0x1c, 0x28, 0x7f, 0x12, 0xc8, 0xde, 0x0e, 0x33,
-	0x34, 0x87, 0xa4, 0x91, 0x8c, 0x14, 0xa4, 0x5a, 0xf1, 0xa4, 0x91, 0xf4, 0x15, 0x64, 0x9d, 0xc5,
-	0xf6, 0xae, 0x91, 0x2c, 0xf1, 0xc5, 0x45, 0x0f, 0x6f, 0x25, 0x2d, 0x60, 0x2d, 0xd1, 0xd6, 0x6d,
-	0x63, 0x5c, 0xa3, 0x15, 0x4b, 0x7d, 0x73, 0x5a, 0xa2, 0x37, 0x70, 0x16, 0x94, 0xdc, 0xed, 0xb5,
-	0x44, 0x36, 0x2b, 0x48, 0x95, 0x5f, 0x9f, 0x6f, 0x84, 0x69, 0x36, 0x81, 0xee, 0x83, 0x96, 0xc8,
-	0xd7, 0xe2, 0x00, 0xa6, 0x43, 0xee, 0xde, 0x20, 0x9b, 0x3f, 0x1e, 0xfa, 0x74, 0x6f, 0x0e, 0x43,
-	0x3d, 0xa0, 0x0c, 0x32, 0x54, 0x62, 0xbb, 0x43, 0xc9, 0x16, 0x05, 0xa9, 0x96, 0x3c, 0xc2, 0xf2,
-	0x3b, 0x81, 0x67, 0x61, 0xcc, 0x72, 0xfc, 0xd2, 0xa1, 0x75, 0xf4, 0x02, 0xe6, 0x4e, 0x7f, 0x46,
-	0x15, 0x5c, 0x0e, 0x80, 0xbe, 0x06, 0x88, 0xc4, 0xa3, 0xd7, 0x55, 0xa8, 0xdc, 0xca, 0x47, 0x66,
-	0xd2, 0x7f, 0x31, 0x33, 0xfb, 0x03, 0x33, 0xe5, 0x37, 0x02, 0xe7, 0x07, 0xc9, 0xd6, 0x68, 0x65,
-	0x91, 0x5e, 0x41, 0xd6, 0xa2, 0xab, 0x7b, 0x66, 0xe2, 0x97, 0x9c, 0xf9, 0x25, 0x7c, 0xa8, 0xf1,
-	0xd8, 0xa4, 0x15, 0x2c, 0xe3, 0xd7, 0x67, 0x49, 0x91, 0x56, 0xeb, 0x70, 0x30, 0x2c, 0xe4, 0x63,
-	0xb7, 0xcf, 0xac, 0xd6, 0xfb, 0x3d, 0x2a, 0x17, 0xbe, 0x5d, 0x84, 0x3e, 0xcd, 0x9d, 0x30, 0x16,
-	0xa5, 0x17, 0xbc, 0xe2, 0x11, 0x96, 0x5f, 0xe1, 0x79, 0x54, 0xf6, 0x51, 0x5b, 0x77, 0x3a, 0xd0,
-	0x2b, 0xc8, 0x02, 0x99, 0x4f, 0xf3, 0xa1, 0x92, 0xd8, 0xa4, 0x6f, 0x60, 0x21, 0xea, 0xf1, 0x0e,
-	0xe5, 0xd7, 0xeb, 0x70, 0xac, 0x2f, 0xf1, 0xd0, 0x2a, 0x5b, 0xb8, 0x38, 0x66, 0xfe, 0xcb, 0x5c,
-	0x26, 0x6e, 0x93, 0xdf, 0xba, 0x4d, 0x8f, 0xdd, 0xbe, 0x87, 0x17, 0x81, 0xf3, 0xdd, 0xf0, 0x5e,
-	0xfe, 0xe7, 0x02, 0x95, 0x3f, 0x08, 0xbc, 0x7c, 0xb8, 0xee, 0xc9, 0x4c, 0x4c, 0xb2, 0x4e, 0x4f,
-	0x65, 0x5d, 0xc1, 0x32, 0xbe, 0x7d, 0x36, 0x9b, 0x5c, 0x8f, 0xa8, 0x68, 0xec, 0x4e, 0x63, 0x99,
-	0x1f, 0xc5, 0xb2, 0x5d, 0xf8, 0x9f, 0xc6, 0xcd, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x95, 0xa2,
-	0xc0, 0x3b, 0x67, 0x04, 0x00, 0x00,
+	// 324 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0x4d, 0x4b, 0x03, 0x31,
+	0x10, 0x25, 0xfd, 0x5a, 0x3b, 0x2d, 0x55, 0xa2, 0xe0, 0x22, 0x08, 0x75, 0x15, 0xe9, 0xa9, 0x07,
+	0xfd, 0x05, 0x3d, 0xf6, 0x20, 0x48, 0xf0, 0x2e, 0xe9, 0x66, 0x0e, 0x4b, 0xbb, 0x49, 0xda, 0x64,
+	0x91, 0xfe, 0x10, 0x7f, 0x80, 0xff, 0x54, 0x36, 0x3b, 0xd1, 0x6e, 0x41, 0xd4, 0xe3, 0xbc, 0xf7,
+	0x26, 0xf3, 0xde, 0x23, 0x30, 0x91, 0x79, 0x6e, 0x2a, 0xed, 0xdd, 0xdc, 0xee, 0x8c, 0x37, 0xbc,
+	0x2b, 0x6d, 0x71, 0x05, 0xa8, 0xab, 0xb2, 0x01, 0xb2, 0x0f, 0x06, 0xc9, 0xa2, 0xd1, 0xf0, 0x6b,
+	0x00, 0x92, 0xbf, 0x16, 0x2a, 0x65, 0x53, 0x36, 0xeb, 0x8b, 0x21, 0x21, 0x4b, 0xc5, 0x2f, 0x21,
+	0xa9, 0x1c, 0xee, 0x6a, 0xae, 0x13, 0xb8, 0x41, 0x3d, 0x2e, 0x15, 0xbf, 0x81, 0x71, 0xdc, 0x2b,
+	0x8d, 0xc2, 0xb4, 0x3b, 0x65, 0xb3, 0xa1, 0x18, 0x11, 0xf6, 0x64, 0x14, 0x1e, 0x4a, 0xfc, 0xde,
+	0x62, 0xda, 0x6b, 0x49, 0x5e, 0xf6, 0x16, 0x79, 0x0a, 0x09, 0x6a, 0xb9, 0xda, 0xa0, 0x4a, 0xfb,
+	0x53, 0x36, 0x3b, 0x11, 0x71, 0xcc, 0xd6, 0x30, 0x21, 0x8b, 0x02, 0xb7, 0x15, 0x3a, 0xcf, 0x2f,
+	0xa0, 0xef, 0xcd, 0x1a, 0x75, 0x30, 0x39, 0x14, 0xcd, 0x70, 0xe4, 0xbf, 0x73, 0xec, 0xff, 0x0e,
+	0x7a, 0x5a, 0x96, 0x8d, 0xbd, 0xc9, 0xc3, 0xd9, 0x5c, 0xda, 0x62, 0xbe, 0xf8, 0xf6, 0x28, 0x02,
+	0x9b, 0xbd, 0x33, 0x38, 0xfd, 0xba, 0xe6, 0xac, 0xd1, 0x0e, 0xf9, 0x3d, 0x24, 0x3b, 0xf4, 0x79,
+	0x9d, 0x8d, 0x85, 0xe5, 0x71, 0x58, 0x16, 0x0d, 0x26, 0x22, 0x59, 0xeb, 0xe8, 0x5c, 0xb8, 0x3e,
+	0x22, 0x5d, 0x7c, 0x2e, 0x92, 0x75, 0xd4, 0xdc, 0x94, 0x25, 0x6a, 0x4f, 0x5d, 0xc5, 0x31, 0x94,
+	0xb0, 0x91, 0xd6, 0xa1, 0xa2, 0x8a, 0xe2, 0x98, 0xbd, 0x01, 0xa7, 0x77, 0x9e, 0x8d, 0xfb, 0xa5,
+	0x88, 0xbf, 0xfa, 0xb8, 0x85, 0x81, 0xcc, 0x7d, 0x61, 0x34, 0x75, 0x32, 0x22, 0x59, 0x0d, 0x09,
+	0xa2, 0xb2, 0x2d, 0x9c, 0xb7, 0x0e, 0xff, 0xb3, 0x93, 0x83, 0xac, 0x9d, 0x1f, 0xb3, 0x76, 0x5b,
+	0x59, 0x57, 0x83, 0xf0, 0x37, 0x1f, 0x3f, 0x03, 0x00, 0x00, 0xff, 0xff, 0x28, 0xa1, 0xaf, 0x9f,
+	0xbe, 0x02, 0x00, 0x00,
 }

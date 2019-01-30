@@ -6,7 +6,6 @@ import "execution.proto";
 import "backtesting.proto";
 import "reports.proto";
 import "accounts.proto";
-import "balances.proto";
 import "currencies.proto";
 import "products.proto";
 
@@ -26,11 +25,12 @@ service API {
   rpc GetProduct(ProductRequest) returns (ProductResponse) {}
   rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}
 
-  rpc GetAccounts(AccountsRequest) returns (AccountsResponse) {}
-  rpc PostAccount(AccountsPostRequest) returns (AccountsPostResponse) {}
-  rpc GetAccountBalances(AccountBalanceRequest) returns (AccountBalanceResponse) {}
-  rpc GetBalance(BalanceRequest) returns (BalanceResponse) {}
-  rpc PostBalance(BalancePostRequest) returns (BalancePostResponse) {}
+  rpc GetAccounts(AccountRequest) returns (AccountResponse) {}
+  rpc PostAccount(AccountPostRequest) returns (AccountPostResponse) {}
+  
+  // rpc GetAccountBalances(AccountBalanceRequest) returns (AccountBalanceResponse) {}
+  // rpc GetBalance(BalanceRequest) returns (BalanceResponse) {}
+  // rpc PostBalance(BalancePostRequest) returns (BalancePostResponse) {}
 
 
   // Get all Order for a user with filter - A server-to-client streaming RPC.

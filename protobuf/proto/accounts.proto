@@ -1,52 +1,36 @@
 syntax = "proto3";
 package api;
 import "enum.proto";
-import "balances.proto";
 
 message Account { 
-   string                              id                        = 1; 
-   string                              user_id                   = 2;
-   string                              description               = 3; 
-   AccountMode                         account_mode              = 4; 
-   AccountType                         account_type              = 5; 
-   bool                                enabled                   = 6; 
+   int32                               account_id               = 1; 
+   int32                               user_id                  = 2;
+   string                              account_mode             = 3; 
+   string                              account_type             = 4; 
+   bool                                enabled                  = 5; 
 }
 
-message AccountsRequest { 
+message AccountRequest { 
    string                              token                     = 1;  
-   string                              account_id                = 2;     
-   AccountMode                         account_mode              = 3; 
-   AccountType                         account_type              = 4; 
+   int32                               account_id                = 2;     
+   AccountMode                         name                      = 3; 
 }
 
-message AccountsResponse { 
+message AccountResponse { 
    Retcode                             retcode                   = 1;
-   repeated Account                    accounts                  = 2; 
+   Account                             account                   = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
 
-message AccountsPostRequest {
+message AccountPostRequest {
    string                              token                     = 1; 
    Account                             account                   = 2;     
    Action                              action                    = 3;
 }
 
-message AccountsPostResponse { 
+message AccountPostResponse { 
    Retcode                             retcode                   = 1; 
    string                              comment                   = 2;   
    string                              elapsed                   = 3; 
-}
-
-message AccountBalanceRequest {
-   string                              token                     = 1;   
-   string                              account_id                = 2;
-}
-
-message AccountBalanceResponse { 
-   Retcode                             retcode                   = 1;
-   string                              comment                   = 2;    
-   Account                             account                   = 3;   
-   repeated  Balance                   balances                  = 4; 
-   string                              elapsed                   = 5; 
 }
