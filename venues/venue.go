@@ -41,7 +41,7 @@ type Venues interface {
 	GetTakerFee(product pbAPI.Product, price, volume number.Decimal) (number.Decimal, error)
 	ValidateVolume(product pbAPI.Product, volume float64) error
 	GetOrderBook(product pbAPI.Product) (*pbAPI.Orderbook, error)
-	GetProductDetail(product pbAPI.Product) (config.Product, error)
+	//GetProductDetail(product pbAPI.Product) (config.Product, error)
 	SetBacktestingOrderbook(product pbAPI.Product, orderbook *pbAPI.Trade)
 	GetExecutionTimestamp() int64
 }
@@ -203,16 +203,16 @@ func (e *Base) ValidateVolume(product pbAPI.Product, volume float64) error {
 }
 
 // GetProductDetail ...
-func (e *Base) GetProductDetail(product pbAPI.Product) (config.Product, error) {
-	var prodCondig config.Product
-	mapping, exist := e.VenueConfig.Get(e.GetName())
-	if exist {
-		if prod, ok := mapping.(config.VenueConfig).Products[product.String()]; ok {
-			return prod, nil
-		}
-	}
-	return prodCondig, errors.New("Product not found")
-}
+// func (e *Base) GetProductDetail(product pbAPI.Product) (config.Product, error) {
+// 	var prodCondig config.Product
+// 	mapping, exist := e.VenueConfig.Get(e.GetName())
+// 	if exist {
+// 		if prod, ok := mapping.(config.VenueConfig).Products[product.String()]; ok {
+// 			return prod, nil
+// 		}
+// 	}
+// 	return prodCondig, errors.New("Product not found")
+// }
 
 // StartStreamingToStorage load the streaming from kafka
 func (e *Base) StartStreamingToStorage(mongo bool, influx bool) {

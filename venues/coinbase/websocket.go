@@ -160,8 +160,8 @@ func (r *Websocket) connect() {
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
 		}
 	}
 
@@ -338,16 +338,17 @@ func (r *Websocket) startReading() {
 
 							wg.Wait()
 							book := &pbAPI.Orderbook{
-								Product:   pbAPI.Product((pbAPI.Product_value[product])),
-								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Product: product,
+								//Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
 								Levels:    int32(r.base.MaxLevelsOrderBook),
 								Timestamp: common.MakeTimestamp(),
 								Asks:      refLiveBook.Asks,
 								Bids:      refLiveBook.Bids,
 								VenueType: pbAPI.VenueType_SPOT,
 							}
+							logrus.Info(book)
+							continue
 							refLiveBook = book
-
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(book)
 								if err != nil {
@@ -372,8 +373,8 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
-								Product:   pbAPI.Product((pbAPI.Product_value[product])),
-								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
+								Product: product,
+								//Venue:     r.base.GetName(),
 								Timestamp: common.MakeTimestamp(),
 								Price:     data.Price,
 								OrderSide: side,
@@ -382,6 +383,9 @@ func (r *Websocket) startReading() {
 								Asks:      refLiveBook.Asks,
 								Bids:      refLiveBook.Bids,
 							}
+							logrus.Info(trades)
+							continue
+
 							serialized, err := proto.Marshal(trades)
 							if err != nil {
 								log.Fatal("proto.Marshal error: ", err)

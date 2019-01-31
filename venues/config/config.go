@@ -28,24 +28,7 @@ func (c *Config) LoadConfig() error {
 	var rows *sql.Rows
 	var err error
 
-	query := fmt.Sprintf(`SELECT venue_id,name,venue_description,api_key,api_secret,passphrase,spot,futures,options,enabled, FROM venues`)
-	if rows, err = postgres.PostgresDB.Query(query); err != nil {
-		return err
-	}
-	defer rows.Close()
-	for rows.Next() {
-		venue := &pbAPI.Venue{}
-		args := []interface{}{
-			&venue.VenueId, &venue.Name, &venue.VenueDescription, &venue.ApiKey, &venue.ApiSecret, &venue.Passphrase, &venue.Spot, &venue.Futures, &venue.Options, &venue.Enabled}
-		if err = rows.Scan(args...); err != nil {
-			return err
-		}
-		venueConf := &VenueConfig{}
-		venueConf.Venue = venue
-		venueConf.Products = make(map[string]*pbAPI.Product)
-	}
-
-	query = fmt.Sprintf(`SELECT product_id,venue_id, base_currency,quote_currency,venue_symbol_identifier,kind,individual_connection,streaming_save,
+	query := fmt.Sprintf(`SELECT product_id,venue_id, base_currency,quote_currency,venue_symbol_identifier,kind,individual_connection,streaming_save,
 	 minimum_orders_size,step_size,price_precision,taker_fee,maker_fee,settlement,expiration,enabled, COALESCE((SELECT name FROM currencies WHERE currency_id=products.base_currency), '') || '-' || COALESCE((SELECT name FROM currencies
 			WHERE currency_id=products.quote_currency), '') as system_symbol_identifier FROM products`)
 	if rows, err = postgres.PostgresDB.Query(query); err != nil {
@@ -61,61 +44,35 @@ func (c *Config) LoadConfig() error {
 		if err = rows.Scan(args...); err != nil {
 			return err
 		}
-		products[product.VenueId] = product
+		products[product.ProductId] = product
 	}
 
-	// query = fmt.Sprintf(`SELECT venue_id,name,venue_description,api_key,api_secret,passphrase,spot,futures,options,enabled, FROM venues`)
-	// if rows, err := postgres.PostgresDB.Query(query); err != nil {
-	// 	return err
-	// }
-	// defer rows.Close()
-	// for rows.Next() {
-	// 	venue := &pbAPI.Venue{}
-	// 	args := []interface{}{
-	// 		&venue.VenueId, &venue.Name, &venue.VenueDescription, &venue.APIKey, &venue.APISecret, &venue.Passphrase, &venue.Spot, &venue.Futures, &venue.Options, &venue.Enabled}
-	// 	if err = rows.Scan(args...); err != nil {
-	// 		return err
-	// 	}
-	// 	c.Venue[venue.Name] = venue
-	// }
+	query = fmt.Sprintf(`SELECT venue_id,name,venue_description,api_key,api_secret,passphrase,spot,futures,options,enabled FROM venues`)
+	if rows, err = postgres.PostgresDB.Query(query); err != nil {
+		return err
+	}
+	defer rows.Close()
+	venues := make(map[int32]*pbAPI.Venue)
+	for rows.Next() {
+		venue := &pbAPI.Venue{}
+		args := []interface{}{
+			&venue.VenueId, &venue.Name, &venue.VenueDescription, &venue.ApiKey, &venue.ApiSecret, &venue.Passphrase, &venue.Spot, &venue.Futures, &venue.Options, &venue.Enabled}
+		if err = rows.Scan(args...); err != nil {
+			return err
+		}
+		venues[venue.VenueId] = venue
+	}
 
-	// coll := mongodb.MongoDB.Collection("venue_products")
-	// filter := bson.NewDocument(bson.EC.Boolean("enabled", true))
-	// cursor, err := coll.Find(context.Background(), filter)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// for cursor.Next(context.Background()) {
-	// 	var item DBconfig
-	// 	venueConf := make(map[string]Product)
-	// 	if err := cursor.Decode(&item); err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	for _, prods := range item.Product {
-	// 		if prods.Enabled {
-	// 			venueConf[prods.APIName] = Product{
-	// 				IndividualConnection: prods.IndividualConnection,
-	// 				VenueName:            prods.VenueName,
-	// 				APIName:              prods.APIName,
-	// 				MinimumOrdersSize:    prods.MinimumOrdersSize,
-	// 				StepSize:             prods.StepSize,
-	// 				MakerFee:             prods.MakerFee,
-	// 				TakerFee:             prods.TakerFee,
-	// 				Enabled:              prods.Enabled,
-	// 			}
-	// 		}
-	// 	}
-	// 	finalConf := VenueConfig{
-	// 		Protobuf:   item.Protobuf,
-	// 		Enabled:    item.Enabled,
-	// 		APIKey:     item.APIKey,
-	// 		APISecret:  item.APISecret,
-	// 		Passphrase: item.Passphrase,
-	// 		Name:       item.Name,
-	// 		Products:   venueConf,
-	// 	}
-	// 	Cfg.Venues.Put(item.Name, finalConf)
-	// }
+	for venID, Venvalue := range venues {
+		venueConf := &VenueConfig{}
+		venueConf.Venue = Venvalue
+		venueConf.Products = make(map[string]*pbAPI.Product)
+		for _, prodValue := range products {
+			if venID == prodValue.VenueId {
+				venueConf.Products[prodValue.SystemSymbolIdentifier] = prodValue
+			}
+		}
+		c.Venues.Set(Venvalue.Name, venueConf)
+	}
 	return nil
 }
