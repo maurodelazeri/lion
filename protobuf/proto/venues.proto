@@ -16,7 +16,6 @@ message Venue {
    bool                                options                  = 10; 
 }
 
-// Venue
 message VenueRequest { 
    string                              token                     = 1;  
    int32                               venue_id                  = 2;     

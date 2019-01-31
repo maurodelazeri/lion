@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -42,15 +40,14 @@ func (*Venue) ProtoMessage()    {}
 func (*Venue) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{0}
 }
-
 func (m *Venue) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Venue.Unmarshal(m, b)
 }
 func (m *Venue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Venue.Marshal(b, m, deterministic)
 }
-func (m *Venue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Venue.Merge(m, src)
+func (dst *Venue) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Venue.Merge(dst, src)
 }
 func (m *Venue) XXX_Size() int {
 	return xxx_messageInfo_Venue.Size(m)
@@ -131,7 +128,6 @@ func (m *Venue) GetOptions() bool {
 	return false
 }
 
-// Venue
 type VenueRequest struct {
 	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	VenueId              int32    `protobuf:"varint,2,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
@@ -146,15 +142,14 @@ func (*VenueRequest) ProtoMessage()    {}
 func (*VenueRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{1}
 }
-
 func (m *VenueRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueRequest.Unmarshal(m, b)
 }
 func (m *VenueRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueRequest.Marshal(b, m, deterministic)
 }
-func (m *VenueRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueRequest.Merge(m, src)
+func (dst *VenueRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueRequest.Merge(dst, src)
 }
 func (m *VenueRequest) XXX_Size() int {
 	return xxx_messageInfo_VenueRequest.Size(m)
@@ -195,15 +190,14 @@ func (*VenueResponse) ProtoMessage()    {}
 func (*VenueResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{2}
 }
-
 func (m *VenueResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenueResponse.Unmarshal(m, b)
 }
 func (m *VenueResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenueResponse.Marshal(b, m, deterministic)
 }
-func (m *VenueResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenueResponse.Merge(m, src)
+func (dst *VenueResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenueResponse.Merge(dst, src)
 }
 func (m *VenueResponse) XXX_Size() int {
 	return xxx_messageInfo_VenueResponse.Size(m)
@@ -257,15 +251,14 @@ func (*VenuePostRequest) ProtoMessage()    {}
 func (*VenuePostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{3}
 }
-
 func (m *VenuePostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuePostRequest.Unmarshal(m, b)
 }
 func (m *VenuePostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuePostRequest.Marshal(b, m, deterministic)
 }
-func (m *VenuePostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuePostRequest.Merge(m, src)
+func (dst *VenuePostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuePostRequest.Merge(dst, src)
 }
 func (m *VenuePostRequest) XXX_Size() int {
 	return xxx_messageInfo_VenuePostRequest.Size(m)
@@ -312,15 +305,14 @@ func (*VenuePostResponse) ProtoMessage()    {}
 func (*VenuePostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c34a3f781dd794d, []int{4}
 }
-
 func (m *VenuePostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_VenuePostResponse.Unmarshal(m, b)
 }
 func (m *VenuePostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_VenuePostResponse.Marshal(b, m, deterministic)
 }
-func (m *VenuePostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VenuePostResponse.Merge(m, src)
+func (dst *VenuePostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VenuePostResponse.Merge(dst, src)
 }
 func (m *VenuePostResponse) XXX_Size() int {
 	return xxx_messageInfo_VenuePostResponse.Size(m)
