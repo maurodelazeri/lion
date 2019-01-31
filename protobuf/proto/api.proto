@@ -20,9 +20,8 @@ service API {
 
   rpc GetVenues(VenueRequest) returns (VenueResponse) {}
   rpc PostVenues(VenuePostRequest) returns (VenuePostResponse) {}
-  rpc GetVenuesProducts(VenueProductRequest) returns (VenueProductResponse) {}
 
-  rpc GetProduct(ProductRequest) returns (ProductResponse) {}
+  rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}
 
   rpc GetAccounts(AccountRequest) returns (AccountResponse) {}

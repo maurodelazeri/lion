@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -36,14 +38,15 @@ func (*Account) ProtoMessage()    {}
 func (*Account) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{0}
 }
+
 func (m *Account) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Account.Unmarshal(m, b)
 }
 func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Account.Marshal(b, m, deterministic)
 }
-func (dst *Account) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Account.Merge(dst, src)
+func (m *Account) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Account.Merge(m, src)
 }
 func (m *Account) XXX_Size() int {
 	return xxx_messageInfo_Account.Size(m)
@@ -111,14 +114,15 @@ func (*AccountRequest) ProtoMessage()    {}
 func (*AccountRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{1}
 }
+
 func (m *AccountRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountRequest.Unmarshal(m, b)
 }
 func (m *AccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountRequest.Marshal(b, m, deterministic)
 }
-func (dst *AccountRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountRequest.Merge(dst, src)
+func (m *AccountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountRequest.Merge(m, src)
 }
 func (m *AccountRequest) XXX_Size() int {
 	return xxx_messageInfo_AccountRequest.Size(m)
@@ -166,14 +170,15 @@ func (*AccountResponse) ProtoMessage()    {}
 func (*AccountResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{2}
 }
+
 func (m *AccountResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountResponse.Unmarshal(m, b)
 }
 func (m *AccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountResponse.Marshal(b, m, deterministic)
 }
-func (dst *AccountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountResponse.Merge(dst, src)
+func (m *AccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountResponse.Merge(m, src)
 }
 func (m *AccountResponse) XXX_Size() int {
 	return xxx_messageInfo_AccountResponse.Size(m)
@@ -227,14 +232,15 @@ func (*AccountPostRequest) ProtoMessage()    {}
 func (*AccountPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{3}
 }
+
 func (m *AccountPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountPostRequest.Unmarshal(m, b)
 }
 func (m *AccountPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountPostRequest.Marshal(b, m, deterministic)
 }
-func (dst *AccountPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountPostRequest.Merge(dst, src)
+func (m *AccountPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPostRequest.Merge(m, src)
 }
 func (m *AccountPostRequest) XXX_Size() int {
 	return xxx_messageInfo_AccountPostRequest.Size(m)
@@ -281,14 +287,15 @@ func (*AccountPostResponse) ProtoMessage()    {}
 func (*AccountPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e1e7723af4c007b7, []int{4}
 }
+
 func (m *AccountPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_AccountPostResponse.Unmarshal(m, b)
 }
 func (m *AccountPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_AccountPostResponse.Marshal(b, m, deterministic)
 }
-func (dst *AccountPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountPostResponse.Merge(dst, src)
+func (m *AccountPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AccountPostResponse.Merge(m, src)
 }
 func (m *AccountPostResponse) XXX_Size() int {
 	return xxx_messageInfo_AccountPostResponse.Size(m)

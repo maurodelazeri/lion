@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -34,14 +36,15 @@ func (*Item) ProtoMessage()    {}
 func (*Item) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6b85761666e9c8c, []int{0}
 }
+
 func (m *Item) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Item.Unmarshal(m, b)
 }
 func (m *Item) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Item.Marshal(b, m, deterministic)
 }
-func (dst *Item) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Item.Merge(dst, src)
+func (m *Item) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Item.Merge(m, src)
 }
 func (m *Item) XXX_Size() int {
 	return xxx_messageInfo_Item.Size(m)
@@ -92,14 +95,15 @@ func (*Orderbook) ProtoMessage()    {}
 func (*Orderbook) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6b85761666e9c8c, []int{1}
 }
+
 func (m *Orderbook) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Orderbook.Unmarshal(m, b)
 }
 func (m *Orderbook) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Orderbook.Marshal(b, m, deterministic)
 }
-func (dst *Orderbook) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Orderbook.Merge(dst, src)
+func (m *Orderbook) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Orderbook.Merge(m, src)
 }
 func (m *Orderbook) XXX_Size() int {
 	return xxx_messageInfo_Orderbook.Size(m)
@@ -180,14 +184,15 @@ func (*Trade) ProtoMessage()    {}
 func (*Trade) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6b85761666e9c8c, []int{2}
 }
+
 func (m *Trade) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Trade.Unmarshal(m, b)
 }
 func (m *Trade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Trade.Marshal(b, m, deterministic)
 }
-func (dst *Trade) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Trade.Merge(dst, src)
+func (m *Trade) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Trade.Merge(m, src)
 }
 func (m *Trade) XXX_Size() int {
 	return xxx_messageInfo_Trade.Size(m)
@@ -281,14 +286,15 @@ func (*Ticker) ProtoMessage()    {}
 func (*Ticker) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6b85761666e9c8c, []int{3}
 }
+
 func (m *Ticker) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Ticker.Unmarshal(m, b)
 }
 func (m *Ticker) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Ticker.Marshal(b, m, deterministic)
 }
-func (dst *Ticker) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Ticker.Merge(dst, src)
+func (m *Ticker) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Ticker.Merge(m, src)
 }
 func (m *Ticker) XXX_Size() int {
 	return xxx_messageInfo_Ticker.Size(m)
@@ -380,14 +386,15 @@ func (*Candle) ProtoMessage()    {}
 func (*Candle) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6b85761666e9c8c, []int{4}
 }
+
 func (m *Candle) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Candle.Unmarshal(m, b)
 }
 func (m *Candle) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Candle.Marshal(b, m, deterministic)
 }
-func (dst *Candle) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Candle.Merge(dst, src)
+func (m *Candle) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Candle.Merge(m, src)
 }
 func (m *Candle) XXX_Size() int {
 	return xxx_messageInfo_Candle.Size(m)
