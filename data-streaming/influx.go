@@ -3,11 +3,7 @@ package streaming
 import (
 	"time"
 
-	"github.com/maurodelazeri/lion/common"
-	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
-
 	"github.com/influxdata/influxdb/client/v2"
-	"github.com/sirupsen/logrus"
 )
 
 // InitInfluxQueue ....
@@ -25,24 +21,24 @@ func (s *Streaming) InitInfluxQueue() {
 
 // InfluxWorker execute sequencial execution based on the received instructions
 func (s *Streaming) InfluxWorker(item interface{}) {
-	switch t := item.(type) {
-	case *pbAPI.Trade:
-		// Create a point and add to batch
-		tags := map[string]string{
-			"venue":   t.GetVenue().String(),
-			"product": t.GetProduct().String(),
-			"side":    t.GetOrderSide().String(),
-		}
-		fields := map[string]interface{}{
-			"price":      t.GetPrice(),
-			"size":       t.GetVolume(),
-			"side":       pbAPI.Side_value[t.GetOrderSide().String()],
-			"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
-		}
-		s.InsertInflux("trade", tags, fields, common.MakeTimestampFromInt64(t.Timestamp))
-	default:
-		logrus.Error("Influx not found a correct type ", t)
-	}
+	// switch t := item.(type) {
+	// case *pbAPI.Trade:
+	// 	// Create a point and add to batch
+	// 	tags := map[string]string{
+	// 		"venue":   t.GetVenue().String(),
+	// 		"product": t.GetProduct().String(),
+	// 		"side":    t.GetOrderSide().String(),
+	// 	}
+	// 	fields := map[string]interface{}{
+	// 		"price":      t.GetPrice(),
+	// 		"size":       t.GetVolume(),
+	// 		"side":       pbAPI.Side_value[t.GetOrderSide().String()],
+	// 		"venue_type": pbAPI.VenueType_value[t.GetVenueType().String()],
+	// 	}
+	// 	s.InsertInflux("trade", tags, fields, common.MakeTimestampFromInt64(t.Timestamp))
+	// default:
+	// 	logrus.Error("Influx not found a correct type ", t)
+	// }
 }
 
 // InsertInflux ...

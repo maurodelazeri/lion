@@ -41,7 +41,7 @@ message BacktestingResponse {
 }
 
 message ClientInitilization {
-  AccountMode                       account_mode           = 1; 
+  SystemMode                        account_mode           = 1; 
   Subscription                      subscription           = 2;
   repeated Balance                  balances               = 3; 
   int64                             start_date             = 4;
