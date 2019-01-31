@@ -159,6 +159,7 @@ package api;
 	REQUEST_WITH_NO_TOKEN          = 40;
 	INVALID_TOKEN                  = 41;
 	INVALID_REQUEST                = 42;
+	TOKEN_EXPIRED                  = 43;
    };
 
  enum GranularityTime{
