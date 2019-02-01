@@ -11,7 +11,7 @@ message Item {
 
 message Orderbook {
   string            product     = 1;
-  Venues             venue       = 2;
+  string            venue       = 2;
   int64             timestamp   = 3;
   int32             levels      = 4;
   repeated Item     asks        = 5;
@@ -33,7 +33,7 @@ message Trade {
 
 message Ticker {
   string      product       = 1;
-  Venues       venue         = 2;
+  string      venue         = 2;
   int64       timestamp     = 3;
   double      price         = 4;
   Side        order_side    = 5;
@@ -43,7 +43,7 @@ message Ticker {
 };
 
 message Candle {
-  Venues         venue        = 1;
+  string        venue        = 1;
   string        product      = 2;
   int32         granularity  = 3;
   int64         point        = 4;
