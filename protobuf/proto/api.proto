@@ -17,7 +17,7 @@ service API {
   rpc Login(LoginRequest) returns (LoginResponse) {}
 
   rpc GetCurrencies(CurrencyRequest) returns (CurrencyResponse) {}
-  rpc PostCurrencie(CurrencyPostRequest) returns (CurrencyPostResponse) {}
+  rpc PostCurrency(CurrencyPostRequest) returns (CurrencyPostResponse) {}
 
   rpc GetVenues(VenueRequest) returns (VenueResponse) {}
   rpc PostVenues(VenuePostRequest) returns (VenuePostResponse) {}
@@ -30,8 +30,6 @@ service API {
   
   rpc GetBalances(BalanceRequest) returns (BalanceResponse) {}
   rpc PostBalance(BalancePostRequest) returns (BalancePostResponse) {}
-
-  // rpc PostBalance(BalancePostRequest) returns (BalancePostResponse) {}
 
 
   // Get all Order for a user with filter - A server-to-client streaming RPC.
