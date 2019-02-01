@@ -20,7 +20,7 @@ service API {
   rpc PostCurrency(CurrencyPostRequest) returns (CurrencyPostResponse) {}
 
   rpc GetVenues(VenueRequest) returns (VenueResponse) {}
-  rpc PostVenues(VenuePostRequest) returns (VenuePostResponse) {}
+  rpc PostVenue(VenuePostRequest) returns (VenuePostResponse) {}
 
   rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}
