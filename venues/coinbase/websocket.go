@@ -373,8 +373,8 @@ func (r *Websocket) startReading() {
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
-								Product: product,
-								//Venue:     r.base.GetName(),
+								Product:   product,
+								Venue:     r.base.GetName(),
 								Timestamp: common.MakeTimestamp(),
 								Price:     data.Price,
 								OrderSide: side,

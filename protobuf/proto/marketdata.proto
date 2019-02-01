@@ -21,7 +21,7 @@ message Orderbook {
 
 message Trade {
   string          product       = 1;
-  Venues           venue         = 2;
+  string          venue         = 2;
   int64           timestamp     = 3;
   double          price         = 4;
   double          volume        = 5;

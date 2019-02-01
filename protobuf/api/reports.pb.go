@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -34,14 +36,15 @@ func (*HistoricalTradesRequest) ProtoMessage()    {}
 func (*HistoricalTradesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_66b94ab03de429a8, []int{0}
 }
+
 func (m *HistoricalTradesRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HistoricalTradesRequest.Unmarshal(m, b)
 }
 func (m *HistoricalTradesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_HistoricalTradesRequest.Marshal(b, m, deterministic)
 }
-func (dst *HistoricalTradesRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HistoricalTradesRequest.Merge(dst, src)
+func (m *HistoricalTradesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HistoricalTradesRequest.Merge(m, src)
 }
 func (m *HistoricalTradesRequest) XXX_Size() int {
 	return xxx_messageInfo_HistoricalTradesRequest.Size(m)
@@ -95,14 +98,15 @@ func (*HistoricalTradesResult) ProtoMessage()    {}
 func (*HistoricalTradesResult) Descriptor() ([]byte, []int) {
 	return fileDescriptor_66b94ab03de429a8, []int{1}
 }
+
 func (m *HistoricalTradesResult) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_HistoricalTradesResult.Unmarshal(m, b)
 }
 func (m *HistoricalTradesResult) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_HistoricalTradesResult.Marshal(b, m, deterministic)
 }
-func (dst *HistoricalTradesResult) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HistoricalTradesResult.Merge(dst, src)
+func (m *HistoricalTradesResult) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HistoricalTradesResult.Merge(m, src)
 }
 func (m *HistoricalTradesResult) XXX_Size() int {
 	return xxx_messageInfo_HistoricalTradesResult.Size(m)
@@ -151,14 +155,15 @@ func (*BacktestingReport) ProtoMessage()    {}
 func (*BacktestingReport) Descriptor() ([]byte, []int) {
 	return fileDescriptor_66b94ab03de429a8, []int{2}
 }
+
 func (m *BacktestingReport) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BacktestingReport.Unmarshal(m, b)
 }
 func (m *BacktestingReport) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BacktestingReport.Marshal(b, m, deterministic)
 }
-func (dst *BacktestingReport) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BacktestingReport.Merge(dst, src)
+func (m *BacktestingReport) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BacktestingReport.Merge(m, src)
 }
 func (m *BacktestingReport) XXX_Size() int {
 	return xxx_messageInfo_BacktestingReport.Size(m)
@@ -217,14 +222,15 @@ func (*BalanceEvolution) ProtoMessage()    {}
 func (*BalanceEvolution) Descriptor() ([]byte, []int) {
 	return fileDescriptor_66b94ab03de429a8, []int{3}
 }
+
 func (m *BalanceEvolution) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BalanceEvolution.Unmarshal(m, b)
 }
 func (m *BalanceEvolution) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BalanceEvolution.Marshal(b, m, deterministic)
 }
-func (dst *BalanceEvolution) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BalanceEvolution.Merge(dst, src)
+func (m *BalanceEvolution) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BalanceEvolution.Merge(m, src)
 }
 func (m *BalanceEvolution) XXX_Size() int {
 	return xxx_messageInfo_BalanceEvolution.Size(m)
@@ -304,14 +310,15 @@ func (*Statistics) ProtoMessage()    {}
 func (*Statistics) Descriptor() ([]byte, []int) {
 	return fileDescriptor_66b94ab03de429a8, []int{4}
 }
+
 func (m *Statistics) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Statistics.Unmarshal(m, b)
 }
 func (m *Statistics) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Statistics.Marshal(b, m, deterministic)
 }
-func (dst *Statistics) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Statistics.Merge(dst, src)
+func (m *Statistics) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Statistics.Merge(m, src)
 }
 func (m *Statistics) XXX_Size() int {
 	return xxx_messageInfo_Statistics.Size(m)
