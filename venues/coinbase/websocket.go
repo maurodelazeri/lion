@@ -338,13 +338,13 @@ func (r *Websocket) startReading() {
 
 							wg.Wait()
 							book := &pbAPI.Orderbook{
-								Product: product,
-								//Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-								Levels:    int32(r.base.MaxLevelsOrderBook),
-								Timestamp: common.MakeTimestamp(),
-								Asks:      refLiveBook.Asks,
-								Bids:      refLiveBook.Bids,
-								VenueType: pbAPI.VenueType_SPOT,
+								Product:         product,
+								Venue:           r.base.GetName(),
+								Levels:          int32(r.base.MaxLevelsOrderBook),
+								SystemTimestamp: time.Now().String(),
+								VenueTimestamp:  time.Now().String(),
+								Asks:            refLiveBook.Asks,
+								Bids:            refLiveBook.Bids,
 							}
 							logrus.Info(book)
 							continue
@@ -371,17 +371,18 @@ func (r *Websocket) startReading() {
 							if !ok {
 								continue
 							}
+
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
-								Product:   product,
-								Venue:     r.base.GetName(),
-								Timestamp: common.MakeTimestamp(),
-								Price:     data.Price,
-								OrderSide: side,
-								Volume:    data.Size,
-								VenueType: pbAPI.VenueType_SPOT,
-								Asks:      refLiveBook.Asks,
-								Bids:      refLiveBook.Bids,
+								Product:         product,
+								Venue:           r.base.GetName(),
+								SystemTimestamp: time.Now().String(),
+								VenueTimestamp:  time.Now().String(),
+								Price:           data.Price,
+								OrderSide:       side,
+								Volume:          data.Size,
+								Asks:            refLiveBook.Asks,
+								Bids:            refLiveBook.Bids,
 							}
 							logrus.Info(trades)
 							continue

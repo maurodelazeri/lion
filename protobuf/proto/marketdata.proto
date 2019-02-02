@@ -4,56 +4,55 @@ import "enum.proto";
 
 // Market Data
 message Item {
-  int64  id     = 1;  
-  double volume = 2;
-  double price  = 3;
+  int64                               id                               = 1;  
+  double                              volume                           = 2;
+  double                              price                            = 3;
 };
 
 message Orderbook {
-  string            product     = 1;
-  string            venue       = 2;
-  int64             timestamp   = 3;
-  int32             levels      = 4;
-  repeated Item     asks        = 5;
-  repeated Item     bids        = 6;
-  VenueType         venue_type  = 7;
+  string                              product                          = 1;
+  string                              venue                            = 2;
+  string                              system_timestamp                 = 3;
+  string                              venue_timestamp                  = 4;
+  int32                               levels                           = 5;
+  repeated Item                       asks                             = 6;
+  repeated Item                       bids                             = 7;
 };
 
 message Trade {
-  string          product       = 1;
-  string          venue         = 2;
-  int64           timestamp     = 3;
-  double          price         = 4;
-  double          volume        = 5;
-  Side            order_side    = 6;
-  VenueType       venue_type    = 7;
-  repeated Item   asks          = 8; 
-  repeated Item   bids          = 9;  
+  string                              product                           = 1;
+  string                              venue                             = 2;
+  string                              system_timestamp                  = 3;
+  string                              venue_timestamp                   = 4;
+  double                              price                             = 5;
+  double                              volume                            = 6;
+  Side                                order_side                        = 7;
+  repeated Item                       asks                              = 9; 
+  repeated Item                       bids                              = 10;  
 };
 
 message Ticker {
-  string      product       = 1;
-  string      venue         = 2;
-  int64       timestamp     = 3;
-  double      price         = 4;
-  Side        order_side    = 5;
-  double      best_bid      = 6;
-  double      best_ask      = 7;
-  VenueType   venue_type    = 8;
+  string                              product                           = 1;
+  string                              venue                             = 2;
+  int64                               timestamp                         = 3;
+  double                              price                             = 4;
+  Side                                order_side                        = 5;
+  double                              best_bid                          = 6;
+  double                              best_ask                          = 7;
 };
 
 message Candle {
-  string        venue        = 1;
-  string        product      = 2;
-  int32         granularity  = 3;
-  int64         point        = 4;
-  double        open         = 5;
-  double        close        = 6;
-  double        high         = 7;
-  double        low          = 8;
-  double        volume       = 9;
-  double        total        = 10;
-  int32         total_trades = 11;
-  int32         buy_total    = 12;
-  int32         sell_total   = 13;   
+  string                             venue                               = 1;
+  string                             product                             = 2;
+  int32                              granularity                         = 3;
+  int64                              point                               = 4;
+  double                             open                                = 5;
+  double                             close                               = 6;
+  double                             high                                = 7;
+  double                             low                                 = 8;
+  double                             volume                              = 9;
+  double                             total                               = 10;
+  int32                              total_trades                        = 11;
+  int32                              buy_total                           = 12;
+  int32                              sell_total                          = 13;   
 };
