@@ -1,0 +1,27 @@
+syntax = "proto3";
+package west4API;
+
+   enum Retcode {
+	REJECT                         = 0;
+	CANCEL                         = 1;
+	ERROR                          = 2;
+	TIMEOUT                        = 3;
+	INVALID                        = 4;
+	INVALID_EXPIRATION             = 5;
+	TOO_MANY_REQUESTS              = 6;
+	NO_CHANGES                     = 7;
+	LOCKED                         = 8;
+	FROZEN                         = 9;
+	CONNECTION                     = 10;
+	INVALID_TOKEN                  = 11;
+	INVALID_REQUEST                = 12;
+	TOKEN_EXPIRED                  = 13;
+   };
+
+  enum Action{
+	INSERT   = 0;
+	UPDATE   = 1;
+	DELETE   = 2;
+  };
+
+  

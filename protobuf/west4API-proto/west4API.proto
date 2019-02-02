@@ -1,0 +1,8 @@
+syntax = "proto3";
+package west4API;
+import "container.proto";
+
+// The west4API service definition.
+service west4API {   
+  rpc Test(ContainerRequest) returns (ContainerResponse) {}
+} 

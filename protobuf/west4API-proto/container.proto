@@ -1,0 +1,15 @@
+syntax = "proto3";
+package west4API;
+import "enum.proto";
+
+message ContainerRequest { 
+   string                              email                     = 1;   
+   string                              password                  = 2;   
+}
+
+message ContainerResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              token                     = 2;   
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;
+}
