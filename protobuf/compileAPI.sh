@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-
+rm  ../../siberia/app/src/api/*
+rm api/*
+ 
 protoc -I proto/ proto/*.proto  \
     --go_out=plugins=grpc:api \
     --plugin=protoc-gen-ts=../../siberia/app/node_modules/.bin/protoc-gen-ts \

@@ -3,12 +3,13 @@
 
 package west4API
 
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
+
 import (
-	context "context"
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
+	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -22,19 +23,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-func init() { proto.RegisterFile("west4API.proto", fileDescriptor_81ea3877c7e6a19f) }
-
-var fileDescriptor_81ea3877c7e6a19f = []byte{
-	// 102 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x4f, 0x2d, 0x2e,
-	0x31, 0x71, 0x0c, 0xf0, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0xa5, 0xf8,
-	0x93, 0xf3, 0xf3, 0x4a, 0x12, 0x33, 0xf3, 0x52, 0x8b, 0x20, 0x52, 0x46, 0xbe, 0x5c, 0x70, 0x49,
-	0x21, 0x47, 0x2e, 0x96, 0x90, 0xd4, 0xe2, 0x12, 0x21, 0x29, 0x3d, 0xb8, 0x7e, 0x67, 0x98, 0xf2,
-	0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0x29, 0x69, 0xac, 0x72, 0xc5, 0x05, 0xf9, 0x79, 0xc5,
-	0xa9, 0x4a, 0x0c, 0x49, 0x6c, 0x60, 0x53, 0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x99, 0xb6,
-	0xbf, 0xd8, 0x82, 0x00, 0x00, 0x00,
-}
-
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
@@ -47,7 +35,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type West4APIClient interface {
-	Test(ctx context.Context, in *ContainerRequest, opts ...grpc.CallOption) (*ContainerResponse, error)
+	GetServers(ctx context.Context, in *ServerRequest, opts ...grpc.CallOption) (*ServerResponse, error)
+	PostServer(ctx context.Context, in *ServerPostRequest, opts ...grpc.CallOption) (*ServerPostResponse, error)
 }
 
 type west4APIClient struct {
@@ -58,9 +47,18 @@ func NewWest4APIClient(cc *grpc.ClientConn) West4APIClient {
 	return &west4APIClient{cc}
 }
 
-func (c *west4APIClient) Test(ctx context.Context, in *ContainerRequest, opts ...grpc.CallOption) (*ContainerResponse, error) {
-	out := new(ContainerResponse)
-	err := c.cc.Invoke(ctx, "/west4API.west4API/Test", in, out, opts...)
+func (c *west4APIClient) GetServers(ctx context.Context, in *ServerRequest, opts ...grpc.CallOption) (*ServerResponse, error) {
+	out := new(ServerResponse)
+	err := c.cc.Invoke(ctx, "/west4API.west4API/GetServers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *west4APIClient) PostServer(ctx context.Context, in *ServerPostRequest, opts ...grpc.CallOption) (*ServerPostResponse, error) {
+	out := new(ServerPostResponse)
+	err := c.cc.Invoke(ctx, "/west4API.west4API/PostServer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -69,27 +67,46 @@ func (c *west4APIClient) Test(ctx context.Context, in *ContainerRequest, opts ..
 
 // West4APIServer is the server API for West4API service.
 type West4APIServer interface {
-	Test(context.Context, *ContainerRequest) (*ContainerResponse, error)
+	GetServers(context.Context, *ServerRequest) (*ServerResponse, error)
+	PostServer(context.Context, *ServerPostRequest) (*ServerPostResponse, error)
 }
 
 func RegisterWest4APIServer(s *grpc.Server, srv West4APIServer) {
 	s.RegisterService(&_West4API_serviceDesc, srv)
 }
 
-func _West4API_Test_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContainerRequest)
+func _West4API_GetServers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(West4APIServer).Test(ctx, in)
+		return srv.(West4APIServer).GetServers(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/west4API.west4API/Test",
+		FullMethod: "/west4API.west4API/GetServers",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(West4APIServer).Test(ctx, req.(*ContainerRequest))
+		return srv.(West4APIServer).GetServers(ctx, req.(*ServerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _West4API_PostServer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServerPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(West4APIServer).PostServer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/west4API.west4API/PostServer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(West4APIServer).PostServer(ctx, req.(*ServerPostRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -99,10 +116,28 @@ var _West4API_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*West4APIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Test",
-			Handler:    _West4API_Test_Handler,
+			MethodName: "GetServers",
+			Handler:    _West4API_GetServers_Handler,
+		},
+		{
+			MethodName: "PostServer",
+			Handler:    _West4API_PostServer_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "west4API.proto",
+}
+
+func init() { proto.RegisterFile("west4API.proto", fileDescriptor_81ea3877c7e6a19f) }
+
+var fileDescriptor_81ea3877c7e6a19f = []byte{
+	// 124 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x4f, 0x2d, 0x2e,
+	0x31, 0x71, 0x0c, 0xf0, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0xa5, 0x78,
+	0x8b, 0x53, 0x8b, 0xca, 0x52, 0x8b, 0x8a, 0x21, 0x12, 0x46, 0x33, 0x18, 0xb9, 0xe0, 0x72, 0x42,
+	0x8e, 0x5c, 0x5c, 0xee, 0xa9, 0x25, 0xc1, 0x10, 0x05, 0x42, 0xe2, 0x7a, 0x70, 0x43, 0x20, 0x42,
+	0x41, 0xa9, 0x85, 0xa5, 0xa9, 0xc5, 0x25, 0x52, 0x12, 0x98, 0x12, 0xc5, 0x05, 0xf9, 0x79, 0xc5,
+	0xa9, 0x4a, 0x0c, 0x42, 0x9e, 0x5c, 0x5c, 0x01, 0xf9, 0xc5, 0x50, 0x33, 0x84, 0xa4, 0xd1, 0x55,
+	0x82, 0xe4, 0x60, 0xc6, 0xc8, 0x60, 0x97, 0x84, 0x19, 0x95, 0xc4, 0x06, 0x76, 0xa1, 0x31, 0x20,
+	0x00, 0x00, 0xff, 0xff, 0x27, 0x2e, 0x77, 0xa8, 0xcc, 0x00, 0x00, 0x00,
 }

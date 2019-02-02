@@ -1,0 +1,37 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+
+message Server  {
+  int32                                server_id                = 1; 
+  string                               name                     = 2;
+  string                               server_description       = 3;
+  string                               ipv4                     = 4;
+  string                               ipv6                     = 5;    
+  string                               kind                     = 6;
+  bool                                 enabled                  = 7;
+}
+
+message ServerRequest { 
+   string                              token                     = 1;  
+   int32                               server_id                 = 2;
+}
+
+message ServerResponse { 
+   Retcode                             retcode                   = 1;
+   repeated Server                     server                   = 2; 
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
+}
+
+message ServerPostRequest {
+   string                              token                     = 1; 
+   Server                              server                    = 2;     
+   Action                              action                    = 3;
+}
+
+message ServerPostResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
+}

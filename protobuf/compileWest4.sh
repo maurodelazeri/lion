@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+rm  ../../siberia/app/src/west4API/*
+rm west4API/*
+
 protoc -I west4API-proto/ west4API-proto/*.proto  \
     --go_out=plugins=grpc:west4API \
     --plugin=protoc-gen-ts=../../siberia/app/node_modules/.bin/protoc-gen-ts \
