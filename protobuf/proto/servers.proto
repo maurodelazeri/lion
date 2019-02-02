@@ -9,9 +9,8 @@ message Server  {
   string                               host                     = 4;
   string                               version                  = 5;    
   string                               proto                    = 6;
-  string                               addr                     = 7;
-  string                               kind                     = 8;
-  bool                                 enabled                  = 9;
+  string                               kind                     = 7;
+  bool                                 enabled                  = 8;
 }
 
 message ServerRequest { 
