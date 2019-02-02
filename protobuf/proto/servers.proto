@@ -6,10 +6,12 @@ message Server  {
   int32                                server_id                = 1; 
   string                               name                     = 2;
   string                               server_description       = 3;
-  string                               ipv4                     = 4;
-  string                               ipv6                     = 5;    
-  string                               kind                     = 6;
-  bool                                 enabled                  = 7;
+  string                               host                     = 4;
+  string                               version                  = 5;    
+  string                               proto                    = 6;
+  string                               addr                     = 7;
+  string                               kind                     = 8;
+  bool                                 enabled                  = 9;
 }
 
 message ServerRequest { 
