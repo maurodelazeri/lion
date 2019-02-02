@@ -5,13 +5,13 @@ import (
 	//"encoding/json"
 
 	"errors"
-	"fmt"
 	"math/rand"
 	"net/http"
 	"sort"
 	"sync"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
@@ -348,12 +348,11 @@ func (r *Websocket) startReading() {
 
 							refLiveBook = book
 							if r.base.Streaming {
-								//serialized, err := proto.Marshal(book)
-								mauro, err := ffjson.Marshal(book)
+								serialized, err := proto.Marshal(book)
 								if err != nil {
 									logrus.Error("Marshal ", err)
 								}
-								err = socket.SocketClient.Publish("public:"+product+"."+r.base.Name+".orderbook", mauro)
+								err = socket.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
 								if err != nil {
 									logrus.Error("Socket sent ", err)
 								}
@@ -384,20 +383,14 @@ func (r *Websocket) startReading() {
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
 							}
-							startRequest := time.Now()
-
-							_, err := ffjson.Marshal(trades)
-							//_, err := proto.Marshal(trades)
+							serialized, err := proto.Marshal(trades)
 							if err != nil {
 								logrus.Error("Marshal ", err)
 							}
-							elapsed := time.Since(startRequest)
-							fmt.Println(elapsed.String())
-
-							// err = socket.SocketClient.Publish("public:"+product+"."+r.base.Name+".trade", mauro)
-							// if err != nil {
-							// 	logrus.Error("Socket sent ", err)
-							// }
+							err = socket.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+							if err != nil {
+								logrus.Error("Socket sent ", err)
+							}
 						}
 
 						if data.Type == "snapshot" {

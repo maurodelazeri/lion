@@ -71,7 +71,7 @@ func subscribeToken(channel string, client string, exp int64) string {
 	if exp > 0 {
 		claims["exp"] = exp
 	}
-	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("SOCKET_SECRET")))
+	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("SOCKET_SECRET_ADMIN")))
 	if err != nil {
 		panic(err)
 	}
@@ -88,6 +88,7 @@ func InitSocketEngine(username string, expiration int64) {
 	c.OnDisconnect(handler)
 	c.OnConnect(handler)
 	c.OnError(handler)
+
 	err := c.Connect()
 	if err != nil {
 		log.Fatalln(err)
