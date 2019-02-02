@@ -5,20 +5,18 @@ import (
 	//"encoding/json"
 
 	"errors"
-	"log"
 	"math/rand"
 	"net/http"
 	"sort"
 	"sync"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
-	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+	"github.com/maurodelazeri/lion/socket"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -346,17 +344,18 @@ func (r *Websocket) startReading() {
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
 							}
-							logrus.Info(book)
-							continue
+
 							refLiveBook = book
 							if r.base.Streaming {
-								serialized, err := proto.Marshal(book)
+								//serialized, err := proto.Marshal(book)
+								mauro, err := ffjson.Marshal(book)
 								if err != nil {
-									log.Fatal("proto.Marshal error: ", err)
+									logrus.Error("Marshal ", err)
 								}
-								r.MessageType[0] = 1
-								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+								err = socket.SocketClient.Publish("public:"+product+"."+r.base.Name+".orderbook", mauro)
+								if err != nil {
+									logrus.Error("Socket sent ", err)
+								}
 							}
 						}
 
@@ -384,16 +383,14 @@ func (r *Websocket) startReading() {
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
 							}
-							logrus.Info(trades)
-							continue
-
-							serialized, err := proto.Marshal(trades)
+							mauro, err := ffjson.Marshal(trades)
 							if err != nil {
-								log.Fatal("proto.Marshal error: ", err)
+								logrus.Error("Marshal ", err)
 							}
-							r.MessageType[0] = 0
-							serialized = append(r.MessageType, serialized[:]...)
-							kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+							err = socket.SocketClient.Publish("public:"+product+"."+r.base.Name+".trade", mauro)
+							if err != nil {
+								logrus.Error("Socket sent ", err)
+							}
 						}
 
 						if data.Type == "snapshot" {
