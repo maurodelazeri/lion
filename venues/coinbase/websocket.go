@@ -5,6 +5,7 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"sort"
@@ -383,14 +384,20 @@ func (r *Websocket) startReading() {
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
 							}
-							mauro, err := ffjson.Marshal(trades)
+							startRequest := time.Now()
+
+							_, err := ffjson.Marshal(trades)
+							//_, err := proto.Marshal(trades)
 							if err != nil {
 								logrus.Error("Marshal ", err)
 							}
-							err = socket.SocketClient.Publish("public:"+product+"."+r.base.Name+".trade", mauro)
-							if err != nil {
-								logrus.Error("Socket sent ", err)
-							}
+							elapsed := time.Since(startRequest)
+							fmt.Println(elapsed.String())
+
+							// err = socket.SocketClient.Publish("public:"+product+"."+r.base.Name+".trade", mauro)
+							// if err != nil {
+							// 	logrus.Error("Socket sent ", err)
+							// }
 						}
 
 						if data.Type == "snapshot" {
