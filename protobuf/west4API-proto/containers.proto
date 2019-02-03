@@ -51,9 +51,10 @@ message ContainerResponse {
 }
 
 message ContainerPostRequest { 
-   string                              token                     = 1; 
-   Container                           container                 = 2;     
-   Action                              action                    = 3;   
+   string                              token                     = 1;
+   int32                               server_id                 = 2;
+   repeated Container                  container                 = 3;     
+   Action                              action                    = 4;   
 }
 
 message ContainerPostResponse { 
