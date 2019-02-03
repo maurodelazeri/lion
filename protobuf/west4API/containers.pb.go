@@ -19,22 +19,17 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type Container struct {
-	ContainerId          int32    `protobuf:"varint,1,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
-	ContainerIdentifier  string   `protobuf:"bytes,2,opt,name=container_identifier,json=containerIdentifier,proto3" json:"container_identifier,omitempty"`
-	ContainerType        string   `protobuf:"bytes,3,opt,name=container_type,json=containerType,proto3" json:"container_type,omitempty"`
-	ContainerDescription string   `protobuf:"bytes,4,opt,name=container_description,json=containerDescription,proto3" json:"container_description,omitempty"`
-	Image                string   `protobuf:"bytes,5,opt,name=image,proto3" json:"image,omitempty"`
-	Network              string   `protobuf:"bytes,6,opt,name=network,proto3" json:"network,omitempty"`
-	Hostname             string   `protobuf:"bytes,7,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	Env                  string   `protobuf:"bytes,8,opt,name=env,proto3" json:"env,omitempty"`
-	RestartPolice        string   `protobuf:"bytes,9,opt,name=restart_police,json=restartPolice,proto3" json:"restart_police,omitempty"`
-	MemoryReservation    int32    `protobuf:"varint,10,opt,name=memory_reservation,json=memoryReservation,proto3" json:"memory_reservation,omitempty"`
-	MemoryLimit          int32    `protobuf:"varint,11,opt,name=memory_limit,json=memoryLimit,proto3" json:"memory_limit,omitempty"`
-	CpuLimit             int32    `protobuf:"varint,12,opt,name=cpu_limit,json=cpuLimit,proto3" json:"cpu_limit,omitempty"`
-	StopTimeout          int64    `protobuf:"varint,13,opt,name=stop_timeout,json=stopTimeout,proto3" json:"stop_timeout,omitempty"`
-	ServerId             int32    `protobuf:"varint,14,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
-	ContainerConfig      string   `protobuf:"bytes,15,opt,name=container_config,json=containerConfig,proto3" json:"container_config,omitempty"`
-	LastUpdate           string   `protobuf:"bytes,16,opt,name=last_update,json=lastUpdate,proto3" json:"last_update,omitempty"`
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Names                string   `protobuf:"bytes,2,opt,name=names,proto3" json:"names,omitempty"`
+	Image                string   `protobuf:"bytes,3,opt,name=image,proto3" json:"image,omitempty"`
+	ImageId              string   `protobuf:"bytes,4,opt,name=image_id,json=imageId,proto3" json:"image_id,omitempty"`
+	Created              string   `protobuf:"bytes,5,opt,name=created,proto3" json:"created,omitempty"`
+	Ports                string   `protobuf:"bytes,6,opt,name=ports,proto3" json:"ports,omitempty"`
+	SizeRw               int64    `protobuf:"varint,7,opt,name=size_rw,json=sizeRw,proto3" json:"size_rw,omitempty"`
+	SizeRootFs           int64    `protobuf:"varint,8,opt,name=size_root_fs,json=sizeRootFs,proto3" json:"size_root_fs,omitempty"`
+	Labels               string   `protobuf:"bytes,9,opt,name=labels,proto3" json:"labels,omitempty"`
+	State                string   `protobuf:"bytes,10,opt,name=state,proto3" json:"state,omitempty"`
+	Status               string   `protobuf:"bytes,11,opt,name=status,proto3" json:"status,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -64,30 +59,16 @@ func (m *Container) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Container proto.InternalMessageInfo
 
-func (m *Container) GetContainerId() int32 {
+func (m *Container) GetId() string {
 	if m != nil {
-		return m.ContainerId
-	}
-	return 0
-}
-
-func (m *Container) GetContainerIdentifier() string {
-	if m != nil {
-		return m.ContainerIdentifier
+		return m.Id
 	}
 	return ""
 }
 
-func (m *Container) GetContainerType() string {
+func (m *Container) GetNames() string {
 	if m != nil {
-		return m.ContainerType
-	}
-	return ""
-}
-
-func (m *Container) GetContainerDescription() string {
-	if m != nil {
-		return m.ContainerDescription
+		return m.Names
 	}
 	return ""
 }
@@ -99,86 +80,225 @@ func (m *Container) GetImage() string {
 	return ""
 }
 
-func (m *Container) GetNetwork() string {
+func (m *Container) GetImageId() string {
+	if m != nil {
+		return m.ImageId
+	}
+	return ""
+}
+
+func (m *Container) GetCreated() string {
+	if m != nil {
+		return m.Created
+	}
+	return ""
+}
+
+func (m *Container) GetPorts() string {
+	if m != nil {
+		return m.Ports
+	}
+	return ""
+}
+
+func (m *Container) GetSizeRw() int64 {
+	if m != nil {
+		return m.SizeRw
+	}
+	return 0
+}
+
+func (m *Container) GetSizeRootFs() int64 {
+	if m != nil {
+		return m.SizeRootFs
+	}
+	return 0
+}
+
+func (m *Container) GetLabels() string {
+	if m != nil {
+		return m.Labels
+	}
+	return ""
+}
+
+func (m *Container) GetState() string {
+	if m != nil {
+		return m.State
+	}
+	return ""
+}
+
+func (m *Container) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
+}
+
+type ContainerCreate struct {
+	ContainerId          int32    `protobuf:"varint,1,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
+	ContainerIdentifier  string   `protobuf:"bytes,2,opt,name=container_identifier,json=containerIdentifier,proto3" json:"container_identifier,omitempty"`
+	ContainerType        string   `protobuf:"bytes,3,opt,name=container_type,json=containerType,proto3" json:"container_type,omitempty"`
+	ContainerDescription string   `protobuf:"bytes,4,opt,name=container_description,json=containerDescription,proto3" json:"container_description,omitempty"`
+	Image                string   `protobuf:"bytes,5,opt,name=image,proto3" json:"image,omitempty"`
+	Network              string   `protobuf:"bytes,6,opt,name=network,proto3" json:"network,omitempty"`
+	Hostname             string   `protobuf:"bytes,7,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	Env                  string   `protobuf:"bytes,8,opt,name=env,proto3" json:"env,omitempty"`
+	RestartPolice        string   `protobuf:"bytes,9,opt,name=restart_police,json=restartPolice,proto3" json:"restart_police,omitempty"`
+	MemoryReservation    int32    `protobuf:"varint,10,opt,name=memory_reservation,json=memoryReservation,proto3" json:"memory_reservation,omitempty"`
+	MemoryLimit          int32    `protobuf:"varint,11,opt,name=memory_limit,json=memoryLimit,proto3" json:"memory_limit,omitempty"`
+	CpuLimit             int32    `protobuf:"varint,12,opt,name=cpu_limit,json=cpuLimit,proto3" json:"cpu_limit,omitempty"`
+	StopTimeout          int64    `protobuf:"varint,13,opt,name=stop_timeout,json=stopTimeout,proto3" json:"stop_timeout,omitempty"`
+	ServerId             int32    `protobuf:"varint,14,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
+	ContainerConfig      string   `protobuf:"bytes,15,opt,name=container_config,json=containerConfig,proto3" json:"container_config,omitempty"`
+	LastUpdate           string   `protobuf:"bytes,16,opt,name=last_update,json=lastUpdate,proto3" json:"last_update,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContainerCreate) Reset()         { *m = ContainerCreate{} }
+func (m *ContainerCreate) String() string { return proto.CompactTextString(m) }
+func (*ContainerCreate) ProtoMessage()    {}
+func (*ContainerCreate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d029d11d13649966, []int{1}
+}
+func (m *ContainerCreate) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContainerCreate.Unmarshal(m, b)
+}
+func (m *ContainerCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContainerCreate.Marshal(b, m, deterministic)
+}
+func (dst *ContainerCreate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreate.Merge(dst, src)
+}
+func (m *ContainerCreate) XXX_Size() int {
+	return xxx_messageInfo_ContainerCreate.Size(m)
+}
+func (m *ContainerCreate) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContainerCreate.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContainerCreate proto.InternalMessageInfo
+
+func (m *ContainerCreate) GetContainerId() int32 {
+	if m != nil {
+		return m.ContainerId
+	}
+	return 0
+}
+
+func (m *ContainerCreate) GetContainerIdentifier() string {
+	if m != nil {
+		return m.ContainerIdentifier
+	}
+	return ""
+}
+
+func (m *ContainerCreate) GetContainerType() string {
+	if m != nil {
+		return m.ContainerType
+	}
+	return ""
+}
+
+func (m *ContainerCreate) GetContainerDescription() string {
+	if m != nil {
+		return m.ContainerDescription
+	}
+	return ""
+}
+
+func (m *ContainerCreate) GetImage() string {
+	if m != nil {
+		return m.Image
+	}
+	return ""
+}
+
+func (m *ContainerCreate) GetNetwork() string {
 	if m != nil {
 		return m.Network
 	}
 	return ""
 }
 
-func (m *Container) GetHostname() string {
+func (m *ContainerCreate) GetHostname() string {
 	if m != nil {
 		return m.Hostname
 	}
 	return ""
 }
 
-func (m *Container) GetEnv() string {
+func (m *ContainerCreate) GetEnv() string {
 	if m != nil {
 		return m.Env
 	}
 	return ""
 }
 
-func (m *Container) GetRestartPolice() string {
+func (m *ContainerCreate) GetRestartPolice() string {
 	if m != nil {
 		return m.RestartPolice
 	}
 	return ""
 }
 
-func (m *Container) GetMemoryReservation() int32 {
+func (m *ContainerCreate) GetMemoryReservation() int32 {
 	if m != nil {
 		return m.MemoryReservation
 	}
 	return 0
 }
 
-func (m *Container) GetMemoryLimit() int32 {
+func (m *ContainerCreate) GetMemoryLimit() int32 {
 	if m != nil {
 		return m.MemoryLimit
 	}
 	return 0
 }
 
-func (m *Container) GetCpuLimit() int32 {
+func (m *ContainerCreate) GetCpuLimit() int32 {
 	if m != nil {
 		return m.CpuLimit
 	}
 	return 0
 }
 
-func (m *Container) GetStopTimeout() int64 {
+func (m *ContainerCreate) GetStopTimeout() int64 {
 	if m != nil {
 		return m.StopTimeout
 	}
 	return 0
 }
 
-func (m *Container) GetServerId() int32 {
+func (m *ContainerCreate) GetServerId() int32 {
 	if m != nil {
 		return m.ServerId
 	}
 	return 0
 }
 
-func (m *Container) GetContainerConfig() string {
+func (m *ContainerCreate) GetContainerConfig() string {
 	if m != nil {
 		return m.ContainerConfig
 	}
 	return ""
 }
 
-func (m *Container) GetLastUpdate() string {
+func (m *ContainerCreate) GetLastUpdate() string {
 	if m != nil {
 		return m.LastUpdate
 	}
 	return ""
 }
 
+// -------
 type ContainerRequest struct {
 	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	ContainerId          int32    `protobuf:"varint,2,opt,name=container_id,json=containerId,proto3" json:"container_id,omitempty"`
+	ServerId             int32    `protobuf:"varint,3,opt,name=server_id,json=serverId,proto3" json:"server_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -188,7 +308,7 @@ func (m *ContainerRequest) Reset()         { *m = ContainerRequest{} }
 func (m *ContainerRequest) String() string { return proto.CompactTextString(m) }
 func (*ContainerRequest) ProtoMessage()    {}
 func (*ContainerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d029d11d13649966, []int{1}
+	return fileDescriptor_d029d11d13649966, []int{2}
 }
 func (m *ContainerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerRequest.Unmarshal(m, b)
@@ -222,6 +342,13 @@ func (m *ContainerRequest) GetContainerId() int32 {
 	return 0
 }
 
+func (m *ContainerRequest) GetServerId() int32 {
+	if m != nil {
+		return m.ServerId
+	}
+	return 0
+}
+
 type ContainerResponse struct {
 	Retcode              Retcode      `protobuf:"varint,1,opt,name=retcode,proto3,enum=west4API.Retcode" json:"retcode,omitempty"`
 	Container            []*Container `protobuf:"bytes,2,rep,name=container,proto3" json:"container,omitempty"`
@@ -236,7 +363,7 @@ func (m *ContainerResponse) Reset()         { *m = ContainerResponse{} }
 func (m *ContainerResponse) String() string { return proto.CompactTextString(m) }
 func (*ContainerResponse) ProtoMessage()    {}
 func (*ContainerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d029d11d13649966, []int{2}
+	return fileDescriptor_d029d11d13649966, []int{3}
 }
 func (m *ContainerResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerResponse.Unmarshal(m, b)
@@ -297,7 +424,7 @@ func (m *ContainerPostRequest) Reset()         { *m = ContainerPostRequest{} }
 func (m *ContainerPostRequest) String() string { return proto.CompactTextString(m) }
 func (*ContainerPostRequest) ProtoMessage()    {}
 func (*ContainerPostRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d029d11d13649966, []int{3}
+	return fileDescriptor_d029d11d13649966, []int{4}
 }
 func (m *ContainerPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerPostRequest.Unmarshal(m, b)
@@ -351,7 +478,7 @@ func (m *ContainerPostResponse) Reset()         { *m = ContainerPostResponse{} }
 func (m *ContainerPostResponse) String() string { return proto.CompactTextString(m) }
 func (*ContainerPostResponse) ProtoMessage()    {}
 func (*ContainerPostResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d029d11d13649966, []int{4}
+	return fileDescriptor_d029d11d13649966, []int{5}
 }
 func (m *ContainerPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerPostResponse.Unmarshal(m, b)
@@ -392,49 +519,284 @@ func (m *ContainerPostResponse) GetElapsed() string {
 	return ""
 }
 
+// -------
+type ContainerCreateRequest struct {
+	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	ContainerCreate      int32    `protobuf:"varint,2,opt,name=container_create,json=containerCreate,proto3" json:"container_create,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContainerCreateRequest) Reset()         { *m = ContainerCreateRequest{} }
+func (m *ContainerCreateRequest) String() string { return proto.CompactTextString(m) }
+func (*ContainerCreateRequest) ProtoMessage()    {}
+func (*ContainerCreateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d029d11d13649966, []int{6}
+}
+func (m *ContainerCreateRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContainerCreateRequest.Unmarshal(m, b)
+}
+func (m *ContainerCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContainerCreateRequest.Marshal(b, m, deterministic)
+}
+func (dst *ContainerCreateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreateRequest.Merge(dst, src)
+}
+func (m *ContainerCreateRequest) XXX_Size() int {
+	return xxx_messageInfo_ContainerCreateRequest.Size(m)
+}
+func (m *ContainerCreateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContainerCreateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContainerCreateRequest proto.InternalMessageInfo
+
+func (m *ContainerCreateRequest) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+func (m *ContainerCreateRequest) GetContainerCreate() int32 {
+	if m != nil {
+		return m.ContainerCreate
+	}
+	return 0
+}
+
+type ContainerCreateResponse struct {
+	Retcode              Retcode            `protobuf:"varint,1,opt,name=retcode,proto3,enum=west4API.Retcode" json:"retcode,omitempty"`
+	ContainerCreate      []*ContainerCreate `protobuf:"bytes,2,rep,name=container_create,json=containerCreate,proto3" json:"container_create,omitempty"`
+	Comment              string             `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
+	Elapsed              string             `protobuf:"bytes,4,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *ContainerCreateResponse) Reset()         { *m = ContainerCreateResponse{} }
+func (m *ContainerCreateResponse) String() string { return proto.CompactTextString(m) }
+func (*ContainerCreateResponse) ProtoMessage()    {}
+func (*ContainerCreateResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d029d11d13649966, []int{7}
+}
+func (m *ContainerCreateResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContainerCreateResponse.Unmarshal(m, b)
+}
+func (m *ContainerCreateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContainerCreateResponse.Marshal(b, m, deterministic)
+}
+func (dst *ContainerCreateResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreateResponse.Merge(dst, src)
+}
+func (m *ContainerCreateResponse) XXX_Size() int {
+	return xxx_messageInfo_ContainerCreateResponse.Size(m)
+}
+func (m *ContainerCreateResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContainerCreateResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContainerCreateResponse proto.InternalMessageInfo
+
+func (m *ContainerCreateResponse) GetRetcode() Retcode {
+	if m != nil {
+		return m.Retcode
+	}
+	return Retcode_REJECT
+}
+
+func (m *ContainerCreateResponse) GetContainerCreate() []*ContainerCreate {
+	if m != nil {
+		return m.ContainerCreate
+	}
+	return nil
+}
+
+func (m *ContainerCreateResponse) GetComment() string {
+	if m != nil {
+		return m.Comment
+	}
+	return ""
+}
+
+func (m *ContainerCreateResponse) GetElapsed() string {
+	if m != nil {
+		return m.Elapsed
+	}
+	return ""
+}
+
+type ContainerCreatePostRequest struct {
+	Token                string           `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	ContainerCreate      *ContainerCreate `protobuf:"bytes,2,opt,name=container_create,json=containerCreate,proto3" json:"container_create,omitempty"`
+	Action               Action           `protobuf:"varint,3,opt,name=action,proto3,enum=west4API.Action" json:"action,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *ContainerCreatePostRequest) Reset()         { *m = ContainerCreatePostRequest{} }
+func (m *ContainerCreatePostRequest) String() string { return proto.CompactTextString(m) }
+func (*ContainerCreatePostRequest) ProtoMessage()    {}
+func (*ContainerCreatePostRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d029d11d13649966, []int{8}
+}
+func (m *ContainerCreatePostRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContainerCreatePostRequest.Unmarshal(m, b)
+}
+func (m *ContainerCreatePostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContainerCreatePostRequest.Marshal(b, m, deterministic)
+}
+func (dst *ContainerCreatePostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreatePostRequest.Merge(dst, src)
+}
+func (m *ContainerCreatePostRequest) XXX_Size() int {
+	return xxx_messageInfo_ContainerCreatePostRequest.Size(m)
+}
+func (m *ContainerCreatePostRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContainerCreatePostRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContainerCreatePostRequest proto.InternalMessageInfo
+
+func (m *ContainerCreatePostRequest) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+func (m *ContainerCreatePostRequest) GetContainerCreate() *ContainerCreate {
+	if m != nil {
+		return m.ContainerCreate
+	}
+	return nil
+}
+
+func (m *ContainerCreatePostRequest) GetAction() Action {
+	if m != nil {
+		return m.Action
+	}
+	return Action_INSERT
+}
+
+type ContainerCreatePostResponse struct {
+	Retcode              Retcode  `protobuf:"varint,1,opt,name=retcode,proto3,enum=west4API.Retcode" json:"retcode,omitempty"`
+	Comment              string   `protobuf:"bytes,2,opt,name=comment,proto3" json:"comment,omitempty"`
+	Elapsed              string   `protobuf:"bytes,3,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ContainerCreatePostResponse) Reset()         { *m = ContainerCreatePostResponse{} }
+func (m *ContainerCreatePostResponse) String() string { return proto.CompactTextString(m) }
+func (*ContainerCreatePostResponse) ProtoMessage()    {}
+func (*ContainerCreatePostResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d029d11d13649966, []int{9}
+}
+func (m *ContainerCreatePostResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ContainerCreatePostResponse.Unmarshal(m, b)
+}
+func (m *ContainerCreatePostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ContainerCreatePostResponse.Marshal(b, m, deterministic)
+}
+func (dst *ContainerCreatePostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreatePostResponse.Merge(dst, src)
+}
+func (m *ContainerCreatePostResponse) XXX_Size() int {
+	return xxx_messageInfo_ContainerCreatePostResponse.Size(m)
+}
+func (m *ContainerCreatePostResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContainerCreatePostResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContainerCreatePostResponse proto.InternalMessageInfo
+
+func (m *ContainerCreatePostResponse) GetRetcode() Retcode {
+	if m != nil {
+		return m.Retcode
+	}
+	return Retcode_REJECT
+}
+
+func (m *ContainerCreatePostResponse) GetComment() string {
+	if m != nil {
+		return m.Comment
+	}
+	return ""
+}
+
+func (m *ContainerCreatePostResponse) GetElapsed() string {
+	if m != nil {
+		return m.Elapsed
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*Container)(nil), "west4API.Container")
+	proto.RegisterType((*ContainerCreate)(nil), "west4API.ContainerCreate")
 	proto.RegisterType((*ContainerRequest)(nil), "west4API.ContainerRequest")
 	proto.RegisterType((*ContainerResponse)(nil), "west4API.ContainerResponse")
 	proto.RegisterType((*ContainerPostRequest)(nil), "west4API.ContainerPostRequest")
 	proto.RegisterType((*ContainerPostResponse)(nil), "west4API.ContainerPostResponse")
+	proto.RegisterType((*ContainerCreateRequest)(nil), "west4API.ContainerCreateRequest")
+	proto.RegisterType((*ContainerCreateResponse)(nil), "west4API.ContainerCreateResponse")
+	proto.RegisterType((*ContainerCreatePostRequest)(nil), "west4API.ContainerCreatePostRequest")
+	proto.RegisterType((*ContainerCreatePostResponse)(nil), "west4API.ContainerCreatePostResponse")
 }
 
 func init() { proto.RegisterFile("containers.proto", fileDescriptor_d029d11d13649966) }
 
 var fileDescriptor_d029d11d13649966 = []byte{
-	// 526 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0xdf, 0x6e, 0xd3, 0x30,
-	0x14, 0xc6, 0x95, 0x66, 0xfd, 0x93, 0xd3, 0xae, 0x6b, 0xbd, 0x4e, 0xb2, 0xc6, 0x05, 0x5d, 0x25,
-	0xa4, 0x22, 0x44, 0xa5, 0x6d, 0xbc, 0xc0, 0x34, 0x6e, 0x2a, 0xb8, 0xa8, 0xa2, 0x71, 0x1d, 0x85,
-	0xe4, 0x6c, 0x58, 0x6b, 0x6c, 0x63, 0x3b, 0x1b, 0x7d, 0x04, 0x9e, 0x84, 0xa7, 0xe0, 0xdd, 0x90,
-	0xed, 0xfc, 0x29, 0x9b, 0x40, 0x88, 0xbb, 0x9e, 0xdf, 0xf7, 0xf9, 0xe4, 0xf8, 0xf8, 0x53, 0x61,
-	0x92, 0x09, 0x6e, 0x52, 0xc6, 0x51, 0xe9, 0x95, 0x54, 0xc2, 0x08, 0x32, 0x78, 0x44, 0x6d, 0xde,
-	0x5d, 0x6d, 0xd6, 0xa7, 0x80, 0xbc, 0x2c, 0x3c, 0x5d, 0xfc, 0x3c, 0x80, 0xe8, 0xba, 0xb6, 0x92,
-	0x33, 0x18, 0x35, 0xe7, 0x12, 0x96, 0xd3, 0x60, 0x1e, 0x2c, 0xbb, 0xf1, 0xb0, 0x61, 0xeb, 0x9c,
-	0x9c, 0xc3, 0x6c, 0xdf, 0x82, 0xdc, 0xb0, 0x5b, 0x86, 0x8a, 0x76, 0xe6, 0xc1, 0x32, 0x8a, 0x8f,
-	0xf7, 0xac, 0xb5, 0x44, 0x5e, 0xc1, 0xb8, 0x3d, 0x62, 0x76, 0x12, 0x69, 0xe8, 0xcc, 0x87, 0x0d,
-	0xbd, 0xd9, 0x49, 0x24, 0x97, 0x70, 0xd2, 0xda, 0x72, 0xd4, 0x99, 0x62, 0xd2, 0x30, 0xc1, 0xe9,
-	0x81, 0x73, 0xb7, 0x9f, 0x7d, 0xdf, 0x6a, 0x64, 0x06, 0x5d, 0x56, 0xa4, 0x77, 0x48, 0xbb, 0xce,
-	0xe4, 0x0b, 0x42, 0xa1, 0xcf, 0xd1, 0x3c, 0x0a, 0x75, 0x4f, 0x7b, 0x8e, 0xd7, 0x25, 0x39, 0x85,
-	0xc1, 0x17, 0xa1, 0x0d, 0x4f, 0x0b, 0xa4, 0x7d, 0x27, 0x35, 0x35, 0x99, 0x40, 0x88, 0xfc, 0x81,
-	0x0e, 0x1c, 0xb6, 0x3f, 0xed, 0xe4, 0x0a, 0xb5, 0x49, 0x95, 0x49, 0xa4, 0xd8, 0xb2, 0x0c, 0x69,
-	0xe4, 0x27, 0xaf, 0xe8, 0xc6, 0x41, 0xf2, 0x16, 0x48, 0x81, 0x85, 0x50, 0xbb, 0x44, 0xa1, 0x46,
-	0xf5, 0x90, 0xba, 0xb1, 0xc1, 0x2d, 0x6f, 0xea, 0x95, 0xb8, 0x15, 0xec, 0x96, 0x2b, 0xfb, 0x96,
-	0x15, 0xcc, 0xd0, 0xa1, 0xdf, 0xb2, 0x67, 0x1f, 0x2d, 0x22, 0x2f, 0x20, 0xca, 0x64, 0x59, 0xe9,
-	0x23, 0xa7, 0x0f, 0x32, 0x59, 0x7a, 0xf1, 0x0c, 0x46, 0xda, 0x08, 0x99, 0x18, 0x56, 0xa0, 0x28,
-	0x0d, 0x3d, 0x9c, 0x07, 0xcb, 0x30, 0x1e, 0x5a, 0x76, 0xe3, 0x91, 0x3d, 0x6f, 0xbf, 0xe7, 0x5f,
-	0x71, 0xec, 0xcf, 0x7b, 0xb0, 0xce, 0xc9, 0xeb, 0xbd, 0x74, 0x24, 0x99, 0xe0, 0xb7, 0xec, 0x8e,
-	0x1e, 0xb9, 0x7b, 0x1d, 0x35, 0xfc, 0xda, 0x61, 0xf2, 0x12, 0x86, 0xdb, 0x54, 0x9b, 0xa4, 0x94,
-	0x79, 0x6a, 0x90, 0x4e, 0x9c, 0x0b, 0x2c, 0xfa, 0xe4, 0xc8, 0xe2, 0x03, 0x4c, 0x9a, 0xf8, 0xc4,
-	0xf8, 0xb5, 0x44, 0x6d, 0xec, 0x9b, 0x18, 0x71, 0x8f, 0xdc, 0xc5, 0x27, 0x8a, 0x7d, 0xf1, 0x2c,
-	0x5b, 0x9d, 0x67, 0xd9, 0x5a, 0xfc, 0x08, 0x60, 0xba, 0xd7, 0x4d, 0x4b, 0xc1, 0x35, 0x92, 0x37,
-	0xd0, 0x57, 0x68, 0x32, 0x91, 0xa3, 0x6b, 0x38, 0xbe, 0x98, 0xae, 0xea, 0x28, 0xaf, 0x62, 0x2f,
-	0xc4, 0xb5, 0x83, 0x9c, 0x43, 0xd4, 0x74, 0xa4, 0x9d, 0x79, 0xb8, 0x1c, 0x5e, 0x1c, 0xb7, 0xf6,
-	0xb6, 0x79, 0xeb, 0xb2, 0x61, 0xc9, 0x44, 0x51, 0x20, 0x37, 0x55, 0x2e, 0xeb, 0xd2, 0x2a, 0xb8,
-	0x4d, 0xa5, 0xc6, 0xbc, 0xca, 0x60, 0x5d, 0x2e, 0xbe, 0x07, 0x30, 0x6b, 0x9a, 0x6d, 0x84, 0x36,
-	0x7f, 0xbf, 0xfb, 0x93, 0xa9, 0x82, 0x7f, 0x98, 0x6a, 0x09, 0xbd, 0x34, 0x73, 0x39, 0x0a, 0xdd,
-	0xa5, 0x27, 0xad, 0xff, 0xca, 0xf1, 0xb8, 0xd2, 0x17, 0xdf, 0xe0, 0xe4, 0xc9, 0x28, 0xff, 0xb3,
-	0xb8, 0xbd, 0x2d, 0x74, 0xfe, 0xb8, 0x85, 0xf0, 0xb7, 0x2d, 0x7c, 0xee, 0xb9, 0xff, 0x90, 0xcb,
-	0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xee, 0x6f, 0xc9, 0xc1, 0x6d, 0x04, 0x00, 0x00,
+	// 736 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0x4d, 0x4f, 0xe3, 0x48,
+	0x10, 0x95, 0x13, 0xf2, 0x55, 0x09, 0x21, 0x34, 0x5f, 0x0d, 0x1c, 0x36, 0x44, 0x5a, 0x29, 0xab,
+	0xd5, 0x22, 0x01, 0xfb, 0x07, 0x10, 0x68, 0xa5, 0x48, 0x7b, 0x40, 0x16, 0x7b, 0xd8, 0x93, 0x65,
+	0xec, 0x02, 0x5a, 0xc4, 0x6e, 0xaf, 0xbb, 0x43, 0x96, 0x39, 0xcc, 0x7d, 0xce, 0xf3, 0x0f, 0xe6,
+	0x32, 0x7f, 0x63, 0xa4, 0xf9, 0x63, 0xa3, 0xae, 0xee, 0xd8, 0x49, 0xf8, 0x18, 0x86, 0xc3, 0xdc,
+	0xf2, 0xde, 0xab, 0xee, 0x2a, 0xbf, 0x7a, 0x76, 0xa0, 0x17, 0xc9, 0x54, 0x87, 0x22, 0xc5, 0x5c,
+	0x1d, 0x66, 0xb9, 0xd4, 0x92, 0x35, 0xa7, 0xa8, 0xf4, 0x9f, 0xa7, 0x17, 0xa3, 0x3d, 0xc0, 0x74,
+	0x92, 0x58, 0x76, 0xf0, 0xb1, 0x02, 0xad, 0xb3, 0x59, 0x29, 0xeb, 0x42, 0x45, 0xc4, 0xdc, 0xeb,
+	0x7b, 0xc3, 0x96, 0x5f, 0x11, 0x31, 0xdb, 0x84, 0x5a, 0x1a, 0x26, 0xa8, 0x78, 0x85, 0x28, 0x0b,
+	0x0c, 0x2b, 0x92, 0xf0, 0x06, 0x79, 0xd5, 0xb2, 0x04, 0xd8, 0x2e, 0x34, 0xe9, 0x47, 0x20, 0x62,
+	0xbe, 0x42, 0x42, 0x83, 0xf0, 0x28, 0x66, 0x1c, 0x1a, 0x51, 0x8e, 0xa1, 0xc6, 0x98, 0xd7, 0xac,
+	0xe2, 0xa0, 0xb9, 0x2a, 0x93, 0xb9, 0x56, 0xbc, 0x6e, 0xaf, 0x22, 0xc0, 0x76, 0xa0, 0xa1, 0xc4,
+	0x3b, 0x0c, 0xf2, 0x29, 0x6f, 0xf4, 0xbd, 0x61, 0xd5, 0xaf, 0x1b, 0xe8, 0x4f, 0x59, 0x1f, 0x3a,
+	0x56, 0x90, 0x52, 0x07, 0xd7, 0x8a, 0x37, 0x49, 0x05, 0x52, 0xa5, 0xd4, 0x7f, 0x29, 0xb6, 0x0d,
+	0xf5, 0x71, 0x78, 0x85, 0x63, 0xc5, 0x5b, 0x74, 0xa3, 0x43, 0xa6, 0x91, 0xd2, 0xa1, 0x46, 0x0e,
+	0xb6, 0x11, 0x01, 0x53, 0x6d, 0x7e, 0x4c, 0x14, 0x6f, 0xdb, 0x6a, 0x8b, 0x06, 0x5f, 0x57, 0x60,
+	0xad, 0x70, 0xe5, 0x8c, 0x66, 0x65, 0x07, 0xd0, 0x29, 0x3c, 0x0d, 0x9c, 0x4b, 0x35, 0xbf, 0x5d,
+	0x70, 0xa3, 0x98, 0x1d, 0xc1, 0xe6, 0x7c, 0x09, 0xa6, 0x5a, 0x5c, 0x0b, 0xcc, 0x9d, 0x7b, 0x1b,
+	0x73, 0xa5, 0x33, 0x89, 0xfd, 0x0a, 0xdd, 0xf2, 0x88, 0x7e, 0xc8, 0x66, 0xa6, 0xae, 0x16, 0xec,
+	0xe5, 0x43, 0x86, 0xec, 0x04, 0xb6, 0xca, 0xb2, 0x18, 0x55, 0x94, 0x8b, 0x4c, 0x0b, 0x99, 0x3a,
+	0xa7, 0xcb, 0xb6, 0xe7, 0xa5, 0x56, 0xee, 0xa9, 0x36, 0xbf, 0x27, 0x0e, 0x8d, 0x14, 0xf5, 0x54,
+	0xe6, 0x77, 0xce, 0xf4, 0x19, 0x64, 0x7b, 0xd0, 0xbc, 0x95, 0x4a, 0x9b, 0x25, 0x93, 0xef, 0x2d,
+	0xbf, 0xc0, 0xac, 0x07, 0x55, 0x4c, 0xef, 0xc9, 0xf0, 0x96, 0x6f, 0x7e, 0x9a, 0xc9, 0x73, 0x54,
+	0x3a, 0xcc, 0x75, 0x90, 0xc9, 0xb1, 0x88, 0xd0, 0x39, 0xbe, 0xea, 0xd8, 0x0b, 0x22, 0xd9, 0x1f,
+	0xc0, 0x12, 0x4c, 0x64, 0xfe, 0x10, 0xe4, 0xa8, 0x30, 0xbf, 0x0f, 0x69, 0x6c, 0x20, 0xf3, 0xd6,
+	0xad, 0xe2, 0x97, 0x82, 0x71, 0xd9, 0x95, 0x8f, 0x45, 0x22, 0x34, 0xed, 0xa5, 0xe6, 0xb7, 0x2d,
+	0xf7, 0xb7, 0xa1, 0xd8, 0x3e, 0xb4, 0xa2, 0x6c, 0xe2, 0xf4, 0x0e, 0xe9, 0xcd, 0x28, 0x9b, 0x58,
+	0xf1, 0x00, 0x3a, 0x4a, 0xcb, 0x2c, 0xd0, 0x22, 0x41, 0x39, 0xd1, 0x7c, 0x95, 0x12, 0xd2, 0x36,
+	0xdc, 0xa5, 0xa5, 0xcc, 0x79, 0xd3, 0xcf, 0x6e, 0xb1, 0x6b, 0xcf, 0x5b, 0x62, 0x14, 0xb3, 0xdf,
+	0xe6, 0xde, 0x9c, 0x20, 0x92, 0xe9, 0xb5, 0xb8, 0xe1, 0x6b, 0xf4, 0x5c, 0x6b, 0x05, 0x7f, 0x46,
+	0x34, 0xfb, 0x05, 0xda, 0xe3, 0x50, 0xe9, 0x60, 0x92, 0xc5, 0x26, 0x58, 0x3d, 0xaa, 0x02, 0x43,
+	0xfd, 0x43, 0xcc, 0xe0, 0x16, 0x7a, 0x45, 0x88, 0x7c, 0xfc, 0x6f, 0x82, 0x4a, 0x9b, 0x9d, 0x68,
+	0x79, 0x87, 0xa9, 0x7b, 0xc9, 0x2c, 0x78, 0x94, 0xad, 0xca, 0xe3, 0x6c, 0x2d, 0x4c, 0x5d, 0x5d,
+	0x9c, 0x7a, 0xf0, 0xd9, 0x83, 0xf5, 0xb9, 0x56, 0x2a, 0x93, 0xa9, 0x42, 0xf6, 0x3b, 0x34, 0x72,
+	0xd4, 0x91, 0x8c, 0x91, 0xba, 0x75, 0x8f, 0xd7, 0x0f, 0x67, 0xdf, 0x80, 0x43, 0xdf, 0x0a, 0xfe,
+	0xac, 0x82, 0x1d, 0x41, 0xab, 0x68, 0xc7, 0x2b, 0xfd, 0xea, 0xb0, 0x7d, 0xbc, 0x51, 0x96, 0x97,
+	0x97, 0x97, 0x55, 0xf4, 0x5a, 0xcb, 0x24, 0xc1, 0x54, 0xbb, 0xd0, 0xce, 0xa0, 0x51, 0x70, 0x1c,
+	0x66, 0x0a, 0x8b, 0x4f, 0x81, 0x83, 0x83, 0x0f, 0x1e, 0x6c, 0x16, 0x97, 0x5d, 0x48, 0xa5, 0x5f,
+	0x36, 0x66, 0x69, 0x2a, 0xef, 0x15, 0x53, 0x0d, 0xa1, 0x1e, 0x46, 0x14, 0xb2, 0x2a, 0x3d, 0x74,
+	0xaf, 0xac, 0x3f, 0x25, 0xde, 0x77, 0xfa, 0xe0, 0x7f, 0xd8, 0x5a, 0x1a, 0xe5, 0x2d, 0xc6, 0xcd,
+	0xb9, 0x50, 0x79, 0xd6, 0x85, 0xea, 0xa2, 0x0b, 0xff, 0xc2, 0xf6, 0xd2, 0xe7, 0xe5, 0x65, 0x1b,
+	0x16, 0x53, 0x49, 0x07, 0x5c, 0x46, 0xe6, 0x52, 0x49, 0xf4, 0xe0, 0x8b, 0x07, 0x3b, 0x8f, 0xee,
+	0x7e, 0xcb, 0x73, 0x9d, 0x3f, 0xd9, 0xd3, 0xe4, 0x62, 0xf7, 0x89, 0x0d, 0xb8, 0x4e, 0xcb, 0xe3,
+	0xbc, 0x29, 0x23, 0x9f, 0x3c, 0xd8, 0x5b, 0xba, 0xf8, 0xfb, 0x49, 0x39, 0x7f, 0xc6, 0xa2, 0x1f,
+	0x1b, 0xf7, 0xf5, 0xe1, 0x79, 0x0f, 0xfb, 0x4f, 0xce, 0xf8, 0x93, 0x22, 0x74, 0x55, 0xa7, 0xff,
+	0xef, 0x93, 0x6f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xa1, 0xd6, 0xcb, 0xb3, 0xe9, 0x07, 0x00, 0x00,
 }

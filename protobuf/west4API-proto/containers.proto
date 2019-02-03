@@ -3,6 +3,20 @@ package west4API;
 import "enum.proto";
 
 message Container { 
+   string                              id                        = 1;   
+   string                              names                     = 2;
+   string                              image                     = 3;   
+   string                              image_id                  = 4;   
+   string                              created                   = 5;   
+   string                              ports                     = 6;   
+   int64                               size_rw                   = 7;   
+   int64                               size_root_fs              = 8;   
+   string                              labels                    = 9;   
+   string                              state                     = 10;   
+   string                              status                    = 11;   
+}
+
+message ContainerCreate { 
    int32                               container_id              = 1;   
    string                              container_identifier      = 2;
    string                              container_type            = 3;   
@@ -19,12 +33,14 @@ message Container {
    int32                               server_id                 = 14;   
    string                              container_config          = 15;   
    string                              last_update               = 16;   
-
 }
+   
 
+// -------
 message ContainerRequest { 
    string                              token                     = 1;  
-   int32                               container_id              = 2;     
+   int32                               container_id              = 2;
+   int32                               server_id                 = 3;
 }
 
 message ContainerResponse { 
@@ -34,14 +50,41 @@ message ContainerResponse {
    string                              elapsed                   = 4;  
 }
 
-message ContainerPostRequest {
+message ContainerPostRequest { 
    string                              token                     = 1; 
    Container                           container                 = 2;     
-   Action                              action                    = 3;
+   Action                              action                    = 3;   
 }
 
 message ContainerPostResponse { 
    Retcode                             retcode                   = 1; 
    string                              comment                   = 2;   
+   string                              elapsed                   = 3;
+}
+// -------
+
+
+
+// -------
+message ContainerCreateRequest { 
+   string                              token                     = 1;  
+   int32                               container_create          = 2;     
+}
+
+message ContainerCreateResponse { 
+   Retcode                             retcode                   = 1;
+   repeated ContainerCreate            container_create          = 2; 
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
+}
+message ContainerCreatePostRequest {
+   string                              token                     = 1; 
+   ContainerCreate                     container_create          = 2;     
+   Action                              action                    = 3;
+}
+message ContainerCreatePostResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
    string                              elapsed                   = 3; 
 }
+// -------

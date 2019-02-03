@@ -5,8 +5,12 @@ import "datafeeds.proto";
 
 // The west4API service definition.
 service west4API {   
-  rpc GetContainers(ContainerRequest) returns (ContainerResponse) {}
-  rpc PostContainer(ContainerPostRequest) returns (ContainerPostResponse) {}
   rpc GetDataFeeds(DataFeedRequest) returns (DataFeedResponse) {}
   rpc PostDataFeed(DataFeedPostRequest) returns (DataFeedPostResponse) {}  
+
+  rpc GetContainers(ContainerRequest) returns (ContainerResponse) {}
+  rpc PostContainer(ContainerPostRequest) returns (ContainerPostResponse) {}
+  rpc GetContainersCreate(ContainerCreateRequest) returns (ContainerCreateResponse) {}
+  rpc PostContainerCreate(ContainerCreatePostRequest) returns (ContainerCreatePostResponse) {}
+
 } 

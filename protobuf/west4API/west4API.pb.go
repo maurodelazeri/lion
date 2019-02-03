@@ -35,10 +35,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type West4APIClient interface {
-	GetContainers(ctx context.Context, in *ContainerRequest, opts ...grpc.CallOption) (*ContainerResponse, error)
-	PostContainer(ctx context.Context, in *ContainerPostRequest, opts ...grpc.CallOption) (*ContainerPostResponse, error)
 	GetDataFeeds(ctx context.Context, in *DataFeedRequest, opts ...grpc.CallOption) (*DataFeedResponse, error)
 	PostDataFeed(ctx context.Context, in *DataFeedPostRequest, opts ...grpc.CallOption) (*DataFeedPostResponse, error)
+	GetContainers(ctx context.Context, in *ContainerRequest, opts ...grpc.CallOption) (*ContainerResponse, error)
+	PostContainer(ctx context.Context, in *ContainerPostRequest, opts ...grpc.CallOption) (*ContainerPostResponse, error)
+	GetContainersCreate(ctx context.Context, in *ContainerCreateRequest, opts ...grpc.CallOption) (*ContainerCreateResponse, error)
+	PostContainerCreate(ctx context.Context, in *ContainerCreatePostRequest, opts ...grpc.CallOption) (*ContainerCreatePostResponse, error)
 }
 
 type west4APIClient struct {
@@ -47,24 +49,6 @@ type west4APIClient struct {
 
 func NewWest4APIClient(cc *grpc.ClientConn) West4APIClient {
 	return &west4APIClient{cc}
-}
-
-func (c *west4APIClient) GetContainers(ctx context.Context, in *ContainerRequest, opts ...grpc.CallOption) (*ContainerResponse, error) {
-	out := new(ContainerResponse)
-	err := c.cc.Invoke(ctx, "/west4API.west4API/GetContainers", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *west4APIClient) PostContainer(ctx context.Context, in *ContainerPostRequest, opts ...grpc.CallOption) (*ContainerPostResponse, error) {
-	out := new(ContainerPostResponse)
-	err := c.cc.Invoke(ctx, "/west4API.west4API/PostContainer", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *west4APIClient) GetDataFeeds(ctx context.Context, in *DataFeedRequest, opts ...grpc.CallOption) (*DataFeedResponse, error) {
@@ -85,52 +69,54 @@ func (c *west4APIClient) PostDataFeed(ctx context.Context, in *DataFeedPostReque
 	return out, nil
 }
 
+func (c *west4APIClient) GetContainers(ctx context.Context, in *ContainerRequest, opts ...grpc.CallOption) (*ContainerResponse, error) {
+	out := new(ContainerResponse)
+	err := c.cc.Invoke(ctx, "/west4API.west4API/GetContainers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *west4APIClient) PostContainer(ctx context.Context, in *ContainerPostRequest, opts ...grpc.CallOption) (*ContainerPostResponse, error) {
+	out := new(ContainerPostResponse)
+	err := c.cc.Invoke(ctx, "/west4API.west4API/PostContainer", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *west4APIClient) GetContainersCreate(ctx context.Context, in *ContainerCreateRequest, opts ...grpc.CallOption) (*ContainerCreateResponse, error) {
+	out := new(ContainerCreateResponse)
+	err := c.cc.Invoke(ctx, "/west4API.west4API/GetContainersCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *west4APIClient) PostContainerCreate(ctx context.Context, in *ContainerCreatePostRequest, opts ...grpc.CallOption) (*ContainerCreatePostResponse, error) {
+	out := new(ContainerCreatePostResponse)
+	err := c.cc.Invoke(ctx, "/west4API.west4API/PostContainerCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // West4APIServer is the server API for West4API service.
 type West4APIServer interface {
-	GetContainers(context.Context, *ContainerRequest) (*ContainerResponse, error)
-	PostContainer(context.Context, *ContainerPostRequest) (*ContainerPostResponse, error)
 	GetDataFeeds(context.Context, *DataFeedRequest) (*DataFeedResponse, error)
 	PostDataFeed(context.Context, *DataFeedPostRequest) (*DataFeedPostResponse, error)
+	GetContainers(context.Context, *ContainerRequest) (*ContainerResponse, error)
+	PostContainer(context.Context, *ContainerPostRequest) (*ContainerPostResponse, error)
+	GetContainersCreate(context.Context, *ContainerCreateRequest) (*ContainerCreateResponse, error)
+	PostContainerCreate(context.Context, *ContainerCreatePostRequest) (*ContainerCreatePostResponse, error)
 }
 
 func RegisterWest4APIServer(s *grpc.Server, srv West4APIServer) {
 	s.RegisterService(&_West4API_serviceDesc, srv)
-}
-
-func _West4API_GetContainers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContainerRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(West4APIServer).GetContainers(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/west4API.west4API/GetContainers",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(West4APIServer).GetContainers(ctx, req.(*ContainerRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _West4API_PostContainer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ContainerPostRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(West4APIServer).PostContainer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/west4API.west4API/PostContainer",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(West4APIServer).PostContainer(ctx, req.(*ContainerPostRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _West4API_GetDataFeeds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -169,10 +155,90 @@ func _West4API_PostDataFeed_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _West4API_GetContainers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContainerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(West4APIServer).GetContainers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/west4API.west4API/GetContainers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(West4APIServer).GetContainers(ctx, req.(*ContainerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _West4API_PostContainer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContainerPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(West4APIServer).PostContainer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/west4API.west4API/PostContainer",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(West4APIServer).PostContainer(ctx, req.(*ContainerPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _West4API_GetContainersCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContainerCreateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(West4APIServer).GetContainersCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/west4API.west4API/GetContainersCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(West4APIServer).GetContainersCreate(ctx, req.(*ContainerCreateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _West4API_PostContainerCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContainerCreatePostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(West4APIServer).PostContainerCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/west4API.west4API/PostContainerCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(West4APIServer).PostContainerCreate(ctx, req.(*ContainerCreatePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _West4API_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "west4API.west4API",
 	HandlerType: (*West4APIServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetDataFeeds",
+			Handler:    _West4API_GetDataFeeds_Handler,
+		},
+		{
+			MethodName: "PostDataFeed",
+			Handler:    _West4API_PostDataFeed_Handler,
+		},
 		{
 			MethodName: "GetContainers",
 			Handler:    _West4API_GetContainers_Handler,
@@ -182,12 +248,12 @@ var _West4API_serviceDesc = grpc.ServiceDesc{
 			Handler:    _West4API_PostContainer_Handler,
 		},
 		{
-			MethodName: "GetDataFeeds",
-			Handler:    _West4API_GetDataFeeds_Handler,
+			MethodName: "GetContainersCreate",
+			Handler:    _West4API_GetContainersCreate_Handler,
 		},
 		{
-			MethodName: "PostDataFeed",
-			Handler:    _West4API_PostDataFeed_Handler,
+			MethodName: "PostContainerCreate",
+			Handler:    _West4API_PostContainerCreate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -197,17 +263,20 @@ var _West4API_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("west4API.proto", fileDescriptor_81ea3877c7e6a19f) }
 
 var fileDescriptor_81ea3877c7e6a19f = []byte{
-	// 185 bytes of a gzipped FileDescriptorProto
+	// 228 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x4f, 0x2d, 0x2e,
 	0x31, 0x71, 0x0c, 0xf0, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x80, 0xf1, 0xa5, 0x04,
 	0x92, 0xf3, 0xf3, 0x4a, 0x12, 0x33, 0xf3, 0x52, 0x8b, 0x8a, 0x21, 0x72, 0x52, 0xfc, 0x29, 0x89,
-	0x25, 0x89, 0x69, 0xa9, 0xa9, 0x29, 0x50, 0x01, 0xa3, 0x23, 0x4c, 0x5c, 0x70, 0xf5, 0x42, 0x5e,
-	0x5c, 0xbc, 0xee, 0xa9, 0x25, 0xce, 0x70, 0x4d, 0x42, 0x52, 0x7a, 0x70, 0xb3, 0xe1, 0xa2, 0x41,
-	0xa9, 0x85, 0xa5, 0xa9, 0xc5, 0x25, 0x52, 0xd2, 0x58, 0xe5, 0x8a, 0x0b, 0xf2, 0xf3, 0x8a, 0x53,
-	0x95, 0x18, 0x84, 0x82, 0xb8, 0x78, 0x03, 0xf2, 0x8b, 0x11, 0x86, 0x09, 0xc9, 0x61, 0x51, 0x0f,
-	0x52, 0x01, 0x33, 0x4f, 0x1e, 0xa7, 0x3c, 0xdc, 0x4c, 0x77, 0x2e, 0x1e, 0xf7, 0xd4, 0x12, 0x97,
-	0xc4, 0x92, 0x44, 0x37, 0x90, 0x17, 0x84, 0x24, 0x11, 0x5a, 0x60, 0x82, 0x30, 0xd3, 0xa4, 0xb0,
-	0x49, 0xc1, 0x0d, 0xf2, 0xe7, 0xe2, 0x01, 0x19, 0x0d, 0x93, 0x11, 0x92, 0xc5, 0x54, 0x8d, 0xec,
-	0x34, 0x39, 0x5c, 0xd2, 0x30, 0x03, 0x93, 0xd8, 0xc0, 0xa1, 0x69, 0x0c, 0x08, 0x00, 0x00, 0xff,
-	0xff, 0x15, 0xfe, 0xc0, 0x8f, 0x8c, 0x01, 0x00, 0x00,
+	0x25, 0x89, 0x69, 0xa9, 0xa9, 0x29, 0x50, 0x01, 0xa3, 0x0e, 0x16, 0x2e, 0xb8, 0x7a, 0x21, 0x77,
+	0x2e, 0x1e, 0xf7, 0xd4, 0x12, 0x97, 0xc4, 0x92, 0x44, 0x37, 0x90, 0x12, 0x21, 0x49, 0x3d, 0xb8,
+	0xd1, 0x30, 0xc1, 0xa0, 0xd4, 0xc2, 0xd2, 0xd4, 0xe2, 0x12, 0x29, 0x29, 0x6c, 0x52, 0xc5, 0x05,
+	0xf9, 0x79, 0xc5, 0xa9, 0x4a, 0x0c, 0x42, 0xfe, 0x5c, 0x3c, 0x01, 0xf9, 0xc5, 0x70, 0x93, 0x84,
+	0x64, 0x31, 0x55, 0x83, 0xe4, 0x61, 0x86, 0xc9, 0xe1, 0x92, 0x86, 0x1b, 0xe8, 0xc5, 0xc5, 0xeb,
+	0x9e, 0x5a, 0xe2, 0x0c, 0xf7, 0x8e, 0x10, 0x92, 0xfd, 0x70, 0x51, 0x98, 0x71, 0xd2, 0x58, 0xe5,
+	0xe0, 0x66, 0x05, 0x71, 0xf1, 0x82, 0x4c, 0x87, 0x4b, 0x09, 0xc9, 0x61, 0x51, 0x8f, 0xec, 0x3c,
+	0x79, 0x9c, 0xf2, 0x70, 0x33, 0x63, 0xb8, 0x84, 0x51, 0xdc, 0xe7, 0x5c, 0x94, 0x9a, 0x58, 0x92,
+	0x2a, 0xa4, 0x80, 0x45, 0x27, 0x44, 0x0a, 0x66, 0xb6, 0x22, 0x1e, 0x15, 0x70, 0xd3, 0x53, 0xb8,
+	0x84, 0x51, 0x5c, 0x0c, 0x35, 0x5d, 0x05, 0xa7, 0x5e, 0x64, 0xd7, 0xab, 0x12, 0x50, 0x05, 0xb3,
+	0x25, 0x89, 0x0d, 0x9c, 0x22, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x52, 0x85, 0x43, 0xe4,
+	0x50, 0x02, 0x00, 0x00,
 }
