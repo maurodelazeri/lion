@@ -1,9 +1,12 @@
 syntax = "proto3";
 package west4API;
 import "containers.proto";
+import "datafeeds.proto";
 
 // The west4API service definition.
 service west4API {   
   rpc GetContainers(ContainerRequest) returns (ContainerResponse) {}
   rpc PostContainer(ContainerPostRequest) returns (ContainerPostResponse) {}
+  rpc GetDataFeeds(DataFeedRequest) returns (DataFeedResponse) {}
+  rpc PostDataFeed(DataFeedPostRequest) returns (DataFeedPostResponse) {}  
 } 

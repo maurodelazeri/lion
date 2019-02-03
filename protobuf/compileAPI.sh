@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-rm  ../../siberia/app/src/api/*
-rm api/*
+rm  -rf ../../siberia/app/src/api/*
+rm -rf api/*
  
 protoc -I proto/ proto/*.proto  \
     --go_out=plugins=grpc:api \

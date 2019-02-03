@@ -4,20 +4,21 @@ import "enum.proto";
 
 message Container { 
    int32                               container_id              = 1;   
-   string                              container_identifier      = 2;   
-   string                              container_description     = 3;   
-   string                              image                     = 4;   
-   string                              network                   = 5;   
-   string                              hostname                  = 6;   
-   string                              env                       = 7;   
-   string                              restart_police            = 8;   
-   int32                               memory_reservation        = 9;   
-   int32                               memory_limit              = 10;   
-   int32                               cpu_limit                 = 11;   
-   int64                               stop_timeout              = 12;   
-   int32                               server_id                 = 13;   
-   string                              container_config          = 14;   
-   string                              last_update               = 15;   
+   string                              container_identifier      = 2;
+   string                              container_type            = 3;   
+   string                              container_description     = 4;   
+   string                              image                     = 5;   
+   string                              network                   = 6;   
+   string                              hostname                  = 7;   
+   string                              env                       = 8;   
+   string                              restart_police            = 9;   
+   int32                               memory_reservation        = 10;   
+   int32                               memory_limit              = 11;   
+   int32                               cpu_limit                 = 12;   
+   int64                               stop_timeout              = 13;   
+   int32                               server_id                 = 14;   
+   string                              container_config          = 15;   
+   string                              last_update               = 16;   
 
 }
 

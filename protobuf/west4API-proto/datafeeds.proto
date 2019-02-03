@@ -1,0 +1,36 @@
+
+syntax = "proto3";
+package west4API;
+import "enum.proto";
+
+message DataFeed { 
+   int32                               datafeed_id               = 1;   
+   int32                               venue_id                  = 2;   
+   int32                               container_id              = 3;   
+   string                              datafeed_description      = 4;
+   bool                                enabled                   = 5; 
+}
+
+message DataFeedRequest { 
+   string                              token                     = 1;  
+   int32                               container_id              = 2;     
+}
+
+message DataFeedResponse { 
+   Retcode                             retcode                   = 1;
+   repeated DataFeed                   datafeed                 = 2; 
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
+}
+
+message DataFeedPostRequest {
+   string                              token                     = 1; 
+   DataFeed                            datafeed                 = 2;     
+   Action                              action                    = 3;
+}
+
+message DataFeedPostResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
+}
