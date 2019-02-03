@@ -1,9 +1,9 @@
 syntax = "proto3";
 package west4API;
-import "servers.proto";
+import "containers.proto";
 
 // The west4API service definition.
 service west4API {   
-  rpc GetServers(ServerRequest) returns (ServerResponse) {}
-  rpc PostServer(ServerPostRequest) returns (ServerPostResponse) {}
+  rpc GetContainers(ContainerRequest) returns (ContainerResponse) {}
+  rpc PostContainer(ContainerPostRequest) returns (ContainerPostResponse) {}
 } 

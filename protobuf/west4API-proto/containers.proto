@@ -2,14 +2,45 @@ syntax = "proto3";
 package west4API;
 import "enum.proto";
 
+message Container { 
+   int32                               container_id              = 1;   
+   string                              container_identifier      = 2;   
+   string                              container_description     = 3;   
+   string                              image                     = 4;   
+   string                              network                   = 5;   
+   string                              hostname                  = 6;   
+   string                              env                       = 7;   
+   string                              restart_police            = 8;   
+   int32                               memory_reservation        = 9;   
+   int32                               memory_limit              = 10;   
+   int32                               cpu_limit                 = 11;   
+   int64                               stop_timeout              = 12;   
+   int32                               server_id                 = 13;   
+   string                              container_config          = 14;   
+   string                              last_update               = 15;   
+
+}
+
 message ContainerRequest { 
-   string                              email                     = 1;   
-   string                              password                  = 2;   
+   string                              token                     = 1;  
+   int32                               container_id              = 2;     
 }
 
 message ContainerResponse { 
-   Retcode                             retcode                   = 1; 
-   string                              token                     = 2;   
+   Retcode                             retcode                   = 1;
+   repeated Container                  container                 = 2; 
    string                              comment                   = 3;   
-   string                              elapsed                   = 4;
+   string                              elapsed                   = 4;  
+}
+
+message ContainerPostRequest {
+   string                              token                     = 1; 
+   Container                           container                 = 2;     
+   Action                              action                    = 3;
+}
+
+message ContainerPostResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
 }
