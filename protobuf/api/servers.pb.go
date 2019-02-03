@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -37,14 +39,15 @@ func (*Server) ProtoMessage()    {}
 func (*Server) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a6eaaceba9c5e837, []int{0}
 }
+
 func (m *Server) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Server.Unmarshal(m, b)
 }
 func (m *Server) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Server.Marshal(b, m, deterministic)
 }
-func (dst *Server) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Server.Merge(dst, src)
+func (m *Server) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Server.Merge(m, src)
 }
 func (m *Server) XXX_Size() int {
 	return xxx_messageInfo_Server.Size(m)
@@ -118,14 +121,15 @@ func (*ServerRequest) ProtoMessage()    {}
 func (*ServerRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a6eaaceba9c5e837, []int{1}
 }
+
 func (m *ServerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ServerRequest.Unmarshal(m, b)
 }
 func (m *ServerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ServerRequest.Marshal(b, m, deterministic)
 }
-func (dst *ServerRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ServerRequest.Merge(dst, src)
+func (m *ServerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ServerRequest.Merge(m, src)
 }
 func (m *ServerRequest) XXX_Size() int {
 	return xxx_messageInfo_ServerRequest.Size(m)
@@ -166,14 +170,15 @@ func (*ServerResponse) ProtoMessage()    {}
 func (*ServerResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a6eaaceba9c5e837, []int{2}
 }
+
 func (m *ServerResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ServerResponse.Unmarshal(m, b)
 }
 func (m *ServerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ServerResponse.Marshal(b, m, deterministic)
 }
-func (dst *ServerResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ServerResponse.Merge(dst, src)
+func (m *ServerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ServerResponse.Merge(m, src)
 }
 func (m *ServerResponse) XXX_Size() int {
 	return xxx_messageInfo_ServerResponse.Size(m)
@@ -227,14 +232,15 @@ func (*ServerPostRequest) ProtoMessage()    {}
 func (*ServerPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a6eaaceba9c5e837, []int{3}
 }
+
 func (m *ServerPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ServerPostRequest.Unmarshal(m, b)
 }
 func (m *ServerPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ServerPostRequest.Marshal(b, m, deterministic)
 }
-func (dst *ServerPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ServerPostRequest.Merge(dst, src)
+func (m *ServerPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ServerPostRequest.Merge(m, src)
 }
 func (m *ServerPostRequest) XXX_Size() int {
 	return xxx_messageInfo_ServerPostRequest.Size(m)
@@ -281,14 +287,15 @@ func (*ServerPostResponse) ProtoMessage()    {}
 func (*ServerPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a6eaaceba9c5e837, []int{4}
 }
+
 func (m *ServerPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ServerPostResponse.Unmarshal(m, b)
 }
 func (m *ServerPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ServerPostResponse.Marshal(b, m, deterministic)
 }
-func (dst *ServerPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ServerPostResponse.Merge(dst, src)
+func (m *ServerPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ServerPostResponse.Merge(m, src)
 }
 func (m *ServerPostResponse) XXX_Size() int {
 	return xxx_messageInfo_ServerPostResponse.Size(m)
