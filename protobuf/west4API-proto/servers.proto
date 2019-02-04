@@ -1,5 +1,5 @@
 syntax = "proto3";
-package api;
+package west4API;
 import "enum.proto";
 
 message Server  {
