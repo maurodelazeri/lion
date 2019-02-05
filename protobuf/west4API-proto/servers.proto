@@ -9,7 +9,7 @@ message Server  {
   string                               host                     = 4;
   string                               version                  = 5;    
   string                               kind                     = 6;
-  int32                                memory                   = 7;
+  int64                                memory                   = 7;
   int32                                cpu                      = 8;
   bool                                 enabled                  = 9;
 }
