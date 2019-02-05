@@ -3,11 +3,9 @@
 
 package west4API
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -39,15 +37,14 @@ func (*DataFeed) ProtoMessage()    {}
 func (*DataFeed) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6827cc0956531667, []int{0}
 }
-
 func (m *DataFeed) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DataFeed.Unmarshal(m, b)
 }
 func (m *DataFeed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DataFeed.Marshal(b, m, deterministic)
 }
-func (m *DataFeed) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DataFeed.Merge(m, src)
+func (dst *DataFeed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DataFeed.Merge(dst, src)
 }
 func (m *DataFeed) XXX_Size() int {
 	return xxx_messageInfo_DataFeed.Size(m)
@@ -122,15 +119,14 @@ func (*DataFeedRequest) ProtoMessage()    {}
 func (*DataFeedRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6827cc0956531667, []int{1}
 }
-
 func (m *DataFeedRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DataFeedRequest.Unmarshal(m, b)
 }
 func (m *DataFeedRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DataFeedRequest.Marshal(b, m, deterministic)
 }
-func (m *DataFeedRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DataFeedRequest.Merge(m, src)
+func (dst *DataFeedRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DataFeedRequest.Merge(dst, src)
 }
 func (m *DataFeedRequest) XXX_Size() int {
 	return xxx_messageInfo_DataFeedRequest.Size(m)
@@ -178,15 +174,14 @@ func (*DataFeedResponse) ProtoMessage()    {}
 func (*DataFeedResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6827cc0956531667, []int{2}
 }
-
 func (m *DataFeedResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DataFeedResponse.Unmarshal(m, b)
 }
 func (m *DataFeedResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DataFeedResponse.Marshal(b, m, deterministic)
 }
-func (m *DataFeedResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DataFeedResponse.Merge(m, src)
+func (dst *DataFeedResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DataFeedResponse.Merge(dst, src)
 }
 func (m *DataFeedResponse) XXX_Size() int {
 	return xxx_messageInfo_DataFeedResponse.Size(m)
@@ -240,15 +235,14 @@ func (*DataFeedPostRequest) ProtoMessage()    {}
 func (*DataFeedPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6827cc0956531667, []int{3}
 }
-
 func (m *DataFeedPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DataFeedPostRequest.Unmarshal(m, b)
 }
 func (m *DataFeedPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DataFeedPostRequest.Marshal(b, m, deterministic)
 }
-func (m *DataFeedPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DataFeedPostRequest.Merge(m, src)
+func (dst *DataFeedPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DataFeedPostRequest.Merge(dst, src)
 }
 func (m *DataFeedPostRequest) XXX_Size() int {
 	return xxx_messageInfo_DataFeedPostRequest.Size(m)
@@ -295,15 +289,14 @@ func (*DataFeedPostResponse) ProtoMessage()    {}
 func (*DataFeedPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6827cc0956531667, []int{4}
 }
-
 func (m *DataFeedPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_DataFeedPostResponse.Unmarshal(m, b)
 }
 func (m *DataFeedPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_DataFeedPostResponse.Marshal(b, m, deterministic)
 }
-func (m *DataFeedPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DataFeedPostResponse.Merge(m, src)
+func (dst *DataFeedPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DataFeedPostResponse.Merge(dst, src)
 }
 func (m *DataFeedPostResponse) XXX_Size() int {
 	return xxx_messageInfo_DataFeedPostResponse.Size(m)

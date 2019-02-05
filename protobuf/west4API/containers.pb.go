@@ -3,11 +3,9 @@
 
 package west4API
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -43,15 +41,14 @@ func (*Container) ProtoMessage()    {}
 func (*Container) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{0}
 }
-
 func (m *Container) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Container.Unmarshal(m, b)
 }
 func (m *Container) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Container.Marshal(b, m, deterministic)
 }
-func (m *Container) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Container.Merge(m, src)
+func (dst *Container) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Container.Merge(dst, src)
 }
 func (m *Container) XXX_Size() int {
 	return xxx_messageInfo_Container.Size(m)
@@ -167,15 +164,14 @@ func (*ContainerCreate) ProtoMessage()    {}
 func (*ContainerCreate) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{1}
 }
-
 func (m *ContainerCreate) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerCreate.Unmarshal(m, b)
 }
 func (m *ContainerCreate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerCreate.Marshal(b, m, deterministic)
 }
-func (m *ContainerCreate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerCreate.Merge(m, src)
+func (dst *ContainerCreate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreate.Merge(dst, src)
 }
 func (m *ContainerCreate) XXX_Size() int {
 	return xxx_messageInfo_ContainerCreate.Size(m)
@@ -314,15 +310,14 @@ func (*ContainerRequest) ProtoMessage()    {}
 func (*ContainerRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{2}
 }
-
 func (m *ContainerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerRequest.Unmarshal(m, b)
 }
 func (m *ContainerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerRequest.Marshal(b, m, deterministic)
 }
-func (m *ContainerRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerRequest.Merge(m, src)
+func (dst *ContainerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerRequest.Merge(dst, src)
 }
 func (m *ContainerRequest) XXX_Size() int {
 	return xxx_messageInfo_ContainerRequest.Size(m)
@@ -370,15 +365,14 @@ func (*ContainerResponse) ProtoMessage()    {}
 func (*ContainerResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{3}
 }
-
 func (m *ContainerResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerResponse.Unmarshal(m, b)
 }
 func (m *ContainerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerResponse.Marshal(b, m, deterministic)
 }
-func (m *ContainerResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerResponse.Merge(m, src)
+func (dst *ContainerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerResponse.Merge(dst, src)
 }
 func (m *ContainerResponse) XXX_Size() int {
 	return xxx_messageInfo_ContainerResponse.Size(m)
@@ -433,15 +427,14 @@ func (*ContainerPostRequest) ProtoMessage()    {}
 func (*ContainerPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{4}
 }
-
 func (m *ContainerPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerPostRequest.Unmarshal(m, b)
 }
 func (m *ContainerPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerPostRequest.Marshal(b, m, deterministic)
 }
-func (m *ContainerPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerPostRequest.Merge(m, src)
+func (dst *ContainerPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerPostRequest.Merge(dst, src)
 }
 func (m *ContainerPostRequest) XXX_Size() int {
 	return xxx_messageInfo_ContainerPostRequest.Size(m)
@@ -495,15 +488,14 @@ func (*ContainerPostResponse) ProtoMessage()    {}
 func (*ContainerPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{5}
 }
-
 func (m *ContainerPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerPostResponse.Unmarshal(m, b)
 }
 func (m *ContainerPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerPostResponse.Marshal(b, m, deterministic)
 }
-func (m *ContainerPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerPostResponse.Merge(m, src)
+func (dst *ContainerPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerPostResponse.Merge(dst, src)
 }
 func (m *ContainerPostResponse) XXX_Size() int {
 	return xxx_messageInfo_ContainerPostResponse.Size(m)
@@ -550,15 +542,14 @@ func (*ContainerCreateRequest) ProtoMessage()    {}
 func (*ContainerCreateRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{6}
 }
-
 func (m *ContainerCreateRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerCreateRequest.Unmarshal(m, b)
 }
 func (m *ContainerCreateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerCreateRequest.Marshal(b, m, deterministic)
 }
-func (m *ContainerCreateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerCreateRequest.Merge(m, src)
+func (dst *ContainerCreateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreateRequest.Merge(dst, src)
 }
 func (m *ContainerCreateRequest) XXX_Size() int {
 	return xxx_messageInfo_ContainerCreateRequest.Size(m)
@@ -599,15 +590,14 @@ func (*ContainerCreateResponse) ProtoMessage()    {}
 func (*ContainerCreateResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{7}
 }
-
 func (m *ContainerCreateResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerCreateResponse.Unmarshal(m, b)
 }
 func (m *ContainerCreateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerCreateResponse.Marshal(b, m, deterministic)
 }
-func (m *ContainerCreateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerCreateResponse.Merge(m, src)
+func (dst *ContainerCreateResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreateResponse.Merge(dst, src)
 }
 func (m *ContainerCreateResponse) XXX_Size() int {
 	return xxx_messageInfo_ContainerCreateResponse.Size(m)
@@ -661,15 +651,14 @@ func (*ContainerCreatePostRequest) ProtoMessage()    {}
 func (*ContainerCreatePostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{8}
 }
-
 func (m *ContainerCreatePostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerCreatePostRequest.Unmarshal(m, b)
 }
 func (m *ContainerCreatePostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerCreatePostRequest.Marshal(b, m, deterministic)
 }
-func (m *ContainerCreatePostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerCreatePostRequest.Merge(m, src)
+func (dst *ContainerCreatePostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreatePostRequest.Merge(dst, src)
 }
 func (m *ContainerCreatePostRequest) XXX_Size() int {
 	return xxx_messageInfo_ContainerCreatePostRequest.Size(m)
@@ -716,15 +705,14 @@ func (*ContainerCreatePostResponse) ProtoMessage()    {}
 func (*ContainerCreatePostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d029d11d13649966, []int{9}
 }
-
 func (m *ContainerCreatePostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ContainerCreatePostResponse.Unmarshal(m, b)
 }
 func (m *ContainerCreatePostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ContainerCreatePostResponse.Marshal(b, m, deterministic)
 }
-func (m *ContainerCreatePostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ContainerCreatePostResponse.Merge(m, src)
+func (dst *ContainerCreatePostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContainerCreatePostResponse.Merge(dst, src)
 }
 func (m *ContainerCreatePostResponse) XXX_Size() int {
 	return xxx_messageInfo_ContainerCreatePostResponse.Size(m)
