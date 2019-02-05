@@ -15,7 +15,8 @@ message DataFeed {
 
 message DataFeedRequest { 
    string                              token                     = 1;  
-   int32                               container_id              = 2;     
+   int32                               datafeed_id               = 2;   
+   int32                               venue_id                  = 3;       
 }
 
 message DataFeedResponse { 
