@@ -9,7 +9,7 @@ message DataFeed {
    int32                               venue_id                  = 3;   
    string                              venue_description         = 4;
    int32                               container_id              = 5;   
-   string                              server_id                 = 6;
+   int32                               server_id                 = 6;
    string                              server_description        = 7;
    string                              streaming_server          = 8;
    string                              event_server              = 9;
