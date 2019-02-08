@@ -9,8 +9,25 @@ message DataFeed {
    int32                               venue_id                  = 3;   
    string                              venue_description         = 4;
    int32                               container_id              = 5;   
-   string                              container_description     = 6;
-   bool                                enabled                   = 7; 
+   string                              server_id                 = 6;
+   string                              server_description        = 7;
+   string                              streaming_server          = 8;
+   string                              event_server              = 9;
+   int64                               memory_reservation        = 10;
+   int64                               memory_limit              = 11;
+   int32                               cpu                       = 12;
+   int32                               restart_policy            = 13;
+   DataFeedProduct                     products                  = 14;
+   DataFeedEnv                         env                       = 15;
+}
+
+message DataFeedProduct { 
+   int32                               product_id               = 1;   
+   string                              product_description      = 2;   
+}
+message DataFeedEnv { 
+   string                              name                     = 1;   
+   string                              value                    = 2;   
 }
 
 message DataFeedRequest { 
