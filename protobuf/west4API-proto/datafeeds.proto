@@ -21,7 +21,7 @@ message DataFeed {
    int64                               cpu_limit                 = 15;
    string                              restart_policy            = 16;
    repeated DataFeedProduct            products                  = 17;
-   repeated DataFeedEnv                env                       = 18;
+   string                              env                       = 18;
 }
 
 message DataFeedProduct { 
