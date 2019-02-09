@@ -14,7 +14,7 @@ message Orderbook {
   string                              venue                            = 2;
   string                              system_timestamp                 = 3;
   string                              venue_timestamp                  = 4;
-  int32                               levels                           = 5;
+  int64                               levels                           = 5;
   repeated Item                       asks                             = 6;
   repeated Item                       bids                             = 7;
 };
@@ -44,7 +44,7 @@ message Ticker {
 message Candle {
   string                             venue                               = 1;
   string                             product                             = 2;
-  int32                              granularity                         = 3;
+  int64                              granularity                         = 3;
   int64                              point                               = 4;
   double                             open                                = 5;
   double                             close                               = 6;
@@ -52,7 +52,7 @@ message Candle {
   double                             low                                 = 8;
   double                             volume                              = 9;
   double                             total                               = 10;
-  int32                              total_trades                        = 11;
-  int32                              buy_total                           = 12;
-  int32                              sell_total                          = 13;   
+  int64                              total_trades                        = 11;
+  int64                              buy_total                           = 12;
+  int64                              sell_total                          = 13;   
 };

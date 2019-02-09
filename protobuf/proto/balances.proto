@@ -3,13 +3,13 @@ package api;
 import "enum.proto";
 
 message Balance  {
-  int32                                balance_id              = 1; 
-  int32                                currency_id             = 2;
+  int64                                balance_id              = 1; 
+  int64                                currency_id             = 2;
   string                               currency_description    = 3;
-  int32                                account_id              = 4;
+  int64                                account_id              = 4;
   string                               account_description     = 5;    
-  int32                                user_id                 = 6;
-  int32                                venue_id                = 7;
+  int64                                user_id                 = 6;
+  int64                                venue_id                = 7;
   string                               venue_description       = 8;  
   double                               available               = 9; 
   double                               hold                    = 10; 
@@ -17,8 +17,8 @@ message Balance  {
 
 message BalanceRequest { 
    string                              token                     = 1;  
-   int32                               balance_id                = 2;
-   int32                               account_id                = 3;     
+   int64                               balance_id                = 2;
+   int64                               account_id                = 3;     
 }
 
 message BalanceResponse { 

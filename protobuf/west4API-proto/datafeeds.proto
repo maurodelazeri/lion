@@ -4,25 +4,27 @@ package west4API;
 import "enum.proto";
 
 message DataFeed { 
-   int32                               datafeed_id               = 1;   
+   int64                               datafeed_id               = 1;   
    string                              datafeed_description      = 2;
-   int32                               venue_id                  = 3;   
+   int64                               venue_id                  = 3;   
    string                              venue_description         = 4;
-   int32                               container_id              = 5;   
-   int32                               server_id                 = 6;
+   int64                               container_id              = 5;   
+   int64                               server_id                 = 6;
    string                              server_description        = 7;
    string                              streaming_server          = 8;
    string                              event_server              = 9;
-   int64                               memory_reservation        = 10;
-   int64                               memory_limit              = 11;
-   int32                               cpu                       = 12;
-   int32                               restart_policy            = 13;
-   repeated DataFeedProduct            products                  = 14;
-   repeated DataFeedEnv                env                       = 15;
+   string                              image                     = 10;
+   int64                               memory_reservation        = 11;
+   int64                               memory_limit              = 12;
+   int64                               cpu_reservation           = 13;
+   int64                               cpu_limit                 = 14;
+   string                              restart_policy            = 15;
+   repeated DataFeedProduct            products                  = 16;
+   repeated DataFeedEnv                env                       = 17;
 }
 
 message DataFeedProduct { 
-   int32                               product_id               = 1;   
+   int64                               product_id               = 1;   
    string                              product_description      = 2;   
 }
 message DataFeedEnv { 
@@ -32,8 +34,8 @@ message DataFeedEnv {
 
 message DataFeedRequest { 
    string                              token                     = 1;  
-   int32                               datafeed_id               = 2;   
-   int32                               venue_id                  = 3;       
+   int64                               datafeed_id               = 2;   
+   int64                               venue_id                  = 3;       
 }
 
 message DataFeedResponse { 

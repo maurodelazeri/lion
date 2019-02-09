@@ -45,7 +45,7 @@ func InitEngine() {
 }
 
 // PublishMessageAsync send a message to kafka server (asynchronous)
-func PublishMessageAsync(topic string, message []byte, partition int32, verbose bool) error {
+func PublishMessageAsync(topic string, message []byte, partition int64, verbose bool) error {
 	// err := Producer.Produce(&kafka.Message{
 	// 	TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 	// 	Value:          message,
@@ -84,7 +84,7 @@ func PublishMessageAsync(topic string, message []byte, partition int32, verbose 
 }
 
 // PublishMessageSync send a message to kafka server (synchronous)
-func PublishMessageSync(topic string, message []byte, partition int32, verbose bool) error {
+func PublishMessageSync(topic string, message []byte, partition int64, verbose bool) error {
 	// Optional delivery channel, if not specified the Producer object's
 	// .Events channel is used.
 	deliveryChan := make(chan kafka.Event)

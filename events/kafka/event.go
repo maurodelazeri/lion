@@ -20,7 +20,7 @@ var pool *tunny.Pool
 type Job struct {
 	event     events.Event
 	topic     string
-	partition int32
+	partition int64
 	verbose   bool
 }
 
@@ -49,7 +49,7 @@ func (j *Job) build() error {
 	return nil
 }
 
-func processJob(pool *tunny.Pool, event events.Event, topic string, partition int32, verbose bool) {
+func processJob(pool *tunny.Pool, event events.Event, topic string, partition int64, verbose bool) {
 	j := &Job{event: event, topic: topic, partition: partition, verbose: verbose}
 	_, err := pool.ProcessTimed(j, time.Minute*5)
 	if err == tunny.ErrJobTimedOut {
@@ -58,7 +58,7 @@ func processJob(pool *tunny.Pool, event events.Event, topic string, partition in
 }
 
 // Start ...
-func Start(topic string, data []byte, partition int32, verbose bool) {
+func Start(topic string, data []byte, partition int64, verbose bool) {
 	err := kafkaproducer.PublishMessageSync(topic, data, partition, verbose)
 	if err != nil {
 		logrus.Error("Problem to Marshal order request ", err)
@@ -80,8 +80,8 @@ func CreateBaseEvent(id, event, account, container, user, strategy string) *even
 }
 
 // PublishEvent to kafka
-func PublishEvent(event *events.Event, topic string, partition int32, verbose bool) {
-	go func(event *events.Event, topic string, partition int32, verbose bool) {
+func PublishEvent(event *events.Event, topic string, partition int64, verbose bool) {
+	go func(event *events.Event, topic string, partition int64, verbose bool) {
 		processJob(pool, *event, topic, partition, verbose)
 	}(event, topic, partition, verbose)
 }

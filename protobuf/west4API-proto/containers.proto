@@ -17,7 +17,7 @@ message Container {
 }
 
 message ContainerCreate { 
-   int32                               container_id              = 1;   
+   int64                               container_id              = 1;   
    string                              container_identifier      = 2;
    string                              container_type            = 3;   
    string                              container_description     = 4;   
@@ -26,11 +26,11 @@ message ContainerCreate {
    string                              hostname                  = 7;   
    string                              env                       = 8;   
    string                              restart_police            = 9;   
-   int32                               memory_reservation        = 10;   
-   int32                               memory_limit              = 11;   
-   int32                               cpu_limit                 = 12;   
+   int64                               memory_reservation        = 10;   
+   int64                               memory_limit              = 11;   
+   int64                               cpu_limit                 = 12;   
    int64                               stop_timeout              = 13;   
-   int32                               server_id                 = 14;   
+   int64                               server_id                 = 14;   
    string                              container_config          = 15;   
    string                              last_update               = 16;   
 }
@@ -39,8 +39,8 @@ message ContainerCreate {
 // -------
 message ContainerRequest { 
    string                              token                     = 1;  
-   int32                               container_id              = 2;
-   int32                               server_id                 = 3;
+   int64                               container_id              = 2;
+   int64                               server_id                 = 3;
 }
 
 message ContainerResponse { 
@@ -52,7 +52,7 @@ message ContainerResponse {
 
 message ContainerPostRequest { 
    string                              token                     = 1;
-   int32                               server_id                 = 2;
+   int64                               server_id                 = 2;
    repeated Container                  container                 = 3;     
    Action                              action                    = 4;   
 }
@@ -69,7 +69,7 @@ message ContainerPostResponse {
 // -------
 message ContainerCreateRequest { 
    string                              token                     = 1;  
-   int32                               container_create          = 2;     
+   int64                               container_create          = 2;     
 }
 
 message ContainerCreateResponse { 

@@ -3,17 +3,17 @@ package api;
 import "enum.proto";
 
 message Currency { 
-   int32                               currency_id              = 1; 
+   int64                               currency_id              = 1; 
    string                              name                     = 2;
    string                              currency_description     = 3; 
-   int32                               min_confirmation         = 4; 
+   int64                               min_confirmation         = 4; 
    bool                                enabled                  = 5; 
    double                              tx_fee                   = 6; 
 }
 
 message CurrencyRequest { 
    string                              token                     = 1;  
-   int32                               currency_id               = 2;     
+   int64                               currency_id               = 2;     
    string                              name                      = 3; 
 }
 
