@@ -25,7 +25,7 @@ message ContainerCreate {
    string                              network                   = 6;   
    string                              hostname                  = 7;   
    string                              env                       = 8;   
-   string                              restart_police            = 9;   
+   string                              restart_policy            = 9;   
    int64                               memory_reservation        = 10;   
    int64                               memory_limit              = 11;   
    int64                               cpu_limit                 = 12;   
