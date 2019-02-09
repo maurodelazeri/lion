@@ -8,19 +8,20 @@ message DataFeed {
    string                              datafeed_description      = 2;
    int64                               venue_id                  = 3;   
    string                              venue_description         = 4;
-   int64                               container_id              = 5;   
-   int64                               server_id                 = 6;
-   string                              server_description        = 7;
-   string                              streaming_server          = 8;
-   string                              event_server              = 9;
-   string                              image                     = 10;
-   int64                               memory_reservation        = 11;
-   int64                               memory_limit              = 12;
-   int64                               cpu_reservation           = 13;
-   int64                               cpu_limit                 = 14;
-   string                              restart_policy            = 15;
-   repeated DataFeedProduct            products                  = 16;
-   repeated DataFeedEnv                env                       = 17;
+   int64                               container_id              = 5;
+   string                              container_description     = 6;   
+   int64                               server_id                 = 7;
+   string                              server_description        = 8;
+   string                              streaming_server          = 9;
+   string                              event_server              = 10;
+   string                              image                     = 11;
+   int64                               memory_reservation        = 12;
+   int64                               memory_limit              = 13;
+   int64                               cpu_reservation           = 14;
+   int64                               cpu_limit                 = 15;
+   string                              restart_policy            = 16;
+   repeated DataFeedProduct            products                  = 17;
+   repeated DataFeedEnv                env                       = 18;
 }
 
 message DataFeedProduct { 
