@@ -13,15 +13,16 @@ message DataFeed {
    int64                               server_id                 = 7;
    string                              server_description        = 8;
    string                              streaming_server          = 9;
-   string                              event_server              = 10;
-   string                              image                     = 11;
-   int64                               memory_reservation        = 12;
-   int64                               memory_limit              = 13;
-   int64                               cpu_reservation           = 14;
-   int64                               cpu_limit                 = 15;
-   string                              restart_policy            = 16;
-   repeated DataFeedProduct            products                  = 17;
-   string                              env                       = 18;
+   string                              streaming_secret          = 10;
+   string                              event_server              = 11;
+   string                              image                     = 12;
+   int64                               memory_reservation        = 13;
+   int64                               memory_limit              = 14;
+   int64                               cpu_reservation           = 15;
+   int64                               cpu_limit                 = 16;
+   string                              restart_policy            = 17;
+   repeated DataFeedProduct            products                  = 18;
+   string                              env                       = 19;
 }
 
 message DataFeedProduct { 
