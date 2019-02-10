@@ -35,7 +35,7 @@ func (c *Config) LoadConfig() error {
 		return err
 	}
 	defer rows.Close()
-	products := make(map[int32]*pbAPI.Product)
+	products := make(map[int64]*pbAPI.Product)
 	for rows.Next() {
 		product := &pbAPI.Product{}
 		args := []interface{}{&product.ProductId, &product.VenueId, &product.BaseCurrency, &product.QuoteCurrency, &product.VenueSymbolIdentifier, &product.Kind, &product.IndividualConnection,
@@ -52,7 +52,7 @@ func (c *Config) LoadConfig() error {
 		return err
 	}
 	defer rows.Close()
-	venues := make(map[int32]*pbAPI.Venue)
+	venues := make(map[int64]*pbAPI.Venue)
 	for rows.Next() {
 		venue := &pbAPI.Venue{}
 		args := []interface{}{

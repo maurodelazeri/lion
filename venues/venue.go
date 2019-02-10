@@ -62,7 +62,7 @@ func (e *Base) SetBacktestingOrderbook(product pbAPI.Product, trade *pbAPI.Trade
 	book := &pbAPI.Orderbook{
 		Product: trade.GetProduct(),
 		Venue:   trade.GetVenue(),
-		Levels:  int32(len(trade.Asks)),
+		Levels:  int64(len(trade.Asks)),
 		//	Timestamp: trade.GetTimestamp(),
 		Asks: trade.Asks,
 		Bids: trade.Bids,

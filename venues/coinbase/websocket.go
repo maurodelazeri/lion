@@ -339,7 +339,7 @@ func (r *Websocket) startReading() {
 							book := &pbAPI.Orderbook{
 								Product:         product,
 								Venue:           r.base.GetName(),
-								Levels:          int32(r.base.MaxLevelsOrderBook),
+								Levels:          int64(r.base.MaxLevelsOrderBook),
 								SystemTimestamp: time.Now().String(),
 								VenueTimestamp:  time.Now().String(),
 								Asks:            refLiveBook.Asks,
