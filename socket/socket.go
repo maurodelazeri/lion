@@ -80,7 +80,7 @@ func subscribeToken(channel string, client string, exp int64) string {
 
 // InitSocketEngine ...
 func InitSocketEngine(username string, expiration int64) {
-	wsURL := os.Getenv("SOCKET_URL")
+	wsURL := "ws://" + os.Getenv("SOCKET_ADDR") + "/connection/websocket?format=protobuf"
 	c := centrifuge.New(wsURL, centrifuge.DefaultConfig())
 	c.SetToken(connToken(username, expiration))
 	handler := &eventHandler{}
