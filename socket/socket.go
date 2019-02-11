@@ -8,6 +8,7 @@ import (
 
 	"github.com/centrifugal/centrifuge-go"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 )
 
 // SocketClient ...
@@ -81,6 +82,7 @@ func subscribeToken(channel string, client string, exp int64) string {
 // InitSocketEngine ...
 func InitSocketEngine(username string, expiration int64) {
 	wsURL := "ws://" + os.Getenv("SOCKET_ADDR") + "/connection/websocket?format=protobuf"
+	logrus.Info("Socker addr: ", wsURL)
 	c := centrifuge.New(wsURL, centrifuge.DefaultConfig())
 	c.SetToken(connToken(username, expiration))
 	handler := &eventHandler{}
