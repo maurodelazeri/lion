@@ -2,12 +2,14 @@ package coinbase
 
 import (
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/socket"
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/maurodelazeri/lion/venues/request"
@@ -98,6 +100,8 @@ func (r *Coinbase) Start() {
 		}
 
 		r.LiveOrderBook = utils.NewConcurrentMap()
+
+		socket.SocketClient.NewSubscription("winter:" + r.GetName() + "." + strconv.Itoa(len(dedicatedSocket)+len(sharedSocket)))
 
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {

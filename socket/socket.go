@@ -95,5 +95,6 @@ func InitSocketEngine(username string, expiration int64) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	SocketClient = c
 }
