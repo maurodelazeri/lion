@@ -37,6 +37,7 @@ func (c *Config) LoadConfig() error {
 	logrus.Info(query)
 
 	if rows, err = postgres.PostgresDB.Query(query); err != nil {
+		logrus.Warn("Problem loading products: ", err.Error())
 		return err
 	}
 	defer rows.Close()
