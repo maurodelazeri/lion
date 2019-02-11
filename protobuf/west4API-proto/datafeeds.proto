@@ -41,7 +41,7 @@ message DataFeedRequest {
 
 message DataFeedResponse { 
    Retcode                             retcode                   = 1;
-   repeated DataFeed                   datafeed                 = 2; 
+   repeated DataFeed                   datafeed                  = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
@@ -54,6 +54,8 @@ message DataFeedPostRequest {
 
 message DataFeedPostResponse { 
    Retcode                             retcode                   = 1; 
-   string                              comment                   = 2;   
-   string                              elapsed                   = 3; 
+   string                              container_id              = 2;   
+   string                              container_description     = 3;   
+   string                              comment                   = 4;   
+   string                              elapsed                   = 5; 
 }
