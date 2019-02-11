@@ -104,7 +104,7 @@ func (r *Coinbase) Start() {
 		r.LiveOrderBook = utils.NewConcurrentMap()
 
 		logrus.Infof("Initializing Socket Server") //+r.GetName()+"."+strconv.Itoa(len(dedicatedSocket)+len(sharedSocket))
-		r.Base.SocketClient = socket.InitSocketEngine(os.Getenv("WINTER_CONTAINER_NAME"), 100000000000, "winter")
+		r.Base.SocketClient = socket.InitSocketEngine(os.Getenv("WINTER_CONTAINER_NAME"), 100000000000, "datafeed:winter")
 
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
