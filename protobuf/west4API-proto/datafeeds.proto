@@ -16,9 +16,9 @@ message DataFeed {
    string                              streaming_secret          = 10;
    string                              event_server              = 11;
    string                              image                     = 12;
-   int64                               memory_reservation        = 13;
-   int64                               memory_limit              = 14;
-   int64                               cpu_limit                 = 15;
+   double                              memory_reservation        = 13;
+   double                              memory_limit              = 14;
+   double                              cpu_limit                 = 15;
    string                              restart_policy            = 16;
    repeated DataFeedProduct            products                  = 17;
    string                              env                       = 18;
