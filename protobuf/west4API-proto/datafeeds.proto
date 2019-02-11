@@ -54,8 +54,7 @@ message DataFeedPostRequest {
 
 message DataFeedPostResponse { 
    Retcode                             retcode                   = 1; 
-   string                              container_id              = 2;   
-   string                              container_description     = 3;   
-   string                              comment                   = 4;   
-   string                              elapsed                   = 5; 
+   string                              container_description     = 2;   
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4; 
 }
