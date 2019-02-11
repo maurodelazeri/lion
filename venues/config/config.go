@@ -34,8 +34,6 @@ func (c *Config) LoadConfig() error {
 	 minimum_orders_size,step_size,price_precision,taker_fee,maker_fee,settlement,expiration,enabled, COALESCE((SELECT name FROM currencies WHERE currency_id=products.base_currency), '') || '-' || COALESCE((SELECT name FROM currencies
 			WHERE currency_id=products.quote_currency), '') as system_symbol_identifier FROM products WHERE venue_id=%s AND product_id IN(%s)`, os.Getenv("WINTER_VENUE_ID"), os.Getenv("WINTER_DATAFEED_PRODUCTS"))
 
-	logrus.Info(query)
-
 	if rows, err = postgres.PostgresDB.Query(query); err != nil {
 		logrus.Warn("Problem loading products: ", err.Error())
 		return err
