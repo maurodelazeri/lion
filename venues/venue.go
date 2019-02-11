@@ -3,9 +3,12 @@ package venue
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"sync"
 
+	centrifuge "github.com/centrifugal/centrifuge-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
@@ -25,6 +28,7 @@ type Base struct {
 	VenueConfig        *utils.ConcurrentMap
 	LiveOrderBook      *utils.ConcurrentMap
 	MaxLevelsOrderBook int
+	SocketClient       *centrifuge.Client
 	mutex              *sync.RWMutex
 }
 
@@ -224,4 +228,19 @@ func (e *Base) StartStreamingToStorage(mongo bool, influx bool) {
 		stream := streaming.InitKafkaConnection(pairs, e.GetName())
 		stream.StartReading()
 	}
+}
+
+// ConnToken ...
+func (e *Base) ConnToken(user string, exp int64) string {
+	// NOTE that JWT must be generated on backend side of your application!
+	// Here we are generating it on client side only for example simplicity.
+	claims := jwt.MapClaims{"sub": user}
+	if exp > 0 {
+		claims["exp"] = exp
+	}
+	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("SOCKET_SECRET")))
+	if err != nil {
+		panic(err)
+	}
+	return t
 }

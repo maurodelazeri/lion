@@ -8,11 +8,35 @@ import (
 
 	"github.com/centrifugal/centrifuge-go"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/sirupsen/logrus"
 )
 
-// SocketClient ...
-var SocketClient *centrifuge.Client
+func connToken(user string, exp int64) string {
+	// NOTE that JWT must be generated on backend side of your application!
+	// Here we are generating it on client side only for example simplicity.
+	claims := jwt.MapClaims{"sub": user}
+	if exp > 0 {
+		claims["exp"] = exp
+	}
+	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("SOCKET_SECRET")))
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
+
+func subscribeToken(channel string, client string, exp int64) string {
+	// NOTE that JWT must be generated on backend side of your application!
+	// Here we are generating it on client side only for example simplicity.
+	claims := jwt.MapClaims{"channel": channel, "client": client}
+	if exp > 0 {
+		claims["exp"] = exp
+	}
+	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("SOCKET_SECRET_ADMIN")))
+	if err != nil {
+		panic(err)
+	}
+	return t
+}
 
 type eventHandler struct{}
 
@@ -51,38 +75,8 @@ func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.P
 	log.Println(fmt.Sprintf("New message received from channel %s: %s", sub.Channel(), string(e.Data)))
 }
 
-func connToken(user string, exp int64) string {
-	// NOTE that JWT must be generated on backend side of your application!
-	// Here we are generating it on client side only for example simplicity.
-	claims := jwt.MapClaims{"sub": user}
-	if exp > 0 {
-		claims["exp"] = exp
-	}
-	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("SOCKET_SECRET")))
-	if err != nil {
-		panic(err)
-	}
-	return t
-}
-
-func subscribeToken(channel string, client string, exp int64) string {
-	// NOTE that JWT must be generated on backend side of your application!
-	// Here we are generating it on client side only for example simplicity.
-	claims := jwt.MapClaims{"channel": channel, "client": client}
-	if exp > 0 {
-		claims["exp"] = exp
-	}
-	t, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(os.Getenv("SOCKET_SECRET_ADMIN")))
-	if err != nil {
-		panic(err)
-	}
-	return t
-}
-
-// InitSocketEngine ...
-func InitSocketEngine(username string, expiration int64) {
+func newConnection(username string, expiration int64) *centrifuge.Client {
 	wsURL := "ws://" + os.Getenv("SOCKET_ADDR") + "/connection/websocket?format=protobuf"
-	logrus.Info("Socker addr: ", wsURL)
 	c := centrifuge.New(wsURL, centrifuge.DefaultConfig())
 	c.SetToken(connToken(username, expiration))
 	handler := &eventHandler{}
@@ -90,11 +84,28 @@ func InitSocketEngine(username string, expiration int64) {
 	c.OnDisconnect(handler)
 	c.OnConnect(handler)
 	c.OnError(handler)
-
 	err := c.Connect()
 	if err != nil {
 		log.Fatalln(err)
 	}
+	return c
+}
 
-	SocketClient = c
+// InitSocketEngine ...
+func InitSocketEngine(username string, expiration int64, chanelSub string) *centrifuge.Client {
+	c := newConnection(username, expiration)
+	//defer c.Close()
+	sub, err := c.NewSubscription(chanelSub)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	subEventHandler := &subEventHandler{}
+	sub.OnSubscribeSuccess(subEventHandler)
+	sub.OnSubscribeError(subEventHandler)
+	sub.OnUnsubscribe(subEventHandler)
+	sub.OnPublish(subEventHandler)
+	// Subscribe on private channel.
+	sub.Subscribe()
+
+	return c
 }

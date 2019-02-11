@@ -17,7 +17,6 @@ import (
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
-	"github.com/maurodelazeri/lion/socket"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
@@ -352,7 +351,7 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Marshal ", err)
 								}
-								err = socket.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
+								err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
 								if err != nil {
 									logrus.Error("Socket sent ", err)
 								}
@@ -387,7 +386,7 @@ func (r *Websocket) startReading() {
 							if err != nil {
 								logrus.Error("Marshal ", err)
 							}
-							err = socket.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+							err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
 							if err != nil {
 								logrus.Error("Socket sent ", err)
 							}

@@ -2,6 +2,7 @@ package coinbase
 
 import (
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -13,6 +14,7 @@ import (
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/maurodelazeri/lion/venues/request"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -80,6 +82,20 @@ func (r *Coinbase) Setup(venueName string, config config.VenueConfig, streaming 
 
 	r.Handler = new(request.Handler)
 	r.SetRequestHandler(r.Name, authRate, unauthRate, new(http.Client))
+
+	// wsURL := "ws://" + os.Getenv("SOCKET_ADDR") + "/connection/websocket?format=protobuf"
+	// c := centrifuge.New(wsURL, centrifuge.DefaultConfig())
+	// c.SetToken(r.ConnToken("winter", time.Now().Unix()+10000000))
+	// handler := &r.base.EventHandler{}
+	// c.OnPrivateSub(handler)
+	// c.OnDisconnect(handler)
+	// c.OnConnect(handler)
+	// c.OnError(handler)
+	// err := c.Connect()
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// r.SocketClient = c
 }
 
 // Start ...
@@ -101,7 +117,8 @@ func (r *Coinbase) Start() {
 
 		r.LiveOrderBook = utils.NewConcurrentMap()
 
-		socket.SocketClient.NewSubscription("winter:" + r.GetName() + "." + strconv.Itoa(len(dedicatedSocket)+len(sharedSocket)))
+		logrus.Infof("Initializing Socket Server")
+		r.Base.SocketClient = socket.InitSocketEngine("winter", 100000000000, "winter:"+r.GetName()+"."+strconv.Itoa(len(dedicatedSocket)+len(sharedSocket))+"."+os.Getenv("WINTER_DATAFEED_ID"))
 
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
