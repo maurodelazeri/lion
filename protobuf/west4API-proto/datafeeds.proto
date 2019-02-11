@@ -18,11 +18,10 @@ message DataFeed {
    string                              image                     = 12;
    int64                               memory_reservation        = 13;
    int64                               memory_limit              = 14;
-   int64                               cpu_reservation           = 15;
-   int64                               cpu_limit                 = 16;
-   string                              restart_policy            = 17;
-   repeated DataFeedProduct            products                  = 18;
-   string                              env                       = 19;
+   int64                               cpu_limit                 = 15;
+   string                              restart_policy            = 16;
+   repeated DataFeedProduct            products                  = 17;
+   string                              env                       = 18;
 }
 
 message DataFeedProduct { 
