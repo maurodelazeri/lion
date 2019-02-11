@@ -8,6 +8,7 @@ import (
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/postgres"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/sirupsen/logrus"
 )
 
 // Cfg stores a config
@@ -32,6 +33,8 @@ func (c *Config) LoadConfig() error {
 	query := fmt.Sprintf(`SELECT product_id,venue_id, base_currency,quote_currency,venue_symbol_identifier,kind,individual_connection,streaming_save,
 	 minimum_orders_size,step_size,price_precision,taker_fee,maker_fee,settlement,expiration,enabled, COALESCE((SELECT name FROM currencies WHERE currency_id=products.base_currency), '') || '-' || COALESCE((SELECT name FROM currencies
 			WHERE currency_id=products.quote_currency), '') as system_symbol_identifier FROM products WHERE venue_id=%s AND product_id IN(%s)`, os.Getenv("WINTER_VENUE_ID"), os.Getenv("WINTER_DATAFEED_PRODUCTS"))
+
+	logrus.Info(query)
 
 	if rows, err = postgres.PostgresDB.Query(query); err != nil {
 		return err
