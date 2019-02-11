@@ -9,19 +9,20 @@ message DataFeed {
    int64                               venue_id                  = 3;   
    string                              venue_description         = 4;
    int64                               container_id              = 5;
-   string                              container_description     = 6;   
-   int64                               server_id                 = 7;
-   string                              server_description        = 8;
-   string                              streaming_server          = 9;
-   string                              streaming_secret          = 10;
-   string                              event_server              = 11;
-   string                              image                     = 12;
-   double                              memory_reservation        = 13;
-   double                              memory_limit              = 14;
-   double                              cpu_limit                 = 15;
-   string                              restart_policy            = 16;
-   repeated DataFeedProduct            products                  = 17;
-   string                              env                       = 18;
+   string                              container_event           = 6;
+   string                              container_identifier      = 7;      
+   int64                               server_id                 = 8;
+   string                              server_description        = 9;
+   string                              streaming_server          = 10;
+   string                              streaming_secret          = 11;
+   string                              event_server              = 12;
+   string                              image                     = 13;
+   double                              memory_reservation        = 14;
+   double                              memory_limit              = 15;
+   double                              cpu_limit                 = 16;
+   string                              restart_policy            = 17;
+   repeated DataFeedProduct            products                  = 18;
+   string                              env                       = 19;
 }
 
 message DataFeedProduct { 
@@ -54,7 +55,7 @@ message DataFeedPostRequest {
 
 message DataFeedPostResponse { 
    Retcode                             retcode                   = 1; 
-   string                              container_description     = 2;   
+   string                              container_identifier      = 2;   
    string                              comment                   = 3;   
    string                              elapsed                   = 4; 
 }
