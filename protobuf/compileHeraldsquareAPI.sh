@@ -13,13 +13,13 @@ case "$(uname -s)" in
 
    Darwin)
      echo 'Mac OS X'
-        ls ../../siberia/app/src/heardsquareAPI/* | while read line;do
+        ls ../../siberia/app/src/heraldsquareAPI/* | while read line;do
         sed -i "" '1s/^/\/* eslint-disable *\/ /' $line
         done
      ;;
    Linux)
      echo 'Linux'
-        ls ../../siberia/app/src/heardsquareAPI/* | while read line;do
+        ls ../../siberia/app/src/heraldsquareAPI/* | while read line;do
         sed -i '1s/^/\/* eslint-disable *\/ /' $line
         done
      ;;

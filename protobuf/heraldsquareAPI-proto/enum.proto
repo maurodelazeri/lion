@@ -1,5 +1,5 @@
 syntax = "proto3";
-package west4API;
+package heraldsquareAPI;
 
    enum Retcode {
 	REJECT                         = 0;
@@ -35,7 +35,7 @@ package west4API;
 	ELLIPTOR  					   = 3;
 	SIBERIA   					   = 4;
 	WEST4     					   = 5;
-	ALASKA    					   = 5;
+	ALASKA    					   = 6;
   };
 
   
