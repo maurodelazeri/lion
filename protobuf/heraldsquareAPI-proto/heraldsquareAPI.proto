@@ -1,0 +1,8 @@
+syntax = "proto3";
+package heraldsquareAPI;
+import "events.proto";
+
+// The heraldsquareAPI service definition.
+service heraldsquareAPI {   
+  rpc GetEvents(EventRequest) returns (EventResponse) {}
+} 

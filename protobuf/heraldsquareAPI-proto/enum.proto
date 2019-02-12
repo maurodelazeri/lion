@@ -28,4 +28,14 @@ package west4API;
 	RESTART  					    = 5;
   };
 
+  enum System{
+	RESERVED  					   = 0;
+	WINTER    					   = 1;
+	SUMMER    					   = 2;
+	ELLIPTOR  					   = 3;
+	SIBERIA   					   = 4;
+	WEST4     					   = 5;
+	ALASKA    					   = 5;
+  };
+
   

@@ -68,8 +68,8 @@ func Start(topic string, data []byte, partition int64, verbose bool) {
 // CreateBaseEvent create a initial event
 func CreateBaseEvent(id, event, account, container, user, strategy string) *events.Event {
 	return &events.Event{
-		Event:     event,
 		Id:        id,
+		Event:     event,
 		Account:   account,
 		User:      user,
 		Container: container,
