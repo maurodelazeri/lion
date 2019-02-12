@@ -11,7 +11,7 @@ import (
 )
 
 /*
-./kafka-console-consumer --bootstrap-server 192.168.3.100:9092 --topic BTC_USD.COINBASEPRO.trade --from-beginning
+./kafka-console-consumer --bootstrap-server kafka.zinnion.com:9092 --topic orderbooks.COINBASEPRO.BTC-USD --from-beginning
 ./kafka-console-producer --broker-list 192.168.3.100:9092 --topic BTC_USD.COINBASEPRO.trade
 ./kafka-topics --list --zookeeper 192.168.3.100:2181
 */
@@ -85,7 +85,6 @@ func PublishMessageSync(topic string, message []byte, partition int64, verbose b
 	// Optional delivery channel, if not specified the Producer object's
 	// .Events channel is used.
 	deliveryChan := make(chan kafka.Event)
-
 	err := Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
 		Value:          message,

@@ -356,7 +356,7 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Socket sent ", err)
 								}
-								marketdata.PublishMarketData(serialized, "orderbooks:"+r.base.GetName()+"."+product, 1, false)
+								//marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
 							}
 						}
 
@@ -393,7 +393,7 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Socket sent ", err)
 								}
-								marketdata.PublishMarketData(serialized, "trades:"+r.base.GetName()+"."+product, 1, false)
+								marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
 							}
 						}
 
