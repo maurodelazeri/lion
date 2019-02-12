@@ -44,7 +44,7 @@ func (j *Job) build() error {
 		logrus.Error("Problem to Marshal order request ", err)
 		return err
 	}
-	kafkaproducer.PublishMessageAsync(j.topic, eventData, j.partition, j.verbose)
+	kafkaproducer.PublishMessageSync(j.topic, eventData, j.partition, j.verbose)
 	return nil
 }
 

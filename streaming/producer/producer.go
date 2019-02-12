@@ -34,9 +34,6 @@ func InitEngine() {
 		//"queue.buffering.max.ms":       5000,
 		//"batch.num.messages":           0,
 		"log.connection.close": false})
-	//	"client.id":                    socket.gethostname(),
-	//"default.topic.config": {"acks": "all"}})
-
 	if err != nil {
 		logrus.Error("No connection with kafka, ", err)
 		os.Exit(1)
