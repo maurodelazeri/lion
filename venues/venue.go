@@ -14,7 +14,6 @@ import (
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
-	"github.com/maurodelazeri/summer/streaming"
 )
 
 // Base stores the individual venue information
@@ -40,7 +39,6 @@ type Venues interface {
 	GetName() string
 	IsEnabled() bool
 	SetEnabled(bool)
-	StartStreamingToStorage(mongo bool, influx bool)
 	GetMakerFee(product pbAPI.Product, price, volume number.Decimal) (number.Decimal, error)
 	GetTakerFee(product pbAPI.Product, price, volume number.Decimal) (number.Decimal, error)
 	ValidateVolume(product pbAPI.Product, volume float64) error
@@ -216,19 +214,6 @@ func (e *Base) ValidateVolume(product pbAPI.Product, volume float64) error {
 // 	}
 // 	return prodCondig, errors.New("Product not found")
 // }
-
-// StartStreamingToStorage load the streaming from kafka
-func (e *Base) StartStreamingToStorage(mongo bool, influx bool) {
-	venueConf, ok := e.VenueConfig.Get(e.GetName())
-	if ok {
-		pairs := []string{}
-		for product := range venueConf.(config.VenueConfig).Products {
-			pairs = append(pairs, product+"."+e.GetName()+".trade")
-		}
-		stream := streaming.InitKafkaConnection(pairs, e.GetName())
-		stream.StartReading()
-	}
-}
 
 // ConnToken ...
 func (e *Base) ConnToken(user string, exp int64) string {
