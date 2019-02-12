@@ -86,7 +86,8 @@ func newConnection(username string, expiration int64) *centrifuge.Client {
 	c.OnError(handler)
 	err := c.Connect()
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("problem to connect with socket ", err.Error())
+		os.Exit(1)
 	}
 	return c
 }
