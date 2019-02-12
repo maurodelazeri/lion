@@ -56,14 +56,6 @@ func processJob(pool *tunny.Pool, event eventAPI.Event, topic string, partition 
 	}
 }
 
-// Start ...
-func Start(topic string, data []byte, partition int64, verbose bool) {
-	err := kafkaproducer.PublishMessageSync(topic, data, partition, verbose)
-	if err != nil {
-		logrus.Error("Problem to Marshal order request ", err)
-	}
-}
-
 // CreateBaseEvent create a initial event
 func CreateBaseEvent(systemEventID, function, message, payload string, err bool, UserID int64, system eventAPI.System) *eventAPI.Event {
 	return &eventAPI.Event{
