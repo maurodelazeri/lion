@@ -4,13 +4,14 @@ import "enum.proto";
 
 message Event {
   int64                               event_id                     = 1;  
-  System                              system                       = 2;
-  string                              user_id                      = 3; 
-  string                              timestamp                    = 4;
-  string                              message                      = 5;
-  string                              function                     = 6;
-  string                              payload                      = 7;  
-  bool                                error                        = 8;    
+  string                              system_event_id              = 2;  
+  System                              system                       = 3;
+  string                              function                     = 4;
+  int64                               user_id                      = 5; 
+  string                              timestamp                    = 6;
+  string                              message                      = 7;
+  string                              payload                      = 8;  
+  bool                                error                        = 9;    
 }
 
 

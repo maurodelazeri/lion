@@ -1,15 +1,14 @@
-package kafkaevents
+package event
 
 import (
 	"log"
 	"runtime"
 	"time"
 
-	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+	"github.com/maurodelazeri/lion/streaming/producer"
 
 	"github.com/Jeffail/tunny"
-	"github.com/maurodelazeri/lion/common"
-	"github.com/maurodelazeri/lion/protobuf/events"
+	eventAPI "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
@@ -18,7 +17,7 @@ var pool *tunny.Pool
 
 // Job ...
 type Job struct {
-	event     events.Event
+	event     eventAPI.Event
 	topic     string
 	partition int64
 	verbose   bool
@@ -49,7 +48,7 @@ func (j *Job) build() error {
 	return nil
 }
 
-func processJob(pool *tunny.Pool, event events.Event, topic string, partition int64, verbose bool) {
+func processJob(pool *tunny.Pool, event eventAPI.Event, topic string, partition int64, verbose bool) {
 	j := &Job{event: event, topic: topic, partition: partition, verbose: verbose}
 	_, err := pool.ProcessTimed(j, time.Minute*5)
 	if err == tunny.ErrJobTimedOut {
@@ -66,22 +65,22 @@ func Start(topic string, data []byte, partition int64, verbose bool) {
 }
 
 // CreateBaseEvent create a initial event
-func CreateBaseEvent(id, event, account, container, user, strategy string) *events.Event {
-	return &events.Event{
-		Id:        id,
-		Event:     event,
-		Account:   account,
-		User:      user,
-		Container: container,
-		Strategy:  strategy,
-		Error:     false,
-		Timestamp: common.MakeTimestamp(),
+func CreateBaseEvent(systemEventID, function, message, payload string, err bool, UserID int64, system eventAPI.System) *eventAPI.Event {
+	return &eventAPI.Event{
+		SystemEventId: systemEventID,
+		System:        system,
+		Function:      function,
+		UserId:        UserID,
+		Message:       message,
+		Payload:       payload,
+		Error:         err,
+		Timestamp:     time.Now().String(),
 	}
 }
 
 // PublishEvent to kafka
-func PublishEvent(event *events.Event, topic string, partition int64, verbose bool) {
-	go func(event *events.Event, topic string, partition int64, verbose bool) {
+func PublishEvent(event *eventAPI.Event, topic string, partition int64, verbose bool) {
+	go func(event *eventAPI.Event, topic string, partition int64, verbose bool) {
 		processJob(pool, *event, topic, partition, verbose)
 	}(event, topic, partition, verbose)
 }
