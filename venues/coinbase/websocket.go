@@ -16,6 +16,7 @@ import (
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
+	"github.com/maurodelazeri/lion/marketdata"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
@@ -355,6 +356,7 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Socket sent ", err)
 								}
+								marketdata.PublishMarketData(serialized, "orderbooks:"+r.base.GetName()+"."+product, 1, false)
 							}
 						}
 
@@ -382,13 +384,16 @@ func (r *Websocket) startReading() {
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
 							}
-							serialized, err := proto.Marshal(trades)
-							if err != nil {
-								logrus.Error("Marshal ", err)
-							}
-							err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
-							if err != nil {
-								logrus.Error("Socket sent ", err)
+							if r.base.Streaming {
+								serialized, err := proto.Marshal(trades)
+								if err != nil {
+									logrus.Error("Marshal ", err)
+								}
+								err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+								if err != nil {
+									logrus.Error("Socket sent ", err)
+								}
+								marketdata.PublishMarketData(serialized, "trades:"+r.base.GetName()+"."+product, 1, false)
 							}
 						}
 
