@@ -1,6 +1,7 @@
 syntax = "proto3";
-package api;
+package heraldsquareAPI;
 import "enum.proto";
+
 message SystemSummer { 
    Action                          action                         = 1;
 }
