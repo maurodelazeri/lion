@@ -336,12 +336,17 @@ func (r *Websocket) startReading() {
 							}()
 
 							wg.Wait()
+
+							dateTimeRef, err := time.Parse(time.RFC3339, data.Time)
+							if err != nil {
+								logrus.Error(r.base.GetName(), " problem to convert date ", err.Error())
+							}
 							book := &pbAPI.Orderbook{
 								Product:         product,
 								Venue:           r.base.GetName(),
 								Levels:          int64(r.base.MaxLevelsOrderBook),
 								SystemTimestamp: time.Now().String(),
-								VenueTimestamp:  time.Now().String(),
+								VenueTimestamp:  dateTimeRef.String(),
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
 							}
@@ -371,24 +376,21 @@ func (r *Websocket) startReading() {
 							if !ok {
 								continue
 							}
-							//dateTimeRef.Format("2006-01-02 15:04:05")
 							dateTimeRef, err := time.Parse(time.RFC3339, data.Time)
 							if err != nil {
-								logrus.Error("DATE ", err.Error())
+								logrus.Error(r.base.GetName(), " problem to convert date ", err.Error())
 							}
-							logrus.Info("DATE ", dateTimeRef)
-
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
 								Product:         product,
 								Venue:           r.base.GetName(),
 								SystemTimestamp: time.Now().String(),
-								//VenueTimestamp:  ,
-								Price:     data.Price,
-								OrderSide: side,
-								Volume:    data.Size,
-								Asks:      refLiveBook.Asks,
-								Bids:      refLiveBook.Bids,
+								VenueTimestamp:  dateTimeRef.String(),
+								Price:           data.Price,
+								OrderSide:       side,
+								Volume:          data.Size,
+								Asks:            refLiveBook.Asks,
+								Bids:            refLiveBook.Bids,
 							}
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(trades)
