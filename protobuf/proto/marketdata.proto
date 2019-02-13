@@ -20,16 +20,30 @@ message Orderbook {
 };
 
 message Trade {
-  string                              product                           = 1;
-  string                              venue                             = 2;
-  string                              system_timestamp                  = 3;
-  string                              venue_timestamp                   = 4;
-  double                              price                             = 5;
-  double                              volume                            = 6;
-  Side                                order_side                        = 7;
-  repeated Item                       asks                              = 9; 
-  repeated Item                       bids                              = 10;  
+  int64                               trade_id                          = 1;
+  string                              venue_trade_id                    = 2;
+  string                              product                           = 3;
+  string                              venue                             = 4;
+  string                              system_timestamp                  = 5;
+  string                              venue_timestamp                   = 6;
+  double                              price                             = 7;
+  double                              volume                            = 8;
+  string                              order_side                        = 9;
+  repeated Item                       asks                              = 10; 
+  repeated Item                       bids                              = 11;  
 };
+
+message TradeRequest { 
+   string                              token                            = 1;  
+   int64                               venue_id                         = 2;     
+}
+
+message TradeResponse { 
+   Retcode                             retcode                           = 1;
+   repeated Trade                      trades                            = 2; 
+   string                              comment                           = 3;   
+   string                              elapsed                           = 4;  
+}
 
 message Ticker {
   string                              product                           = 1;

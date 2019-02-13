@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 
@@ -367,11 +368,11 @@ func (r *Websocket) startReading() {
 						}
 
 						if data.Type == "match" {
-							var side pbAPI.Side
+							var side string
 							if data.Side == "buy" {
-								side = pbAPI.Side_BUY
+								side = "buy"
 							} else {
-								side = pbAPI.Side_SELL
+								side = "sell"
 							}
 							refBook, ok := r.base.LiveOrderBook.Get(product)
 							if !ok {
@@ -384,6 +385,7 @@ func (r *Websocket) startReading() {
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
 								Product:         product,
+								VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
 								Venue:           r.base.GetName(),
 								SystemTimestamp: time.Now().UTC().Format(time.RFC3339),
 								VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339),
