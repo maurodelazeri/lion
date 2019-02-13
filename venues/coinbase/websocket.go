@@ -389,6 +389,11 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Marshal ", err)
 								}
+								// err = kafkaproducer.PublishMessageSync("trades."+r.base.GetName()+"."+product, serialized, 1, false)
+								// if err != nil {
+								// 	logrus.Error("Problem PublishMessageSync to summer ", err)
+								// 	continue
+								// }
 								err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
 								if err != nil {
 									logrus.Error("Socket sent ", err)
