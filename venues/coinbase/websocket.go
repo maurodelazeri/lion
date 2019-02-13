@@ -341,11 +341,12 @@ func (r *Websocket) startReading() {
 							if err != nil {
 								logrus.Error(r.base.GetName(), " problem to convert date ", err.Error())
 							}
+
 							book := &pbAPI.Orderbook{
 								Product:         product,
 								Venue:           r.base.GetName(),
 								Levels:          int64(r.base.MaxLevelsOrderBook),
-								SystemTimestamp: time.Now().String(),
+								SystemTimestamp: time.Now().Format("2019-02-13 11:37:56.286 +0000 UTC"),
 								VenueTimestamp:  dateTimeRef.String(),
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
