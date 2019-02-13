@@ -2,8 +2,7 @@ package coinbase
 
 // Message ...
 type Message struct {
-	//Time          time.Time        `json:"time,string,omitempty"`
-	HiveTable     string           `json:"hivetable,omitempty"`
+	Time          string           `json:"time,omitempty"`
 	Type          string           `json:"type,omitempty"`
 	ProductID     string           `json:"product_id,omitempty"`
 	ProductIDs    []string         `json:"product_ids,omitempty"`
