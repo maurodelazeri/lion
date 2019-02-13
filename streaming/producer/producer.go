@@ -11,7 +11,7 @@ import (
 )
 
 /*
-./kafka-console-consumer --bootstrap-server kafka.zinnion.com:9092 --topic orderbooks.COINBASEPRO.BTC-USD --from-beginning
+./kafka-console-consumer --bootstrap-server kafka.zinnion.com:9092 --topic trades.COINBASEPRO.BTC-USD --from-beginning
 ./kafka-console-producer --broker-list 192.168.3.100:9092 --topic BTC_USD.COINBASEPRO.trade
 ./kafka-topics --list --zookeeper 192.168.3.100:2181
 */
@@ -71,10 +71,9 @@ func PublishMessageAsync(topic string, message []byte, partition int64, verbose 
 			fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
 			close(deliveryChan)
 			return m.TopicPartition.Error
-		} else {
-			fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
-				*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
 		}
+		fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
+			*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
 	}
 	close(deliveryChan)
 	return nil
@@ -102,10 +101,9 @@ func PublishMessageSync(topic string, message []byte, partition int64, verbose b
 			fmt.Printf("Delivery failed: %v\n", m.TopicPartition.Error)
 			close(deliveryChan)
 			return m.TopicPartition.Error
-		} else {
-			fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
-				*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
 		}
+		fmt.Printf("Delivered message to topic %s [%d] at offset %v\n",
+			*m.TopicPartition.Topic, m.TopicPartition.Partition, m.TopicPartition.Offset)
 	}
 	close(deliveryChan)
 	return nil

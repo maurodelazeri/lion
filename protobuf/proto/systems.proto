@@ -1,0 +1,6 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+message SystemSummer { 
+   Action                          action                         = 1;
+}
