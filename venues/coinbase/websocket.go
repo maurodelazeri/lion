@@ -12,12 +12,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/maurodelazeri/lion/streaming/producer"
+
 	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
-	"github.com/maurodelazeri/lion/marketdata"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
@@ -400,16 +401,16 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Marshal ", err)
 								}
-								// err = kafkaproducer.PublishMessageSync("trades."+r.base.GetName()+"."+product, serialized, 1, false)
-								// if err != nil {
-								// 	logrus.Error("Problem PublishMessageSync to summer ", err)
-								// 	continue
-								// }
+								err = kafkaproducer.PublishMessageSync("trades."+r.base.GetName()+"."+product, serialized, 1, false)
+								if err != nil {
+									logrus.Error("Problem PublishMessageSync to summer ", err)
+									continue
+								}
 								err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
 								if err != nil {
 									logrus.Error("Socket sent ", err)
 								}
-								marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+								//	marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
 							}
 						}
 

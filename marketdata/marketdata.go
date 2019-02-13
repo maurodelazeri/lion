@@ -35,6 +35,7 @@ func worker(work interface{}) interface{} {
 
 func (j *Job) build() error {
 	err := kafkaproducer.PublishMessageSync(j.topic, j.data, j.partition, j.verbose)
+	logrus.Info("KAFKA DONE")
 	if err != nil {
 		logrus.Error("Problem PublishMessageSync request ", err)
 		return err
