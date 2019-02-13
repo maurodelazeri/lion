@@ -405,6 +405,7 @@ func (r *Websocket) startReading() {
 								// 	logrus.Error("Problem PublishMessageSync to summer ", err)
 								// 	continue
 								// }
+								logrus.Info("Trade sent ", trades)
 								err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
 								if err != nil {
 									logrus.Error("Socket sent ", err)
