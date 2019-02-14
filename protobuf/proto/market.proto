@@ -1,0 +1,25 @@
+syntax = "proto3";
+package api;
+import "enum.proto";
+
+message MarketKindSummary {
+  int64                               market_data_id                    = 1;
+  string                              product                           = 2;
+  int64                               venues_total                      = 3;
+  bool                                products_enabled_total            = 4;
+  bool                                products_disabled_total           = 5;
+  bool                                streaming_save_enabled            = 6;
+  bool                                streaming_save_disabled           = 7;
+};
+
+message MarketKindSummaryRequest { 
+   string                              token                            = 1;  
+   string                              kind                             = 2;     
+}
+
+message MarketKindSummaryResponse { 
+   Retcode                             retcode                           = 1;
+   repeated MarketKindSummary          market_kind_summary               = 2; 
+   string                              comment                           = 3;   
+   string                              elapsed                           = 4;  
+}

@@ -10,6 +10,7 @@ import "currencies.proto";
 import "products.proto";
 import "balances.proto";
 import "marketdata.proto";
+import "market.proto";
 
 // https://www.mql5.com/en/docs/standardlibrary/tradeclasses/ctrade/ctradepositionclose
 
@@ -33,6 +34,8 @@ service API {
   rpc PostBalance(BalancePostRequest) returns (BalancePostResponse) {}
 
   rpc GetTrades(TradeRequest) returns (TradeResponse) {}
+  
+  rpc GetMarketKindSummary(MarketKindSummaryRequest) returns (MarketKindSummaryResponse) {}
 
   // Get all Order for a user with filter - A server-to-client streaming RPC.
  // rpc GetOrders(OrderFilter) returns (stream Order) {}
