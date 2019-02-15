@@ -23,3 +23,33 @@ message MarketKindSummaryResponse {
    string                              comment                           = 3;   
    string                              elapsed                           = 4;  
 }
+
+// -------------------------------------------------------------------------//
+
+message MarketProductSummary {
+  int64                               market_data_id                    = 1;
+  int64                               product_id                        = 2;
+  string                              product_description               = 3;
+  int64                               venue_id                          = 4;
+  string                              venue_description                 = 5;
+  double                              price                             = 6;
+  double                              volume                            = 7;
+  string                              order_side                        = 8;
+  string                              system_timestamp                  = 9;
+  string                              venue_timestamp                   = 10;
+};
+
+message MarketProductSummaryRequest { 
+   string                              token                            = 1;  
+   string                              kind                             = 2;     
+   string                              product_description              = 3;     
+}
+
+message MarketProductSummaryResponse { 
+   Retcode                             retcode                           = 1;
+   repeated MarketProductSummary       market_product_summary           = 2; 
+   string                              comment                           = 3;   
+   string                              elapsed                           = 4;  
+}
+
+

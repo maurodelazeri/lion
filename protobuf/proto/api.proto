@@ -36,6 +36,7 @@ service API {
   rpc GetTrades(TradeRequest) returns (TradeResponse) {}
   
   rpc GetMarketKindSummary(MarketKindSummaryRequest) returns (MarketKindSummaryResponse) {}
+  rpc GetMarketProductSummary(MarketProductSummaryRequest) returns (MarketProductSummaryResponse) {}
 
   // Get all Order for a user with filter - A server-to-client streaming RPC.
  // rpc GetOrders(OrderFilter) returns (stream Order) {}
