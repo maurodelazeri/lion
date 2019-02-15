@@ -20,7 +20,6 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	"github.com/maurodelazeri/concurrency-map-slice"
-	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/streaming/producer"
 	"github.com/maurodelazeri/lion/venues/config"
@@ -115,11 +114,11 @@ func (r *Websocket) FetchEnabledOrderBooks() {
 			venueConf, _ := r.base.VenueConfig.Get(r.base.GetName())
 			resp := OrderBook{}
 			params := url.Values{}
-			params.Set("symbol", venueConf.(config.VenueConfig).Products[sym].VenueName)
+			params.Set("symbol", venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
 			params.Set("limit", "50")
 			path := fmt.Sprintf("%s%s?%s", apiURL, orderBookDepth, params.Encode())
 			if err := r.base.SendHTTPRequest(path, &resp); err != nil {
-				logrus.Error("problem to fech the orderbook ", venueConf.(config.VenueConfig).Products[sym].VenueName, " ", err)
+				logrus.Error("problem to fech the orderbook ", venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, " ", err)
 				continue
 			}
 
@@ -133,7 +132,7 @@ func (r *Websocket) FetchEnabledOrderBooks() {
 				price, _ := strconv.ParseFloat(book[0].(string), 64)
 				r.OrderBookMAP[sym+"asks"][price] = amount
 			}
-			r.LockTillBookFetchToFinish[venueConf.(config.VenueConfig).Products[sym].VenueName+"@depth"] = sym
+			r.LockTillBookFetchToFinish[venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier+"@depth"] = sym
 		}
 	}()
 }
@@ -159,8 +158,8 @@ func (r *Websocket) connect() {
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
 		}
 	}
 
@@ -354,14 +353,15 @@ func (r *Websocket) startReading() {
 								}()
 
 								wg.Wait()
+
 								book := &pbAPI.Orderbook{
-									Product:   pbAPI.Product((pbAPI.Product_value[product])),
-									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-									Levels:    int32(r.base.MaxLevelsOrderBook),
-									Timestamp: common.MakeTimestamp(),
-									Asks:      refLiveBook.Asks,
-									Bids:      refLiveBook.Bids,
-									VenueType: pbAPI.VenueType_SPOT,
+									Product:         product,
+									Venue:           r.base.GetName(),
+									Levels:          int64(r.base.MaxLevelsOrderBook),
+									SystemTimestamp: time.Now().UTC().Format(time.RFC3339),
+									VenueTimestamp:  time.Unix(message.Data.EventTime, 0).UTC().Format(time.RFC3339),
+									Asks:            refLiveBook.Asks,
+									Bids:            refLiveBook.Bids,
 								}
 								refLiveBook = book
 
@@ -396,28 +396,30 @@ func (r *Websocket) startReading() {
 								continue
 							}
 							product := value.(string)
-							var side pbAPI.Side
-							if message.Data.Buyer {
-								side = pbAPI.Side_SELL
 
+							var side string
+							if message.Data.Buyer {
+								side = "buy"
 							} else {
-								side = pbAPI.Side_BUY
+								side = "sell"
 							}
+
 							refBook, ok := r.base.LiveOrderBook.Get(product)
 							if !ok {
 								continue
 							}
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
-								Product:   pbAPI.Product((pbAPI.Product_value[product])),
-								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-								Timestamp: common.MakeTimestamp(),
-								Price:     message.Data.Price,
-								OrderSide: side,
-								Volume:    message.Data.Quantity,
-								VenueType: pbAPI.VenueType_SPOT,
-								Asks:      refLiveBook.Asks,
-								Bids:      refLiveBook.Bids,
+								Product:         product,
+								VenueTradeId:    strconv.FormatInt(message.Data.TradeID, 10),
+								Venue:           r.base.GetName(),
+								SystemTimestamp: time.Now().UTC().Format(time.RFC3339),
+								VenueTimestamp:  time.Unix(message.Data.EventTime, 0).UTC().Format(time.RFC3339),
+								Price:           message.Data.Price,
+								OrderSide:       side,
+								Volume:          message.Data.Quantity,
+								Asks:            refLiveBook.Asks,
+								Bids:            refLiveBook.Bids,
 							}
 							serialized, err := proto.Marshal(trades)
 							if err != nil {
