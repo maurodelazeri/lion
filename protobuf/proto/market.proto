@@ -52,4 +52,32 @@ message MarketProductSummaryResponse {
    string                              elapsed                           = 4;  
 }
 
+// -------------------------------------------------------------------------//
 
+message Bar {
+  int64                               time                            = 1;
+  double                              open                            = 2;
+  double                              high                            = 3;
+  double                              low                             = 4;
+  double                              close                           = 5;
+  double                              volume                          = 6;
+  int64                               trades                          = 7;
+};
+
+message BarRequest { 
+   string                              token                            = 1;  
+   string                              grouping                         = 2;     
+   int64                               product_id                       = 3;     
+   int64                               venue_id                         = 4;     
+   string                              begin_date                       = 5;     
+   string                              end_data                         = 6;     
+}
+
+message BarResponse { 
+   Retcode                             retcode                           = 1;
+   repeated Bar                        bars                              = 2; 
+   string                              comment                           = 3;   
+   string                              elapsed                           = 4;  
+}
+
+// -------------------------------------------------------------------------//

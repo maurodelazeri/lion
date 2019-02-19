@@ -38,6 +38,8 @@ service API {
   rpc GetMarketKindSummary(MarketKindSummaryRequest) returns (MarketKindSummaryResponse) {}
   rpc GetMarketProductSummary(MarketProductSummaryRequest) returns (MarketProductSummaryResponse) {}
 
+  rpc GetBars(BarRequest) returns (BarResponse) {}
+
   // Get all Order for a user with filter - A server-to-client streaming RPC.
  // rpc GetOrders(OrderFilter) returns (stream Order) {}
   // Order request - A simple RPC 
