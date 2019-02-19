@@ -67,8 +67,8 @@ message Bar {
 message BarRequest { 
    string                              token                            = 1;  
    string                              grouping                         = 2;     
-   int64                               product_id                       = 3;     
-   int64                               venue_id                         = 4;     
+   string                              product                          = 3;     
+   string                              venue                            = 4;     
    int64                               begin_date                       = 5;     
    int64                               end_date                         = 6;     
 }
