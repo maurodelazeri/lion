@@ -70,7 +70,7 @@ message BarRequest {
    int64                               product_id                       = 3;     
    int64                               venue_id                         = 4;     
    string                              begin_date                       = 5;     
-   string                              end_data                         = 6;     
+   string                              end_date                         = 6;     
 }
 
 message BarResponse { 
