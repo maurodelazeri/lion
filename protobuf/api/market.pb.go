@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -39,15 +37,14 @@ func (*MarketKindSummary) ProtoMessage()    {}
 func (*MarketKindSummary) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{0}
 }
-
 func (m *MarketKindSummary) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketKindSummary.Unmarshal(m, b)
 }
 func (m *MarketKindSummary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketKindSummary.Marshal(b, m, deterministic)
 }
-func (m *MarketKindSummary) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketKindSummary.Merge(m, src)
+func (dst *MarketKindSummary) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketKindSummary.Merge(dst, src)
 }
 func (m *MarketKindSummary) XXX_Size() int {
 	return xxx_messageInfo_MarketKindSummary.Size(m)
@@ -121,15 +118,14 @@ func (*MarketKindSummaryRequest) ProtoMessage()    {}
 func (*MarketKindSummaryRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{1}
 }
-
 func (m *MarketKindSummaryRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketKindSummaryRequest.Unmarshal(m, b)
 }
 func (m *MarketKindSummaryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketKindSummaryRequest.Marshal(b, m, deterministic)
 }
-func (m *MarketKindSummaryRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketKindSummaryRequest.Merge(m, src)
+func (dst *MarketKindSummaryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketKindSummaryRequest.Merge(dst, src)
 }
 func (m *MarketKindSummaryRequest) XXX_Size() int {
 	return xxx_messageInfo_MarketKindSummaryRequest.Size(m)
@@ -170,15 +166,14 @@ func (*MarketKindSummaryResponse) ProtoMessage()    {}
 func (*MarketKindSummaryResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{2}
 }
-
 func (m *MarketKindSummaryResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketKindSummaryResponse.Unmarshal(m, b)
 }
 func (m *MarketKindSummaryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketKindSummaryResponse.Marshal(b, m, deterministic)
 }
-func (m *MarketKindSummaryResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketKindSummaryResponse.Merge(m, src)
+func (dst *MarketKindSummaryResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketKindSummaryResponse.Merge(dst, src)
 }
 func (m *MarketKindSummaryResponse) XXX_Size() int {
 	return xxx_messageInfo_MarketKindSummaryResponse.Size(m)
@@ -239,15 +234,14 @@ func (*MarketProductSummary) ProtoMessage()    {}
 func (*MarketProductSummary) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{3}
 }
-
 func (m *MarketProductSummary) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketProductSummary.Unmarshal(m, b)
 }
 func (m *MarketProductSummary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketProductSummary.Marshal(b, m, deterministic)
 }
-func (m *MarketProductSummary) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketProductSummary.Merge(m, src)
+func (dst *MarketProductSummary) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketProductSummary.Merge(dst, src)
 }
 func (m *MarketProductSummary) XXX_Size() int {
 	return xxx_messageInfo_MarketProductSummary.Size(m)
@@ -343,15 +337,14 @@ func (*MarketProductSummaryRequest) ProtoMessage()    {}
 func (*MarketProductSummaryRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{4}
 }
-
 func (m *MarketProductSummaryRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketProductSummaryRequest.Unmarshal(m, b)
 }
 func (m *MarketProductSummaryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketProductSummaryRequest.Marshal(b, m, deterministic)
 }
-func (m *MarketProductSummaryRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketProductSummaryRequest.Merge(m, src)
+func (dst *MarketProductSummaryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketProductSummaryRequest.Merge(dst, src)
 }
 func (m *MarketProductSummaryRequest) XXX_Size() int {
 	return xxx_messageInfo_MarketProductSummaryRequest.Size(m)
@@ -399,15 +392,14 @@ func (*MarketProductSummaryResponse) ProtoMessage()    {}
 func (*MarketProductSummaryResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{5}
 }
-
 func (m *MarketProductSummaryResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketProductSummaryResponse.Unmarshal(m, b)
 }
 func (m *MarketProductSummaryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketProductSummaryResponse.Marshal(b, m, deterministic)
 }
-func (m *MarketProductSummaryResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketProductSummaryResponse.Merge(m, src)
+func (dst *MarketProductSummaryResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketProductSummaryResponse.Merge(dst, src)
 }
 func (m *MarketProductSummaryResponse) XXX_Size() int {
 	return xxx_messageInfo_MarketProductSummaryResponse.Size(m)
@@ -465,15 +457,14 @@ func (*Bar) ProtoMessage()    {}
 func (*Bar) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{6}
 }
-
 func (m *Bar) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Bar.Unmarshal(m, b)
 }
 func (m *Bar) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Bar.Marshal(b, m, deterministic)
 }
-func (m *Bar) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Bar.Merge(m, src)
+func (dst *Bar) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Bar.Merge(dst, src)
 }
 func (m *Bar) XXX_Size() int {
 	return xxx_messageInfo_Bar.Size(m)
@@ -538,8 +529,8 @@ type BarRequest struct {
 	Grouping             string   `protobuf:"bytes,2,opt,name=grouping,proto3" json:"grouping,omitempty"`
 	ProductId            int64    `protobuf:"varint,3,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
 	VenueId              int64    `protobuf:"varint,4,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
-	BeginDate            string   `protobuf:"bytes,5,opt,name=begin_date,json=beginDate,proto3" json:"begin_date,omitempty"`
-	EndDate              string   `protobuf:"bytes,6,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
+	BeginDate            int64    `protobuf:"varint,5,opt,name=begin_date,json=beginDate,proto3" json:"begin_date,omitempty"`
+	EndDate              int64    `protobuf:"varint,6,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -551,15 +542,14 @@ func (*BarRequest) ProtoMessage()    {}
 func (*BarRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{7}
 }
-
 func (m *BarRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BarRequest.Unmarshal(m, b)
 }
 func (m *BarRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BarRequest.Marshal(b, m, deterministic)
 }
-func (m *BarRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BarRequest.Merge(m, src)
+func (dst *BarRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BarRequest.Merge(dst, src)
 }
 func (m *BarRequest) XXX_Size() int {
 	return xxx_messageInfo_BarRequest.Size(m)
@@ -598,18 +588,18 @@ func (m *BarRequest) GetVenueId() int64 {
 	return 0
 }
 
-func (m *BarRequest) GetBeginDate() string {
+func (m *BarRequest) GetBeginDate() int64 {
 	if m != nil {
 		return m.BeginDate
 	}
-	return ""
+	return 0
 }
 
-func (m *BarRequest) GetEndDate() string {
+func (m *BarRequest) GetEndDate() int64 {
 	if m != nil {
 		return m.EndDate
 	}
-	return ""
+	return 0
 }
 
 type BarResponse struct {
@@ -628,15 +618,14 @@ func (*BarResponse) ProtoMessage()    {}
 func (*BarResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{8}
 }
-
 func (m *BarResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BarResponse.Unmarshal(m, b)
 }
 func (m *BarResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BarResponse.Marshal(b, m, deterministic)
 }
-func (m *BarResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BarResponse.Merge(m, src)
+func (dst *BarResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BarResponse.Merge(dst, src)
 }
 func (m *BarResponse) XXX_Size() int {
 	return xxx_messageInfo_BarResponse.Size(m)
@@ -690,13 +679,13 @@ func init() {
 func init() { proto.RegisterFile("market.proto", fileDescriptor_3f90997f23a2c3f8) }
 
 var fileDescriptor_3f90997f23a2c3f8 = []byte{
-	// 712 bytes of a gzipped FileDescriptorProto
+	// 713 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x5d, 0x6a, 0x1b, 0x49,
 	0x10, 0x66, 0x24, 0xeb, 0x67, 0xca, 0xc6, 0x3f, 0x6d, 0xad, 0x76, 0xec, 0xb5, 0xc1, 0x3b, 0x2c,
 	0xbb, 0x5e, 0x16, 0xbc, 0xe0, 0x5d, 0x72, 0x00, 0xa3, 0x04, 0x4c, 0x08, 0x09, 0x63, 0xbf, 0x0f,
 	0x2d, 0x75, 0x21, 0x37, 0xd6, 0x4c, 0x4f, 0xba, 0x5b, 0x4a, 0x7c, 0x82, 0x9c, 0x21, 0xd7, 0xc8,
 	0x05, 0x72, 0x80, 0xbc, 0xe5, 0x2e, 0x79, 0x0f, 0x5d, 0xdd, 0x23, 0xcb, 0xb2, 0x30, 0xc8, 0x6f,
-	0x5d, 0xdf, 0x57, 0xf5, 0x55, 0xab, 0xea, 0x6b, 0x0d, 0x6c, 0x15, 0x5c, 0xdf, 0xa2, 0x3d, 0xab,
+	0x5d, 0xdf, 0x57, 0xf5, 0x55, 0xab, 0xea, 0xeb, 0x11, 0x6c, 0x15, 0x5c, 0xdf, 0xa2, 0x3d, 0xab,
 	0xb4, 0xb2, 0x8a, 0x35, 0x79, 0x25, 0x0f, 0x01, 0xcb, 0x69, 0xe1, 0x81, 0xf4, 0x7b, 0x03, 0xf6,
 	0xde, 0x50, 0xc6, 0x6b, 0x59, 0x8a, 0xab, 0x69, 0x51, 0x70, 0x7d, 0xc7, 0xfe, 0x80, 0x6d, 0x5f,
 	0x96, 0x0b, 0x6e, 0x79, 0x2e, 0x45, 0x12, 0x9d, 0x44, 0xa7, 0xcd, 0x2c, 0x88, 0x0d, 0xb8, 0xe5,
@@ -729,11 +718,11 @@ var fileDescriptor_3f90997f23a2c3f8 = []byte{
 	0x61, 0xaa, 0xc2, 0x92, 0xc6, 0x15, 0x65, 0x74, 0x76, 0xd8, 0x8d, 0x1c, 0xdf, 0x50, 0x83, 0x28,
 	0xa3, 0x33, 0xdb, 0x85, 0xe6, 0x44, 0x7d, 0x20, 0xe5, 0x28, 0x73, 0x47, 0x37, 0xfe, 0xd1, 0x44,
 	0x19, 0x24, 0x7f, 0x45, 0x99, 0x0f, 0x16, 0xec, 0xd3, 0x7e, 0x60, 0x9f, 0x3e, 0xb4, 0xad, 0xe6,
-	0x02, 0x4d, 0xf8, 0xcb, 0x09, 0x51, 0xfa, 0x25, 0x02, 0xb8, 0xe0, 0xfa, 0xe9, 0x9d, 0x1e, 0x42,
-	0x77, 0xac, 0xd5, 0xb4, 0x92, 0xe5, 0x38, 0xec, 0x75, 0x1e, 0x2f, 0xbd, 0xae, 0xe6, 0xf2, 0xeb,
-	0x7a, 0xe2, 0xb1, 0x1c, 0x03, 0x0c, 0x71, 0x2c, 0x4b, 0xf7, 0x78, 0x31, 0xbc, 0x92, 0x98, 0x90,
-	0x01, 0xb7, 0xe8, 0x2a, 0xb1, 0x14, 0x9e, 0x6c, 0x87, 0x81, 0x96, 0xc2, 0x51, 0xe9, 0xa7, 0x08,
-	0x36, 0xe9, 0xd2, 0x6b, 0xba, 0xe1, 0x08, 0x36, 0x86, 0x5c, 0x9b, 0xb0, 0xfb, 0x2e, 0x25, 0x39,
-	0x1d, 0x42, 0x9f, 0xb3, 0xda, 0x61, 0x9b, 0x3e, 0x7f, 0xff, 0xfd, 0x0c, 0x00, 0x00, 0xff, 0xff,
-	0x37, 0x02, 0x2c, 0xc4, 0x1f, 0x07, 0x00, 0x00,
+	0x02, 0x4d, 0xf8, 0xe4, 0x84, 0x28, 0xfd, 0x12, 0x01, 0x5c, 0x70, 0xfd, 0xf4, 0x4e, 0x0f, 0xa1,
+	0x3b, 0xd6, 0x6a, 0x5a, 0xc9, 0x72, 0x1c, 0xf6, 0x3a, 0x8f, 0x97, 0x5e, 0x57, 0x73, 0xf9, 0x75,
+	0x3d, 0xf1, 0x58, 0x8e, 0x01, 0x86, 0x38, 0x96, 0xa5, 0x7b, 0xbc, 0x18, 0xbe, 0xbb, 0x31, 0x21,
+	0x03, 0x6e, 0xd1, 0x55, 0x62, 0x29, 0x3c, 0xe9, 0xbf, 0xae, 0x1d, 0x2c, 0x85, 0xa3, 0xd2, 0x4f,
+	0x11, 0x6c, 0xd2, 0xa5, 0xd7, 0x74, 0xc3, 0x11, 0x6c, 0x0c, 0xb9, 0x36, 0x61, 0xf7, 0x5d, 0x4a,
+	0x72, 0x3a, 0x84, 0x3e, 0x67, 0xb5, 0xc3, 0x36, 0xfd, 0xfd, 0xfd, 0xf7, 0x33, 0x00, 0x00, 0xff,
+	0xff, 0x06, 0x40, 0x5d, 0xc7, 0x1f, 0x07, 0x00, 0x00,
 }
