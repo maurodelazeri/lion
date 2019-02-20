@@ -375,15 +375,15 @@ func (r *Websocket) startReading() {
 							} else {
 								side = "sell"
 							}
-							refBook, ok := r.base.LiveOrderBook.Get(product)
-							if !ok {
-								continue
-							}
+							// refBook, ok := r.base.LiveOrderBook.Get(product)
+							// if !ok {
+							// 	continue
+							// }
 							dateTimeRef, err := time.Parse(time.RFC3339, data.Time)
 							if err != nil {
 								logrus.Error(r.base.GetName(), " problem to convert date ", err.Error())
 							}
-							refLiveBook := refBook.(*pbAPI.Orderbook)
+							//refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
 								Product:         product,
 								VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
@@ -393,8 +393,8 @@ func (r *Websocket) startReading() {
 								Price:           data.Price,
 								OrderSide:       side,
 								Volume:          data.Size,
-								Asks:            refLiveBook.Asks,
-								Bids:            refLiveBook.Bids,
+								// Asks:            refLiveBook.Asks,
+								// Bids:            refLiveBook.Bids,
 							}
 							if r.base.Streaming {
 								serialized, err := proto.Marshal(trades)

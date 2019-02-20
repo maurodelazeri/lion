@@ -29,8 +29,6 @@ message Trade {
   double                              price                             = 7;
   double                              volume                            = 8;
   string                              order_side                        = 9;
-  repeated Item                       asks                              = 10; 
-  repeated Item                       bids                              = 11;  
 };
 
 message TradeRequest { 
