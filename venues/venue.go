@@ -61,15 +61,15 @@ func (e *Base) SetEnabled(enabled bool) {
 // SetBacktestingOrderbook is a method that sets the current orderbook, used only on backtesting mode
 func (e *Base) SetBacktestingOrderbook(product pbAPI.Product, trade *pbAPI.Trade) {
 	//e.RefExecutionTime = trade.GetTimestamp()
-	book := &pbAPI.Orderbook{
-		Product: trade.GetProduct(),
-		Venue:   trade.GetVenue(),
-		Levels:  int64(len(trade.Asks)),
-		//	Timestamp: trade.GetTimestamp(),
-		Asks: trade.Asks,
-		Bids: trade.Bids,
-	}
-	e.LiveOrderBook.Set(product.String(), book)
+	// book := &pbAPI.Orderbook{
+	// 	Product: trade.GetProduct(),
+	// 	Venue:   trade.GetVenue(),
+	// 	Levels:  int64(len(trade.Asks)),
+	// 	//	Timestamp: trade.GetTimestamp(),
+	// 	Asks: trade.Asks,
+	// 	Bids: trade.Bids,
+	// }
+	// e.LiveOrderBook.Set(product.String(), book)
 }
 
 // GetExecutionTimestamp is a method that returns the current timestamp
