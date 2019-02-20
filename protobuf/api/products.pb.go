@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -50,15 +48,14 @@ func (*Product) ProtoMessage()    {}
 func (*Product) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c6e54f42122eb82, []int{0}
 }
-
 func (m *Product) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Product.Unmarshal(m, b)
 }
 func (m *Product) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Product.Marshal(b, m, deterministic)
 }
-func (m *Product) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Product.Merge(m, src)
+func (dst *Product) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Product.Merge(dst, src)
 }
 func (m *Product) XXX_Size() int {
 	return xxx_messageInfo_Product.Size(m)
@@ -210,15 +207,14 @@ func (*ProductRequest) ProtoMessage()    {}
 func (*ProductRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c6e54f42122eb82, []int{1}
 }
-
 func (m *ProductRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductRequest.Unmarshal(m, b)
 }
 func (m *ProductRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ProductRequest.Marshal(b, m, deterministic)
 }
-func (m *ProductRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProductRequest.Merge(m, src)
+func (dst *ProductRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProductRequest.Merge(dst, src)
 }
 func (m *ProductRequest) XXX_Size() int {
 	return xxx_messageInfo_ProductRequest.Size(m)
@@ -266,15 +262,14 @@ func (*ProductResponse) ProtoMessage()    {}
 func (*ProductResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c6e54f42122eb82, []int{2}
 }
-
 func (m *ProductResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductResponse.Unmarshal(m, b)
 }
 func (m *ProductResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ProductResponse.Marshal(b, m, deterministic)
 }
-func (m *ProductResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProductResponse.Merge(m, src)
+func (dst *ProductResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProductResponse.Merge(dst, src)
 }
 func (m *ProductResponse) XXX_Size() int {
 	return xxx_messageInfo_ProductResponse.Size(m)
@@ -328,15 +323,14 @@ func (*ProductPostRequest) ProtoMessage()    {}
 func (*ProductPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c6e54f42122eb82, []int{3}
 }
-
 func (m *ProductPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductPostRequest.Unmarshal(m, b)
 }
 func (m *ProductPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ProductPostRequest.Marshal(b, m, deterministic)
 }
-func (m *ProductPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProductPostRequest.Merge(m, src)
+func (dst *ProductPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProductPostRequest.Merge(dst, src)
 }
 func (m *ProductPostRequest) XXX_Size() int {
 	return xxx_messageInfo_ProductPostRequest.Size(m)
@@ -383,15 +377,14 @@ func (*ProductPostResponse) ProtoMessage()    {}
 func (*ProductPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8c6e54f42122eb82, []int{4}
 }
-
 func (m *ProductPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ProductPostResponse.Unmarshal(m, b)
 }
 func (m *ProductPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ProductPostResponse.Marshal(b, m, deterministic)
 }
-func (m *ProductPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProductPostResponse.Merge(m, src)
+func (dst *ProductPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProductPostResponse.Merge(dst, src)
 }
 func (m *ProductPostResponse) XXX_Size() int {
 	return xxx_messageInfo_ProductPostResponse.Size(m)

@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -42,15 +40,14 @@ func (*Balance) ProtoMessage()    {}
 func (*Balance) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9d5f5974e1c89e1a, []int{0}
 }
-
 func (m *Balance) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Balance.Unmarshal(m, b)
 }
 func (m *Balance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Balance.Marshal(b, m, deterministic)
 }
-func (m *Balance) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Balance.Merge(m, src)
+func (dst *Balance) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Balance.Merge(dst, src)
 }
 func (m *Balance) XXX_Size() int {
 	return xxx_messageInfo_Balance.Size(m)
@@ -146,15 +143,14 @@ func (*BalanceRequest) ProtoMessage()    {}
 func (*BalanceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9d5f5974e1c89e1a, []int{1}
 }
-
 func (m *BalanceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BalanceRequest.Unmarshal(m, b)
 }
 func (m *BalanceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BalanceRequest.Marshal(b, m, deterministic)
 }
-func (m *BalanceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BalanceRequest.Merge(m, src)
+func (dst *BalanceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BalanceRequest.Merge(dst, src)
 }
 func (m *BalanceRequest) XXX_Size() int {
 	return xxx_messageInfo_BalanceRequest.Size(m)
@@ -202,15 +198,14 @@ func (*BalanceResponse) ProtoMessage()    {}
 func (*BalanceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9d5f5974e1c89e1a, []int{2}
 }
-
 func (m *BalanceResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BalanceResponse.Unmarshal(m, b)
 }
 func (m *BalanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BalanceResponse.Marshal(b, m, deterministic)
 }
-func (m *BalanceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BalanceResponse.Merge(m, src)
+func (dst *BalanceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BalanceResponse.Merge(dst, src)
 }
 func (m *BalanceResponse) XXX_Size() int {
 	return xxx_messageInfo_BalanceResponse.Size(m)
@@ -264,15 +259,14 @@ func (*BalancePostRequest) ProtoMessage()    {}
 func (*BalancePostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9d5f5974e1c89e1a, []int{3}
 }
-
 func (m *BalancePostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BalancePostRequest.Unmarshal(m, b)
 }
 func (m *BalancePostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BalancePostRequest.Marshal(b, m, deterministic)
 }
-func (m *BalancePostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BalancePostRequest.Merge(m, src)
+func (dst *BalancePostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BalancePostRequest.Merge(dst, src)
 }
 func (m *BalancePostRequest) XXX_Size() int {
 	return xxx_messageInfo_BalancePostRequest.Size(m)
@@ -319,15 +313,14 @@ func (*BalancePostResponse) ProtoMessage()    {}
 func (*BalancePostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_9d5f5974e1c89e1a, []int{4}
 }
-
 func (m *BalancePostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BalancePostResponse.Unmarshal(m, b)
 }
 func (m *BalancePostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BalancePostResponse.Marshal(b, m, deterministic)
 }
-func (m *BalancePostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BalancePostResponse.Merge(m, src)
+func (dst *BalancePostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BalancePostResponse.Merge(dst, src)
 }
 func (m *BalancePostResponse) XXX_Size() int {
 	return xxx_messageInfo_BalancePostResponse.Size(m)
