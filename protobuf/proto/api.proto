@@ -41,8 +41,7 @@ service API {
 
   rpc GetBars(BarRequest) returns (BarResponse) {}
 
-
-   rpc GetProductWeekSeelWeek(BuySellWeekRequest) returns (BuySellWeekResponse) {}
+  rpc GetProductWeekSeelWeek(BuySellWeekRequest) returns (BuySellWeekResponse) {}
 
 
   // Get all Order for a user with filter - A server-to-client streaming RPC.
