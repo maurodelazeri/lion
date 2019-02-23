@@ -70,7 +70,7 @@ func CreateBaseEvent(systemEventID, function, message, payload string, err bool,
 		Message:       message,
 		Payload:       payload,
 		Error:         err,
-		Timestamp:     time.Now().UTC().String(),
+		Timestamp:     time.Now().UTC().Format(time.RFC3339),
 	}
 }
 
