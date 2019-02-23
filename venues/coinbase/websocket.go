@@ -360,7 +360,6 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Marshal ", err)
 								}
-								logrus.Info(len(serialized))
 								err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
 								if err != nil {
 									logrus.Error("Socket sent ", err)
