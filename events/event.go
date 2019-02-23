@@ -5,11 +5,11 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/maurodelazeri/lion/streaming/producer"
 
 	"github.com/Jeffail/tunny"
 	eventAPI "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
-	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
@@ -36,7 +36,7 @@ func worker(work interface{}) interface{} {
 }
 
 func (j *Job) build() error {
-	eventData, err := ffjson.Marshal(&j.event)
+	eventData, err := proto.Marshal(&j.event)
 	if j.verbose {
 		logrus.Info(string(eventData))
 	}
