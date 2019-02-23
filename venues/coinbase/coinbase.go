@@ -56,10 +56,11 @@ type Websocket struct {
 	// default to 2 seconds
 	HandshakeTimeout time.Duration
 
-	OrderBookMAP    map[string]map[float64]float64
-	subscribedPairs []string
-	pairsMapping    *utils.ConcurrentMap
-	MessageType     []byte
+	OrderBookMAP        map[string]map[float64]float64
+	subscribedPairs     []string
+	pairsMapping        *utils.ConcurrentMap
+	MessageType         []byte
+	OrderbookTimestamps *utils.ConcurrentMap
 }
 
 // SetDefaults sets default values for the venue

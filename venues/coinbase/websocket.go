@@ -153,8 +153,10 @@ func (r *Websocket) connect() {
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.pairsMapping = utils.NewConcurrentMap()
+	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
+
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
 		r.OrderBookMAP[sym+"bids"] = make(map[float64]float64)
@@ -163,6 +165,8 @@ func (r *Websocket) connect() {
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
 			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
+			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
+
 		}
 	}
 
@@ -364,6 +368,16 @@ func (r *Websocket) startReading() {
 								if err != nil {
 									logrus.Error("Socket sent ", err)
 								}
+								// publish orderbook within a timeframe at least 1 second
+								value, exist := r.OrderbookTimestamps.Get(book.GetVenue() + book.GetProduct())
+								if !exist {
+									continue
+								}
+								elapsed := time.Since(value.(time.Time))
+								if elapsed.Seconds() <= 1 {
+									continue
+								}
+								r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
 								marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
 							}
 						}
