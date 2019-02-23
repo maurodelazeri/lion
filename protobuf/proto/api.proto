@@ -27,6 +27,7 @@ service API {
 
   rpc GetProducts(ProductRequest) returns (ProductResponse) {}
   rpc PostProduct(ProductPostRequest) returns (ProductPostResponse) {}
+  rpc GetDataFeedProducts(ProductDataFeedRequest) returns (ProductDataFeedResponse) {}
 
   rpc GetAccounts(AccountRequest) returns (AccountResponse) {}
   rpc PostAccount(AccountPostRequest) returns (AccountPostResponse) {}

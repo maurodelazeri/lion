@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -33,14 +35,15 @@ func (*BuySellWeek) ProtoMessage()    {}
 func (*BuySellWeek) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{0}
 }
+
 func (m *BuySellWeek) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeek.Unmarshal(m, b)
 }
 func (m *BuySellWeek) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeek.Marshal(b, m, deterministic)
 }
-func (dst *BuySellWeek) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeek.Merge(dst, src)
+func (m *BuySellWeek) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeek.Merge(m, src)
 }
 func (m *BuySellWeek) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeek.Size(m)
@@ -87,14 +90,15 @@ func (*BuySellWeekRequest) ProtoMessage()    {}
 func (*BuySellWeekRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{1}
 }
+
 func (m *BuySellWeekRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeekRequest.Unmarshal(m, b)
 }
 func (m *BuySellWeekRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeekRequest.Marshal(b, m, deterministic)
 }
-func (dst *BuySellWeekRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeekRequest.Merge(dst, src)
+func (m *BuySellWeekRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeekRequest.Merge(m, src)
 }
 func (m *BuySellWeekRequest) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeekRequest.Size(m)
@@ -142,14 +146,15 @@ func (*BuySellWeekResponse) ProtoMessage()    {}
 func (*BuySellWeekResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{2}
 }
+
 func (m *BuySellWeekResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeekResponse.Unmarshal(m, b)
 }
 func (m *BuySellWeekResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeekResponse.Marshal(b, m, deterministic)
 }
-func (dst *BuySellWeekResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeekResponse.Merge(dst, src)
+func (m *BuySellWeekResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeekResponse.Merge(m, src)
 }
 func (m *BuySellWeekResponse) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeekResponse.Size(m)
