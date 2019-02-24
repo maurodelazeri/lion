@@ -193,7 +193,7 @@ func (m *CurrencyResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECTX
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *CurrencyResponse) GetCurrencies() []*Currency {
@@ -310,7 +310,7 @@ func (m *CurrencyPostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECTX
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *CurrencyPostResponse) GetComment() string {

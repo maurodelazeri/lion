@@ -107,7 +107,7 @@ func (m *LoginResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECTX
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *LoginResponse) GetToken() string {

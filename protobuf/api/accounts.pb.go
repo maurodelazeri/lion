@@ -185,7 +185,7 @@ func (m *AccountResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECTX
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *AccountResponse) GetAccount() []*Account {
@@ -302,7 +302,7 @@ func (m *AccountPostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECTX
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *AccountPostResponse) GetComment() string {

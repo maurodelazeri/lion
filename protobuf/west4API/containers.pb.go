@@ -393,7 +393,7 @@ func (m *ContainerResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECT
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *ContainerResponse) GetContainer() []*Container {
@@ -518,7 +518,7 @@ func (m *ContainerPostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECT
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *ContainerPostResponse) GetComment() string {
@@ -622,7 +622,7 @@ func (m *ContainerCreateResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECT
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *ContainerCreateResponse) GetContainerCreate() []*ContainerCreate {
@@ -739,7 +739,7 @@ func (m *ContainerCreatePostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REJECT
+	return Retcode_REQUEST_WITH_NO_TOKEN
 }
 
 func (m *ContainerCreatePostResponse) GetComment() string {
