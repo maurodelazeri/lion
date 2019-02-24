@@ -343,7 +343,7 @@ func (r *Websocket) startReading() {
 
 							wg.Wait()
 
-							dateTimeRef, err := time.Parse(time.RFC3339, data.Time)
+							dateTimeRef, err := time.Parse(time.RFC3339Nano, data.Time)
 							if err != nil {
 								logrus.Error(r.base.GetName(), " problem to convert date ", err.Error())
 							}
@@ -352,8 +352,8 @@ func (r *Websocket) startReading() {
 								Product:         product,
 								Venue:           r.base.GetName(),
 								Levels:          int64(r.base.MaxLevelsOrderBook),
-								SystemTimestamp: time.Now().UTC().Format(time.RFC3339),
-								VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339),
+								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+								VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
 								Asks:            refLiveBook.Asks,
 								Bids:            refLiveBook.Bids,
 							}
@@ -393,7 +393,7 @@ func (r *Websocket) startReading() {
 							// if !ok {
 							// 	continue
 							// }
-							dateTimeRef, err := time.Parse(time.RFC3339, data.Time)
+							dateTimeRef, err := time.Parse(time.RFC3339Nano, data.Time)
 							if err != nil {
 								logrus.Error(r.base.GetName(), " problem to convert date ", err.Error())
 							}
@@ -402,8 +402,8 @@ func (r *Websocket) startReading() {
 								Product:         product,
 								VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
 								Venue:           r.base.GetName(),
-								SystemTimestamp: time.Now().UTC().Format(time.RFC3339),
-								VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339),
+								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+								VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
 								Price:           data.Price,
 								OrderSide:       side,
 								Volume:          data.Size,
