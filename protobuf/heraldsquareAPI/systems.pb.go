@@ -3,11 +3,9 @@
 
 package heraldsquareAPI
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -33,15 +31,14 @@ func (*SystemSummer) ProtoMessage()    {}
 func (*SystemSummer) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ec938d4cda008df6, []int{0}
 }
-
 func (m *SystemSummer) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SystemSummer.Unmarshal(m, b)
 }
 func (m *SystemSummer) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SystemSummer.Marshal(b, m, deterministic)
 }
-func (m *SystemSummer) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SystemSummer.Merge(m, src)
+func (dst *SystemSummer) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SystemSummer.Merge(dst, src)
 }
 func (m *SystemSummer) XXX_Size() int {
 	return xxx_messageInfo_SystemSummer.Size(m)
