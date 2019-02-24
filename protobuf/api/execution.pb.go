@@ -405,7 +405,7 @@ func (m *OrderResult) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *OrderResult) GetPrice() float64 {
@@ -725,7 +725,7 @@ func (m *PositionsResult) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *PositionsResult) GetPositions() []*Position {

@@ -391,7 +391,7 @@ func (m *DataFeedResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *DataFeedResponse) GetDatafeed() []*DataFeed {
@@ -509,7 +509,7 @@ func (m *DataFeedPostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *DataFeedPostResponse) GetContainerIdentifier() string {

@@ -217,7 +217,7 @@ func (m *VenueResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *VenueResponse) GetVenue() []*Venue {
@@ -334,7 +334,7 @@ func (m *VenuePostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *VenuePostResponse) GetComment() string {

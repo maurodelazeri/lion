@@ -114,15 +114,15 @@ package api;
    }
 
    enum Retcode {
-	REQUEST_WITH_NO_TOKEN          = 0;
-	INVALID_TOKEN                  = 1;
-	INVALID_REQUEST                = 2;
-	TOKEN_EXPIRED                  = 3;
-	REJECTX                        = 4;
-	REJECT                         = 5;
-	CANCEL                         = 6;
-	PLACED_TRADE                   = 7;
-	DONE                           = 8;
+	DONE                           = 0;
+	REQUEST_WITH_NO_TOKEN          = 1;
+	INVALID_TOKEN                  = 2;
+	INVALID_REQUEST                = 3;
+	TOKEN_EXPIRED                  = 4;
+	REJECTX                        = 5;
+	REJECT                         = 6;
+	CANCEL                         = 7;
+	PLACED_TRADE                   = 8;
 	DONE_PARTIAL                   = 9;
 	ERROR                          = 10;
 	TIMEOUT                        = 11;

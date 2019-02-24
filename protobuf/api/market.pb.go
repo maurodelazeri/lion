@@ -193,7 +193,7 @@ func (m *MarketKindSummaryResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *MarketKindSummaryResponse) GetMarketKindSummary() []*MarketKindSummary {
@@ -422,7 +422,7 @@ func (m *MarketProductSummaryResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *MarketProductSummaryResponse) GetMarketProductSummary() []*MarketProductSummary {
@@ -651,7 +651,7 @@ func (m *BarResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *BarResponse) GetBars() []*Bar {

@@ -225,7 +225,7 @@ func (m *BalanceResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *BalanceResponse) GetBalance() []*Balance {
@@ -342,7 +342,7 @@ func (m *BalancePostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *BalancePostResponse) GetComment() string {

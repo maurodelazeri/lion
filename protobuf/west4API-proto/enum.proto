@@ -2,16 +2,16 @@ syntax = "proto3";
 package west4API;
 
    enum Retcode {
-	REQUEST_WITH_NO_TOKEN          = 0;
-	INVALID_TOKEN                  = 1;
-	INVALID_REQUEST                = 2;
-	TOKEN_EXPIRED                  = 3;
-	REJECT                         = 4;
-	CANCEL                         = 5;
-	ERROR                          = 6;
-	TIMEOUT                        = 7;
-	INVALID                        = 8;
-	DONE                           = 9;
+	DONE                           = 0;
+	REQUEST_WITH_NO_TOKEN          = 1;
+	INVALID_TOKEN                  = 2;
+	INVALID_REQUEST                = 3;
+	TOKEN_EXPIRED                  = 4;
+	REJECT                         = 5;
+	CANCEL                         = 6;
+	ERROR                          = 7;
+	TIMEOUT                        = 8;
+	INVALID                        = 9;
 	INVALID_EXPIRATION             = 10;
 	TOO_MANY_REQUESTS              = 11;
 	NO_CHANGES                     = 12;

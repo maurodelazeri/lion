@@ -209,7 +209,7 @@ func (m *ServerResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *ServerResponse) GetServer() []*Server {
@@ -326,7 +326,7 @@ func (m *ServerPostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *ServerPostResponse) GetComment() string {

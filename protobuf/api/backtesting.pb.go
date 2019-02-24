@@ -191,7 +191,7 @@ func (m *BacktestingTokenResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *BacktestingTokenResponse) GetToken() string {
@@ -319,7 +319,7 @@ func (m *BacktestingResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *BacktestingResponse) GetCode() BacktestingCode {

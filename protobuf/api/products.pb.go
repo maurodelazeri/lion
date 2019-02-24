@@ -289,7 +289,7 @@ func (m *ProductResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *ProductResponse) GetProduct() []*Product {
@@ -406,7 +406,7 @@ func (m *ProductPostResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *ProductPostResponse) GetComment() string {
@@ -517,7 +517,7 @@ func (m *ProductDataFeedResponse) GetRetcode() Retcode {
 	if m != nil {
 		return m.Retcode
 	}
-	return Retcode_REQUEST_WITH_NO_TOKEN
+	return Retcode_DONE
 }
 
 func (m *ProductDataFeedResponse) GetProduct() []*Product {
