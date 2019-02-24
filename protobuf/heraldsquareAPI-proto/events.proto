@@ -9,9 +9,10 @@ message Event {
   string                              function                     = 4;
   int64                               user_id                      = 5; 
   string                              timestamp                    = 6;
-  string                              message                      = 7;
+  string                              metadata                     = 7;
   string                              payload                      = 8;  
-  bool                                error                        = 9;    
+  string                              message                      = 9;  
+  bool                                error                        = 10;    
 }
 
 

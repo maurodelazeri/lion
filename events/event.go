@@ -61,14 +61,15 @@ func processJob(pool *tunny.Pool, event eventAPI.Event, topic string, partition 
 }
 
 // CreateBaseEvent create a initial event
-func CreateBaseEvent(systemEventID, function, message, payload string, err bool, UserID int64, system eventAPI.System) *eventAPI.Event {
+func CreateBaseEvent(systemEventID, function, metadata, payload, message string, err bool, UserID int64, system eventAPI.System) *eventAPI.Event {
 	return &eventAPI.Event{
 		SystemEventId: systemEventID,
 		System:        system,
 		Function:      function,
 		UserId:        UserID,
-		Message:       message,
 		Payload:       payload,
+		Metadata:      metadata,
+		Message:       message,
 		Error:         err,
 		Timestamp:     time.Now().UTC().Format(time.RFC3339Nano),
 	}
