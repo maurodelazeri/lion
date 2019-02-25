@@ -40,14 +40,37 @@ message TradesDeadman {
 }
 
 message TradesDeadmanRequest { 
-   string                              token                     = 1;  
-   string                              venue                     = 2;      
-   string                              product                   = 3;             
+   string                              token                     = 1;             
 }
 
 message TradesDeadmanResponse { 
    Retcode                             retcode                   = 1;
    repeated TradesDeadman              trades_deadman            = 2; 
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
+}
+
+// ------------------------------------------------------------------- //
+
+// ------------------------------------------------------------------- //
+
+message OrderbookDeadman { 
+   int64                               product_id                 = 1; 
+   string                              product_description        = 2; 
+   int64                               venue_id                   = 3;
+   string                              venue_description          = 4;    
+   int64                               deadman                    = 5;
+   string                              timestamp                  = 6; 
+   string                              time_since                 = 7;               
+}
+
+message OrderbookDeadmanRequest { 
+   string                              token                     = 1;               
+}
+
+message OrderbookDeadmanResponse { 
+   Retcode                             retcode                   = 1;
+   repeated OrderbookDeadman           orderbook_deadman         = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
