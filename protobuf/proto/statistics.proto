@@ -34,7 +34,7 @@ message TradesDeadman {
    string                              venue_description          = 4;    
    string                              price                      = 5;    
    string                              volume                     = 6;    
-   string                              deadman                    = 7;
+   int64                               deadman                    = 7;
    string                              timestamp                  = 8; 
    string                              time_since                 = 9;               
 }
