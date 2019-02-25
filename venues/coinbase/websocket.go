@@ -359,27 +359,25 @@ func (r *Websocket) startReading() {
 							}
 
 							refLiveBook = book
-							if r.base.Streaming {
-								serialized, err := proto.Marshal(book)
-								if err != nil {
-									logrus.Error("Marshal ", err)
-								}
-								err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
-								if err != nil {
-									logrus.Error("Socket sent ", err)
-								}
-								// publish orderbook within a timeframe at least 1 second
-								value, exist := r.OrderbookTimestamps.Get(book.GetVenue() + book.GetProduct())
-								if !exist {
-									continue
-								}
-								elapsed := time.Since(value.(time.Time))
-								if elapsed.Seconds() <= 1 {
-									continue
-								}
-								r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
-								marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
+							serialized, err := proto.Marshal(book)
+							if err != nil {
+								logrus.Error("Marshal ", err)
 							}
+							err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
+							if err != nil {
+								logrus.Error("Socket sent ", err)
+							}
+							// publish orderbook within a timeframe at least 1 second
+							value, exist := r.OrderbookTimestamps.Get(book.GetVenue() + book.GetProduct())
+							if !exist {
+								continue
+							}
+							elapsed := time.Since(value.(time.Time))
+							if elapsed.Seconds() <= 1 {
+								continue
+							}
+							r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
+							marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
 						}
 
 						if data.Type == "match" {
@@ -389,15 +387,10 @@ func (r *Websocket) startReading() {
 							} else {
 								side = "sell"
 							}
-							// refBook, ok := r.base.LiveOrderBook.Get(product)
-							// if !ok {
-							// 	continue
-							// }
 							dateTimeRef, err := time.Parse(time.RFC3339Nano, data.Time)
 							if err != nil {
 								logrus.Error(r.base.GetName(), " problem to convert date ", err.Error())
 							}
-							//refLiveBook := refBook.(*pbAPI.Orderbook)
 							trades := &pbAPI.Trade{
 								Product:         product,
 								VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
@@ -407,25 +400,22 @@ func (r *Websocket) startReading() {
 								Price:           data.Price,
 								OrderSide:       side,
 								Volume:          data.Size,
-								// Asks:            refLiveBook.Asks,
-								// Bids:            refLiveBook.Bids,
 							}
-							if r.base.Streaming {
-								serialized, err := proto.Marshal(trades)
-								if err != nil {
-									logrus.Error("Marshal ", err)
-								}
-								// err = kafkaproducer.PublishMessageSync("trades."+r.base.GetName()+"."+product, serialized, 1, false)
-								// if err != nil {
-								// 	logrus.Error("Problem PublishMessageSync to summer ", err)
-								// 	continue
-								// }
-								err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
-								if err != nil {
-									logrus.Error("Socket sent ", err)
-								}
-								marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+							serialized, err := proto.Marshal(trades)
+							if err != nil {
+								logrus.Error("Marshal ", err)
 							}
+							// err = kafkaproducer.PublishMessageSync("trades."+r.base.GetName()+"."+product, serialized, 1, false)
+							// if err != nil {
+							// 	logrus.Error("Problem PublishMessageSync to summer ", err)
+							// 	continue
+							// }
+							err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+							if err != nil {
+								logrus.Error("Socket sent ", err)
+							}
+							marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+
 						}
 
 						if data.Type == "snapshot" {
