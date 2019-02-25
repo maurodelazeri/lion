@@ -2,6 +2,7 @@ syntax = "proto3";
 package api;
 import "enum.proto";
 
+// ------------------------------------------------------------------- //
 message BuySellWeek { 
    string                              week_day                   = 1; 
    int64                               sell                       = 2; 
@@ -17,6 +18,36 @@ message BuySellWeekRequest {
 message BuySellWeekResponse { 
    Retcode                             retcode                   = 1;
    repeated BuySellWeek                buy_sell_week             = 2; 
+   string                              comment                   = 3;   
+   string                              elapsed                   = 4;  
+}
+
+// ------------------------------------------------------------------- //
+
+
+// ------------------------------------------------------------------- //
+
+message TradesDeadman { 
+   int64                               product_id                 = 1; 
+   string                              product_description        = 2; 
+   int64                               venue_id                   = 3;
+   string                              venue_description          = 4;    
+   string                              price                      = 5;    
+   string                              volume                     = 6;    
+   string                              deadman                    = 7;
+   string                              timestamp                  = 8; 
+   string                              time_since                 = 9;               
+}
+
+message TradesDeadmanRequest { 
+   string                              token                     = 1;  
+   string                              venue                     = 2;      
+   string                              product                   = 3;             
+}
+
+message TradesDeadmanResponse { 
+   Retcode                             retcode                   = 1;
+   repeated TradesDeadman              trades_deadman            = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

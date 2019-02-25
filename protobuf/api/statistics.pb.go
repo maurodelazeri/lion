@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -20,6 +18,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+// ------------------------------------------------------------------- //
 type BuySellWeek struct {
 	WeekDay              string   `protobuf:"bytes,1,opt,name=week_day,json=weekDay,proto3" json:"week_day,omitempty"`
 	Sell                 int64    `protobuf:"varint,2,opt,name=sell,proto3" json:"sell,omitempty"`
@@ -35,15 +34,14 @@ func (*BuySellWeek) ProtoMessage()    {}
 func (*BuySellWeek) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{0}
 }
-
 func (m *BuySellWeek) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeek.Unmarshal(m, b)
 }
 func (m *BuySellWeek) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeek.Marshal(b, m, deterministic)
 }
-func (m *BuySellWeek) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeek.Merge(m, src)
+func (dst *BuySellWeek) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeek.Merge(dst, src)
 }
 func (m *BuySellWeek) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeek.Size(m)
@@ -90,15 +88,14 @@ func (*BuySellWeekRequest) ProtoMessage()    {}
 func (*BuySellWeekRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{1}
 }
-
 func (m *BuySellWeekRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeekRequest.Unmarshal(m, b)
 }
 func (m *BuySellWeekRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeekRequest.Marshal(b, m, deterministic)
 }
-func (m *BuySellWeekRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeekRequest.Merge(m, src)
+func (dst *BuySellWeekRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeekRequest.Merge(dst, src)
 }
 func (m *BuySellWeekRequest) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeekRequest.Size(m)
@@ -146,15 +143,14 @@ func (*BuySellWeekResponse) ProtoMessage()    {}
 func (*BuySellWeekResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{2}
 }
-
 func (m *BuySellWeekResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeekResponse.Unmarshal(m, b)
 }
 func (m *BuySellWeekResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeekResponse.Marshal(b, m, deterministic)
 }
-func (m *BuySellWeekResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeekResponse.Merge(m, src)
+func (dst *BuySellWeekResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeekResponse.Merge(dst, src)
 }
 func (m *BuySellWeekResponse) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeekResponse.Size(m)
@@ -193,31 +189,264 @@ func (m *BuySellWeekResponse) GetElapsed() string {
 	return ""
 }
 
+type TradesDeadman struct {
+	ProductId            int64    `protobuf:"varint,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	ProductDescription   string   `protobuf:"bytes,2,opt,name=product_description,json=productDescription,proto3" json:"product_description,omitempty"`
+	VenueId              int64    `protobuf:"varint,3,opt,name=venue_id,json=venueId,proto3" json:"venue_id,omitempty"`
+	VenueDescription     string   `protobuf:"bytes,4,opt,name=venue_description,json=venueDescription,proto3" json:"venue_description,omitempty"`
+	Price                string   `protobuf:"bytes,5,opt,name=price,proto3" json:"price,omitempty"`
+	Volume               string   `protobuf:"bytes,6,opt,name=volume,proto3" json:"volume,omitempty"`
+	Deadman              string   `protobuf:"bytes,7,opt,name=deadman,proto3" json:"deadman,omitempty"`
+	Timestamp            string   `protobuf:"bytes,8,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	TimeSince            string   `protobuf:"bytes,9,opt,name=time_since,json=timeSince,proto3" json:"time_since,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *TradesDeadman) Reset()         { *m = TradesDeadman{} }
+func (m *TradesDeadman) String() string { return proto.CompactTextString(m) }
+func (*TradesDeadman) ProtoMessage()    {}
+func (*TradesDeadman) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fe4ebcdede33dbb6, []int{3}
+}
+func (m *TradesDeadman) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TradesDeadman.Unmarshal(m, b)
+}
+func (m *TradesDeadman) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TradesDeadman.Marshal(b, m, deterministic)
+}
+func (dst *TradesDeadman) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TradesDeadman.Merge(dst, src)
+}
+func (m *TradesDeadman) XXX_Size() int {
+	return xxx_messageInfo_TradesDeadman.Size(m)
+}
+func (m *TradesDeadman) XXX_DiscardUnknown() {
+	xxx_messageInfo_TradesDeadman.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TradesDeadman proto.InternalMessageInfo
+
+func (m *TradesDeadman) GetProductId() int64 {
+	if m != nil {
+		return m.ProductId
+	}
+	return 0
+}
+
+func (m *TradesDeadman) GetProductDescription() string {
+	if m != nil {
+		return m.ProductDescription
+	}
+	return ""
+}
+
+func (m *TradesDeadman) GetVenueId() int64 {
+	if m != nil {
+		return m.VenueId
+	}
+	return 0
+}
+
+func (m *TradesDeadman) GetVenueDescription() string {
+	if m != nil {
+		return m.VenueDescription
+	}
+	return ""
+}
+
+func (m *TradesDeadman) GetPrice() string {
+	if m != nil {
+		return m.Price
+	}
+	return ""
+}
+
+func (m *TradesDeadman) GetVolume() string {
+	if m != nil {
+		return m.Volume
+	}
+	return ""
+}
+
+func (m *TradesDeadman) GetDeadman() string {
+	if m != nil {
+		return m.Deadman
+	}
+	return ""
+}
+
+func (m *TradesDeadman) GetTimestamp() string {
+	if m != nil {
+		return m.Timestamp
+	}
+	return ""
+}
+
+func (m *TradesDeadman) GetTimeSince() string {
+	if m != nil {
+		return m.TimeSince
+	}
+	return ""
+}
+
+type TradesDeadmanRequest struct {
+	Token                string   `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Venue                string   `protobuf:"bytes,2,opt,name=venue,proto3" json:"venue,omitempty"`
+	Product              string   `protobuf:"bytes,3,opt,name=product,proto3" json:"product,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *TradesDeadmanRequest) Reset()         { *m = TradesDeadmanRequest{} }
+func (m *TradesDeadmanRequest) String() string { return proto.CompactTextString(m) }
+func (*TradesDeadmanRequest) ProtoMessage()    {}
+func (*TradesDeadmanRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fe4ebcdede33dbb6, []int{4}
+}
+func (m *TradesDeadmanRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TradesDeadmanRequest.Unmarshal(m, b)
+}
+func (m *TradesDeadmanRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TradesDeadmanRequest.Marshal(b, m, deterministic)
+}
+func (dst *TradesDeadmanRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TradesDeadmanRequest.Merge(dst, src)
+}
+func (m *TradesDeadmanRequest) XXX_Size() int {
+	return xxx_messageInfo_TradesDeadmanRequest.Size(m)
+}
+func (m *TradesDeadmanRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_TradesDeadmanRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TradesDeadmanRequest proto.InternalMessageInfo
+
+func (m *TradesDeadmanRequest) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+func (m *TradesDeadmanRequest) GetVenue() string {
+	if m != nil {
+		return m.Venue
+	}
+	return ""
+}
+
+func (m *TradesDeadmanRequest) GetProduct() string {
+	if m != nil {
+		return m.Product
+	}
+	return ""
+}
+
+type TradesDeadmanResponse struct {
+	Retcode              Retcode          `protobuf:"varint,1,opt,name=retcode,proto3,enum=api.Retcode" json:"retcode,omitempty"`
+	TradesDeadman        []*TradesDeadman `protobuf:"bytes,2,rep,name=trades_deadman,json=tradesDeadman,proto3" json:"trades_deadman,omitempty"`
+	Comment              string           `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
+	Elapsed              string           `protobuf:"bytes,4,opt,name=elapsed,proto3" json:"elapsed,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
+}
+
+func (m *TradesDeadmanResponse) Reset()         { *m = TradesDeadmanResponse{} }
+func (m *TradesDeadmanResponse) String() string { return proto.CompactTextString(m) }
+func (*TradesDeadmanResponse) ProtoMessage()    {}
+func (*TradesDeadmanResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fe4ebcdede33dbb6, []int{5}
+}
+func (m *TradesDeadmanResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TradesDeadmanResponse.Unmarshal(m, b)
+}
+func (m *TradesDeadmanResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TradesDeadmanResponse.Marshal(b, m, deterministic)
+}
+func (dst *TradesDeadmanResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TradesDeadmanResponse.Merge(dst, src)
+}
+func (m *TradesDeadmanResponse) XXX_Size() int {
+	return xxx_messageInfo_TradesDeadmanResponse.Size(m)
+}
+func (m *TradesDeadmanResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_TradesDeadmanResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TradesDeadmanResponse proto.InternalMessageInfo
+
+func (m *TradesDeadmanResponse) GetRetcode() Retcode {
+	if m != nil {
+		return m.Retcode
+	}
+	return Retcode_DONE
+}
+
+func (m *TradesDeadmanResponse) GetTradesDeadman() []*TradesDeadman {
+	if m != nil {
+		return m.TradesDeadman
+	}
+	return nil
+}
+
+func (m *TradesDeadmanResponse) GetComment() string {
+	if m != nil {
+		return m.Comment
+	}
+	return ""
+}
+
+func (m *TradesDeadmanResponse) GetElapsed() string {
+	if m != nil {
+		return m.Elapsed
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*BuySellWeek)(nil), "api.BuySellWeek")
 	proto.RegisterType((*BuySellWeekRequest)(nil), "api.BuySellWeekRequest")
 	proto.RegisterType((*BuySellWeekResponse)(nil), "api.BuySellWeekResponse")
+	proto.RegisterType((*TradesDeadman)(nil), "api.TradesDeadman")
+	proto.RegisterType((*TradesDeadmanRequest)(nil), "api.TradesDeadmanRequest")
+	proto.RegisterType((*TradesDeadmanResponse)(nil), "api.TradesDeadmanResponse")
 }
 
 func init() { proto.RegisterFile("statistics.proto", fileDescriptor_fe4ebcdede33dbb6) }
 
 var fileDescriptor_fe4ebcdede33dbb6 = []byte{
-	// 264 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x90, 0xbf, 0x4e, 0x85, 0x30,
-	0x14, 0xc6, 0xc3, 0xe5, 0x2a, 0x72, 0x50, 0x43, 0xaa, 0x43, 0x75, 0x22, 0x0c, 0x86, 0x89, 0xe1,
-	0xea, 0x13, 0x18, 0x67, 0x87, 0x3a, 0x98, 0xb8, 0x90, 0x02, 0x67, 0x20, 0xfc, 0x69, 0xa5, 0xad,
-	0x86, 0x27, 0xf2, 0x35, 0x4d, 0x5b, 0x48, 0xb8, 0x5b, 0x7f, 0xdf, 0x77, 0xf2, 0xcb, 0xe9, 0x81,
-	0x54, 0x69, 0xae, 0x3b, 0xa5, 0xbb, 0x46, 0x95, 0x72, 0x16, 0x5a, 0x90, 0x90, 0xcb, 0xee, 0x11,
-	0x70, 0x32, 0xa3, 0x0f, 0xf2, 0x77, 0x48, 0x5e, 0xcd, 0xf2, 0x81, 0xc3, 0xf0, 0x89, 0xd8, 0x93,
-	0x07, 0xb8, 0xfa, 0x45, 0xec, 0xab, 0x96, 0x2f, 0x34, 0xc8, 0x82, 0x22, 0x66, 0x91, 0xe5, 0x37,
-	0xbe, 0x10, 0x02, 0x47, 0x85, 0xc3, 0x40, 0x0f, 0x59, 0x50, 0x84, 0xcc, 0xbd, 0x49, 0x0a, 0x61,
-	0x6d, 0x16, 0x1a, 0xba, 0xc8, 0x3e, 0xf3, 0x2f, 0x20, 0x3b, 0x1f, 0xc3, 0x6f, 0x83, 0x4a, 0x93,
-	0x7b, 0xb8, 0xd0, 0xa2, 0xc7, 0x69, 0x75, 0x7a, 0x20, 0x14, 0x22, 0x39, 0x8b, 0xd6, 0x34, 0xda,
-	0x49, 0x63, 0xb6, 0xa1, 0x9d, 0xff, 0xc1, 0xc9, 0xa0, 0x33, 0xc7, 0xcc, 0x43, 0xfe, 0x17, 0xc0,
-	0xdd, 0x99, 0x5c, 0x49, 0x31, 0x29, 0x24, 0x4f, 0x10, 0xcd, 0xa8, 0x1b, 0xd1, 0xa2, 0xf3, 0xdf,
-	0x9e, 0xae, 0x4b, 0x2e, 0xbb, 0x92, 0xf9, 0x8c, 0x6d, 0x25, 0x79, 0x81, 0x9b, 0xda, 0x2c, 0x95,
-	0xdd, 0xbc, 0xb2, 0xbf, 0xa2, 0x87, 0x2c, 0x2c, 0x92, 0x53, 0xea, 0xa6, 0xf7, 0xe2, 0xa4, 0xde,
-	0x9d, 0x84, 0x42, 0xd4, 0x88, 0x71, 0xc4, 0x49, 0xaf, 0xdb, 0x6c, 0x68, 0x1b, 0x1c, 0xb8, 0x54,
-	0xd8, 0xd2, 0xa3, 0x6f, 0x56, 0xac, 0x2f, 0xdd, 0x71, 0x9f, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff,
-	0xdf, 0xac, 0x7e, 0x47, 0x81, 0x01, 0x00, 0x00,
+	// 457 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0xcf, 0x8b, 0xd3, 0x40,
+	0x18, 0x25, 0xcd, 0xb6, 0xd9, 0x7c, 0xb5, 0x4b, 0x9d, 0xad, 0x32, 0x8a, 0x42, 0xc9, 0x41, 0x0a,
+	0x42, 0x85, 0xd5, 0x8b, 0x57, 0xe9, 0x65, 0x2f, 0x1e, 0xb2, 0x82, 0x20, 0x42, 0x98, 0x66, 0xbe,
+	0xc3, 0xd0, 0x24, 0x33, 0x66, 0x26, 0x2b, 0xf9, 0x8b, 0xbc, 0x88, 0x7f, 0xa3, 0xcc, 0x8f, 0xd8,
+	0xc4, 0x83, 0xe0, 0xde, 0xf2, 0xde, 0xfb, 0x78, 0x7c, 0xef, 0x9b, 0x17, 0x58, 0x6b, 0xc3, 0x8c,
+	0xd0, 0x46, 0x94, 0x7a, 0xaf, 0x5a, 0x69, 0x24, 0x89, 0x99, 0x12, 0xcf, 0x01, 0x9b, 0xae, 0xf6,
+	0x44, 0xf6, 0x11, 0x96, 0x1f, 0xba, 0xfe, 0x0e, 0xab, 0xea, 0x33, 0xe2, 0x89, 0x3c, 0x83, 0xcb,
+	0xef, 0x88, 0xa7, 0x82, 0xb3, 0x9e, 0x46, 0xdb, 0x68, 0x97, 0xe6, 0x89, 0xc5, 0x07, 0xd6, 0x13,
+	0x02, 0x17, 0x1a, 0xab, 0x8a, 0xce, 0xb6, 0xd1, 0x2e, 0xce, 0xdd, 0x37, 0x59, 0x43, 0x7c, 0xec,
+	0x7a, 0x1a, 0x3b, 0xca, 0x7e, 0x66, 0x5f, 0x80, 0x8c, 0xfc, 0x72, 0xfc, 0xd6, 0xa1, 0x36, 0x64,
+	0x03, 0x73, 0x23, 0x4f, 0xd8, 0x04, 0x4f, 0x0f, 0x08, 0x85, 0x44, 0xb5, 0x92, 0x77, 0xa5, 0x71,
+	0xa6, 0x69, 0x3e, 0x40, 0x3b, 0x7f, 0x8f, 0x4d, 0x87, 0xce, 0x39, 0xcd, 0x3d, 0xc8, 0x7e, 0x44,
+	0x70, 0x3d, 0x31, 0xd7, 0x4a, 0x36, 0x1a, 0xc9, 0x2b, 0x48, 0x5a, 0x34, 0xa5, 0xe4, 0xe8, 0xfc,
+	0xaf, 0x6e, 0x1e, 0xed, 0x99, 0x12, 0xfb, 0xdc, 0x73, 0xf9, 0x20, 0x92, 0x77, 0xb0, 0x3a, 0x76,
+	0x7d, 0x61, 0x37, 0x2f, 0x6c, 0x2a, 0x3a, 0xdb, 0xc6, 0xbb, 0xe5, 0xcd, 0xda, 0x4d, 0x8f, 0x8d,
+	0x97, 0xc7, 0xd1, 0x49, 0x28, 0x24, 0xa5, 0xac, 0x6b, 0x6c, 0x4c, 0xd8, 0x66, 0x80, 0x56, 0xc1,
+	0x8a, 0x29, 0x8d, 0x9c, 0x5e, 0x78, 0x25, 0xc0, 0xec, 0xe7, 0x0c, 0x56, 0x9f, 0x5a, 0xc6, 0x51,
+	0x1f, 0x90, 0xf1, 0x9a, 0x35, 0xe4, 0x25, 0x40, 0x08, 0x57, 0x08, 0xee, 0xd6, 0x8c, 0xf3, 0x34,
+	0x30, 0xb7, 0x9c, 0xbc, 0x81, 0xeb, 0x41, 0xe6, 0xa8, 0xcb, 0x56, 0x28, 0x23, 0x64, 0x13, 0xce,
+	0x42, 0x82, 0x74, 0x38, 0x2b, 0xf6, 0xa1, 0xdc, 0x51, 0xac, 0x9b, 0x3f, 0x7f, 0xe2, 0xf0, 0x2d,
+	0x27, 0xaf, 0xe1, 0xb1, 0x97, 0xc6, 0x4e, 0x7e, 0xc1, 0xb5, 0x13, 0xc6, 0x3e, 0x1b, 0x98, 0xab,
+	0x56, 0x94, 0x48, 0xe7, 0xfe, 0xd2, 0x0e, 0x90, 0xa7, 0xb0, 0xb8, 0x97, 0x55, 0x57, 0x23, 0x5d,
+	0x38, 0x3a, 0x20, 0x9b, 0x98, 0xfb, 0x40, 0x34, 0xf1, 0x89, 0x03, 0x24, 0x2f, 0x20, 0x35, 0xa2,
+	0x46, 0x6d, 0x58, 0xad, 0xe8, 0xa5, 0xd3, 0xce, 0x84, 0x4d, 0x6f, 0x41, 0xa1, 0x45, 0x53, 0x22,
+	0x4d, 0xcf, 0xf2, 0x9d, 0x25, 0xb2, 0xaf, 0xb0, 0x99, 0x5c, 0xeb, 0xdf, 0xb5, 0xf9, 0x53, 0x8e,
+	0xd9, 0xa8, 0x1c, 0xe3, 0x32, 0xc5, 0x93, 0x32, 0x65, 0xbf, 0x22, 0x78, 0xf2, 0x97, 0xfd, 0x7f,
+	0x16, 0xe7, 0x3d, 0x5c, 0x19, 0x67, 0x50, 0x0c, 0xe9, 0x7d, 0x73, 0x88, 0x1b, 0x9f, 0x7a, 0xaf,
+	0xcc, 0xe4, 0xdd, 0x1f, 0xd0, 0x9e, 0xe3, 0xc2, 0xfd, 0x9a, 0x6f, 0x7f, 0x07, 0x00, 0x00, 0xff,
+	0xff, 0xa7, 0x09, 0xbd, 0x1f, 0xbf, 0x03, 0x00, 0x00,
 }

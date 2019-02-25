@@ -20,7 +20,8 @@ message Product {
    double                              taker_fee                   = 15; 
    bool                                enabled                     = 16; 
    string                              settlement                  = 17; 
-   string                              expiration                  = 18; 
+   string                              expiration                  = 18;
+   int64                               deadman                     = 19; 
 }
 
 message ProductRequest { 

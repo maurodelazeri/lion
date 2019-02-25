@@ -3,11 +3,9 @@
 
 package api
 
-import (
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
-	math "math"
-)
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -38,15 +36,14 @@ func (*Currency) ProtoMessage()    {}
 func (*Currency) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1988b70e90d5a630, []int{0}
 }
-
 func (m *Currency) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Currency.Unmarshal(m, b)
 }
 func (m *Currency) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Currency.Marshal(b, m, deterministic)
 }
-func (m *Currency) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Currency.Merge(m, src)
+func (dst *Currency) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Currency.Merge(dst, src)
 }
 func (m *Currency) XXX_Size() int {
 	return xxx_messageInfo_Currency.Size(m)
@@ -114,15 +111,14 @@ func (*CurrencyRequest) ProtoMessage()    {}
 func (*CurrencyRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1988b70e90d5a630, []int{1}
 }
-
 func (m *CurrencyRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CurrencyRequest.Unmarshal(m, b)
 }
 func (m *CurrencyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_CurrencyRequest.Marshal(b, m, deterministic)
 }
-func (m *CurrencyRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CurrencyRequest.Merge(m, src)
+func (dst *CurrencyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CurrencyRequest.Merge(dst, src)
 }
 func (m *CurrencyRequest) XXX_Size() int {
 	return xxx_messageInfo_CurrencyRequest.Size(m)
@@ -170,15 +166,14 @@ func (*CurrencyResponse) ProtoMessage()    {}
 func (*CurrencyResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1988b70e90d5a630, []int{2}
 }
-
 func (m *CurrencyResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CurrencyResponse.Unmarshal(m, b)
 }
 func (m *CurrencyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_CurrencyResponse.Marshal(b, m, deterministic)
 }
-func (m *CurrencyResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CurrencyResponse.Merge(m, src)
+func (dst *CurrencyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CurrencyResponse.Merge(dst, src)
 }
 func (m *CurrencyResponse) XXX_Size() int {
 	return xxx_messageInfo_CurrencyResponse.Size(m)
@@ -232,15 +227,14 @@ func (*CurrencyPostRequest) ProtoMessage()    {}
 func (*CurrencyPostRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1988b70e90d5a630, []int{3}
 }
-
 func (m *CurrencyPostRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CurrencyPostRequest.Unmarshal(m, b)
 }
 func (m *CurrencyPostRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_CurrencyPostRequest.Marshal(b, m, deterministic)
 }
-func (m *CurrencyPostRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CurrencyPostRequest.Merge(m, src)
+func (dst *CurrencyPostRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CurrencyPostRequest.Merge(dst, src)
 }
 func (m *CurrencyPostRequest) XXX_Size() int {
 	return xxx_messageInfo_CurrencyPostRequest.Size(m)
@@ -287,15 +281,14 @@ func (*CurrencyPostResponse) ProtoMessage()    {}
 func (*CurrencyPostResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_1988b70e90d5a630, []int{4}
 }
-
 func (m *CurrencyPostResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_CurrencyPostResponse.Unmarshal(m, b)
 }
 func (m *CurrencyPostResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_CurrencyPostResponse.Marshal(b, m, deterministic)
 }
-func (m *CurrencyPostResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_CurrencyPostResponse.Merge(m, src)
+func (dst *CurrencyPostResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CurrencyPostResponse.Merge(dst, src)
 }
 func (m *CurrencyPostResponse) XXX_Size() int {
 	return xxx_messageInfo_CurrencyPostResponse.Size(m)
