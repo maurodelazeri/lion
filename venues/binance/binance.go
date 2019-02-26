@@ -2,15 +2,18 @@ package binance
 
 import (
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
 	utils "github.com/maurodelazeri/concurrency-map-slice"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/socket"
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/maurodelazeri/lion/venues/request"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -117,7 +120,11 @@ func (r *Binance) Start() {
 				}
 			}
 		}
+
 		r.LiveOrderBook = utils.NewConcurrentMap()
+
+		logrus.Infof("Initializing Socket Server")
+		r.Base.SocketClient = socket.InitSocketEngine(os.Getenv("WINTER_CONTAINER_EVENT"), 0, "datafeed:winter")
 
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {

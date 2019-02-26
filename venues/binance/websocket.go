@@ -121,12 +121,11 @@ func (r *Websocket) FetchEnabledOrderBooks() {
 			params := url.Values{}
 			params.Set("symbol", venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
 			params.Set("limit", "50")
-			path := fmt.Sprintf("%s%s?%s", apiURL, orderBookDepth, params.Encode())
+			path := fmt.Sprintf("%s%s?%s", mainWebsite, orderBookDepth, params.Encode())
 			if err := r.base.SendHTTPRequest(path, &resp); err != nil {
 				logrus.Error("problem to fech the orderbook ", venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, " ", err)
 				continue
 			}
-
 			for _, book := range resp.Bids {
 				amount, _ := strconv.ParseFloat(book[1].(string), 64)
 				price, _ := strconv.ParseFloat(book[0].(string), 64)
@@ -166,6 +165,7 @@ func (r *Websocket) connect() {
 		if ok {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
 			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
+			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 		}
 	}
 
@@ -242,7 +242,6 @@ func (r *Websocket) startReading() {
 								logrus.Error(err)
 								continue
 							}
-
 							value, exist := r.pairsMapping.Get(message.Data.Symbol)
 							if !exist {
 								continue
@@ -366,6 +365,8 @@ func (r *Websocket) startReading() {
 									Levels:          int64(r.base.MaxLevelsOrderBook),
 									SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
 									VenueTimestamp:  time.Unix(message.Data.EventTime, 0).UTC().Format(time.RFC3339Nano),
+									Asks:            refLiveBook.Asks,
+									Bids:            refLiveBook.Bids,
 								}
 								r.base.LiveOrderBook.Set(product, book)
 
@@ -388,7 +389,6 @@ func (r *Websocket) startReading() {
 								}
 								r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
 								marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
-
 							}
 						} else {
 							message := MessageTrade{}
