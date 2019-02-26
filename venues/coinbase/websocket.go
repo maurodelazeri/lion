@@ -161,7 +161,6 @@ func (r *Websocket) connect() {
 	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
-
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
 		r.OrderBookMAP[sym+"bids"] = make(map[float64]float64)
@@ -416,7 +415,6 @@ func (r *Websocket) startReading() {
 								logrus.Error("Socket sent ", err)
 							}
 							marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
-
 						}
 
 						if data.Type == "snapshot" {

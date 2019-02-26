@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/maurodelazeri/concurrency-map-slice"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
@@ -77,6 +77,7 @@ type Websocket struct {
 	MessageType     []byte
 
 	LockTillBookFetchToFinish map[string]string
+	OrderbookTimestamps       *utils.ConcurrentMap
 }
 
 // SetDefaults sets default values for the venue

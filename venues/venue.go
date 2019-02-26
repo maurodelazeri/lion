@@ -9,7 +9,7 @@ import (
 
 	centrifuge "github.com/centrifugal/centrifuge-go"
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/maurodelazeri/concurrency-map-slice"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	number "github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
