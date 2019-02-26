@@ -30,11 +30,12 @@ type Message struct {
 		Symbol string `json:"symbol,omitempty"`
 	} `json:"filter,omitempty"`
 	Data []struct {
-		Symbol string  `json:"symbol,omitempty"`
-		ID     int64   `json:"id,omitempty"`
-		Side   string  `json:"side,omitempty"`
-		Size   int     `json:"size,omitempty"`
-		Price  float64 `json:"price,omitempty"`
+		Symbol    string  `json:"symbol,omitempty"`
+		Timestamp string  `json:"timestamp,omitempty"`
+		ID        int64   `json:"id,omitempty"`
+		Side      string  `json:"side,omitempty"`
+		Size      int     `json:"size,omitempty"`
+		Price     float64 `json:"price,omitempty"`
 	} `json:"data,omitempty"`
 }
 

@@ -77,7 +77,6 @@ type Websocket struct {
 	OrderBookMAP    map[string]map[float64]float64
 	subscribedPairs []string
 	pairsMapping    *utils.ConcurrentMap
-	MessageType     []byte
 
 	LockTillBookFetchToFinish map[string]string
 	OrderbookTimestamps       *utils.ConcurrentMap
@@ -129,7 +128,6 @@ func (r *Binance) Start() {
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
 				socket := new(Websocket)
-				socket.MessageType = make([]byte, 4)
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
 				socket.LockTillBookFetchToFinish = map[string]string{}
@@ -138,7 +136,6 @@ func (r *Binance) Start() {
 		}
 		if len(sharedSocket) > 0 {
 			socket := new(Websocket)
-			socket.MessageType = make([]byte, 4)
 			socket.base = r
 			socket.subscribedPairs = sharedSocket
 			socket.LockTillBookFetchToFinish = map[string]string{}
