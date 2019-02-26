@@ -186,6 +186,7 @@ func (r *Websocket) connect() {
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.pairsMapping = utils.NewConcurrentMap()
+	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
@@ -196,8 +197,8 @@ func (r *Websocket) connect() {
 
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
 			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 		}
 	}
@@ -253,7 +254,6 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-
 						var result interface{}
 						err := common.JSONDecode(resp, &result)
 						if err != nil {
@@ -447,14 +447,12 @@ func (r *Websocket) startReading() {
 										}
 										r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
 										marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
-
 									}
 								}
 							case "trades":
 								if len(chanData) == 3 {
 									if chanData[1] == "te" {
 										data := chanData[2].([]interface{})
-
 										var side string
 										var size float64
 										if data[2].(float64) > 0 {
@@ -464,11 +462,12 @@ func (r *Websocket) startReading() {
 											side = "sell"
 											size = data[2].(float64) * -1
 										}
+
 										trades := &pbAPI.Trade{
 											Product:         product,
 											Venue:           r.base.GetName(),
 											SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-											VenueTimestamp:  time.Unix(data[1].(int64), 0).UTC().Format(time.RFC3339Nano),
+											VenueTimestamp:  time.Unix(int64(data[1].(float64))/1000, 0).UTC().Format(time.RFC3339Nano),
 											Price:           data[3].(float64),
 											OrderSide:       side,
 											Volume:          size,

@@ -167,8 +167,8 @@ func (r *Websocket) connect() {
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
 			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 		}
 	}
