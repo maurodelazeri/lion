@@ -170,7 +170,6 @@ func (r *Websocket) connect() {
 			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
 			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
 			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
-
 		}
 	}
 

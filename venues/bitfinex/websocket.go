@@ -17,11 +17,14 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
-	"github.com/maurodelazeri/concurrency-map-slice"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
+	event "github.com/maurodelazeri/lion/events"
+	"github.com/maurodelazeri/lion/marketdata"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
-	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+	pbEvent "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/maurodelazeri/lion/venues/config"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -144,6 +147,9 @@ func (r *Websocket) IsConnected() bool {
 
 // CloseAndRecconect will try to reconnect.
 func (r *Websocket) closeAndRecconect() {
+	eventID, _ := uuid.NewV4()
+	eventData := event.CreateBaseEvent(eventID.String(), "closeAndRecconect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+	event.PublishEvent(eventData, "events", int64(1), false)
 	r.Close()
 	go func() {
 		r.connect()
@@ -190,8 +196,9 @@ func (r *Websocket) connect() {
 
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
+			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 		}
 	}
 
@@ -410,25 +417,37 @@ func (r *Websocket) startReading() {
 
 										wg.Wait()
 										book := &pbAPI.Orderbook{
-											Product:   pbAPI.Product((pbAPI.Product_value[product])),
-											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-											Levels:    int32(r.base.MaxLevelsOrderBook),
-											Timestamp: common.MakeTimestamp(),
-											Asks:      refLiveBook.Asks,
-											Bids:      refLiveBook.Bids,
-											VenueType: pbAPI.VenueType_SPOT,
+											Product:         product,
+											Venue:           r.base.GetName(),
+											Levels:          int64(r.base.MaxLevelsOrderBook),
+											SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+											VenueTimestamp:  time.Now().UTC().Format(time.RFC3339Nano),
+											Asks:            refLiveBook.Asks,
+											Bids:            refLiveBook.Bids,
 										}
-										refLiveBook = book
 
-										if r.base.Streaming {
-											serialized, err := proto.Marshal(book)
-											if err != nil {
-												log.Fatal("proto.Marshal error: ", err)
-											}
-											r.MessageType[0] = 1
-											serialized = append(r.MessageType, serialized[:]...)
-											kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
+										r.base.LiveOrderBook.Set(product, book)
+
+										serialized, err := proto.Marshal(book)
+										if err != nil {
+											logrus.Error("Marshal ", err)
 										}
+										err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
+										if err != nil {
+											logrus.Error("Socket sent ", err)
+										}
+										// publish orderbook within a timeframe at least 1 second
+										value, exist := r.OrderbookTimestamps.Get(book.GetVenue() + book.GetProduct())
+										if !exist {
+											continue
+										}
+										elapsed := time.Since(value.(time.Time))
+										if elapsed.Seconds() <= 1 {
+											continue
+										}
+										r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
+										marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
+
 									}
 								}
 							case "trades":
@@ -436,113 +455,37 @@ func (r *Websocket) startReading() {
 									if chanData[1] == "te" {
 										data := chanData[2].([]interface{})
 
-										var side pbAPI.Side
+										var side string
 										var size float64
 										if data[2].(float64) > 0 {
-											side = pbAPI.Side_BUY
+											side = "buy"
 											size = data[2].(float64)
 										} else {
-											side = pbAPI.Side_SELL
+											side = "sell"
 											size = data[2].(float64) * -1
 										}
-										refBook, ok := r.base.LiveOrderBook.Get(product)
-										if !ok {
-											continue
-										}
-										refLiveBook := refBook.(*pbAPI.Orderbook)
 										trades := &pbAPI.Trade{
-											Product:   pbAPI.Product((pbAPI.Product_value[product])),
-											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-											Timestamp: common.MakeTimestamp(),
-											Price:     data[3].(float64),
-											OrderSide: side,
-											Volume:    size,
-											VenueType: pbAPI.VenueType_SPOT,
-											Asks:      refLiveBook.Asks,
-											Bids:      refLiveBook.Bids,
+											Product:         product,
+											Venue:           r.base.GetName(),
+											SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+											VenueTimestamp:  time.Unix(data[1].(int64), 0).UTC().Format(time.RFC3339Nano),
+											Price:           data[3].(float64),
+											OrderSide:       side,
+											Volume:          size,
 										}
 										serialized, err := proto.Marshal(trades)
 										if err != nil {
-											log.Fatal("proto.Marshal error: ", err)
+											logrus.Error("Marshal ", err)
 										}
-										r.MessageType[0] = 0
-										serialized = append(r.MessageType, serialized[:]...)
-										kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+										err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+										if err != nil {
+											logrus.Error("Socket sent ", err)
+										}
+										marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
 									}
 								}
 							}
 						}
-
-						// we dont need to update the book if any level we care was changed
-						// if !updated {
-						// 	continue
-						// }
-
-						// wg.Add(1)
-						// go func() {
-						// 	refLiveBook.Bids = []*pbAPI.Item{}
-						// 	for price, amount := range r.OrderBookMAP[product+"bids"] {
-						// 		refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
-						// 	}
-						// 	sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-						// 		return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-						// 	})
-						// 	wg.Done()
-						// }()
-
-						// wg.Add(1)
-						// go func() {
-						// 	refLiveBook.Asks = []*pbAPI.Item{}
-						// 	for price, amount := range r.OrderBookMAP[product+"asks"] {
-						// 		refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
-						// 	}
-						// 	sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-						// 		return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-						// 	})
-						// 	wg.Done()
-						// }()
-
-						// wg.Wait()
-
-						// wg.Add(1)
-						// go func() {
-						// 	totalBids := len(refLiveBook.Bids)
-						// 	if totalBids > r.base.MaxLevelsOrderBook {
-						// 		refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-						// 	}
-						// 	wg.Done()
-						// }()
-						// wg.Add(1)
-						// go func() {
-						// 	totalAsks := len(refLiveBook.Asks)
-						// 	if totalAsks > r.base.MaxLevelsOrderBook {
-						// 		refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
-						// 	}
-						// 	wg.Done()
-						// }()
-
-						// wg.Wait()
-						// book := &pbAPI.Orderbook{
-						// 	Product:   pbAPI.Product((pbAPI.Product_value[product])),
-						// 	Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-						// 	Levels:    int32(r.base.MaxLevelsOrderBook),
-						// 	Timestamp: common.MakeTimestamp(),
-						// 	Asks:      refLiveBook.Asks,
-						// 	Bids:      refLiveBook.Bids,
-						// 	VenueType: pbAPI.VenueType_SPOT,
-						// }
-						// refLiveBook = book
-
-						// if r.base.Streaming {
-						// 	serialized, err := proto.Marshal(book)
-						// 	if err != nil {
-						// 		log.Fatal("proto.Marshal error: ", err)
-						// 	}
-						// 	r.MessageType[0] = 1
-						// 	serialized = append(r.MessageType, serialized[:]...)
-						// 	kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
-						// }
-
 					}
 				}
 			}
