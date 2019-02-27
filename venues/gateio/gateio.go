@@ -106,6 +106,7 @@ func (r *Gateio) Start() {
 
 		logrus.Infof("Initializing Socket Server")
 		r.Base.SocketClient = socket.InitSocketEngine(os.Getenv("WINTER_CONTAINER_EVENT"), 0, "datafeed:winter")
+
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
 				socket := new(Websocket)
