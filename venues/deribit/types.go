@@ -13,8 +13,6 @@ type MessageChannel struct {
 	Params  Params `json:"params"`
 }
 
-// WARN[0005] {"jsonrpc":"2.0","method":"subscription","params":{"channel":"book.BTC-PERPETUAL.raw","data":{"instrument_name":"BTC-PERPETUAL","bids":[["change",5485.0,727.0]],"asks":[],"prev_change_id":8399573118,"date":1542553161096,"change_id":8399573119}}}
-
 // Message ...
 type Message struct {
 	Jsonrpc string `json:"jsonrpc,omitempty"`
@@ -42,4 +40,7 @@ type Message struct {
 	} `json:"params,omitempty"`
 }
 
-// ,[7033.0,25.0],[7049.5,10.0],[7050.0,741.0],[7080.0,10.0],[7094.0,20.0],[7099.5,10.0],[7100.0,25.0],[7149.5,10.0],[7167.0,50.0],[7175.0,1.0],[7199.5,10.0],[73
+// PingPong ...
+type PingPong struct {
+	Action string `json:"action"`
+}

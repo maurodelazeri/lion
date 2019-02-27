@@ -72,6 +72,27 @@ func (r *Websocket) Subscribe(products []string) error {
 	return nil
 }
 
+// Heartbeat ...
+func (r *Websocket) Heartbeat() {
+	go func() {
+		for {
+			if r.IsConnected() {
+				json, err := common.JSONEncode(PingPong{Action: "/api/v2/public/ping"})
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+				err = r.Conn.WriteMessage(websocket.TextMessage, json)
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+			}
+			time.Sleep(time.Second * 60)
+		}
+	}()
+}
+
 // Close closes the underlying network connection without
 // sending or waiting for a close frame.
 func (r *Websocket) Close() {
