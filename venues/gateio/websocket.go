@@ -9,6 +9,7 @@ import (
 	"math"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -251,120 +252,190 @@ func (r *Websocket) startReading() {
 							logrus.Error(err)
 							continue
 						}
-						if len(data.Params) > 0 {
-							if data.Method == "trades.update" {
-								value, exist := r.pairsMapping.Get(data.Params[0].(string))
-								if !exist {
-									continue
+						//if len(data.Params) > 0 {
+						if data.Method == "trades.update" {
+							value, exist := r.pairsMapping.Get(data.Params[0].(string))
+							if !exist {
+								continue
+							}
+							product := value.(string)
+							params := data.Params[1].([]interface{})
+							if len(params) == 100 {
+								continue
+								// NEED TO VALIDATE ONCE
+							}
+
+							for _, p := range params {
+								mapData := p.(map[string]interface{})
+								var side string
+								if mapData["type"].(string) == "buy" {
+									side = "buy"
+								} else {
+									side = "sell"
 								}
-								product := value.(string)
-								params := data.Params[1].([]interface{})
-								for _, p := range params {
-									mapData := p.(map[string]interface{})
-									var side string
-									if mapData["type"].(string) == "buy" {
-										side = "buy"
-									} else {
-										side = "sell"
-									}
-									sec, dec := math.Modf(mapData["time"].(float64))
-									trades := &pbAPI.Trade{
-										Product:         product,
-										VenueTradeId:    fmt.Sprintf("%v", mapData["id"].(float64)),
-										Venue:           r.base.GetName(),
-										SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-										VenueTimestamp:  time.Unix(int64(sec), int64(dec*(1e9))).UTC().Format(time.RFC3339Nano),
-										Price:           number.FromString(mapData["price"].(string)).Float64(),
-										OrderSide:       side,
-										Volume:          number.FromString(mapData["amount"].(string)).Float64(),
-									}
-									serialized, err := proto.Marshal(trades)
-									if err != nil {
-										logrus.Error("Marshal ", err)
-									}
-									err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
-									if err != nil {
-										logrus.Error("Socket sent ", err)
-									}
-									marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+								sec, dec := math.Modf(mapData["time"].(float64))
+								trades := &pbAPI.Trade{
+									Product:         product,
+									VenueTradeId:    fmt.Sprintf("%v", mapData["id"].(float64)),
+									Venue:           r.base.GetName(),
+									SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+									VenueTimestamp:  time.Unix(int64(sec), int64(dec*(1e9))).UTC().Format(time.RFC3339Nano),
+									Price:           number.FromString(mapData["price"].(string)).Float64(),
+									OrderSide:       side,
+									Volume:          number.FromString(mapData["amount"].(string)).Float64(),
 								}
-							} else if data.Method == "depth.update" {
-								value, exist := r.pairsMapping.Get(data.Params[2].(string))
-								if !exist {
-									continue
+								serialized, err := proto.Marshal(trades)
+								if err != nil {
+									logrus.Error("Marshal ", err)
 								}
-								product := value.(string)
-								refBook, ok := r.base.LiveOrderBook.Get(product)
-								if !ok {
-									continue
+								err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+								if err != nil {
+									logrus.Error("Socket sent ", err)
 								}
-								refLiveBook := refBook.(*pbAPI.Orderbook)
-								params := data.Params[1].(map[string]interface{})
+								marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+							}
+						} else if data.Method == "depth.update" {
+							value, exist := r.pairsMapping.Get(data.Params[2].(string))
+							if !exist {
+								continue
+							}
+							product := value.(string)
+							refBook, ok := r.base.LiveOrderBook.Get(product)
+							if !ok {
+								continue
+							}
+
+							refLiveBook := refBook.(*pbAPI.Orderbook)
+							params := data.Params[1].(map[string]interface{})
+							updated := false
+
+							logrus.Info(string(resp))
+							if data.Params[0].(bool) {
 								for symbol, values := range params {
 									if symbol == "bids" {
 										for _, bids := range values.([]interface{}) {
 											values := bids.([]interface{})
-											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
+											amount, _ := strconv.ParseFloat(strings.TrimSpace(values[1].(string)), 64)
+											price, _ := strconv.ParseFloat(strings.TrimSpace(values[0].(string)), 64)
+											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
 										}
 									} else {
 										for _, asks := range values.([]interface{}) {
 											values := asks.([]interface{})
-											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(values[0].(string)).Float64(), Volume: number.FromString(values[1].(string)).Float64()})
+											amount, _ := strconv.ParseFloat(strings.TrimSpace(values[1].(string)), 64)
+											price, _ := strconv.ParseFloat(strings.TrimSpace(values[0].(string)), 64)
+											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
 										}
 									}
 								}
+							} else {
+								for symbol, values := range params {
+									if symbol == "bids" {
+										for _, bids := range values.([]interface{}) {
+											values := bids.([]interface{})
+											amount, _ := strconv.ParseFloat(strings.TrimSpace(values[1].(string)), 64)
+											price, _ := strconv.ParseFloat(strings.TrimSpace(values[0].(string)), 64)
 
-								var wg sync.WaitGroup
-								wg.Add(1)
-								go func() {
-									totalBids := len(refLiveBook.Bids)
-									if totalBids > r.base.MaxLevelsOrderBook {
-										refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+											if amount == 0 {
+												if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
+													delete(r.OrderBookMAP[product+"bids"], price)
+													updated = true
+												}
+											} else {
+												totalLevels := len(refLiveBook.GetBids())
+												if totalLevels == r.base.MaxLevelsOrderBook {
+													if price < refLiveBook.Bids[totalLevels-1].Price {
+														continue
+													}
+												}
+												updated = true
+												r.OrderBookMAP[product+"bids"][price] = amount
+											}
+										}
+									} else {
+										for _, asks := range values.([]interface{}) {
+											values := asks.([]interface{})
+											amount, _ := strconv.ParseFloat(strings.TrimSpace(values[1].(string)), 64)
+											price, _ := strconv.ParseFloat(strings.TrimSpace(values[0].(string)), 64)
+
+											if amount == 0 {
+												if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
+													delete(r.OrderBookMAP[product+"asks"], price)
+													updated = true
+												}
+											} else {
+												totalLevels := len(refLiveBook.GetBids())
+												if totalLevels == r.base.MaxLevelsOrderBook {
+													if price < refLiveBook.Bids[totalLevels-1].Price {
+														continue
+													}
+												}
+												updated = true
+												r.OrderBookMAP[product+"asks"][price] = amount
+											}
+										}
 									}
-									wg.Done()
-								}()
-								wg.Add(1)
-								go func() {
-									totalAsks := len(refLiveBook.Asks)
-									if totalAsks > r.base.MaxLevelsOrderBook {
-										refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
-									}
-									wg.Done()
-								}()
-
-								wg.Wait()
-								book := &pbAPI.Orderbook{
-									Product:         product,
-									Venue:           r.base.GetName(),
-									Levels:          int64(r.base.MaxLevelsOrderBook),
-									SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-									VenueTimestamp:  time.Now().UTC().Format(time.RFC3339Nano),
-									Asks:            refLiveBook.Asks,
-									Bids:            refLiveBook.Bids,
 								}
-								r.base.LiveOrderBook.Set(product, book)
-
-								serialized, err := proto.Marshal(book)
-								if err != nil {
-									logrus.Error("Marshal ", err)
-								}
-								err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
-								if err != nil {
-									logrus.Error("Socket sent ", err)
-								}
-								// publish orderbook within a timeframe at least 1 second
-								value, exist = r.OrderbookTimestamps.Get(book.GetVenue() + book.GetProduct())
-								if !exist {
-									continue
-								}
-								elapsed := time.Since(value.(time.Time))
-								if elapsed.Seconds() <= 1 {
-									continue
-								}
-								r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
-								marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
 							}
+
+							// we dont need to update the book if any level we care was changed
+							if !updated {
+								continue
+							}
+
+							var wg sync.WaitGroup
+							wg.Add(1)
+							go func() {
+								totalBids := len(refLiveBook.Bids)
+								if totalBids > r.base.MaxLevelsOrderBook {
+									refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
+							wg.Add(1)
+							go func() {
+								totalAsks := len(refLiveBook.Asks)
+								if totalAsks > r.base.MaxLevelsOrderBook {
+									refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
+
+							wg.Wait()
+							book := &pbAPI.Orderbook{
+								Product:         product,
+								Venue:           r.base.GetName(),
+								Levels:          int64(r.base.MaxLevelsOrderBook),
+								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+								VenueTimestamp:  time.Now().UTC().Format(time.RFC3339Nano),
+								Asks:            refLiveBook.Asks,
+								Bids:            refLiveBook.Bids,
+							}
+							r.base.LiveOrderBook.Set(product, book)
+							if product == "BTC-USDT" {
+								logrus.Info("ASC ", refLiveBook.Asks[0].Price, " - ", refLiveBook.Asks[0].Volume)
+							}
+							serialized, err := proto.Marshal(book)
+							if err != nil {
+								logrus.Error("Marshal ", err)
+							}
+							err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
+							if err != nil {
+								logrus.Error("Socket sent ", err)
+							}
+							// publish orderbook within a timeframe at least 1 second
+							value, exist = r.OrderbookTimestamps.Get(book.GetVenue() + book.GetProduct())
+							if !exist {
+								continue
+							}
+							elapsed := time.Since(value.(time.Time))
+							if elapsed.Seconds() <= 1 {
+								continue
+							}
+							r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
+							marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
 						}
+						//}
 					}
 				}
 			}
