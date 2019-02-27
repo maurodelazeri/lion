@@ -382,7 +382,7 @@ func (r *Websocket) startReading() {
 												updated = true
 											}
 										} else {
-											totalLevels := len(refLiveBook.GetBids())
+											totalLevels := len(refLiveBook.GetAsks())
 											if totalLevels == r.base.MaxLevelsOrderBook {
 												if len(refLiveBook.Asks) > 0 {
 													if price < refLiveBook.Asks[totalLevels-1].Price {
