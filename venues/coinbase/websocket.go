@@ -12,16 +12,18 @@ import (
 	"sync"
 	"time"
 
-	"github.com/maurodelazeri/lion/marketdata"
-
 	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
-	"github.com/maurodelazeri/concurrency-map-slice"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
+	event "github.com/maurodelazeri/lion/events"
+	"github.com/maurodelazeri/lion/marketdata"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	pbEvent "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/pquerna/ffjson/ffjson"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -117,6 +119,9 @@ func (r *Websocket) IsConnected() bool {
 
 // CloseAndRecconect will try to reconnect.
 func (r *Websocket) closeAndRecconect() {
+	eventID, _ := uuid.NewV4()
+	eventData := event.CreateBaseEvent(eventID.String(), "closeAndRecconect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+	event.PublishEvent(eventData, "events", int64(1), false)
 	r.Close()
 	go func() {
 		r.connect()
@@ -156,17 +161,15 @@ func (r *Websocket) connect() {
 	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
-
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
 		r.OrderBookMAP[sym+"bids"] = make(map[float64]float64)
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
 			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
-
 		}
 	}
 
@@ -192,6 +195,10 @@ func (r *Websocket) connect() {
 			}
 			break
 		} else {
+			eventID, _ := uuid.NewV4()
+			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+			event.PublishEvent(eventData, "events", int64(1), false)
+
 			if r.base.Verbose {
 				logrus.Println(err)
 				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
@@ -358,7 +365,8 @@ func (r *Websocket) startReading() {
 								Bids:            refLiveBook.Bids,
 							}
 
-							refLiveBook = book
+							r.base.LiveOrderBook.Set(product, book)
+
 							serialized, err := proto.Marshal(book)
 							if err != nil {
 								logrus.Error("Marshal ", err)
@@ -405,17 +413,11 @@ func (r *Websocket) startReading() {
 							if err != nil {
 								logrus.Error("Marshal ", err)
 							}
-							// err = kafkaproducer.PublishMessageSync("trades."+r.base.GetName()+"."+product, serialized, 1, false)
-							// if err != nil {
-							// 	logrus.Error("Problem PublishMessageSync to summer ", err)
-							// 	continue
-							// }
 							err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
 							if err != nil {
 								logrus.Error("Socket sent ", err)
 							}
 							marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
-
 						}
 
 						if data.Type == "snapshot" {
