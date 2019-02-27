@@ -31,7 +31,7 @@ type Message struct {
 			ChangeID       int64           `json:"change_id,omitempty"`
 			TradeID        int             `json:"tradeId,omitempty"`
 			TimeStamp      int64           `json:"timeStamp,omitempty"`
-			TradeSeq       int             `json:"tradeSeq,omitempty"`
+			TradeSeq       int64           `json:"tradeSeq,omitempty"`
 			Quantity       int             `json:"quantity,omitempty"`
 			Amount         float64         `json:"amount,omitempty"`
 			Price          float64         `json:"price,omitempty"`

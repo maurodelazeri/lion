@@ -5,6 +5,7 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -471,8 +472,9 @@ func (r *Websocket) startReading() {
 										trades := &pbAPI.Trade{
 											Product:         product,
 											Venue:           r.base.GetName(),
+											VenueTradeId:    fmt.Sprintf("%f", data[0].(float64)),
 											SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-											VenueTimestamp:  time.Unix(int64(data[1].(float64))/1000, 0).UTC().Format(time.RFC3339Nano),
+											VenueTimestamp:  time.Unix(0, int64(data[1].(float64))*int64(time.Millisecond)).UTC().Format(time.RFC3339Nano),
 											Price:           data[3].(float64),
 											OrderSide:       side,
 											Volume:          size,
