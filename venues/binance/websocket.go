@@ -368,7 +368,7 @@ func (r *Websocket) startReading() {
 									Venue:           r.base.GetName(),
 									Levels:          int64(r.base.MaxLevelsOrderBook),
 									SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-									VenueTimestamp:  time.Unix(message.Data.EventTime, 0).UTC().Format(time.RFC3339Nano),
+									VenueTimestamp:  time.Unix(0, message.Data.EventTime*int64(time.Millisecond)).UTC().Format(time.RFC3339Nano),
 									Asks:            refLiveBook.Asks,
 									Bids:            refLiveBook.Bids,
 								}
@@ -413,13 +413,13 @@ func (r *Websocket) startReading() {
 							} else {
 								side = "sell"
 							}
-
+							logrus.Info(message.Data.EventTime)
 							trades := &pbAPI.Trade{
 								Product:         product,
 								VenueTradeId:    strconv.FormatInt(message.Data.TradeID, 10),
 								Venue:           r.base.GetName(),
 								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-								VenueTimestamp:  time.Unix(message.Data.EventTime, 0).UTC().Format(time.RFC3339Nano),
+								VenueTimestamp:  time.Unix(0, message.Data.EventTime*int64(time.Millisecond)).UTC().Format(time.RFC3339Nano),
 								Price:           message.Data.Price,
 								OrderSide:       side,
 								Volume:          message.Data.Quantity,
