@@ -4,71 +4,49 @@ import (
 
 	//"encoding/json"
 
-	"encoding/json"
+	"bytes"
+	"compress/flate"
 	"errors"
-	"fmt"
-	"log"
+	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/url"
-	"reflect"
-	"sort"
+	"strconv"
 	"strings"
-	"sync"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
-	"github.com/maurodelazeri/concurrency-map-slice"
-	number "github.com/maurodelazeri/go-number"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
+	event "github.com/maurodelazeri/lion/events"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
-	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+	pbEvent "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/maurodelazeri/lion/venues/config"
-	"github.com/pquerna/ffjson/ffjson"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
+	// Users may subscribe to one or more channels，The total length of multiple channels should not exceed 4,096 bytes. ，
+	// https://www.okex.com/docs/en/#ws_swap-format
 
-	switch r.base.GetName() {
-	case "OKEX_INTERNATIONAL_FUT":
-		tradesBegin = "ok_sub_future"
-		tradesEnd = "_trade_this_week"
-		bookBegin = "ok_sub_future"
-		bookEnd = "_depth_quarter"
-	case "OKEX_INTERNATIONAL_SPOT":
-		tradesBegin = "ok_sub_spot_"
-		tradesEnd = "_deals"
-		bookBegin = "ok_sub_spot_"
-		bookEnd = "_depth_20"
-	}
+	// {"op": "subscribe", "args": ["spot/ticker:ETH-USDT","spot/candle60s:ETH-USDT"]}
 
 	subscribe := []MessageChannel{}
-	if r.base.Streaming {
-		for _, product := range products {
-			book := MessageChannel{
-				Event:   "addChannel",
-				Channel: fmt.Sprintf(`%s%s%s`, bookBegin, product, bookEnd),
-			}
-			subscribe = append(subscribe, book)
+	for _, product := range products {
+		book := MessageChannel{
+			Op:   "subscribe",
+			Args: []string{},
+		}
+		subscribe = append(subscribe, book)
 
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: fmt.Sprintf(`%s%s%s`, tradesBegin, product, tradesEnd),
-			}
-			subscribe = append(subscribe, trade)
+		trade := MessageChannel{
+			Op:   "subscribe",
+			Args: []string{},
 		}
-	} else {
-		for _, product := range products {
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: fmt.Sprintf(`%s%s%s`, tradesBegin, product, tradesEnd),
-			}
-			subscribe = append(subscribe, trade)
-		}
+		subscribe = append(subscribe, trade)
 	}
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
@@ -87,23 +65,16 @@ func (r *Websocket) Subscribe(products []string) error {
 
 // Heartbeat ...
 func (r *Websocket) Heartbeat() {
-	go func() {
-		for {
-			if r.IsConnected() {
-				json, err := common.JSONEncode(PingPong{Event: time.Now().Unix()})
-				if err != nil {
-					logrus.Error("Subscription ", err)
-					continue
-				}
-				err = r.Conn.WriteMessage(websocket.TextMessage, json)
-				if err != nil {
-					logrus.Error("Subscription ", err)
-					continue
-				}
+	ticker := time.NewTicker(time.Second * 27)
+	for {
+		select {
+		case <-ticker.C:
+			err := r.Conn.WriteJSON("{'event':'ping'}")
+			if err != nil {
+				logrus.Error(err)
 			}
-			time.Sleep(time.Second * 30)
 		}
-	}()
+	}
 }
 
 // Close closes the underlying network connection without
@@ -159,6 +130,9 @@ func (r *Websocket) IsConnected() bool {
 
 // CloseAndRecconect will try to reconnect.
 func (r *Websocket) closeAndRecconect() {
+	eventID, _ := uuid.NewV4()
+	eventData := event.CreateBaseEvent(eventID.String(), "closeAndRecconect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+	event.PublishEvent(eventData, "events", int64(1), false)
 	r.Close()
 	go func() {
 		r.connect()
@@ -195,6 +169,7 @@ func (r *Websocket) connect() {
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.pairsMapping = utils.NewConcurrentMap()
+	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
@@ -203,8 +178,9 @@ func (r *Websocket) connect() {
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
+			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 		}
 	}
 
@@ -231,6 +207,9 @@ func (r *Websocket) connect() {
 			}
 			break
 		} else {
+			eventID, _ := uuid.NewV4()
+			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+			event.PublishEvent(eventData, "events", int64(1), false)
 			if r.base.Verbose {
 				logrus.Println(err)
 				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
@@ -239,6 +218,33 @@ func (r *Websocket) connect() {
 
 		time.Sleep(nextItvl)
 	}
+}
+
+// WsReadData reads data from the websocket connection
+func (r *Websocket) WsReadData() (WebsocketResponse, error) {
+	msgType, resp, err := r.Conn.ReadMessage()
+	if err != nil {
+		logrus.Error(r.base.Name, " problem to read: ", err)
+		r.closeAndRecconect()
+		return WebsocketResponse{}, errors.New("websocket: not connected")
+	}
+
+	var standardMessage []byte
+
+	switch msgType {
+	case websocket.TextMessage:
+		standardMessage = resp
+
+	case websocket.BinaryMessage:
+		reader := flate.NewReader(bytes.NewReader(resp))
+		standardMessage, err = ioutil.ReadAll(reader)
+		reader.Close()
+		if err != nil {
+			return WebsocketResponse{}, err
+		}
+	}
+
+	return WebsocketResponse{Raw: standardMessage}, nil
 }
 
 // startReading is a helper method for getting a reader
@@ -252,208 +258,308 @@ func (r *Websocket) startReading() {
 			select {
 			default:
 				if r.IsConnected() {
-					err := errors.New("websocket: not connected")
-					msgType, resp, err := r.Conn.ReadMessage()
+					resp, err := r.WsReadData()
 					if err != nil {
-						logrus.Error(r.base.Name, " problem to read: ", err)
-						r.closeAndRecconect()
+						logrus.Error("Problem reading data ", err)
 						continue
 					}
-					switch msgType {
-					case websocket.TextMessage, websocket.BinaryMessage:
-						var err error
-						msg, err := common.GzipDecode(resp)
-						if err != nil {
-							logrus.Error("Problem to gzip data ", err)
-							return
-						}
-						var result interface{}
-						err = common.JSONDecode(msg, &result)
-						if err != nil {
-							logrus.Error("Ops ", err)
+
+					multiStreamDataArr := []MultiStreamData{}
+
+					err = common.JSONDecode(resp.Raw, &multiStreamDataArr)
+					if err != nil {
+						if strings.Contains(string(resp.Raw), "pong") {
+							continue
+						} else {
+							logrus.Error("Problem to JSONDecode ", err)
 							continue
 						}
-
-						switch reflect.TypeOf(result).String() {
-						case "[]interface {}":
-							event := result.([]interface{})
-							jsonByte, err := json.Marshal(event[0])
+					}
+					for _, multiStreamData := range multiStreamDataArr {
+						var errResponse ErrorResponse
+						if common.StringContains(string(resp.Raw), "error_msg") {
+							err = common.JSONDecode(resp.Raw, &errResponse)
 							if err != nil {
-								logrus.Error("Marshal problem ", err)
+								logrus.Error(err)
+							}
+							logrus.Error(r.base.GetName(), " error restp ", errResponse.ErrorMsg, " - ", string(resp.Raw))
+							continue
+						}
+						var newPair string
+						var assetType string
+						currencyPairSlice := common.SplitStrings(multiStreamData.Channel, "_")
+						if len(currencyPairSlice) > 5 {
+							newPair = currencyPairSlice[3] + "_" + currencyPairSlice[4]
+							assetType = currencyPairSlice[2]
+						}
+
+						if strings.Contains(multiStreamData.Channel, "deals") {
+							var deals DealsStreamData
+
+							err = common.JSONDecode(multiStreamData.Data, &deals)
+							if err != nil {
+								logrus.Error("Problem to JSONDecode ", err)
 								continue
 							}
-							jsonString := string(jsonByte)
-							if strings.Contains(jsonString, "addChannel") {
-								continue
+
+							for _, trade := range deals {
+								price, _ := strconv.ParseFloat(trade[1], 64)
+								amount, _ := strconv.ParseFloat(trade[2], 64)
+								time, _ := time.Parse(time.RFC3339, trade[3])
+
+								logrus.Info(newPair, assetType, price, amount, time)
+								// var side string
+								// if data.Side == "buy" {
+								//     side = "buy"
+								// } else {
+								//     side = "sell"
+								// }
+
+								// trades := &pbAPI.Trade{
+								//     Product:         product,
+								//     VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
+								//     Venue:           r.base.GetName(),
+								//     SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+								//     VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
+								//     Price:           data.Price,
+								//     OrderSide:       side,
+								//     Volume:          data.Size,
+								// }
+								// serialized, err := proto.Marshal(trades)
+								// if err != nil {
+								//     logrus.Error("Marshal ", err)
+								// }
+								// err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+								// if err != nil {
+								//     logrus.Error("Socket sent ", err)
+								// }
+								// marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+
 							}
-							if strings.Contains(jsonString, "error_msg") {
-								//logrus.Error("Problem parsing ", string(msg))
-								continue
-							}
 
-							if strings.Contains(jsonString, bookEnd) {
-								data := MessageBook{}
-								err = ffjson.Unmarshal([]byte(jsonString), &data)
-								if err != nil {
-									logrus.Error("Unmarshal problem 1 ", err)
-									continue
-								}
-								symbol := strings.Replace(data.Channel, bookBegin, "", -1)
-								symbol = strings.Replace(symbol, bookEnd, "", -1)
-								value, exist := r.pairsMapping.Get(symbol)
-								if !exist {
-									continue
-								}
-								product := value.(string)
-								refBook, ok := r.base.LiveOrderBook.Get(product)
-								if !ok {
-									continue
-								}
-								refLiveBook := refBook.(*pbAPI.Orderbook)
+						} else if strings.Contains(multiStreamData.Channel, "depth") {
+							// var depth DepthStreamData
 
-								var wg sync.WaitGroup
-								wg.Add(1)
-								go func() {
-									refLiveBook.Bids = []*pbAPI.Item{}
-									for _, bids := range data.Data.Bids {
-										switch bids[0].(type) {
-										case string:
-											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(bids[0].(string)).Float64(), Volume: number.FromString(bids[1].(string)).Float64()})
-										case float64:
-											refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: bids[0].(float64), Volume: bids[1].(float64)})
-										default:
-											logrus.Error("Order book type not found")
-										}
-									}
-									sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-										return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-									})
-									wg.Done()
-								}()
+							// err := common.JSONDecode(multiStreamData.Data, &depth)
+							// if err != nil {
+							// 	o.Websocket.DataHandler <- err
+							// 	continue
+							// }
 
-								wg.Add(1)
-								go func() {
-									refLiveBook.Asks = []*pbAPI.Item{}
-									for _, asks := range data.Data.Asks {
-										switch asks[0].(type) {
-										case string:
-											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(asks[0].(string)).Float64(), Volume: number.FromString(asks[1].(string)).Float64()})
-										case float64:
-											refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: asks[0].(float64), Volume: asks[1].(float64)})
-										default:
-											logrus.Error("Order book type not found")
-										}
-									}
-									sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-										return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-									})
-									wg.Done()
-								}()
-
-								wg.Wait()
-
-								wg.Add(1)
-								go func() {
-									totalBids := len(refLiveBook.Bids)
-									if totalBids > r.base.MaxLevelsOrderBook {
-										refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-									}
-									wg.Done()
-								}()
-								wg.Add(1)
-								go func() {
-									totalAsks := len(refLiveBook.Asks)
-									if totalAsks > r.base.MaxLevelsOrderBook {
-										refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
-									}
-									wg.Done()
-								}()
-
-								wg.Wait()
-								book := &pbAPI.Orderbook{
-									Product:   pbAPI.Product((pbAPI.Product_value[product])),
-									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-									Levels:    int32(r.base.MaxLevelsOrderBook),
-									Timestamp: common.MakeTimestamp(),
-									Asks:      refLiveBook.Asks,
-									Bids:      refLiveBook.Bids,
-									VenueType: r.venueType,
-								}
-								refLiveBook = book
-								if r.base.Streaming {
-									serialized, err := proto.Marshal(book)
-									if err != nil {
-										log.Fatal("proto.Marshal error: ", err)
-									}
-									r.MessageType[0] = 1
-									serialized = append(r.MessageType, serialized[:]...)
-									kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
-								}
-
-							} else {
-								data := MessageTrade{}
-								err = ffjson.Unmarshal([]byte(jsonString), &data)
-								if err != nil {
-									logrus.Error("Unmarshal 2 problem ", err)
-									continue
-								}
-								symbol := strings.Replace(data.Channel, tradesBegin, "", -1)
-								symbol = strings.Replace(symbol, tradesEnd, "", -1)
-								value, exist := r.pairsMapping.Get(symbol)
-								if !exist {
-									logrus.Info("pair does not exist ", symbol)
-									continue
-								}
-								product := value.(string)
-								refBook, ok := r.base.LiveOrderBook.Get(product)
-								if !ok {
-									logrus.Info("pair book does not exist ", symbol)
-									continue
-								}
-								refLiveBook := refBook.(*pbAPI.Orderbook)
-								var side pbAPI.Side
-								if data.Data[0][4] == "bid" {
-									side = pbAPI.Side_BUY
-								} else {
-									side = pbAPI.Side_SELL
-								}
-								var price, volume float64
-
-								switch reflect.TypeOf(data.Data[0][2]).String() {
-								case "string":
-									price = number.FromString(data.Data[0][1].(string)).Float64()
-									volume = number.FromString(data.Data[0][2].(string)).Float64()
-								case "float64":
-									price = data.Data[0][2].(float64)
-									volume = data.Data[0][1].(float64)
-								default:
-									logrus.Error("Order book type not found")
-								}
-
-								trades := &pbAPI.Trade{
-									Product:   pbAPI.Product((pbAPI.Product_value[product])),
-									Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-									Timestamp: common.MakeTimestamp(),
-									Price:     price,
-									OrderSide: side,
-									Volume:    volume,
-									VenueType: pbAPI.VenueType_SPOT,
-									Asks:      refLiveBook.Asks,
-									Bids:      refLiveBook.Bids,
-								}
-
-								serialized, err := proto.Marshal(trades)
-								if err != nil {
-									log.Fatal("proto.Marshal error: ", err)
-								}
-								r.MessageType[0] = 0
-								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
-							}
-						default:
-							logrus.Warn("DEFAULT CASE ", string(msg))
+							// o.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{
+							// 	Exchange: o.GetName(),
+							// 	Asset:    assetType,
+							// 	Pair:     pair.NewCurrencyPairFromString(newPair),
+							// }
 						}
 					}
+
+					//err := errors.New("websocket: not connected")
+
+					// switch msgType {
+					// case websocket.TextMessage, websocket.BinaryMessage:
+
+					// 	// var err error
+					// 	// msg, err := common.GzipDecode(resp)
+					// 	// if err != nil {
+					// 	// 	logrus.Error("Problem to gzip data ", err)
+					// 	// 	return
+					// 	// }
+					// 	// var result interface{}
+					// 	// err = common.JSONDecode(msg, &result)
+					// 	// if err != nil {
+					// 	// 	logrus.Error("Ops ", err)
+					// 	// 	continue
+					// 	// }
+
+					// 	// switch reflect.TypeOf(result).String() {
+					// 	// case "[]interface {}":
+					// 	// 	event := result.([]interface{})
+					// 	// 	jsonByte, err := json.Marshal(event[0])
+					// 	// 	if err != nil {
+					// 	// 		logrus.Error("Marshal problem ", err)
+					// 	// 		continue
+					// 	// 	}
+					// 	// 	jsonString := string(jsonByte)
+					// 	// 	if strings.Contains(jsonString, "addChannel") {
+					// 	// 		continue
+					// 	// 	}
+					// 	// 	if strings.Contains(jsonString, "error_msg") {
+					// 	// 		//logrus.Error("Problem parsing ", string(msg))
+					// 	// 		continue
+					// 	// 	}
+
+					// 	// 	if strings.Contains(jsonString, bookEnd) {
+					// 	// 		data := MessageBook{}
+					// 	// 		err = ffjson.Unmarshal([]byte(jsonString), &data)
+					// 	// 		if err != nil {
+					// 	// 			logrus.Error("Unmarshal problem 1 ", err)
+					// 	// 			continue
+					// 	// 		}
+					// 	// 		symbol := strings.Replace(data.Channel, bookBegin, "", -1)
+					// 	// 		symbol = strings.Replace(symbol, bookEnd, "", -1)
+					// 	// 		value, exist := r.pairsMapping.Get(symbol)
+					// 	// 		if !exist {
+					// 	// 			continue
+					// 	// 		}
+					// 	// 		product := value.(string)
+					// 	// 		refBook, ok := r.base.LiveOrderBook.Get(product)
+					// 	// 		if !ok {
+					// 	// 			continue
+					// 	// 		}
+					// 	// 		refLiveBook := refBook.(*pbAPI.Orderbook)
+
+					// 	// 		var wg sync.WaitGroup
+					// 	// 		wg.Add(1)
+					// 	// 		go func() {
+					// 	// 			refLiveBook.Bids = []*pbAPI.Item{}
+					// 	// 			for _, bids := range data.Data.Bids {
+					// 	// 				switch bids[0].(type) {
+					// 	// 				case string:
+					// 	// 					refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(bids[0].(string)).Float64(), Volume: number.FromString(bids[1].(string)).Float64()})
+					// 	// 				case float64:
+					// 	// 					refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: bids[0].(float64), Volume: bids[1].(float64)})
+					// 	// 				default:
+					// 	// 					logrus.Error("Order book type not found")
+					// 	// 				}
+					// 	// 			}
+					// 	// 			sort.Slice(refLiveBook.Bids, func(i, j int) bool {
+					// 	// 				return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
+					// 	// 			})
+					// 	// 			wg.Done()
+					// 	// 		}()
+
+					// 	// 		wg.Add(1)
+					// 	// 		go func() {
+					// 	// 			refLiveBook.Asks = []*pbAPI.Item{}
+					// 	// 			for _, asks := range data.Data.Asks {
+					// 	// 				switch asks[0].(type) {
+					// 	// 				case string:
+					// 	// 					refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(asks[0].(string)).Float64(), Volume: number.FromString(asks[1].(string)).Float64()})
+					// 	// 				case float64:
+					// 	// 					refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: asks[0].(float64), Volume: asks[1].(float64)})
+					// 	// 				default:
+					// 	// 					logrus.Error("Order book type not found")
+					// 	// 				}
+					// 	// 			}
+					// 	// 			sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+					// 	// 				return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+					// 	// 			})
+					// 	// 			wg.Done()
+					// 	// 		}()
+
+					// 	// 		wg.Wait()
+
+					// 	// 		wg.Add(1)
+					// 	// 		go func() {
+					// 	// 			totalBids := len(refLiveBook.Bids)
+					// 	// 			if totalBids > r.base.MaxLevelsOrderBook {
+					// 	// 				refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+					// 	// 			}
+					// 	// 			wg.Done()
+					// 	// 		}()
+					// 	// 		wg.Add(1)
+					// 	// 		go func() {
+					// 	// 			totalAsks := len(refLiveBook.Asks)
+					// 	// 			if totalAsks > r.base.MaxLevelsOrderBook {
+					// 	// 				refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+					// 	// 			}
+					// 	// 			wg.Done()
+					// 	// 		}()
+
+					// 	// 		wg.Wait()
+					// 	// 		book := &pbAPI.Orderbook{
+					// 	// 			Product:         product,
+					// 	// 			Venue:           r.base.GetName(),
+					// 	// 			Levels:          int64(r.base.MaxLevelsOrderBook),
+					// 	// 			SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+					// 	// 			//VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
+					// 	// 			Asks: refLiveBook.Asks,
+					// 	// 			Bids: refLiveBook.Bids,
+					// 	// 		}
+
+					// 	// 		r.base.LiveOrderBook.Set(product, book)
+
+					// 	// 		serialized, err := proto.Marshal(book)
+					// 	// 		if err != nil {
+					// 	// 			logrus.Error("Marshal ", err)
+					// 	// 		}
+					// 	// 		err = r.base.SocketClient.Publish("orderbooks:"+r.base.GetName()+"."+product, serialized)
+					// 	// 		if err != nil {
+					// 	// 			logrus.Error("Socket sent ", err)
+					// 	// 		}
+					// 	// 		// publish orderbook within a timeframe at least 1 second
+					// 	// 		value, exist = r.OrderbookTimestamps.Get(book.GetVenue() + book.GetProduct())
+					// 	// 		if !exist {
+					// 	// 			continue
+					// 	// 		}
+					// 	// 		elapsed := time.Since(value.(time.Time))
+					// 	// 		if elapsed.Seconds() <= 1 {
+					// 	// 			continue
+					// 	// 		}
+					// 	// 		r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
+					// 	// 		marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
+
+					// 	// 	} else {
+					// 	// 		data := MessageTrade{}
+					// 	// 		err = ffjson.Unmarshal([]byte(jsonString), &data)
+					// 	// 		if err != nil {
+					// 	// 			logrus.Error("Unmarshal 2 problem ", err)
+					// 	// 			continue
+					// 	// 		}
+					// 	// 		symbol := strings.Replace(data.Channel, tradesBegin, "", -1)
+					// 	// 		symbol = strings.Replace(symbol, tradesEnd, "", -1)
+					// 	// 		value, exist := r.pairsMapping.Get(symbol)
+					// 	// 		if !exist {
+					// 	// 			logrus.Info("pair does not exist ", symbol)
+					// 	// 			continue
+					// 	// 		}
+					// 	// 		product := value.(string)
+					// 	// 		var side string
+					// 	// 		if data.Data[0][4] == "bid" {
+					// 	// 			side = "buy"
+					// 	// 		} else {
+					// 	// 			side = "sell"
+					// 	// 		}
+					// 	// 		var price, volume float64
+
+					// 	// 		switch reflect.TypeOf(data.Data[0][2]).String() {
+					// 	// 		case "string":
+					// 	// 			price = number.FromString(data.Data[0][1].(string)).Float64()
+					// 	// 			volume = number.FromString(data.Data[0][2].(string)).Float64()
+					// 	// 		case "float64":
+					// 	// 			price = data.Data[0][2].(float64)
+					// 	// 			volume = data.Data[0][1].(float64)
+					// 	// 		default:
+					// 	// 			logrus.Error("Order book type not found")
+					// 	// 		}
+
+					// 	// 		trades := &pbAPI.Trade{
+					// 	// 			Product: product,
+					// 	// 			//  VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
+					// 	// 			Venue:           r.base.GetName(),
+					// 	// 			SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+					// 	// 			//VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
+					// 	// 			Price:     price,
+					// 	// 			OrderSide: side,
+					// 	// 			Volume:    volume,
+					// 	// 		}
+
+					// 	// 		serialized, err := proto.Marshal(trades)
+					// 	// 		if err != nil {
+					// 	// 			logrus.Error("Marshal ", err)
+					// 	// 		}
+					// 	// 		err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+					// 	// 		if err != nil {
+					// 	// 			logrus.Error("Socket sent ", err)
+					// 	// 		}
+					// 	// 		marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+					// 	// 	}
+					// 	// default:
+					// 	// 	logrus.Warn("DEFAULT CASE ", string(msg))
+					// 	// }
+
+					// }
 				}
 			}
 		}
