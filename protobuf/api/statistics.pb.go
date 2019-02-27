@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -34,14 +36,15 @@ func (*BuySellWeek) ProtoMessage()    {}
 func (*BuySellWeek) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{0}
 }
+
 func (m *BuySellWeek) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeek.Unmarshal(m, b)
 }
 func (m *BuySellWeek) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeek.Marshal(b, m, deterministic)
 }
-func (dst *BuySellWeek) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeek.Merge(dst, src)
+func (m *BuySellWeek) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeek.Merge(m, src)
 }
 func (m *BuySellWeek) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeek.Size(m)
@@ -88,14 +91,15 @@ func (*BuySellWeekRequest) ProtoMessage()    {}
 func (*BuySellWeekRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{1}
 }
+
 func (m *BuySellWeekRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeekRequest.Unmarshal(m, b)
 }
 func (m *BuySellWeekRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeekRequest.Marshal(b, m, deterministic)
 }
-func (dst *BuySellWeekRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeekRequest.Merge(dst, src)
+func (m *BuySellWeekRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeekRequest.Merge(m, src)
 }
 func (m *BuySellWeekRequest) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeekRequest.Size(m)
@@ -143,14 +147,15 @@ func (*BuySellWeekResponse) ProtoMessage()    {}
 func (*BuySellWeekResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{2}
 }
+
 func (m *BuySellWeekResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BuySellWeekResponse.Unmarshal(m, b)
 }
 func (m *BuySellWeekResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BuySellWeekResponse.Marshal(b, m, deterministic)
 }
-func (dst *BuySellWeekResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BuySellWeekResponse.Merge(dst, src)
+func (m *BuySellWeekResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BuySellWeekResponse.Merge(m, src)
 }
 func (m *BuySellWeekResponse) XXX_Size() int {
 	return xxx_messageInfo_BuySellWeekResponse.Size(m)
@@ -210,14 +215,15 @@ func (*TradesDeadman) ProtoMessage()    {}
 func (*TradesDeadman) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{3}
 }
+
 func (m *TradesDeadman) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TradesDeadman.Unmarshal(m, b)
 }
 func (m *TradesDeadman) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TradesDeadman.Marshal(b, m, deterministic)
 }
-func (dst *TradesDeadman) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TradesDeadman.Merge(dst, src)
+func (m *TradesDeadman) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TradesDeadman.Merge(m, src)
 }
 func (m *TradesDeadman) XXX_Size() int {
 	return xxx_messageInfo_TradesDeadman.Size(m)
@@ -304,14 +310,15 @@ func (*TradesDeadmanRequest) ProtoMessage()    {}
 func (*TradesDeadmanRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{4}
 }
+
 func (m *TradesDeadmanRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TradesDeadmanRequest.Unmarshal(m, b)
 }
 func (m *TradesDeadmanRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TradesDeadmanRequest.Marshal(b, m, deterministic)
 }
-func (dst *TradesDeadmanRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TradesDeadmanRequest.Merge(dst, src)
+func (m *TradesDeadmanRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TradesDeadmanRequest.Merge(m, src)
 }
 func (m *TradesDeadmanRequest) XXX_Size() int {
 	return xxx_messageInfo_TradesDeadmanRequest.Size(m)
@@ -345,14 +352,15 @@ func (*TradesDeadmanResponse) ProtoMessage()    {}
 func (*TradesDeadmanResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{5}
 }
+
 func (m *TradesDeadmanResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TradesDeadmanResponse.Unmarshal(m, b)
 }
 func (m *TradesDeadmanResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_TradesDeadmanResponse.Marshal(b, m, deterministic)
 }
-func (dst *TradesDeadmanResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_TradesDeadmanResponse.Merge(dst, src)
+func (m *TradesDeadmanResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TradesDeadmanResponse.Merge(m, src)
 }
 func (m *TradesDeadmanResponse) XXX_Size() int {
 	return xxx_messageInfo_TradesDeadmanResponse.Size(m)
@@ -410,14 +418,15 @@ func (*OrderbookDeadman) ProtoMessage()    {}
 func (*OrderbookDeadman) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{6}
 }
+
 func (m *OrderbookDeadman) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OrderbookDeadman.Unmarshal(m, b)
 }
 func (m *OrderbookDeadman) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OrderbookDeadman.Marshal(b, m, deterministic)
 }
-func (dst *OrderbookDeadman) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OrderbookDeadman.Merge(dst, src)
+func (m *OrderbookDeadman) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OrderbookDeadman.Merge(m, src)
 }
 func (m *OrderbookDeadman) XXX_Size() int {
 	return xxx_messageInfo_OrderbookDeadman.Size(m)
@@ -490,14 +499,15 @@ func (*OrderbookDeadmanRequest) ProtoMessage()    {}
 func (*OrderbookDeadmanRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{7}
 }
+
 func (m *OrderbookDeadmanRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OrderbookDeadmanRequest.Unmarshal(m, b)
 }
 func (m *OrderbookDeadmanRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OrderbookDeadmanRequest.Marshal(b, m, deterministic)
 }
-func (dst *OrderbookDeadmanRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OrderbookDeadmanRequest.Merge(dst, src)
+func (m *OrderbookDeadmanRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OrderbookDeadmanRequest.Merge(m, src)
 }
 func (m *OrderbookDeadmanRequest) XXX_Size() int {
 	return xxx_messageInfo_OrderbookDeadmanRequest.Size(m)
@@ -531,14 +541,15 @@ func (*OrderbookDeadmanResponse) ProtoMessage()    {}
 func (*OrderbookDeadmanResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_fe4ebcdede33dbb6, []int{8}
 }
+
 func (m *OrderbookDeadmanResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_OrderbookDeadmanResponse.Unmarshal(m, b)
 }
 func (m *OrderbookDeadmanResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_OrderbookDeadmanResponse.Marshal(b, m, deterministic)
 }
-func (dst *OrderbookDeadmanResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_OrderbookDeadmanResponse.Merge(dst, src)
+func (m *OrderbookDeadmanResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_OrderbookDeadmanResponse.Merge(m, src)
 }
 func (m *OrderbookDeadmanResponse) XXX_Size() int {
 	return xxx_messageInfo_OrderbookDeadmanResponse.Size(m)

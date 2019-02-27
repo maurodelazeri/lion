@@ -33,32 +33,35 @@ func (r *Websocket) Subscribe(products []string) error {
 	// https://www.okex.com/docs/en/#ws_swap-format
 
 	// {"op": "subscribe", "args": ["spot/ticker:ETH-USDT","spot/candle60s:ETH-USDT"]}
+	subscribe := MessageChannel{}
+	subscribe.Op = "subscribe"
+	venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
+	if ok {
 
-	subscribe := []MessageChannel{}
-	for _, product := range products {
-		book := MessageChannel{
-			Op:   "subscribe",
-			Args: []string{},
-		}
-		subscribe = append(subscribe, book)
+		subscribe.Args = append(subscribe.Args, "")
+		// book := MessageChannel{
+		// 	Op:   "subscribe",
+		// 	Args: []string{},
+		// }
+		// subscribe = append(subscribe, book)
 
-		trade := MessageChannel{
-			Op:   "subscribe",
-			Args: []string{},
-		}
-		subscribe = append(subscribe, trade)
+		// trade := MessageChannel{
+		// 	Op:   "subscribe",
+		// 	Args: []string{},
+		// }
+		// subscribe = append(subscribe, trade)
+
+		// r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
+		// r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 	}
-	for _, channels := range subscribe {
-		json, err := common.JSONEncode(channels)
-		if err != nil {
-			logrus.Error("Subscription ", err)
-			continue
-		}
-		err = r.Conn.WriteMessage(websocket.TextMessage, json)
-		if err != nil {
-			logrus.Error("Subscription ", err)
-			continue
-		}
+
+	json, err := common.JSONEncode(subscribe)
+	if err != nil {
+		logrus.Error("Subscription ", err)
+	}
+	err = r.Conn.WriteMessage(websocket.TextMessage, json)
+	if err != nil {
+		logrus.Error("Subscription ", err)
 	}
 	return nil
 }
@@ -171,14 +174,12 @@ func (r *Websocket) connect() {
 	r.pairsMapping = utils.NewConcurrentMap()
 	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
-	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
 		r.OrderBookMAP[sym+"bids"] = make(map[float64]float64)
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
 			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
 			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 		}
@@ -201,7 +202,7 @@ func (r *Websocket) connect() {
 			if r.base.Verbose {
 				logrus.Printf("Dial: connection was successfully established with %s\n", websocketURL)
 			}
-			err = r.Subscribe(venueArrayPairs)
+			err = r.Subscribe()
 			if err != nil {
 				logrus.Printf("Websocket subscription error: %s\n", err)
 			}

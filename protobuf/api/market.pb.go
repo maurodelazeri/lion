@@ -3,9 +3,11 @@
 
 package api
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -37,14 +39,15 @@ func (*MarketKindSummary) ProtoMessage()    {}
 func (*MarketKindSummary) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{0}
 }
+
 func (m *MarketKindSummary) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketKindSummary.Unmarshal(m, b)
 }
 func (m *MarketKindSummary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketKindSummary.Marshal(b, m, deterministic)
 }
-func (dst *MarketKindSummary) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketKindSummary.Merge(dst, src)
+func (m *MarketKindSummary) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketKindSummary.Merge(m, src)
 }
 func (m *MarketKindSummary) XXX_Size() int {
 	return xxx_messageInfo_MarketKindSummary.Size(m)
@@ -118,14 +121,15 @@ func (*MarketKindSummaryRequest) ProtoMessage()    {}
 func (*MarketKindSummaryRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{1}
 }
+
 func (m *MarketKindSummaryRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketKindSummaryRequest.Unmarshal(m, b)
 }
 func (m *MarketKindSummaryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketKindSummaryRequest.Marshal(b, m, deterministic)
 }
-func (dst *MarketKindSummaryRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketKindSummaryRequest.Merge(dst, src)
+func (m *MarketKindSummaryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketKindSummaryRequest.Merge(m, src)
 }
 func (m *MarketKindSummaryRequest) XXX_Size() int {
 	return xxx_messageInfo_MarketKindSummaryRequest.Size(m)
@@ -166,14 +170,15 @@ func (*MarketKindSummaryResponse) ProtoMessage()    {}
 func (*MarketKindSummaryResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{2}
 }
+
 func (m *MarketKindSummaryResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketKindSummaryResponse.Unmarshal(m, b)
 }
 func (m *MarketKindSummaryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketKindSummaryResponse.Marshal(b, m, deterministic)
 }
-func (dst *MarketKindSummaryResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketKindSummaryResponse.Merge(dst, src)
+func (m *MarketKindSummaryResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketKindSummaryResponse.Merge(m, src)
 }
 func (m *MarketKindSummaryResponse) XXX_Size() int {
 	return xxx_messageInfo_MarketKindSummaryResponse.Size(m)
@@ -234,14 +239,15 @@ func (*MarketProductSummary) ProtoMessage()    {}
 func (*MarketProductSummary) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{3}
 }
+
 func (m *MarketProductSummary) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketProductSummary.Unmarshal(m, b)
 }
 func (m *MarketProductSummary) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketProductSummary.Marshal(b, m, deterministic)
 }
-func (dst *MarketProductSummary) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketProductSummary.Merge(dst, src)
+func (m *MarketProductSummary) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketProductSummary.Merge(m, src)
 }
 func (m *MarketProductSummary) XXX_Size() int {
 	return xxx_messageInfo_MarketProductSummary.Size(m)
@@ -337,14 +343,15 @@ func (*MarketProductSummaryRequest) ProtoMessage()    {}
 func (*MarketProductSummaryRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{4}
 }
+
 func (m *MarketProductSummaryRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketProductSummaryRequest.Unmarshal(m, b)
 }
 func (m *MarketProductSummaryRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketProductSummaryRequest.Marshal(b, m, deterministic)
 }
-func (dst *MarketProductSummaryRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketProductSummaryRequest.Merge(dst, src)
+func (m *MarketProductSummaryRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketProductSummaryRequest.Merge(m, src)
 }
 func (m *MarketProductSummaryRequest) XXX_Size() int {
 	return xxx_messageInfo_MarketProductSummaryRequest.Size(m)
@@ -392,14 +399,15 @@ func (*MarketProductSummaryResponse) ProtoMessage()    {}
 func (*MarketProductSummaryResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{5}
 }
+
 func (m *MarketProductSummaryResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_MarketProductSummaryResponse.Unmarshal(m, b)
 }
 func (m *MarketProductSummaryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_MarketProductSummaryResponse.Marshal(b, m, deterministic)
 }
-func (dst *MarketProductSummaryResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MarketProductSummaryResponse.Merge(dst, src)
+func (m *MarketProductSummaryResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MarketProductSummaryResponse.Merge(m, src)
 }
 func (m *MarketProductSummaryResponse) XXX_Size() int {
 	return xxx_messageInfo_MarketProductSummaryResponse.Size(m)
@@ -457,14 +465,15 @@ func (*Bar) ProtoMessage()    {}
 func (*Bar) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{6}
 }
+
 func (m *Bar) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Bar.Unmarshal(m, b)
 }
 func (m *Bar) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Bar.Marshal(b, m, deterministic)
 }
-func (dst *Bar) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Bar.Merge(dst, src)
+func (m *Bar) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Bar.Merge(m, src)
 }
 func (m *Bar) XXX_Size() int {
 	return xxx_messageInfo_Bar.Size(m)
@@ -542,14 +551,15 @@ func (*BarRequest) ProtoMessage()    {}
 func (*BarRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{7}
 }
+
 func (m *BarRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BarRequest.Unmarshal(m, b)
 }
 func (m *BarRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BarRequest.Marshal(b, m, deterministic)
 }
-func (dst *BarRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BarRequest.Merge(dst, src)
+func (m *BarRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BarRequest.Merge(m, src)
 }
 func (m *BarRequest) XXX_Size() int {
 	return xxx_messageInfo_BarRequest.Size(m)
@@ -618,14 +628,15 @@ func (*BarResponse) ProtoMessage()    {}
 func (*BarResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3f90997f23a2c3f8, []int{8}
 }
+
 func (m *BarResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BarResponse.Unmarshal(m, b)
 }
 func (m *BarResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BarResponse.Marshal(b, m, deterministic)
 }
-func (dst *BarResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BarResponse.Merge(dst, src)
+func (m *BarResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BarResponse.Merge(m, src)
 }
 func (m *BarResponse) XXX_Size() int {
 	return xxx_messageInfo_BarResponse.Size(m)
