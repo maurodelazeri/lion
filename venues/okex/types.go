@@ -1,5 +1,7 @@
 package okex
 
+import "encoding/json"
+
 // MessageTrade ...
 type MessageTrade struct {
 	Channel string          `json:"channel,omitempty"`
@@ -33,3 +35,32 @@ type MessageChannel struct {
 type PingPong struct {
 	Event int64 `json:"event"`
 }
+
+// WebsocketResponse defines generalised data from the websocket connection
+type WebsocketResponse struct {
+	Type int
+	Raw  []byte
+}
+
+// MultiStreamData contains raw data from okex
+type MultiStreamData struct {
+	Channel string          `json:"channel"`
+	Data    json.RawMessage `json:"data"`
+}
+
+// ErrorResponse defines an error response type from the websocket connection
+type ErrorResponse struct {
+	Result    bool   `json:"result"`
+	ErrorMsg  string `json:"error_msg"`
+	ErrorCode int64  `json:"error_code"`
+}
+
+// Request defines the JSON request structure to the websocket server
+type Request struct {
+	Event      string `json:"event"`
+	Channel    string `json:"channel"`
+	Parameters string `json:"parameters,omitempty"`
+}
+
+// DealsStreamData defines Deals data
+type DealsStreamData = [][]string
