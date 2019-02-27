@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"compress/flate"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -30,48 +29,24 @@ import (
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
+	// Users may subscribe to one or more channels，The total length of multiple channels should not exceed 4,096 bytes. ，
+	// https://www.okex.com/docs/en/#ws_swap-format
 
-	// switch r.base.GetName() {
-	// case "OKEX_INTERNATIONAL_FUT":
-	// 	tradesBegin = "ok_sub_future"
-	// 	tradesEnd = "_trade_this_week"
-	// 	bookBegin = "ok_sub_future"
-	// 	bookEnd = "_depth_quarter"
-	// case "OKEX_INTERNATIONAL_SPOT":
-	// 	tradesBegin = "ok_sub_spot_"
-	// 	tradesEnd = "_deals"
-	// 	bookBegin = "ok_sub_spot_"
-	// 	bookEnd = "_depth_20"
-	// }
-
-	tradesBegin := "ok_sub_spot_"
-	tradesEnd := "_deals"
-	bookBegin := "ok_sub_spot_"
-	bookEnd := "_depth_20"
+	// {"op": "subscribe", "args": ["spot/ticker:ETH-USDT","spot/candle60s:ETH-USDT"]}
 
 	subscribe := []MessageChannel{}
-	if r.base.Streaming {
-		for _, product := range products {
-			book := MessageChannel{
-				Event:   "addChannel",
-				Channel: fmt.Sprintf(`%s%s%s`, bookBegin, product, bookEnd),
-			}
-			subscribe = append(subscribe, book)
+	for _, product := range products {
+		book := MessageChannel{
+			Op:   "subscribe",
+			Args: []string{},
+		}
+		subscribe = append(subscribe, book)
 
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: fmt.Sprintf(`%s%s%s`, tradesBegin, product, tradesEnd),
-			}
-			subscribe = append(subscribe, trade)
+		trade := MessageChannel{
+			Op:   "subscribe",
+			Args: []string{},
 		}
-	} else {
-		for _, product := range products {
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: fmt.Sprintf(`%s%s%s`, tradesBegin, product, tradesEnd),
-			}
-			subscribe = append(subscribe, trade)
-		}
+		subscribe = append(subscribe, trade)
 	}
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)

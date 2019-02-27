@@ -22,13 +22,8 @@ type MessageBook struct {
 
 // MessageChannel ...
 type MessageChannel struct {
-	Binary  int    `json:"binary,omitempty"`
-	Channel string `json:"channel,omitempty"`
-	Event   string `json:"event,omitempty"`
-	Data    struct {
-		Result  bool   `json:"result,omitempty"`
-		Channel string `json:"channel,omitempty"`
-	} `json:"data,omitempty"`
+	Op   string   `json:"op"`
+	Args []string `json:"args"`
 }
 
 // PingPong ...

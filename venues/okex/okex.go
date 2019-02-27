@@ -17,7 +17,8 @@ import (
 )
 
 var (
-	websocketURL = "real.okex.com:10441"
+	//websocketURL = "real.okex.com:10441"
+	websocketURL = "wss://real.okex.com:10442/ws/v3"
 )
 
 const (
