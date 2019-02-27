@@ -27,7 +27,6 @@ import (
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	pbEvent "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/maurodelazeri/lion/venues/config"
-	"github.com/pquerna/ffjson/ffjson"
 	"github.com/sirupsen/logrus"
 )
 
@@ -37,25 +36,25 @@ func (r *Websocket) Subscribe(products []string) error {
 
 	if r.base.Streaming {
 		for _, product := range products {
-			idBook, _ := uuid.NewV4()
+			//idBook, _ := uuid.NewV4()
 			book := MessageChannel{
-				Sub: fmt.Sprintf("market.%s.depth.%s", product, "step0"),
-				ID:  idBook.String(),
+				Subscribe: fmt.Sprintf("market.%s.depth.%s", product, "step0"),
+				// ID:        idBook.String(),
 			}
 			subscribe = append(subscribe, book)
-			idTrade, _ := uuid.NewV4()
+			//idTrade, _ := uuid.NewV4()
 			trade := MessageChannel{
-				Sub: fmt.Sprintf("market.%s.trade.detail", product),
-				ID:  idTrade.String(),
+				Subscribe: fmt.Sprintf("market.%s.trade.detail", product),
+				// ID:        idTrade.String(),
 			}
 			subscribe = append(subscribe, trade)
 		}
 	} else {
 		for _, product := range products {
-			idTrade, _ := uuid.NewV4()
+			//idTrade, _ := uuid.NewV4()
 			trade := MessageChannel{
-				Sub: fmt.Sprintf("market.%s.trade.detail", product),
-				ID:  idTrade.String(),
+				Subscribe: fmt.Sprintf("market.%s.trade.detail", product),
+				// ID:        idTrade.String(),
 			}
 			subscribe = append(subscribe, trade)
 		}
@@ -259,23 +258,20 @@ func (r *Websocket) startReading() {
 					b := bytes.NewReader(resp)
 					gReader, err := gzip.NewReader(b)
 					if err != nil {
+						logrus.Warn("NewReader ", err)
 						continue
 					}
 					msg, err := ioutil.ReadAll(gReader)
 					if err != nil {
+						logrus.Warn("ReadAll ", err)
 						continue
 					}
 					gReader.Close()
-					data := Message{}
-					err = ffjson.Unmarshal(msg, &data)
-					if err != nil {
-						logrus.Error(err)
-						continue
-					}
 
 					var init WsResponse
 					err = common.JSONDecode(msg, &init)
 					if err != nil {
+						logrus.Warn("JSONDecode ", err)
 						continue
 					}
 
@@ -301,6 +297,7 @@ func (r *Websocket) startReading() {
 						var depth WsDepth
 						err := common.JSONDecode(msg, &depth)
 						if err != nil {
+							logrus.Warn("JSONDecode ", err)
 							continue
 						}
 						data := common.SplitStrings(depth.Channel, ".")
@@ -401,17 +398,17 @@ func (r *Websocket) startReading() {
 						var trade WsTrade
 						err := common.JSONDecode(msg, &trade)
 						if err != nil {
+							logrus.Error("JSONDecode ", err)
 							continue
 						}
 
 						data := common.SplitStrings(trade.Channel, ".")
-
 						value, exist := r.pairsMapping.Get(data[1])
 						if !exist {
+							logrus.Info("Skiping ", data)
 							continue
 						}
 						product := value.(string)
-						logrus.Info(string(msg))
 						for _, values := range trade.Tick.Data {
 							var side string
 							if values.Direction == "buy" {
@@ -424,7 +421,7 @@ func (r *Websocket) startReading() {
 								Venue:           r.base.GetName(),
 								VenueTradeId:    fmt.Sprintf("%v", values.ID),
 								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-								VenueTimestamp:  time.Unix(0, trade.Timestamp*int64(time.Millisecond)).UTC().Format(time.RFC3339Nano),
+								VenueTimestamp:  time.Unix(0, values.Timestamp*int64(time.Millisecond)).UTC().Format(time.RFC3339Nano),
 								Price:           values.Price,
 								OrderSide:       side,
 								Volume:          values.Amount,
@@ -438,7 +435,7 @@ func (r *Websocket) startReading() {
 								logrus.Error("Socket sent ", err)
 							}
 							marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
-
+							fmt.Print("\n")
 						}
 					}
 				}

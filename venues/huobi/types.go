@@ -2,32 +2,13 @@ package huobi
 
 import (
 	"encoding/json"
-	"math/big"
 )
 
-// MessageChannel ...
+// MessageChannel defines a request data structure
 type MessageChannel struct {
-	Sub string `json:"sub"`
-	ID  string `json:"id"`
-}
-
-// Message ...
-type Message struct {
-	Ch   string `json:"ch,omitempty"`
-	Ts   int64  `json:"ts,omitempty"`
-	Tick struct {
-		Ts      int64       `json:"ts,omitempty"`
-		Bids    [][]float64 `json:"bids,omitempty"`
-		Asks    [][]float64 `json:"asks,omitempty"`
-		Version int64       `json:"version,omitempty"`
-		Data    []struct {
-			ID        json.Number `json:"id,omitempty"`
-			Amount    float64     `json:"amount,omitempty"`
-			Ts        int64       `json:"ts,omitempty"`
-			Price     float64     `json:"price,omitempty"`
-			Direction string      `json:"direction,omitempty"`
-		} `json:"data,omitempty"`
-	} `json:"tick"`
+	Topic             string `json:"req,omitempty"`
+	Subscribe         string `json:"sub,omitempty"`
+	ClientGeneratedID string `json:"id,omitempty"`
 }
 
 // PingPong ...
@@ -55,11 +36,11 @@ type WsTrade struct {
 		ID        int64 `json:"id"`
 		Timestamp int64 `json:"ts"`
 		Data      []struct {
-			Amount    float64 `json:"amount"`
-			Timestamp int64   `json:"ts"`
-			ID        big.Int `json:"id,number"`
-			Price     float64 `json:"price"`
-			Direction string  `json:"direction"`
+			Amount    float64     `json:"amount"`
+			Timestamp int64       `json:"ts"`
+			ID        json.Number `json:"id,number"`
+			Price     float64     `json:"price"`
+			Direction string      `json:"direction"`
 		} `json:"data"`
 	}
 }
