@@ -460,6 +460,7 @@ func (r *Websocket) startReading() {
 								}
 								wg.Done()
 							}(data.Asks)
+
 							wg.Wait()
 
 							wg.Add(1)
