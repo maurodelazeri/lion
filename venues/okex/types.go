@@ -1,7 +1,5 @@
 package okex
 
-import "time"
-
 // MessageTrade ...
 type MessageTrade struct {
 	Channel string          `json:"channel,omitempty"`
@@ -39,11 +37,12 @@ type WebsocketResponse struct {
 
 // Message ....
 type Message struct {
-	Table string `json:"table"`
-	Data  []struct {
+	Table  string `json:"table"`
+	Action string `json:"action"`
+	Data   []struct {
 		Asks         [][]interface{} `json:"asks"`
 		Bids         [][]interface{} `json:"bids"`
-		Timestamp    time.Time       `json:"timestamp"`
+		Timestamp    string          `json:"timestamp"`
 		Checksum     int             `json:"checksum"`
 		InstrumentID string          `json:"instrument_id"`
 		Price        string          `json:"price"`
