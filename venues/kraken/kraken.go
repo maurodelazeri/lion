@@ -60,7 +60,7 @@ type Websocket struct {
 	subscribedPairs     []string
 	pairsMapping        *utils.ConcurrentMap
 	OrderbookTimestamps *utils.ConcurrentMap
-	StreamingChannels   map[string]int64
+	StreamingChannels   map[int64]string
 }
 
 // SetDefaults sets default values for the venue

@@ -5,14 +5,19 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"math"
 	"math/rand"
 	"net/http"
+	"reflect"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	utils "github.com/maurodelazeri/concurrency-map-slice"
+	"github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
+	"github.com/maurodelazeri/lion/marketdata"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/sirupsen/logrus"
@@ -34,20 +39,20 @@ func (r *Websocket) Subscribe(products []string) error {
 		return err
 	}
 
-	subscribeBooks := SubscriptionBook{
-		Event: "subscribe",
-		Pair:  products,
-	}
-	subscribeBooks.Subscription.Name = "book"
-	subscribeBooks.Subscription.Depth = 25
-	json, err = common.JSONEncode(subscribeBooks)
-	if err != nil {
-		return err
-	}
-	err = r.Conn.WriteMessage(websocket.TextMessage, json)
-	if err != nil {
-		return err
-	}
+	// subscribeBooks := SubscriptionBook{
+	// 	Event: "subscribe",
+	// 	Pair:  products,
+	// }
+	// subscribeBooks.Subscription.Name = "book"
+	// subscribeBooks.Subscription.Depth = 25
+	// json, err := common.JSONEncode(subscribeBooks)
+	// if err != nil {
+	// 	return err
+	// }
+	// err = r.Conn.WriteMessage(websocket.TextMessage, json)
+	// if err != nil {
+	// 	return err
+	// }
 	return nil
 }
 
@@ -162,7 +167,7 @@ func (r *Websocket) connect() {
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.pairsMapping = utils.NewConcurrentMap()
 	r.OrderbookTimestamps = utils.NewConcurrentMap()
-	r.StreamingChannels = make(map[string]int64)
+	r.StreamingChannels = make(map[int64]string)
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
@@ -227,8 +232,6 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						// WARN[0000] MESSAGE {"channelID":92,"event":"subscriptionStatus","pair":"ETH/USD","status":"subscribed","subscription":{"name":"trade"}}
-						// WARN[0000] MESSAGE {"channelID":0,"event":"subscriptionStatus","pair":"XBT/USD","status":"subscribed","subscription":{"depth":25,"name":"book"}}
 
 						var result interface{}
 						err = common.JSONDecode(resp, &result)
@@ -236,9 +239,63 @@ func (r *Websocket) startReading() {
 							logrus.Error("JSONDecode ", err)
 							continue
 						}
+						switch reflect.TypeOf(result).String() {
+						case "map[string]interface {}":
+							data := result.(map[string]interface{})
+							if _, ok := data["channelID"]; ok {
+								r.StreamingChannels[int64(data["channelID"].(float64))] = data["pair"].(string)
+							}
+						case "[]interface {}":
+							data := result.([]interface{})
+							switch reflect.TypeOf(data[1]).String() {
+							case "map[string]interface {}":
+							case "[]interface {}":
+								if val, ok := r.StreamingChannels[int64(data[0].(float64))]; ok {
+									value, exist := r.pairsMapping.Get(val)
+									if !exist {
+										logrus.Warn("Product does not exist ", val)
+										continue
+									}
+									product := value.(string)
+									subData := data[1].([]interface{})
+									for _, tradeData := range subData {
+										data := tradeData.([]interface{})
+										var side string
+										if data[3].(string) == "b" {
+											side = "buy"
+										} else {
+											side = "sell"
+										}
+										sec, dec := math.Modf(number.FromString(data[2].(string)).Float64())
+										trades := &pbAPI.Trade{
+											Product:         product,
+											VenueTradeId:    data[4].(string),
+											Venue:           r.base.GetName(),
+											SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+											VenueTimestamp:  time.Unix(int64(sec), int64(dec*(1e9))).UTC().Format(time.RFC3339Nano),
+											Price:           number.FromString(data[0].(string)).Float64(),
+											OrderSide:       side,
+											Volume:          number.FromString(data[1].(string)).Float64(),
+										}
+										logrus.Warn(trades)
+										serialized, err := proto.Marshal(trades)
+										if err != nil {
+											logrus.Error("Marshal ", err)
+										}
+										err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+										if err != nil {
+											logrus.Error("Socket sent ", err)
+										}
+										marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
 
-						data := result.([]interface{})
-						logrus.Info(data)
+									}
+
+								}
+							}
+						default:
+							logrus.Warn("Datatype not found")
+						}
+
 						// if val, ok := r.StreamingChannels[result.ChannelID]; ok {
 
 						// 	//do something here
