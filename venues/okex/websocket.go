@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -266,96 +265,95 @@ func (r *Websocket) startReading() {
 						logrus.Error("Problem reading data ", err)
 						continue
 					}
-
-					multiStreamDataArr := []MultiStreamData{}
-
-					err = common.JSONDecode(resp.Raw, &multiStreamDataArr)
+					data := Message{}
+					err = common.JSONDecode(resp.Raw, &data)
 					if err != nil {
 						if strings.Contains(string(resp.Raw), "pong") {
 							continue
 						} else {
-							logrus.Error("Problem to JSONDecode ", err)
+							logrus.Error("Problem to JSONDecode ---> ", err)
 							continue
 						}
 					}
-					for _, multiStreamData := range multiStreamDataArr {
-						var errResponse ErrorResponse
-						if common.StringContains(string(resp.Raw), "error_msg") {
-							err = common.JSONDecode(resp.Raw, &errResponse)
-							if err != nil {
-								logrus.Error(err)
-							}
-							logrus.Error(r.base.GetName(), " error restp ", errResponse.ErrorMsg, " - ", string(resp.Raw))
-							continue
-						}
-						var newPair string
-						var assetType string
-						currencyPairSlice := common.SplitStrings(multiStreamData.Channel, "_")
-						if len(currencyPairSlice) > 5 {
-							newPair = currencyPairSlice[3] + "_" + currencyPairSlice[4]
-							assetType = currencyPairSlice[2]
-						}
 
-						if strings.Contains(multiStreamData.Channel, "deals") {
-							var deals DealsStreamData
+					// for _, multiStreamData := range multiStreamDataArr {
+					// 	var errResponse ErrorResponse
+					// 	if common.StringContains(string(resp.Raw), "error_msg") {
+					// 		err = common.JSONDecode(resp.Raw, &errResponse)
+					// 		if err != nil {
+					// 			logrus.Error(err)
+					// 		}
+					// 		logrus.Error(r.base.GetName(), " error restp ", errResponse.ErrorMsg, " - ", string(resp.Raw))
+					// 		continue
+					// 	}
+					// 	var newPair string
+					// 	var assetType string
+					// 	currencyPairSlice := common.SplitStrings(multiStreamData.Channel, "_")
+					// 	if len(currencyPairSlice) > 5 {
+					// 		newPair = currencyPairSlice[3] + "_" + currencyPairSlice[4]
+					// 		assetType = currencyPairSlice[2]
+					// 	}
 
-							err = common.JSONDecode(multiStreamData.Data, &deals)
-							if err != nil {
-								logrus.Error("Problem to JSONDecode ", err)
-								continue
-							}
+					// 	if strings.Contains(multiStreamData.Channel, "deals") {
+					// 		var deals DealsStreamData
 
-							for _, trade := range deals {
-								price, _ := strconv.ParseFloat(trade[1], 64)
-								amount, _ := strconv.ParseFloat(trade[2], 64)
-								time, _ := time.Parse(time.RFC3339, trade[3])
+					// 		err = common.JSONDecode(multiStreamData.Data, &deals)
+					// 		if err != nil {
+					// 			logrus.Error("Problem to JSONDecode ", err)
+					// 			continue
+					// 		}
 
-								logrus.Info(newPair, assetType, price, amount, time)
-								// var side string
-								// if data.Side == "buy" {
-								//     side = "buy"
-								// } else {
-								//     side = "sell"
-								// }
+					// 		for _, trade := range deals {
+					// 			price, _ := strconv.ParseFloat(trade[1], 64)
+					// 			amount, _ := strconv.ParseFloat(trade[2], 64)
+					// 			time, _ := time.Parse(time.RFC3339, trade[3])
 
-								// trades := &pbAPI.Trade{
-								//     Product:         product,
-								//     VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
-								//     Venue:           r.base.GetName(),
-								//     SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-								//     VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
-								//     Price:           data.Price,
-								//     OrderSide:       side,
-								//     Volume:          data.Size,
-								// }
-								// serialized, err := proto.Marshal(trades)
-								// if err != nil {
-								//     logrus.Error("Marshal ", err)
-								// }
-								// err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
-								// if err != nil {
-								//     logrus.Error("Socket sent ", err)
-								// }
-								// marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+					// 			logrus.Info(newPair, assetType, price, amount, time)
+					// 			// var side string
+					// 			// if data.Side == "buy" {
+					// 			//     side = "buy"
+					// 			// } else {
+					// 			//     side = "sell"
+					// 			// }
 
-							}
+					// 			// trades := &pbAPI.Trade{
+					// 			//     Product:         product,
+					// 			//     VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
+					// 			//     Venue:           r.base.GetName(),
+					// 			//     SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+					// 			//     VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
+					// 			//     Price:           data.Price,
+					// 			//     OrderSide:       side,
+					// 			//     Volume:          data.Size,
+					// 			// }
+					// 			// serialized, err := proto.Marshal(trades)
+					// 			// if err != nil {
+					// 			//     logrus.Error("Marshal ", err)
+					// 			// }
+					// 			// err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+					// 			// if err != nil {
+					// 			//     logrus.Error("Socket sent ", err)
+					// 			// }
+					// 			// marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
 
-						} else if strings.Contains(multiStreamData.Channel, "depth") {
-							// var depth DepthStreamData
+					// 		}
 
-							// err := common.JSONDecode(multiStreamData.Data, &depth)
-							// if err != nil {
-							// 	o.Websocket.DataHandler <- err
-							// 	continue
-							// }
+					// 	} else if strings.Contains(multiStreamData.Channel, "depth") {
+					// 		// var depth DepthStreamData
 
-							// o.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{
-							// 	Exchange: o.GetName(),
-							// 	Asset:    assetType,
-							// 	Pair:     pair.NewCurrencyPairFromString(newPair),
-							// }
-						}
-					}
+					// 		// err := common.JSONDecode(multiStreamData.Data, &depth)
+					// 		// if err != nil {
+					// 		// 	o.Websocket.DataHandler <- err
+					// 		// 	continue
+					// 		// }
+
+					// 		// o.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{
+					// 		// 	Exchange: o.GetName(),
+					// 		// 	Asset:    assetType,
+					// 		// 	Pair:     pair.NewCurrencyPairFromString(newPair),
+					// 		// }
+					// 	}
+					// }
 
 					//err := errors.New("websocket: not connected")
 

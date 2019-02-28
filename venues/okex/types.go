@@ -1,6 +1,6 @@
 package okex
 
-import "encoding/json"
+import "time"
 
 // MessageTrade ...
 type MessageTrade struct {
@@ -37,10 +37,20 @@ type WebsocketResponse struct {
 	Raw  []byte
 }
 
-// MultiStreamData contains raw data from okex
-type MultiStreamData struct {
-	Channel string          `json:"channel"`
-	Data    json.RawMessage `json:"data"`
+// Message ....
+type Message struct {
+	Table string `json:"table"`
+	Data  []struct {
+		Asks         [][]interface{} `json:"asks"`
+		Bids         [][]interface{} `json:"bids"`
+		Timestamp    time.Time       `json:"timestamp"`
+		Checksum     int             `json:"checksum"`
+		InstrumentID string          `json:"instrument_id"`
+		Price        string          `json:"price"`
+		Side         string          `json:"side"`
+		Size         string          `json:"size"`
+		TradeID      string          `json:"trade_id"`
+	} `json:"data"`
 }
 
 // ErrorResponse defines an error response type from the websocket connection
