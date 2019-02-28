@@ -385,8 +385,6 @@ func (r *Websocket) startReading() {
 										var wg sync.WaitGroup
 										updated := false
 
-										sideCheck := dataL3[1].(float64)
-
 										price, err := strconv.ParseFloat(dataL3[2].(string), 64)
 										if err != nil {
 											logrus.Error("problem to process orderbook update ", err)
@@ -398,7 +396,7 @@ func (r *Websocket) startReading() {
 										}
 
 										// 1 for buy 0 for sell
-										if dataL3[1].(int64) == 1 {
+										if dataL3[1].(float64) == 1 {
 											if volume == 0 {
 												if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
 													delete(r.OrderBookMAP[product+"bids"], price)
@@ -407,9 +405,9 @@ func (r *Websocket) startReading() {
 											} else {
 												totalLevels := len(refLiveBook.GetBids())
 												if totalLevels == r.base.MaxLevelsOrderBook {
-													if price < refLiveBook.Bids[totalLevels-1].Price {
-														continue
-													}
+													// if price < refLiveBook.Bids[totalLevels-1].Price {
+													// 	continue
+													// }
 												}
 												updated = true
 												r.OrderBookMAP[product+"bids"][price] = volume
@@ -423,17 +421,13 @@ func (r *Websocket) startReading() {
 											} else {
 												totalLevels := len(refLiveBook.GetAsks())
 												if totalLevels == r.base.MaxLevelsOrderBook {
-													if price > refLiveBook.Asks[totalLevels-1].Price {
-														continue
-													}
+													// if price > refLiveBook.Asks[totalLevels-1].Price {
+													// 	continue
+													// }
 												}
 												updated = true
 												r.OrderBookMAP[product+"asks"][price] = volume
 											}
-										}
-
-										if sideCheck == 0 {
-
 										}
 
 										// we dont need to update the book if any level we care was changed
