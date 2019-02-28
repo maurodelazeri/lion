@@ -28,3 +28,15 @@ type SubscriptionTrade struct {
 		Name string `json:"name"`
 	} `json:"subscription"`
 }
+
+// Subscription ...
+type Subscription struct {
+	ChannelID    int    `json:"channelID"`
+	Event        string `json:"event"`
+	Pair         string `json:"pair"`
+	Status       string `json:"status"`
+	Subscription struct {
+		Depth int    `json:"depth"`
+		Name  string `json:"name"`
+	} `json:"subscription"`
+}

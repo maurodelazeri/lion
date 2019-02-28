@@ -162,6 +162,7 @@ func (r *Websocket) connect() {
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.pairsMapping = utils.NewConcurrentMap()
 	r.OrderbookTimestamps = utils.NewConcurrentMap()
+	r.StreamingChannels = make(map[string]int64)
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
@@ -224,10 +225,24 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
-					logrus.Warn("MESSAGE ", string(resp))
-
 					switch msgType {
 					case websocket.TextMessage:
+						// WARN[0000] MESSAGE {"channelID":92,"event":"subscriptionStatus","pair":"ETH/USD","status":"subscribed","subscription":{"name":"trade"}}
+						// WARN[0000] MESSAGE {"channelID":0,"event":"subscriptionStatus","pair":"XBT/USD","status":"subscribed","subscription":{"depth":25,"name":"book"}}
+
+						var result interface{}
+						err = common.JSONDecode(resp, &result)
+						if err != nil {
+							logrus.Error("JSONDecode ", err)
+							continue
+						}
+
+						data := result.([]interface{})
+						logrus.Info(data)
+						// if val, ok := r.StreamingChannels[result.ChannelID]; ok {
+
+						// 	//do something here
+						// }
 
 						// data := Message{}
 						// err = ffjson.Unmarshal(resp, &data)
