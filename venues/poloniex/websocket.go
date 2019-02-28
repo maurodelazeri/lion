@@ -12,16 +12,16 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
 	utils "github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
 	event "github.com/maurodelazeri/lion/events"
+	"github.com/maurodelazeri/lion/marketdata"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	pbEvent "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/maurodelazeri/lion/venues/config"
-	"github.com/maurodelazeri/zion/currency/pair"
-	"github.com/maurodelazeri/zion/exchanges/orderbook"
 	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )
@@ -266,7 +266,7 @@ func (r *Websocket) startReading() {
 											logrus.Error("poloniex.go error - could not find orderbook data in map")
 											continue
 										}
-										value, exist := r.pairsMapping.Get(CurrencyPairID[chanID])
+										value, exist := r.pairsMapping.Get(currencyPair)
 										if !exist {
 											continue
 										}
@@ -293,9 +293,6 @@ func (r *Websocket) startReading() {
 													logrus.Error("problem to process orderbook snapshot ", err)
 													continue
 												}
-												if total > r.base.MaxLevelsOrderBook {
-													continue
-												}
 												refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: assetPrice, Volume: assetVolume})
 												r.OrderBookMAP[product+"bids"][assetPrice] = assetVolume
 												total++
@@ -316,9 +313,6 @@ func (r *Websocket) startReading() {
 												assetVolume, err := strconv.ParseFloat(volume.(string), 64)
 												if err != nil {
 													logrus.Error("problem to process orderbook snapshot ", err)
-													continue
-												}
-												if total > r.base.MaxLevelsOrderBook {
 													continue
 												}
 												refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: assetPrice, Volume: assetVolume})
@@ -346,50 +340,36 @@ func (r *Websocket) startReading() {
 										}()
 										wg.Wait()
 
-										logrus.Info(refLiveBook)
-										///////////////??/////////////////////////////
-										// askdata = orderbookData[0].(map[string]interface{})
-										// var asks []orderbook.Item
-										// for price, volume := range askdata {
-										// 	assetPrice, err := strconv.ParseFloat(price, 64)
-										// 	if err != nil {
-										// 		logrus.Error("problem to process orderbook snapshot ", err)
-										// 		continue
-										// 	}
+										wg.Add(1)
+										go func() {
+											sort.Slice(refLiveBook.Asks, func(i, j int) bool {
+												return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
+											})
+											wg.Done()
+										}()
+										wg.Wait()
 
-										// 	assetVolume, err := strconv.ParseFloat(volume.(string), 64)
-										// 	if err != nil {
-										// 		logrus.Error("problem to process orderbook snapshot ", err)
-										// 		continue
-										// 	}
+										if len(refLiveBook.Asks) > 20 && len(refLiveBook.Bids) > 20 {
+											refLiveBook.Asks = refLiveBook.Asks[0:20]
+											refLiveBook.Bids = refLiveBook.Bids[0:20]
+										}
 
-										// 	asks = append(asks, orderbook.Item{
-										// 		Price:  assetPrice,
-										// 		Amount: assetVolume,
-										// 	})
-										// }
+										wg.Add(1)
+										go func() {
+											for _, value := range refLiveBook.Asks {
+												r.OrderBookMAP[product+"asks"][value.Price] = value.Volume
+											}
+											wg.Done()
+										}()
 
-										// bidData = orderbookData[1].(map[string]interface{})
-										// var bids []orderbook.Item
-										// for price, volume := range bidData {
-										// 	assetPrice, err := strconv.ParseFloat(price, 64)
-										// 	if err != nil {
-										// 		logrus.Error("problem to process orderbook snapshot ", err)
-										// 		continue
-										// 	}
-
-										// 	assetVolume, err := strconv.ParseFloat(volume.(string), 64)
-										// 	if err != nil {
-										// 		logrus.Error("problem to process orderbook snapshot ", err)
-										// 		continue
-										// 	}
-
-										// 	bids = append(bids, orderbook.Item{
-										// 		Price:  assetPrice,
-										// 		Amount: assetVolume,
-										// 	})
-										// }
-
+										wg.Add(1)
+										go func() {
+											for _, value := range refLiveBook.Bids {
+												r.OrderBookMAP[product+"bids"][value.Price] = value.Volume
+											}
+											wg.Done()
+										}()
+										wg.Wait()
 									case "o":
 										// currencyPair := CurrencyPairID[chanID]
 										// err := p.WsProcessOrderbookUpdate(dataL3, currencyPair)
@@ -404,27 +384,39 @@ func (r *Websocket) startReading() {
 										// 	Pair:     pair.NewCurrencyPairFromString(currencyPair),
 										// }
 									case "t":
-										// currencyPair := CurrencyPairID[chanID]
-										// var trade WsTrade
-										// trade.Symbol = CurrencyPairID[chanID]
-										// trade.TradeID, _ = strconv.ParseInt(dataL3[1].(string), 10, 64)
-										// // 1 for buy 0 for sell
-										// side := "buy"
-										// if dataL3[2].(float64) != 1 {
-										// 	side = "sell"
-										// }
-										// trade.Side = side
-										// trade.Volume, _ = strconv.ParseFloat(dataL3[3].(string), 64)
-										// trade.Price, _ = strconv.ParseFloat(dataL3[4].(string), 64)
-										// trade.Timestamp = int64(dataL3[5].(float64))
+										value, exist := r.pairsMapping.Get(CurrencyPairID[chanID])
+										if !exist {
+											continue
+										}
+										product := value.(string)
+										// 1 for buy 0 for sell
+										side := "buy"
+										if dataL3[2].(float64) != 1 {
+											side = "sell"
+										}
+										volume, _ := strconv.ParseFloat(dataL3[3].(string), 64)
+										price, _ := strconv.ParseFloat(dataL3[4].(string), 64)
+										timestamp := int64(dataL3[5].(float64))
+										trades := &pbAPI.Trade{
+											Product:         product,
+											VenueTradeId:    dataL3[1].(string),
+											Venue:           r.base.GetName(),
+											SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
+											VenueTimestamp:  time.Unix(timestamp, 0).UTC().Format(time.RFC3339Nano),
+											Price:           price,
+											OrderSide:       side,
+											Volume:          volume,
+										}
+										serialized, err := proto.Marshal(trades)
+										if err != nil {
+											logrus.Error("Marshal ", err)
+										}
+										err = r.base.SocketClient.Publish("trades:"+r.base.GetName()+"."+product, serialized)
+										if err != nil {
+											logrus.Error("Socket sent ", err)
+										}
+										marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
 
-										// p.Websocket.DataHandler <- exchange.TradeData{
-										// 	Timestamp:    time.Unix(trade.Timestamp, 0),
-										// 	CurrencyPair: pair.NewCurrencyPairFromString(currencyPair),
-										// 	Side:         trade.Side,
-										// 	Amount:       trade.Volume,
-										// 	Price:        trade.Price,
-										// }
 									}
 								}
 							}
@@ -435,55 +427,4 @@ func (r *Websocket) startReading() {
 			}
 		}
 	}()
-}
-
-// WsProcessOrderbookSnapshot processes a new orderbook snapshot into a local of orderbooks
-func (r *Websocket) WsProcessOrderbookSnapshot(ob []interface{}, symbol string) error {
-	askdata := ob[0].(map[string]interface{})
-	var asks []orderbook.Item
-	for price, volume := range askdata {
-		assetPrice, err := strconv.ParseFloat(price, 64)
-		if err != nil {
-			return err
-		}
-
-		assetVolume, err := strconv.ParseFloat(volume.(string), 64)
-		if err != nil {
-			return err
-		}
-
-		asks = append(asks, orderbook.Item{
-			Price:  assetPrice,
-			Amount: assetVolume,
-		})
-	}
-
-	bidData := ob[1].(map[string]interface{})
-	var bids []orderbook.Item
-	for price, volume := range bidData {
-		assetPrice, err := strconv.ParseFloat(price, 64)
-		if err != nil {
-			return err
-		}
-
-		assetVolume, err := strconv.ParseFloat(volume.(string), 64)
-		if err != nil {
-			return err
-		}
-
-		bids = append(bids, orderbook.Item{
-			Price:  assetPrice,
-			Amount: assetVolume,
-		})
-	}
-
-	var newOrderbook orderbook.Base
-	newOrderbook.Asks = asks
-	newOrderbook.Bids = bids
-	newOrderbook.AssetType = "SPOT"
-	newOrderbook.CurrencyPair = symbol
-	newOrderbook.LastUpdated = time.Now()
-	newOrderbook.Pair = pair.NewCurrencyPairFromString(symbol)
-
-	return p.Websocket.Orderbook.LoadSnapshot(newOrderbook, p.GetName(), false)
 }
