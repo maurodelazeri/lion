@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/maurodelazeri/concurrency-map-slice"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/postgres"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/sirupsen/logrus"
@@ -33,7 +33,6 @@ func (c *Config) LoadConfig() error {
 	query := fmt.Sprintf(`SELECT product_id,venue_id, base_currency,quote_currency,venue_symbol_identifier,kind,individual_connection,streaming_save,
 	 minimum_orders_size,step_size,price_precision,taker_fee,maker_fee,settlement,expiration,enabled, COALESCE((SELECT name FROM currencies WHERE currency_id=products.base_currency), '') || '-' || COALESCE((SELECT name FROM currencies
 			WHERE currency_id=products.quote_currency), '') as system_symbol_identifier FROM products WHERE venue_id=%s AND product_id IN(%s)`, os.Getenv("WINTER_VENUE_ID"), os.Getenv("WINTER_DATAFEED_PRODUCTS"))
-
 	if rows, err = postgres.PostgresDB.Query(query); err != nil {
 		logrus.Warn("Problem loading products: ", err.Error())
 		return err
@@ -51,7 +50,7 @@ func (c *Config) LoadConfig() error {
 		products[product.ProductId] = product
 	}
 
-	query = fmt.Sprintf(`SELECT venue_id,name,venue_description,api_key,api_secret,passphrase,spot,futures,options,enabled FROM venues WHERE venue_id=%s`, os.Getenv("WINTER_VENUE_ID"))
+	query = fmt.Sprintf(`SELECT venue_id,name,venue_description,api_key,api_secret,passphrase,spot,futures,options,swaps,enabled FROM venues WHERE venue_id=%s`, os.Getenv("WINTER_VENUE_ID"))
 	if rows, err = postgres.PostgresDB.Query(query); err != nil {
 		return err
 	}
@@ -60,7 +59,7 @@ func (c *Config) LoadConfig() error {
 	for rows.Next() {
 		venue := &pbAPI.Venue{}
 		args := []interface{}{
-			&venue.VenueId, &venue.Name, &venue.VenueDescription, &venue.ApiKey, &venue.ApiSecret, &venue.Passphrase, &venue.Spot, &venue.Futures, &venue.Options, &venue.Enabled}
+			&venue.VenueId, &venue.Name, &venue.VenueDescription, &venue.ApiKey, &venue.ApiSecret, &venue.Passphrase, &venue.Spot, &venue.Futures, &venue.Options, &venue.Swaps, &venue.Enabled}
 		if err = rows.Scan(args...); err != nil {
 			return err
 		}

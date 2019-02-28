@@ -96,8 +96,8 @@ func (r *Okex) Start() {
 	if ok {
 		for product, value := range venueConf.(config.VenueConfig).Products {
 			// Separate products that will use a exclusive connection from those sharing a connection
-			if value.IndividualConnection {
-				if value.Enabled {
+			if value.Enabled {
+				if value.IndividualConnection {
 					dedicatedSocket = append(dedicatedSocket, product)
 				} else {
 					sharedSocket = append(sharedSocket, product)

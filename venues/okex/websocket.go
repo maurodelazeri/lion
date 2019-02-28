@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"net/http"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -28,40 +27,44 @@ import (
 )
 
 // Subscribe subsribe public and private endpoints
-func (r *Websocket) Subscribe(products []string) error {
+func (r *Websocket) Subscribe() error {
 	// Users may subscribe to one or more channels，The total length of multiple channels should not exceed 4,096 bytes. ，
 	// https://www.okex.com/docs/en/#ws_swap-format
-
 	// {"op": "subscribe", "args": ["spot/ticker:ETH-USDT","spot/candle60s:ETH-USDT"]}
 	subscribe := MessageChannel{}
 	subscribe.Op = "subscribe"
-	venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
-	if ok {
-
-		subscribe.Args = append(subscribe.Args, "")
-		// book := MessageChannel{
-		// 	Op:   "subscribe",
-		// 	Args: []string{},
-		// }
-		// subscribe = append(subscribe, book)
-
-		// trade := MessageChannel{
-		// 	Op:   "subscribe",
-		// 	Args: []string{},
-		// }
-		// subscribe = append(subscribe, trade)
-
-		// r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
-		// r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
+	for _, sym := range r.subscribedPairs {
+		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
+		if ok {
+			switch venueConf.(config.VenueConfig).Products[sym].GetKind() {
+			case "spot":
+				subscribe.Args = append(subscribe.Args, "spot/trade:"+venueConf.(config.VenueConfig).Products[sym].GetVenueSymbolIdentifier())
+				subscribe.Args = append(subscribe.Args, "spot/depth:"+venueConf.(config.VenueConfig).Products[sym].GetVenueSymbolIdentifier())
+			case "futures":
+				subscribe.Args = append(subscribe.Args, "swap/trade:"+venueConf.(config.VenueConfig).Products[sym].GetVenueSymbolIdentifier()+"-SWAP")
+				subscribe.Args = append(subscribe.Args, "swap/depth:"+venueConf.(config.VenueConfig).Products[sym].GetVenueSymbolIdentifier()+"-SWAP")
+			case "options":
+			case "swaps":
+				subscribe.Args = append(subscribe.Args, "swap/trade:"+venueConf.(config.VenueConfig).Products[sym].GetVenueSymbolIdentifier()+"-SWAP")
+				subscribe.Args = append(subscribe.Args, "swap/depth:"+venueConf.(config.VenueConfig).Products[sym].GetVenueSymbolIdentifier()+"-SWAP")
+			default:
+				logrus.Warn("Subscription mode not found")
+			}
+		}
 	}
 
-	json, err := common.JSONEncode(subscribe)
-	if err != nil {
-		logrus.Error("Subscription ", err)
-	}
-	err = r.Conn.WriteMessage(websocket.TextMessage, json)
-	if err != nil {
-		logrus.Error("Subscription ", err)
+	if len(subscribe.Args) > 0 {
+		json, err := common.JSONEncode(subscribe)
+		if err != nil {
+			logrus.Error("Subscription ", err)
+		}
+		logrus.Info("SUBS ", string(json))
+		err = r.Conn.WriteMessage(websocket.TextMessage, json)
+		if err != nil {
+			logrus.Error("Subscription ", err)
+		}
+	} else {
+		logrus.Info("Nothing to subscribe")
 	}
 	return nil
 }
@@ -187,9 +190,8 @@ func (r *Websocket) connect() {
 
 	for {
 		nextItvl := bb.Duration()
-		u := url.URL{Scheme: "wss", Host: websocketURL, Path: "/websocket", RawQuery: "compress=true"}
-
-		wsConn, httpResp, err := r.dialer.Dial(u.String(), r.reqHeader)
+		//u := url.URL{Scheme: "wss", Host: websocketURL, Path: "/websocket", RawQuery: "compress=true"}
+		wsConn, httpResp, err := r.dialer.Dial(websocketURL, r.reqHeader)
 
 		r.mu.Lock()
 		r.Conn = wsConn
@@ -244,7 +246,7 @@ func (r *Websocket) WsReadData() (WebsocketResponse, error) {
 			return WebsocketResponse{}, err
 		}
 	}
-
+	logrus.Info(string(standardMessage))
 	return WebsocketResponse{Raw: standardMessage}, nil
 }
 
