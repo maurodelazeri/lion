@@ -265,6 +265,7 @@ func (r *Websocket) startReading() {
 									refLiveBook := refBook.(*pbAPI.Orderbook)
 									var wg sync.WaitGroup
 									updated := false
+									var sec, dec float64
 
 									subData := data[1].(interface{})
 									data := subData.(map[string]interface{})
@@ -311,6 +312,7 @@ func (r *Websocket) startReading() {
 												row := line.([]interface{})
 												price := number.FromString(row[0].(string)).Float64()
 												amount := number.FromString(row[1].(string)).Float64()
+												sec, dec = math.Modf(number.FromString(row[2].(string)).Float64())
 												totalLevels := len(refLiveBook.GetAsks())
 												if amount == 0 {
 													if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
@@ -339,6 +341,7 @@ func (r *Websocket) startReading() {
 												row := line.([]interface{})
 												price := number.FromString(row[0].(string)).Float64()
 												amount := number.FromString(row[1].(string)).Float64()
+												sec, dec = math.Modf(number.FromString(row[2].(string)).Float64())
 												if amount == 0 {
 													if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
 														delete(r.OrderBookMAP[product+"bids"], price)
@@ -416,9 +419,9 @@ func (r *Websocket) startReading() {
 										Venue:           r.base.GetName(),
 										Levels:          int64(r.base.MaxLevelsOrderBook),
 										SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-										//VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
-										Asks: refLiveBook.Asks,
-										Bids: refLiveBook.Bids,
+										VenueTimestamp:  time.Unix(int64(sec), int64(dec*(1e9))).UTC().Format(time.RFC3339Nano),
+										Asks:            refLiveBook.Asks,
+										Bids:            refLiveBook.Bids,
 									}
 
 									r.base.LiveOrderBook.Set(product, book)
