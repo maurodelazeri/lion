@@ -5,24 +5,19 @@ import (
 	//"encoding/json"
 
 	"errors"
-	"log"
 	"math/rand"
 	"net/http"
-	"reflect"
-	"sort"
-	"strconv"
-	"sync"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
-	"github.com/maurodelazeri/concurrency-map-slice"
-	number "github.com/maurodelazeri/go-number"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/lion/common"
+	event "github.com/maurodelazeri/lion/events"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
-	"github.com/maurodelazeri/lion/streaming/kafka/producer"
+	pbEvent "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/maurodelazeri/lion/venues/config"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -30,39 +25,17 @@ import (
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
-	subscribe := []MessageChannel{}
-	if r.base.Streaming {
-		for _, product := range products {
-			book := MessageChannel{
-				Command: "subscribe",
-				Channel: product,
-			}
-			subscribe = append(subscribe, book)
-			trade := MessageChannel{
-				Command: "subscribe",
-				Channel: product,
-			}
-			subscribe = append(subscribe, trade)
-		}
-	} else {
-		for _, product := range products {
-			trade := MessageChannel{
-				Command: "subscribe",
-				Channel: product,
-			}
-			subscribe = append(subscribe, trade)
-		}
-	}
-	for _, channels := range subscribe {
-		json, err := common.JSONEncode(channels)
+	for _, product := range products {
+		orderbookJSON, err := common.JSONEncode(MessageChannel{
+			Command: "subscribe",
+			Channel: product,
+		})
 		if err != nil {
-			logrus.Error("Subscription ", err)
-			continue
+			return err
 		}
-		err = r.Conn.WriteMessage(websocket.TextMessage, json)
+		err = r.Conn.WriteMessage(websocket.TextMessage, orderbookJSON)
 		if err != nil {
-			logrus.Error("Subscription ", err)
-			continue
+			return err
 		}
 	}
 	return nil
@@ -121,6 +94,9 @@ func (r *Websocket) IsConnected() bool {
 
 // CloseAndRecconect will try to reconnect.
 func (r *Websocket) closeAndRecconect() {
+	eventID, _ := uuid.NewV4()
+	eventData := event.CreateBaseEvent(eventID.String(), "closeAndRecconect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+	event.PublishEvent(eventData, "events", int64(1), false)
 	r.Close()
 	go func() {
 		r.connect()
@@ -157,6 +133,7 @@ func (r *Websocket) connect() {
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
 	r.pairsMapping = utils.NewConcurrentMap()
+	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
 	for _, sym := range r.subscribedPairs {
@@ -165,8 +142,9 @@ func (r *Websocket) connect() {
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueName)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueName, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
+			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
 		}
 	}
 
@@ -192,6 +170,9 @@ func (r *Websocket) connect() {
 			}
 			break
 		} else {
+			eventID, _ := uuid.NewV4()
+			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+			event.PublishEvent(eventData, "events", int64(1), false)
 			if r.base.Verbose {
 				logrus.Println(err)
 				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
@@ -200,6 +181,16 @@ func (r *Websocket) connect() {
 
 		time.Sleep(nextItvl)
 	}
+}
+
+func checkSubscriptionSuccess(data []interface{}) bool {
+	return data[1].(float64) == 1
+}
+
+func getWSDataType(data interface{}) string {
+	subData := data.([]interface{})
+	dataType := subData[0].(string)
+	return dataType
 }
 
 // startReading is a helper method for getting a reader
@@ -222,253 +213,109 @@ func (r *Websocket) startReading() {
 					}
 					switch msgType {
 					case websocket.TextMessage:
-						//logrus.Warn(string(resp))
 						var result interface{}
-						err := common.JSONDecode(resp, &result)
+						err = common.JSONDecode(resp, &result)
 						if err != nil {
-							log.Println("Ops ", err)
+							logrus.Error("JSONDecode ", err)
 							continue
 						}
-						switch reflect.TypeOf(result).String() {
-						case "[]interface {}":
-							var wg sync.WaitGroup
-							updated := false
 
-							chanData := result.([]interface{})
-							symbol := ""
-							switch reflect.TypeOf(chanData[0]).String() {
-							case "string":
-								symbol = chanData[0].(string)
-							case "float64":
-								symbol = strconv.Itoa(int(chanData[0].(float64)))
+						data := result.([]interface{})
+						chanID := int(data[0].(float64))
+
+						if len(data) == 2 && chanID != wsHeartbeat {
+							if checkSubscriptionSuccess(data) {
+								if r.base.Verbose {
+									logrus.Debugf("poloniex websocket subscribed to channel successfully. %d", chanID)
+								}
+							} else {
+								if r.base.Verbose {
+									logrus.Debugf("poloniex websocket subscription to channel failed. %d", chanID)
+								}
 							}
-							value, exist := r.pairsMapping.Get(symbol)
-							if !exist {
-								continue
-							}
-							product := value.(string)
-							refBook, ok := r.base.LiveOrderBook.Get(product)
-							if !ok {
-								continue
-							}
-							refLiveBook := refBook.(*pbAPI.Orderbook)
+							continue
+						}
 
-							if len(chanData) <= 2 {
-								continue
-							}
-							arrData := chanData[2].([]interface{})
-							for _, data := range arrData {
-								finalData := data.([]interface{})
-								switch reflect.TypeOf(finalData[1]).String() {
-								case "map[string]interface {}":
-									eventData := finalData[1].(map[string]interface{})
-									for key, value := range eventData {
-										if key == "orderBook" {
-											book := value.([]interface{})
-											asks := book[0].(map[string]interface{})
-											bids := book[1].(map[string]interface{})
+						switch chanID {
+						case wsAccountNotificationID:
+						case wsTickerDataID:
+						case ws24HourExchangeVolumeID:
+						case wsHeartbeat:
+						default:
+							if len(data) > 2 {
+								subData := data[2].([]interface{})
 
-											for price, volume := range asks {
-												refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: number.FromString(price).Float64(), Volume: number.FromString(volume.(string)).Float64()})
-											}
-											for price, volume := range bids {
-												refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: number.FromString(price).Float64(), Volume: number.FromString(volume.(string)).Float64()})
-											}
+								for x := range subData {
+									dataL2 := subData[x]
+									dataL3 := dataL2.([]interface{})
 
-											wg.Add(1)
-											go func() {
-												sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-													return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-												})
-												wg.Done()
-											}()
-
-											wg.Add(1)
-											go func() {
-												sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-													return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-												})
-												wg.Done()
-											}()
-											wg.Wait()
-
-											if len(refLiveBook.Asks) > 20 && len(refLiveBook.Bids) > 20 {
-												refLiveBook.Asks = refLiveBook.Asks[0:20]
-												refLiveBook.Bids = refLiveBook.Bids[0:20]
-											}
-
-											wg.Add(1)
-											go func() {
-												for _, value := range refLiveBook.Asks {
-													r.OrderBookMAP[product+"asks"][value.Price] = value.Volume
-												}
-												wg.Done()
-											}()
-
-											wg.Add(1)
-											go func() {
-												for _, value := range refLiveBook.Bids {
-													r.OrderBookMAP[product+"bids"][value.Price] = value.Volume
-												}
-												wg.Done()
-											}()
-											wg.Wait()
-										}
-
-									}
-								case "float64", "string":
-									switch finalData[0] {
-									case "o":
-										//										logrus.Warn(reflect.TypeOf(finalData[1]).String())
-										if finalData[1].(float64) == 1 {
-											if number.FromString(finalData[3].(string)).Float64() == 0 {
-												price := number.FromString(finalData[2].(string)).Float64()
-												if _, ok := r.OrderBookMAP[product+"bids"][price]; ok {
-													delete(r.OrderBookMAP[product+"bids"], price)
-													updated = true
-												}
-											} else {
-												price := number.FromString(finalData[2].(string)).Float64()
-												amount := number.FromString(finalData[3].(string)).Float64()
-												totalLevels := len(refLiveBook.GetBids())
-												if totalLevels == r.base.MaxLevelsOrderBook {
-													if price < refLiveBook.Bids[totalLevels-1].Price {
-														continue
-													}
-												}
-												updated = true
-												r.OrderBookMAP[product+"bids"][price] = amount
-											}
-										} else {
-											if number.FromString(finalData[3].(string)).Float64() == 0 {
-												price := number.FromString(finalData[2].(string)).Float64()
-												if _, ok := r.OrderBookMAP[product+"asks"][price]; ok {
-													delete(r.OrderBookMAP[product+"asks"], price)
-													updated = true
-												}
-											} else {
-												price := number.FromString(finalData[2].(string)).Float64()
-												amount := number.FromString(finalData[3].(string)).Float64()
-												totalLevels := len(refLiveBook.GetAsks())
-												if totalLevels == r.base.MaxLevelsOrderBook {
-													if price > refLiveBook.Asks[totalLevels-1].Price {
-														continue
-													}
-												}
-												updated = true
-												r.OrderBookMAP[product+"asks"][price] = amount
-											}
-										}
-									case "t":
-										var side pbAPI.Side
-										if finalData[1] == "1" {
-											side = pbAPI.Side_BUY
-										} else {
-											side = pbAPI.Side_SELL
-										}
-										refBook, ok := r.base.LiveOrderBook.Get(product)
+									switch getWSDataType(dataL2) {
+									case "i":
+										dataL3map := dataL3[1].(map[string]interface{})
+										currencyPair, ok := dataL3map["currencyPair"].(string)
 										if !ok {
+											logrus.Error("poloniex.go error - could not find currency pair in map")
 											continue
 										}
-										refLiveBook := refBook.(*pbAPI.Orderbook)
-										trades := &pbAPI.Trade{
-											Product:   pbAPI.Product((pbAPI.Product_value[product])),
-											Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-											Timestamp: common.MakeTimestamp(),
-											Price:     number.FromString(finalData[3].(string)).Float64(),
-											OrderSide: side,
-											Volume:    number.FromString(finalData[4].(string)).Float64(),
-											VenueType: pbAPI.VenueType_SPOT,
-											Asks:      refLiveBook.Asks,
-											Bids:      refLiveBook.Bids,
+
+										orderbookData, ok := dataL3map["orderBook"].([]interface{})
+										if !ok {
+											logrus.Error("poloniex.go error - could not find orderbook data in map")
+											continue
 										}
 
-										serialized, err := proto.Marshal(trades)
-										if err != nil {
-											log.Fatal("proto.Marshal error: ", err)
-										}
-										r.MessageType[0] = 0
-										serialized = append(r.MessageType, serialized[:]...)
-										kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".trade", serialized, 1, false)
+										// err := p.WsProcessOrderbookSnapshot(orderbookData, currencyPair)
+										// if err != nil {
+										// 	logrus.Error("WsProcessOrderbookSnapshot ", err)
+										// 	continue
+										// }
+
+										// p.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{
+										// 	Exchange: p.GetName(),
+										// 	Asset:    "SPOT",
+										// 	Pair:     pair.NewCurrencyPairFromString(currencyPair),
+										// }
+
+									case "o":
+										// currencyPair := CurrencyPairID[chanID]
+										// err := p.WsProcessOrderbookUpdate(dataL3, currencyPair)
+										// if err != nil {
+										// 	p.Websocket.DataHandler <- err
+										// 	continue
+										// }
+
+										// p.Websocket.DataHandler <- exchange.WebsocketOrderbookUpdate{
+										// 	Exchange: p.GetName(),
+										// 	Asset:    "SPOT",
+										// 	Pair:     pair.NewCurrencyPairFromString(currencyPair),
+										// }
+									case "t":
+										// currencyPair := CurrencyPairID[chanID]
+										// var trade WsTrade
+										// trade.Symbol = CurrencyPairID[chanID]
+										// trade.TradeID, _ = strconv.ParseInt(dataL3[1].(string), 10, 64)
+										// // 1 for buy 0 for sell
+										// side := "buy"
+										// if dataL3[2].(float64) != 1 {
+										// 	side = "sell"
+										// }
+										// trade.Side = side
+										// trade.Volume, _ = strconv.ParseFloat(dataL3[3].(string), 64)
+										// trade.Price, _ = strconv.ParseFloat(dataL3[4].(string), 64)
+										// trade.Timestamp = int64(dataL3[5].(float64))
+
+										// p.Websocket.DataHandler <- exchange.TradeData{
+										// 	Timestamp:    time.Unix(trade.Timestamp, 0),
+										// 	CurrencyPair: pair.NewCurrencyPairFromString(currencyPair),
+										// 	Side:         trade.Side,
+										// 	Amount:       trade.Volume,
+										// 	Price:        trade.Price,
+										// }
 									}
-
-								default:
-									logrus.Warn("DEF ", string(resp))
 								}
-
-							}
-							// we dont need to update the book if any level we care was changed
-							if !updated {
-								continue
-							}
-
-							wg.Add(1)
-							go func() {
-								refLiveBook.Bids = []*pbAPI.Item{}
-								for price, amount := range r.OrderBookMAP[product+"bids"] {
-									refLiveBook.Bids = append(refLiveBook.Bids, &pbAPI.Item{Price: price, Volume: amount})
-								}
-								sort.Slice(refLiveBook.Bids, func(i, j int) bool {
-									return refLiveBook.Bids[i].Price > refLiveBook.Bids[j].Price
-								})
-								wg.Done()
-							}()
-
-							wg.Add(1)
-							go func() {
-								refLiveBook.Asks = []*pbAPI.Item{}
-								for price, amount := range r.OrderBookMAP[product+"asks"] {
-									refLiveBook.Asks = append(refLiveBook.Asks, &pbAPI.Item{Price: price, Volume: amount})
-								}
-								sort.Slice(refLiveBook.Asks, func(i, j int) bool {
-									return refLiveBook.Asks[i].Price < refLiveBook.Asks[j].Price
-								})
-								wg.Done()
-							}()
-
-							wg.Wait()
-
-							wg.Add(1)
-							go func() {
-								totalBids := len(refLiveBook.Bids)
-								if totalBids > r.base.MaxLevelsOrderBook {
-									refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-								}
-								wg.Done()
-							}()
-							wg.Add(1)
-							go func() {
-								totalAsks := len(refLiveBook.Asks)
-								if totalAsks > r.base.MaxLevelsOrderBook {
-									refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
-								}
-								wg.Done()
-							}()
-
-							wg.Wait()
-							book := &pbAPI.Orderbook{
-								Product:   pbAPI.Product((pbAPI.Product_value[product])),
-								Venue:     pbAPI.Venue((pbAPI.Venue_value[r.base.GetName()])),
-								Levels:    int32(r.base.MaxLevelsOrderBook),
-								Timestamp: common.MakeTimestamp(),
-								Asks:      refLiveBook.Asks,
-								Bids:      refLiveBook.Bids,
-								VenueType: pbAPI.VenueType_SPOT,
-							}
-							refLiveBook = book
-							//logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-							//logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
-
-							if r.base.Streaming {
-								serialized, err := proto.Marshal(book)
-								if err != nil {
-									log.Fatal("proto.Marshal error: ", err)
-								}
-								r.MessageType[0] = 1
-								serialized = append(r.MessageType, serialized[:]...)
-								kafkaproducer.PublishMessageAsync(product+"."+r.base.Name+".orderbook", serialized, 1, false)
 							}
 						}
+
 					}
 				}
 			}
