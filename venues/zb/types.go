@@ -6,12 +6,12 @@ type Message struct {
 	Bids      [][]float64 `json:"bids,omitemptys"`
 	Channel   string      `json:"channel,omitempty"`
 	DataType  string      `json:"dataType,omitempty"`
-	Timestamp int         `json:"timestamp,omitempty"`
+	Timestamp int64       `json:"timestamp,omitempty"`
 	Data      []struct {
 		Amount    float64 `json:"amount,string,omitempty"`
-		Date      int     `json:"date,omitempty"`
+		Date      int64   `json:"date,omitempty"`
 		Price     float64 `json:"price,string,omitempty"`
-		Tid       int     `json:"tid,omitempty"`
+		Tid       int64   `json:"tid,omitempty"`
 		TradeType string  `json:"trade_type,omitempty"`
 		Type      string  `json:"type,omitempty"`
 	} `json:"data,omitempty"`

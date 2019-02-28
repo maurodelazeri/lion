@@ -405,9 +405,9 @@ func (r *Websocket) startReading() {
 											} else {
 												totalLevels := len(refLiveBook.GetBids())
 												if totalLevels == r.base.MaxLevelsOrderBook {
-													// if price < refLiveBook.Bids[totalLevels-1].Price {
-													// 	continue
-													// }
+													if price < refLiveBook.Bids[totalLevels-1].Price {
+														continue
+													}
 												}
 												updated = true
 												r.OrderBookMAP[product+"bids"][price] = volume
@@ -421,9 +421,9 @@ func (r *Websocket) startReading() {
 											} else {
 												totalLevels := len(refLiveBook.GetAsks())
 												if totalLevels == r.base.MaxLevelsOrderBook {
-													// if price > refLiveBook.Asks[totalLevels-1].Price {
-													// 	continue
-													// }
+													if price > refLiveBook.Asks[totalLevels-1].Price {
+														continue
+													}
 												}
 												updated = true
 												r.OrderBookMAP[product+"asks"][price] = volume
