@@ -11,7 +11,8 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/jpillora/backoff"
-	"github.com/maurodelazeri/concurrency-map-slice"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
+	"github.com/maurodelazeri/lion/common"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/sirupsen/logrus"
@@ -19,41 +20,56 @@ import (
 
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
-	// subscribe := Message{}
-	// if r.base.Streaming {
-	// 	subscribe = Message{
-	// 		Type: "subscribe",
-	// 		Channels: []MessageChannel{
-	// 			MessageChannel{
-	// 				Name:       "full",
-	// 				ProductIDs: products,
-	// 			},
-	// 			MessageChannel{
-	// 				Name:       "level2",
-	// 				ProductIDs: products,
-	// 			},
-	// 		},
-	// 	}
-	// } else {
-	// 	subscribe = Message{
-	// 		Type: "subscribe",
-	// 		Channels: []MessageChannel{
-	// 			MessageChannel{
-	// 				Name:       "level2",
-	// 				ProductIDs: products,
-	// 			},
-	// 		},
-	// 	}
-	// }
-	// json, err := common.JSONEncode(subscribe)
-	// if err != nil {
-	// 	return err
-	// }
-	// err = r.Conn.WriteMessage(websocket.TextMessage, json)
-	// if err != nil {
-	// 	return err
-	// }
+	subscribeTrades := SubscriptionTrade{
+		Event: "subscribe",
+		Pair:  products,
+	}
+	subscribeTrades.Subscription.Name = "trade"
+	json, err := common.JSONEncode(subscribeTrades)
+	if err != nil {
+		return err
+	}
+	err = r.Conn.WriteMessage(websocket.TextMessage, json)
+	if err != nil {
+		return err
+	}
+
+	subscribeBooks := SubscriptionBook{
+		Event: "subscribe",
+		Pair:  products,
+	}
+	subscribeBooks.Subscription.Name = "book"
+	subscribeBooks.Subscription.Depth = 25
+	json, err = common.JSONEncode(subscribeBooks)
+	if err != nil {
+		return err
+	}
+	err = r.Conn.WriteMessage(websocket.TextMessage, json)
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+// Heartbeat ...
+func (r *Websocket) Heartbeat() {
+	go func() {
+		for {
+			if r.IsConnected() {
+				json, err := common.JSONEncode(PingPong{Event: "ping", Reqid: time.Now().Unix()})
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+				err = r.Conn.WriteMessage(websocket.TextMessage, json)
+				if err != nil {
+					logrus.Error("Subscription ", err)
+					continue
+				}
+			}
+			time.Sleep(time.Second * 60)
+		}
+	}()
 }
 
 // Close closes the underlying network connection without
@@ -148,17 +164,15 @@ func (r *Websocket) connect() {
 	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
-
 	for _, sym := range r.subscribedPairs {
 		r.base.LiveOrderBook.Set(sym, &pbAPI.Orderbook{})
 		r.OrderBookMAP[sym+"bids"] = make(map[float64]float64)
 		r.OrderBookMAP[sym+"asks"] = make(map[float64]float64)
 		venueConf, ok := r.base.VenueConfig.Get(r.base.GetName())
 		if ok {
-			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier)
-			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].SystemSymbolIdentifier, sym)
+			venueArrayPairs = append(venueArrayPairs, venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier)
+			r.pairsMapping.Set(venueConf.(config.VenueConfig).Products[sym].VenueSymbolIdentifier, sym)
 			r.OrderbookTimestamps.Set(r.base.GetName()+sym, time.Now())
-
 		}
 	}
 
@@ -184,10 +198,8 @@ func (r *Websocket) connect() {
 			}
 			break
 		} else {
-			if r.base.Verbose {
-				logrus.Println(err)
-				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
-			}
+			logrus.Println(err)
+			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 		}
 
 		time.Sleep(nextItvl)
@@ -212,9 +224,10 @@ func (r *Websocket) startReading() {
 						r.closeAndRecconect()
 						continue
 					}
+					logrus.Warn("MESSAGE ", string(resp))
+
 					switch msgType {
 					case websocket.TextMessage:
-						logrus.Warn("MESSAGE ", string(resp))
 
 						// data := Message{}
 						// err = ffjson.Unmarshal(resp, &data)

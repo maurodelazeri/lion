@@ -123,7 +123,6 @@ func (r *Deribit) Start() {
 			socket.subscribedPairs = sharedSocket
 			go socket.WebsocketClient()
 			socket.Heartbeat()
-
 		}
 	}
 }
