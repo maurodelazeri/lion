@@ -421,9 +421,9 @@ func (r *Websocket) startReading() {
 									Venue:           r.base.GetName(),
 									Levels:          int64(r.base.MaxLevelsOrderBook),
 									SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-									//	VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
-									Asks: refLiveBook.Asks,
-									Bids: refLiveBook.Bids,
+									VenueTimestamp:  fullBook.Timestamp,
+									Asks:            refLiveBook.Asks,
+									Bids:            refLiveBook.Bids,
 								}
 
 								r.base.LiveOrderBook.Set(product, book)
