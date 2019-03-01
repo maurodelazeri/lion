@@ -199,7 +199,7 @@ func (r *Websocket) connect() {
 }
 
 func (r *Websocket) insert(currentSlice []*pbAPI.Item, at int64, val *pbAPI.Item) []*pbAPI.Item {
-	logrus.Warn(currentSlice, " ---- AT: ", at, " VAL: ", val, " LEN: ", len(currentSlice))
+	logrus.Info("insert ", currentSlice, " ---- AT: ", at, " VAL: ", val, " LEN: ", len(currentSlice))
 	if len(currentSlice) > int(at) {
 		// Move all elements of s up one slot
 		copy(currentSlice[at+1:], currentSlice[at:])
@@ -211,7 +211,7 @@ func (r *Websocket) insert(currentSlice []*pbAPI.Item, at int64, val *pbAPI.Item
 }
 
 func (r *Websocket) delete(currentSlice []*pbAPI.Item, at int) []*pbAPI.Item {
-	logrus.Info(currentSlice, " ---- AT: ", at, " LEN: ", len(currentSlice))
+	logrus.Info("delete ", currentSlice, " ---- AT: ", at, " LEN: ", len(currentSlice))
 	if len(currentSlice) > at {
 		newarr := currentSlice[:at+copy(currentSlice[at:], currentSlice[at+1:])]
 		return newarr
@@ -302,11 +302,13 @@ func (r *Websocket) startReading() {
 										refLiveBook.Bids = r.insert(refLiveBook.Bids, data.MDEntryPositionNo-1, &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
 									case "1": //onMDUpdateOrder_
 										refLiveBook.Bids[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+										logrus.Info("11111 ", refLiveBook.Bids, " ---- AT: ", data.MDEntryPositionNo-1, " LEN: ", len(refLiveBook.Bids))
 									case "2": //onMDDeleteOrder_
 										r.delete(refLiveBook.Bids, int(data.MDEntryPositionNo-1))
 									case "3": //onMDDeleteOrderThru_
 										// aaa, _ := ffjson.Marshal(data)
 										// logrus.Info("DELETE THU bid ", string(aaa))
+										logrus.Info("thru ", refLiveBook.Bids, " ---- AT: ", data.MDEntryPositionNo, " LEN: ", len(refLiveBook.Bids))
 										refLiveBook.Bids = refLiveBook.Bids[data.MDEntryPositionNo:]
 									}
 								case "1": // Ask
@@ -315,11 +317,13 @@ func (r *Websocket) startReading() {
 										refLiveBook.Asks = r.insert(refLiveBook.Asks, data.MDEntryPositionNo-1, &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()})
 									case "1": //onMDUpdateOrder_
 										refLiveBook.Asks[data.MDEntryPositionNo-1] = &pbAPI.Item{Price: number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(), Volume: number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64()}
+										logrus.Info("11111 ", refLiveBook.Asks, " ---- AT: ", data.MDEntryPositionNo-1, " LEN: ", len(refLiveBook.Asks))
 									case "2": //onMDDeleteOrder_
 										r.delete(refLiveBook.Asks, int(data.MDEntryPositionNo-1))
 									case "3": //onMDDeleteOrderThru_
 										// aaa, _ := ffjson.Marshal(data)
 										// logrus.Info("DELETE THU ask ", string(aaa))
+										logrus.Info("thru ", refLiveBook.Asks, " ---- AT: ", data.MDEntryPositionNo, " LEN: ", len(refLiveBook.Asks))
 										refLiveBook.Asks = refLiveBook.Asks[data.MDEntryPositionNo:]
 									}
 
