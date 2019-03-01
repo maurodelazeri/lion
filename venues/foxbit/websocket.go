@@ -5,6 +5,7 @@ import (
 	//"encoding/json"
 
 	"errors"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"sort"
@@ -174,6 +175,7 @@ func (r *Websocket) connect() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	r.OrderBookMAP = make(map[string]map[float64]float64)
+	r.pairsMapping = utils.NewConcurrentMap()
 	r.OrderbookTimestamps = utils.NewConcurrentMap()
 
 	venueArrayPairs := []string{}
@@ -443,15 +445,15 @@ func (r *Websocket) startReading() {
 								}
 								trades := &pbAPI.Trade{
 									Product:         product,
-									VenueTradeId:    strconv.FormatInt(values[0].(int64), 10),
+									VenueTradeId:    fmt.Sprintf("%f", values[0].(float64)),
 									Venue:           r.base.GetName(),
 									SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-									VenueTimestamp:  values[6].(string),
-									Price:           values[3].(float64),
-									OrderSide:       side,
-									Volume:          values[2].(float64),
+									//VenueTimestamp:  values[6].(float64),
+									Price:     values[3].(float64),
+									OrderSide: side,
+									Volume:    values[2].(float64),
 								}
-								logrus.Info(trades)
+								logrus.Info(string(resp))
 								serialized, err := proto.Marshal(trades)
 								if err != nil {
 									logrus.Error("Marshal ", err)
