@@ -356,7 +356,7 @@ func (r *Websocket) startReading() {
 										VenueTradeId:    strconv.FormatInt(data.OrderID, 10),
 										Venue:           r.base.GetName(),
 										SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-										VenueTimestamp:  t.String(),
+										VenueTimestamp:  t.UTC().Format(time.RFC3339Nano),
 										Price:           number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
 										OrderSide:       side,
 										Volume:          number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
@@ -402,12 +402,11 @@ func (r *Websocket) startReading() {
 								Venue:           r.base.GetName(),
 								Levels:          int64(r.base.MaxLevelsOrderBook),
 								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-								// VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
-								Asks: refLiveBook.Asks,
-								Bids: refLiveBook.Bids,
+								VenueTimestamp:  time.Now().UTC().Format(time.RFC3339Nano),
+								Asks:            refLiveBook.Asks,
+								Bids:            refLiveBook.Bids,
 							}
 							r.base.LiveOrderBook.Set(product, book)
-
 							serialized, err := proto.Marshal(book)
 							if err != nil {
 								logrus.Error("Marshal ", err)
