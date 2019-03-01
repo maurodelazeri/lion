@@ -2,15 +2,18 @@ package foxbit
 
 import (
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/maurodelazeri/concurrency-map-slice"
+	utils "github.com/maurodelazeri/concurrency-map-slice"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	"github.com/maurodelazeri/lion/socket"
 	venue "github.com/maurodelazeri/lion/venues"
 	"github.com/maurodelazeri/lion/venues/config"
 	"github.com/maurodelazeri/lion/venues/request"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -53,10 +56,10 @@ type Websocket struct {
 	// default to 2 seconds
 	HandshakeTimeout time.Duration
 
-	OrderBookMAP    map[string]map[float64]float64
-	subscribedPairs []string
-	pairsMapping    *utils.ConcurrentMap
-	MessageType     []byte
+	OrderBookMAP        map[string]map[float64]float64
+	subscribedPairs     []string
+	pairsMapping        *utils.ConcurrentMap
+	OrderbookTimestamps *utils.ConcurrentMap
 }
 
 // SetDefaults sets default values for the venue
@@ -88,19 +91,23 @@ func (r *Foxbit) Start() {
 	if ok {
 		for product, value := range venueConf.(config.VenueConfig).Products {
 			// Separate products that will use a exclusive connection from those sharing a connection
-			if value.IndividualConnection {
-				dedicatedSocket = append(dedicatedSocket, product)
-			} else {
-				sharedSocket = append(sharedSocket, product)
+			if value.Enabled {
+				if value.IndividualConnection {
+					dedicatedSocket = append(dedicatedSocket, product)
+				} else {
+					sharedSocket = append(sharedSocket, product)
+				}
 			}
 		}
 
 		r.LiveOrderBook = utils.NewConcurrentMap()
 
+		logrus.Infof("Initializing Socket Server")
+		r.Base.SocketClient = socket.InitSocketEngine(os.Getenv("WINTER_CONTAINER_EVENT"), 0, "datafeed:winter")
+
 		if len(dedicatedSocket) > 0 {
 			for _, pair := range dedicatedSocket {
 				socket := new(Websocket)
-				socket.MessageType = make([]byte, 4)
 				socket.base = r
 				socket.subscribedPairs = append(socket.subscribedPairs, pair)
 				go socket.WebsocketClient()
@@ -108,7 +115,6 @@ func (r *Foxbit) Start() {
 		}
 		if len(sharedSocket) > 0 {
 			socket := new(Websocket)
-			socket.MessageType = make([]byte, 4)
 			socket.base = r
 			socket.subscribedPairs = sharedSocket
 			go socket.WebsocketClient()
