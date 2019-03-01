@@ -33,28 +33,19 @@ import (
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
-	if r.base.Streaming {
-		for _, product := range products {
-			book := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_depth",
-			}
-			subscribe = append(subscribe, book)
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_trades",
-			}
-			subscribe = append(subscribe, trade)
+	for _, product := range products {
+		book := MessageChannel{
+			Event:   "addChannel",
+			Channel: product + "_depth",
 		}
-	} else {
-		for _, product := range products {
-			trade := MessageChannel{
-				Event:   "addChannel",
-				Channel: product + "_trades",
-			}
-			subscribe = append(subscribe, trade)
+		subscribe = append(subscribe, book)
+		trade := MessageChannel{
+			Event:   "addChannel",
+			Channel: product + "_trades",
 		}
+		subscribe = append(subscribe, trade)
 	}
+
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
 		if err != nil {
@@ -204,10 +195,8 @@ func (r *Websocket) connect() {
 			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
 			event.PublishEvent(eventData, "events", int64(1), false)
 
-			if r.base.Verbose {
-				logrus.Println(err)
-				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
-			}
+			logrus.Println(err)
+			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 		}
 
 		time.Sleep(nextItvl)

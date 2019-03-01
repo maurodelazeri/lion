@@ -33,39 +33,27 @@ import (
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
-	if r.base.Streaming {
-		var paramsBook []interface{}
-		for _, prod := range products {
-			paramsBook = append(paramsBook, []string{prod, "20", "0"})
-		}
-		book := MessageChannel{
-			ID:     time.Now().Unix(),
-			Method: "depth.subscribe",
-			Params: paramsBook,
-		}
-		subscribe = append(subscribe, book)
-		var paramsTrade []interface{}
-		for _, prod := range products {
-			paramsTrade = append(paramsTrade, prod)
-		}
-		trade := MessageChannel{
-			ID:     time.Now().Unix(),
-			Method: "trades.subscribe",
-			Params: paramsTrade,
-		}
-		subscribe = append(subscribe, trade)
-	} else {
-		var params []interface{}
-		for _, prod := range products {
-			params = append(params, prod)
-		}
-		trade := MessageChannel{
-			ID:     time.Now().Unix(),
-			Method: "trades.subscribe",
-			Params: params,
-		}
-		subscribe = append(subscribe, trade)
+	var paramsBook []interface{}
+	for _, prod := range products {
+		paramsBook = append(paramsBook, []string{prod, "20", "0"})
 	}
+	book := MessageChannel{
+		ID:     time.Now().Unix(),
+		Method: "depth.subscribe",
+		Params: paramsBook,
+	}
+	subscribe = append(subscribe, book)
+	var paramsTrade []interface{}
+	for _, prod := range products {
+		paramsTrade = append(paramsTrade, prod)
+	}
+	trade := MessageChannel{
+		ID:     time.Now().Unix(),
+		Method: "trades.subscribe",
+		Params: paramsTrade,
+	}
+	subscribe = append(subscribe, trade)
+
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
 		if err != nil {
@@ -214,10 +202,9 @@ func (r *Websocket) connect() {
 			eventID, _ := uuid.NewV4()
 			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
 			event.PublishEvent(eventData, "events", int64(1), false)
-			if r.base.Verbose {
-				logrus.Println(err)
-				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
-			}
+
+			logrus.Println(err)
+			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 		}
 
 		time.Sleep(nextItvl)

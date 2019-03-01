@@ -34,31 +34,21 @@ import (
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
 
-	if r.base.Streaming {
-		for _, product := range products {
-			//idBook, _ := uuid.NewV4()
-			book := MessageChannel{
-				Subscribe: fmt.Sprintf("market.%s.depth.%s", product, "step0"),
-				// ID:        idBook.String(),
-			}
-			subscribe = append(subscribe, book)
-			//idTrade, _ := uuid.NewV4()
-			trade := MessageChannel{
-				Subscribe: fmt.Sprintf("market.%s.trade.detail", product),
-				// ID:        idTrade.String(),
-			}
-			subscribe = append(subscribe, trade)
+	for _, product := range products {
+		//idBook, _ := uuid.NewV4()
+		book := MessageChannel{
+			Subscribe: fmt.Sprintf("market.%s.depth.%s", product, "step0"),
+			// ID:        idBook.String(),
 		}
-	} else {
-		for _, product := range products {
-			//idTrade, _ := uuid.NewV4()
-			trade := MessageChannel{
-				Subscribe: fmt.Sprintf("market.%s.trade.detail", product),
-				// ID:        idTrade.String(),
-			}
-			subscribe = append(subscribe, trade)
+		subscribe = append(subscribe, book)
+		//idTrade, _ := uuid.NewV4()
+		trade := MessageChannel{
+			Subscribe: fmt.Sprintf("market.%s.trade.detail", product),
+			// ID:        idTrade.String(),
 		}
+		subscribe = append(subscribe, trade)
 	}
+
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
 		if err != nil {
@@ -227,10 +217,10 @@ func (r *Websocket) connect() {
 			eventID, _ := uuid.NewV4()
 			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
 			event.PublishEvent(eventData, "events", int64(1), false)
-			if r.base.Verbose {
-				logrus.Println(err)
-				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
-			}
+
+			logrus.Println(err)
+			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
+
 		}
 
 		time.Sleep(nextItvl)

@@ -19,9 +19,12 @@ import (
 	utils "github.com/maurodelazeri/concurrency-map-slice"
 	"github.com/maurodelazeri/go-number"
 	"github.com/maurodelazeri/lion/common"
+	event "github.com/maurodelazeri/lion/events"
 	"github.com/maurodelazeri/lion/marketdata"
 	pbAPI "github.com/maurodelazeri/lion/protobuf/api"
+	pbEvent "github.com/maurodelazeri/lion/protobuf/heraldsquareAPI"
 	"github.com/maurodelazeri/lion/venues/config"
+	uuid "github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -132,6 +135,9 @@ func (r *Websocket) IsConnected() bool {
 
 // CloseAndRecconect will try to reconnect.
 func (r *Websocket) closeAndRecconect() {
+	eventID, _ := uuid.NewV4()
+	eventData := event.CreateBaseEvent(eventID.String(), "closeAndRecconect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+	event.PublishEvent(eventData, "events", int64(1), false)
 	r.Close()
 	go func() {
 		r.connect()
@@ -206,6 +212,10 @@ func (r *Websocket) connect() {
 			}
 			break
 		} else {
+			eventID, _ := uuid.NewV4()
+			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
+			event.PublishEvent(eventData, "events", int64(1), false)
+
 			logrus.Println(err)
 			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 		}

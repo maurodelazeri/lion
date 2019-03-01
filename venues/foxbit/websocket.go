@@ -32,43 +32,29 @@ import (
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := []MessageChannel{}
 	count := 0
-	if r.base.Streaming {
-		for _, product := range products {
-			i, _ := strconv.Atoi(product)
-			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
-			count++
-			trade := MessageChannel{
-				M: 0,
-				I: count,
-				N: "SubscribeTrades",
-				O: string(payload),
-			}
-			subscribe = append(subscribe, trade)
+	for _, product := range products {
+		i, _ := strconv.Atoi(product)
+		payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
+		count++
+		trade := MessageChannel{
+			M: 0,
+			I: count,
+			N: "SubscribeTrades",
+			O: string(payload),
+		}
+		subscribe = append(subscribe, trade)
 
-			payload, _ = ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
-			count++
-			book := MessageChannel{
-				M: 0,
-				I: count,
-				N: "SubscribeLevel2",
-				O: string(payload),
-			}
-			subscribe = append(subscribe, book)
+		payload, _ = ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, Depth: 20})
+		count++
+		book := MessageChannel{
+			M: 0,
+			I: count,
+			N: "SubscribeLevel2",
+			O: string(payload),
 		}
-	} else {
-		for _, product := range products {
-			i, _ := strconv.Atoi(product)
-			payload, _ := ffjson.Marshal(Payload{InstrumentID: i, OMSID: 1, IncludeLastCount: 1})
-			count++
-			trade := MessageChannel{
-				M: 2,
-				I: count,
-				N: "SubscribeTrades",
-				O: string(payload),
-			}
-			subscribe = append(subscribe, trade)
-		}
+		subscribe = append(subscribe, book)
 	}
+
 	for _, channels := range subscribe {
 		json, err := common.JSONEncode(channels)
 		if err != nil {
@@ -217,10 +203,8 @@ func (r *Websocket) connect() {
 			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
 			event.PublishEvent(eventData, "events", int64(1), false)
 
-			if r.base.Verbose {
-				logrus.Println(err)
-				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
-			}
+			logrus.Println(err)
+			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 		}
 
 		time.Sleep(nextItvl)

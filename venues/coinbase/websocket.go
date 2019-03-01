@@ -30,30 +30,18 @@ import (
 // Subscribe subsribe public and private endpoints
 func (r *Websocket) Subscribe(products []string) error {
 	subscribe := Message{}
-	if r.base.Streaming {
-		subscribe = Message{
-			Type: "subscribe",
-			Channels: []MessageChannel{
-				MessageChannel{
-					Name:       "full",
-					ProductIDs: products,
-				},
-				MessageChannel{
-					Name:       "level2",
-					ProductIDs: products,
-				},
+	subscribe = Message{
+		Type: "subscribe",
+		Channels: []MessageChannel{
+			MessageChannel{
+				Name:       "full",
+				ProductIDs: products,
 			},
-		}
-	} else {
-		subscribe = Message{
-			Type: "subscribe",
-			Channels: []MessageChannel{
-				MessageChannel{
-					Name:       "level2",
-					ProductIDs: products,
-				},
+			MessageChannel{
+				Name:       "level2",
+				ProductIDs: products,
 			},
-		}
+		},
 	}
 	json, err := common.JSONEncode(subscribe)
 	if err != nil {
@@ -199,10 +187,8 @@ func (r *Websocket) connect() {
 			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
 			event.PublishEvent(eventData, "events", int64(1), false)
 
-			if r.base.Verbose {
-				logrus.Println(err)
-				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
-			}
+			logrus.Println(err)
+			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 		}
 
 		time.Sleep(nextItvl)

@@ -31,19 +31,12 @@ import (
 func (r *Websocket) Subscribe(products []string) error {
 	endpoint := []string{}
 	subscribe := MessageChannel{}
-	if r.base.Streaming {
-		for _, x := range products {
-			endpoint = append(endpoint, "orderBookL2:"+x)
-			endpoint = append(endpoint, "trade:"+x)
-		}
-		subscribe = MessageChannel{"subscribe", endpoint}
-	} else {
-		for _, x := range products {
-			endpoint = append(endpoint, "orderBookL2:"+x)
-			endpoint = append(endpoint, "trade:"+x)
-		}
-		subscribe = MessageChannel{"subscribe", endpoint}
+	for _, x := range products {
+		endpoint = append(endpoint, "orderBookL2:"+x)
+		endpoint = append(endpoint, "trade:"+x)
 	}
+	subscribe = MessageChannel{"subscribe", endpoint}
+
 	json, err := common.JSONEncode(subscribe)
 	if err != nil {
 		return err
@@ -187,10 +180,9 @@ func (r *Websocket) connect() {
 			eventID, _ := uuid.NewV4()
 			eventData := event.CreateBaseEvent(eventID.String(), "connect", nil, time.Now().UTC().Format(time.RFC3339Nano), r.base.GetName(), true, 0, pbEvent.System_WINTER)
 			event.PublishEvent(eventData, "events", int64(1), false)
-			if r.base.Verbose {
-				logrus.Println(err)
-				logrus.Println("Dial: will try again in", nextItvl, "seconds.")
-			}
+
+			logrus.Println(err)
+			logrus.Println("Dial: will try again in", nextItvl, "seconds.")
 		}
 
 		time.Sleep(nextItvl)
