@@ -18,7 +18,7 @@ type Message struct {
 	MDBkTyp  string `json:"MDBkTyp,omitempty"`
 	MsgType  string `json:"MsgType,omitempty"`
 	MDIncGrp []struct {
-		OrderID           int    `json:"OrderID,omitempty"`
+		OrderID           int64  `json:"OrderID,omitempty"`
 		MDEntryPx         int64  `json:"MDEntryPx,omitempty"`
 		MDUpdateAction    string `json:"MDUpdateAction,omitempty"`
 		MDEntryTime       string `json:"MDEntryTime,omitempty"`

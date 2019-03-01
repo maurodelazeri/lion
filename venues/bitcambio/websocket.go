@@ -7,6 +7,7 @@ import (
 	"errors"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -213,16 +214,22 @@ func (r *Websocket) connect() {
 }
 
 func (r *Websocket) insert(currentSlice []*pbAPI.Item, at int64, val *pbAPI.Item) []*pbAPI.Item {
-	// Move all elements of s up one slot
-	copy(currentSlice[at+1:], currentSlice[at:])
-	// Insert the new element at the now free position
-	currentSlice[at] = val
+	if len(currentSlice) > int(at) {
+		// Move all elements of s up one slot
+		copy(currentSlice[at+1:], currentSlice[at:])
+		// Insert the new element at the now free position
+		currentSlice[at] = val
+		return currentSlice
+	}
 	return currentSlice
 }
 
 func (r *Websocket) delete(currentSlice []*pbAPI.Item, at int) []*pbAPI.Item {
-	newarr := currentSlice[:at+copy(currentSlice[at:], currentSlice[at+1:])]
-	return newarr
+	if len(currentSlice) > at {
+		newarr := currentSlice[:at+copy(currentSlice[at:], currentSlice[at+1:])]
+		return newarr
+	}
+	return currentSlice
 }
 
 //https://blinktrade.com/docs/#subscribe-to-orderbook
@@ -336,15 +343,23 @@ func (r *Websocket) startReading() {
 									} else {
 										side = "sell"
 									}
+
+									layout := "2006-01-02T15:04:05.000Z"
+									t, err := time.Parse(layout, data.MDEntryDate+"T"+data.MDEntryTime+".000Z")
+									if err != nil {
+										logrus.Error("problem converting date ", err)
+										continue
+									}
+
 									trades := &pbAPI.Trade{
-										Product: product,
-										//VenueTradeId:    strconv.FormatInt(data.TradeID, 10),
+										Product:         product,
+										VenueTradeId:    strconv.FormatInt(data.OrderID, 10),
 										Venue:           r.base.GetName(),
 										SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-										// VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
-										Price:     number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
-										OrderSide: side,
-										Volume:    number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
+										VenueTimestamp:  t.String(),
+										Price:           number.NewDecimal(data.MDEntryPx, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
+										OrderSide:       side,
+										Volume:          number.NewDecimal(data.MDEntrySize, 8).Div(number.NewDecimal(1e8, 8)).Float64(),
 									}
 									serialized, err := proto.Marshal(trades)
 									if err != nil {
@@ -355,6 +370,7 @@ func (r *Websocket) startReading() {
 										logrus.Error("Socket sent ", err)
 									}
 									marketdata.PublishMarketData(serialized, "trades."+r.base.GetName()+"."+product, 1, false)
+									continue
 								}
 							}
 
@@ -362,6 +378,23 @@ func (r *Websocket) startReading() {
 							if !updated {
 								continue
 							}
+
+							wg.Add(1)
+							go func() {
+								totalBids := len(refLiveBook.Bids)
+								if totalBids > r.base.MaxLevelsOrderBook {
+									refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
+							wg.Add(1)
+							go func() {
+								totalAsks := len(refLiveBook.Asks)
+								if totalAsks > r.base.MaxLevelsOrderBook {
+									refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+								}
+								wg.Done()
+							}()
 
 							wg.Wait()
 							book := &pbAPI.Orderbook{
