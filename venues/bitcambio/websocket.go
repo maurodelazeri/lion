@@ -370,22 +370,22 @@ func (r *Websocket) startReading() {
 								continue
 							}
 
-							wg.Add(1)
-							go func() {
-								totalBids := len(refLiveBook.Bids)
-								if totalBids > r.base.MaxLevelsOrderBook {
-									refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
-								}
-								wg.Done()
-							}()
-							wg.Add(1)
-							go func() {
-								totalAsks := len(refLiveBook.Asks)
-								if totalAsks > r.base.MaxLevelsOrderBook {
-									refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
-								}
-								wg.Done()
-							}()
+							// wg.Add(1)
+							// go func() {
+							// 	totalBids := len(refLiveBook.Bids)
+							// 	if totalBids > r.base.MaxLevelsOrderBook {
+							// 		refLiveBook.Bids = refLiveBook.Bids[0:r.base.MaxLevelsOrderBook]
+							// 	}
+							// 	wg.Done()
+							// }()
+							// wg.Add(1)
+							// go func() {
+							// 	totalAsks := len(refLiveBook.Asks)
+							// 	if totalAsks > r.base.MaxLevelsOrderBook {
+							// 		refLiveBook.Asks = refLiveBook.Asks[0:r.base.MaxLevelsOrderBook]
+							// 	}
+							// 	wg.Done()
+							// }()
 
 							wg.Wait()
 							book := &pbAPI.Orderbook{
