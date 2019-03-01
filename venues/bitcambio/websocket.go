@@ -199,7 +199,7 @@ func (r *Websocket) connect() {
 }
 
 func (r *Websocket) insert(currentSlice []*pbAPI.Item, at int64, val *pbAPI.Item) []*pbAPI.Item {
-	logrus.Warn(currentSlice, " ---- ", at, " varl ", val, " len ", len(currentSlice))
+	logrus.Warn(currentSlice, " ---- AT: ", at, " VAL: ", val, " LEN: ", len(currentSlice))
 	if len(currentSlice) > int(at) {
 		// Move all elements of s up one slot
 		copy(currentSlice[at+1:], currentSlice[at:])
@@ -211,7 +211,7 @@ func (r *Websocket) insert(currentSlice []*pbAPI.Item, at int64, val *pbAPI.Item
 }
 
 func (r *Websocket) delete(currentSlice []*pbAPI.Item, at int) []*pbAPI.Item {
-	logrus.Info(currentSlice, " ---- ", at, " len ", len(currentSlice))
+	logrus.Info(currentSlice, " ---- AT: ", at, " LEN: ", len(currentSlice))
 	if len(currentSlice) > at {
 		newarr := currentSlice[:at+copy(currentSlice[at:], currentSlice[at+1:])]
 		return newarr
