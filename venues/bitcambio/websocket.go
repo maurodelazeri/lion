@@ -295,6 +295,11 @@ func (r *Websocket) startReading() {
 							refLiveBook := refBook.(*pbAPI.Orderbook)
 							updated = true
 
+							// https://github.com/seanoflynn/circus/blob/722835469aa220da413e9a56b50dd1900f806192/src/Cme/Enums/MDUpdateAction.cs
+							// INFO[0621] DELETE THU ask {"MDUpdateAction":"3","Symbol":"BTCBRL","UserID":0,"MDEntryType":"1","MDEntryPositionNo":2}
+							// INFO[0670] DELETE THU ask {"MDUpdateAction":"3","Symbol":"BTCBRL","UserID":0,"MDEntryType":"1","MDEntryPositionNo":1}
+							// INFO[1132] DELETE THU bid {"MDUpdateAction":"3","Symbol":"BTCBRL","UserID":0,"MDEntryType":"0","MDEntryPositionNo":1}
+
 							for _, data := range message.MDIncGrp {
 								switch data.MDEntryType {
 								case "0": // Bid
@@ -307,7 +312,7 @@ func (r *Websocket) startReading() {
 										r.delete(refLiveBook.Bids, int(data.MDEntryPositionNo-1))
 									case "3": //onMDDeleteOrderThru_
 										aaa, _ := ffjson.Marshal(data)
-										logrus.Info("DELETE THU ", string(aaa))
+										logrus.Info("DELETE THU bid ", string(aaa))
 										refLiveBook.Bids = refLiveBook.Bids[:len(refLiveBook.Bids)-int(data.MDEntryPositionNo)]
 									}
 								case "1": // Ask
@@ -320,7 +325,7 @@ func (r *Websocket) startReading() {
 										r.delete(refLiveBook.Asks, int(data.MDEntryPositionNo-1))
 									case "3": //onMDDeleteOrderThru_
 										aaa, _ := ffjson.Marshal(data)
-										logrus.Info("DELETE THU ", string(aaa))
+										logrus.Info("DELETE THU ask ", string(aaa))
 										refLiveBook.Asks = refLiveBook.Asks[:len(refLiveBook.Asks)-int(data.MDEntryPositionNo)]
 									}
 

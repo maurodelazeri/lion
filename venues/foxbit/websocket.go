@@ -305,9 +305,11 @@ func (r *Websocket) startReading() {
 						// -> 0=New, 1=Update, 2=Delete
 						// 2 - quando o size vem 0 eu poss remover o nivel de preco?"
 						// -> Pode sim, significa que a ordem não possue mais amount
+						var timestampBook float64
 						switch message.N {
 						case "Level2UpdateEvent":
 							for _, values := range stream.Streaming {
+								timestampBook, _ = strconv.ParseFloat(fmt.Sprintf("%f", values[2]), 64)
 								if values[8].(float64) == 0 {
 									price := values[6].(float64)
 									switch values[9].(float64) {
@@ -409,12 +411,12 @@ func (r *Websocket) startReading() {
 								Venue:           r.base.GetName(),
 								Levels:          int64(r.base.MaxLevelsOrderBook),
 								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-								//VenueTimestamp:  dateTimeRef.UTC().Format(time.RFC3339Nano),
-								Asks: refLiveBook.Asks,
-								Bids: refLiveBook.Bids,
+								VenueTimestamp:  time.Unix(0, int64(timestampBook)*int64(time.Millisecond)).UTC().Format(time.RFC3339Nano),
+								Asks:            refLiveBook.Asks,
+								Bids:            refLiveBook.Bids,
 							}
 							r.base.LiveOrderBook.Set(product, book)
-
+							logrus.Warn("book ", book)
 							serialized, err := proto.Marshal(book)
 							if err != nil {
 								logrus.Error("Marshal ", err)
@@ -445,13 +447,13 @@ func (r *Websocket) startReading() {
 								}
 								trades := &pbAPI.Trade{
 									Product:         product,
-									VenueTradeId:    fmt.Sprintf("%f", values[0].(float64)),
+									VenueTradeId:    fmt.Sprintf("%f", values[0]),
 									Venue:           r.base.GetName(),
 									SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
-									//VenueTimestamp:  values[6].(float64),
-									Price:     values[3].(float64),
-									OrderSide: side,
-									Volume:    values[2].(float64),
+									VenueTimestamp:  time.Unix(0, int64(values[6].(float64))*int64(time.Millisecond)).UTC().Format(time.RFC3339Nano),
+									Price:           values[3].(float64),
+									OrderSide:       side,
+									Volume:          values[2].(float64),
 								}
 								logrus.Info(string(resp))
 								serialized, err := proto.Marshal(trades)
