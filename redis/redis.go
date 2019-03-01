@@ -17,7 +17,7 @@ func init() {
 func InitEngine() {
 	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     os.Getenv("REDIS_CONNECTION"),
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Password: os.Getenv("REDIS_PASSWORD"), // no password set
+		DB:       0,                           // use default DB
 	})
 }
