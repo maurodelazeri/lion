@@ -311,9 +311,9 @@ func (r *Websocket) startReading() {
 									case "2": //onMDDeleteOrder_
 										r.delete(refLiveBook.Bids, int(data.MDEntryPositionNo-1))
 									case "3": //onMDDeleteOrderThru_
-										aaa, _ := ffjson.Marshal(data)
-										logrus.Info("DELETE THU bid ", string(aaa))
-										refLiveBook.Bids = refLiveBook.Bids[:len(refLiveBook.Bids)-int(data.MDEntryPositionNo)]
+										// aaa, _ := ffjson.Marshal(data)
+										// logrus.Info("DELETE THU bid ", string(aaa))
+										refLiveBook.Bids = refLiveBook.Bids[data.MDEntryPositionNo:]
 									}
 								case "1": // Ask
 									switch data.MDUpdateAction {
@@ -324,9 +324,9 @@ func (r *Websocket) startReading() {
 									case "2": //onMDDeleteOrder_
 										r.delete(refLiveBook.Asks, int(data.MDEntryPositionNo-1))
 									case "3": //onMDDeleteOrderThru_
-										aaa, _ := ffjson.Marshal(data)
-										logrus.Info("DELETE THU ask ", string(aaa))
-										refLiveBook.Asks = refLiveBook.Asks[:len(refLiveBook.Asks)-int(data.MDEntryPositionNo)]
+										// aaa, _ := ffjson.Marshal(data)
+										// logrus.Info("DELETE THU ask ", string(aaa))
+										refLiveBook.Asks = refLiveBook.Asks[data.MDEntryPositionNo:]
 									}
 
 								case "2": // Trade
@@ -394,9 +394,6 @@ func (r *Websocket) startReading() {
 							}
 							r.OrderbookTimestamps.Set(book.GetVenue()+book.GetProduct(), time.Now())
 							marketdata.PublishMarketData(serialized, "orderbooks."+r.base.GetName()+"."+product, 1, false)
-
-						default:
-							logrus.Warn("DEFAULT CASE  ", string(resp))
 						}
 					}
 				}
