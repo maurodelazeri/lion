@@ -400,7 +400,6 @@ func (r *Websocket) startReading() {
 								Bids:            refLiveBook.Bids,
 							}
 							r.base.LiveOrderBook.Set(product, book)
-							logrus.Warn("book ", book)
 							serialized, err := proto.Marshal(book)
 							if err != nil {
 								logrus.Error("Marshal ", err)
@@ -439,7 +438,6 @@ func (r *Websocket) startReading() {
 									OrderSide:       side,
 									Volume:          values[2].(float64),
 								}
-								logrus.Info(string(resp))
 								serialized, err := proto.Marshal(trades)
 								if err != nil {
 									logrus.Error("Marshal ", err)
