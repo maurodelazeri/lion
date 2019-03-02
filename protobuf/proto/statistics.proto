@@ -32,8 +32,8 @@ message TradesDeadman {
    string                              product_description        = 2; 
    int64                               venue_id                   = 3;
    string                              venue_description          = 4;    
-   string                              price                      = 5;    
-   string                              volume                     = 6;    
+   double                              price                      = 5;    
+   double                              volume                     = 6;    
    int64                               deadman                    = 7;
    string                              timestamp                  = 8; 
    string                              time_since                 = 9;               
