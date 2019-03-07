@@ -14,9 +14,8 @@ message Orderbook {
   string                              venue                            = 2;
   string                              system_timestamp                 = 3;
   string                              venue_timestamp                  = 4;
-  int64                               levels                           = 5;
-  repeated Item                       asks                             = 6;
-  repeated Item                       bids                             = 7;
+  repeated Item                       asks                             = 5;
+  repeated Item                       bids                             = 6;
 };
 
 message Trade {

@@ -408,7 +408,6 @@ func (r *Websocket) startReading() {
 							book := &pbAPI.Orderbook{
 								Product:         product,
 								Venue:           r.base.GetName(),
-								Levels:          int64(r.base.MaxLevelsOrderBook),
 								SystemTimestamp: time.Now().UTC().Format(time.RFC3339Nano),
 								VenueTimestamp:  time.Now().UTC().Format(time.RFC3339Nano),
 								Asks:            refLiveBook.Asks,
@@ -416,15 +415,6 @@ func (r *Websocket) startReading() {
 							}
 
 							r.base.LiveOrderBook.Set(product, book)
-
-							// if len(book.Asks) > 0 && len(book.Bids) > 0 {
-							// 	if book.Bids[0].Price > 5000 {
-							// 		log.Print("==")
-							// 		logrus.Warn("BIDS: ", book.Bids[0].Price, book.Bids[0].Volume)
-							// 		logrus.Warn("ASKS: ", book.Asks[0].Price, book.Asks[0].Volume)
-							// 		log.Print("==\n")
-							// 	}
-							// }
 
 							serialized, err := proto.Marshal(book)
 							if err != nil {
