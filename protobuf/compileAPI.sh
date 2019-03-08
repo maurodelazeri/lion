@@ -8,7 +8,6 @@ protoc -I proto/ proto/*.proto  \
     --ts_out=service=true:../../siberia/app/src/api \
     --js_out=import_style=commonjs,binary:../../siberia/app/src/api \
 
-
 case "$(uname -s)" in
 
    Darwin)

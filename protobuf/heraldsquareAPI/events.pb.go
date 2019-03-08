@@ -3,9 +3,11 @@
 
 package heraldsquareAPI
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -16,7 +18,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type Event struct {
 	EventId              int64    `protobuf:"varint,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
@@ -40,14 +42,15 @@ func (*Event) ProtoMessage()    {}
 func (*Event) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8f22242cb04491f9, []int{0}
 }
+
 func (m *Event) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Event.Unmarshal(m, b)
 }
 func (m *Event) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Event.Marshal(b, m, deterministic)
 }
-func (dst *Event) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Event.Merge(dst, src)
+func (m *Event) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Event.Merge(m, src)
 }
 func (m *Event) XXX_Size() int {
 	return xxx_messageInfo_Event.Size(m)
@@ -142,14 +145,15 @@ func (*EventRequest) ProtoMessage()    {}
 func (*EventRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8f22242cb04491f9, []int{1}
 }
+
 func (m *EventRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EventRequest.Unmarshal(m, b)
 }
 func (m *EventRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EventRequest.Marshal(b, m, deterministic)
 }
-func (dst *EventRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventRequest.Merge(dst, src)
+func (m *EventRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventRequest.Merge(m, src)
 }
 func (m *EventRequest) XXX_Size() int {
 	return xxx_messageInfo_EventRequest.Size(m)
@@ -190,14 +194,15 @@ func (*EventResponse) ProtoMessage()    {}
 func (*EventResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8f22242cb04491f9, []int{2}
 }
+
 func (m *EventResponse) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EventResponse.Unmarshal(m, b)
 }
 func (m *EventResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EventResponse.Marshal(b, m, deterministic)
 }
-func (dst *EventResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventResponse.Merge(dst, src)
+func (m *EventResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventResponse.Merge(m, src)
 }
 func (m *EventResponse) XXX_Size() int {
 	return xxx_messageInfo_EventResponse.Size(m)

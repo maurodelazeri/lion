@@ -3,9 +3,11 @@
 
 package heraldsquareAPI
 
-import proto "github.com/golang/protobuf/proto"
-import fmt "fmt"
-import math "math"
+import (
+	fmt "fmt"
+	proto "github.com/golang/protobuf/proto"
+	math "math"
+)
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
@@ -16,7 +18,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type SystemSummer struct {
 	Action               Action   `protobuf:"varint,1,opt,name=action,proto3,enum=heraldsquareAPI.Action" json:"action,omitempty"`
@@ -31,14 +33,15 @@ func (*SystemSummer) ProtoMessage()    {}
 func (*SystemSummer) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ec938d4cda008df6, []int{0}
 }
+
 func (m *SystemSummer) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SystemSummer.Unmarshal(m, b)
 }
 func (m *SystemSummer) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SystemSummer.Marshal(b, m, deterministic)
 }
-func (dst *SystemSummer) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SystemSummer.Merge(dst, src)
+func (m *SystemSummer) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SystemSummer.Merge(m, src)
 }
 func (m *SystemSummer) XXX_Size() int {
 	return xxx_messageInfo_SystemSummer.Size(m)
