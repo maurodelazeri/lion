@@ -32,7 +32,7 @@ message ProductRequest {
 
 message ProductResponse { 
    Retcode                             retcode                   = 1;
-   repeated Product                    product                   = 2; 
+   repeated Product                    products                  = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
@@ -59,7 +59,7 @@ message ProductDataFeedRequest {
 
 message ProductDataFeedResponse { 
    Retcode                             retcode                   = 1;
-   repeated Product                    product                   = 2; 
+   repeated Product                    products                  = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

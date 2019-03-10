@@ -15,12 +15,14 @@ case "$(uname -s)" in
      echo 'Mac OS X'
         ls ../../siberia/app/src/heraldsquareAPI/* | while read line;do
         sed -i "" '1s/^/\/* eslint-disable *\/ /' $line
+        sed -i "" 's/grpc-web-client/@improbable-eng\/grpc-web/' $line
         done
      ;;
    Linux)
      echo 'Linux'
         ls ../../siberia/app/src/heraldsquareAPI/* | while read line;do
         sed -i '1s/^/\/* eslint-disable *\/ /' $line
+        sed -i 's/grpc-web-client/@improbable-eng\/grpc-web/' $line
         done
      ;;
    *)

@@ -42,7 +42,7 @@ message DataFeedRequest {
 
 message DataFeedResponse { 
    Retcode                             retcode                   = 1;
-   repeated DataFeed                   datafeed                  = 2; 
+   repeated DataFeed                   datafeeds                 = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

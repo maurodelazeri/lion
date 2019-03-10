@@ -21,7 +21,7 @@ message ServerRequest {
 
 message ServerResponse { 
    Retcode                             retcode                   = 1;
-   repeated Server                     server                   = 2; 
+   repeated Server                     servers                   = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

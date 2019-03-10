@@ -18,7 +18,7 @@ message AccountRequest {
 
 message AccountResponse { 
    Retcode                             retcode                   = 1;
-   repeated Account                    account                   = 2; 
+   repeated Account                    accounts                  = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

@@ -45,7 +45,7 @@ message ContainerRequest {
 
 message ContainerResponse { 
    Retcode                             retcode                   = 1;
-   repeated Container                  container                 = 2; 
+   repeated Container                  containers                = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
@@ -53,7 +53,7 @@ message ContainerResponse {
 message ContainerPostRequest { 
    string                              token                     = 1;
    int64                               server_id                 = 2;
-   repeated Container                  container                 = 3;     
+   repeated Container                  containers                = 3;     
    Action                              action                    = 4;   
 }
 
@@ -74,7 +74,7 @@ message ContainerCreateRequest {
 
 message ContainerCreateResponse { 
    Retcode                             retcode                   = 1;
-   repeated ContainerCreate            container_create          = 2; 
+   repeated ContainerCreate            containers_create         = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

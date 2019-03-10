@@ -24,7 +24,7 @@ message VenueRequest {
 
 message VenueResponse { 
    Retcode                             retcode                   = 1;
-   repeated Venue                      venue                     = 2; 
+   repeated Venue                      venues                    = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

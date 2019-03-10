@@ -23,7 +23,7 @@ message BalanceRequest {
 
 message BalanceResponse { 
    Retcode                             retcode                   = 1;
-   repeated Balance                    balance                   = 2; 
+   repeated Balance                    balances                  = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }

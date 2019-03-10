@@ -19,7 +19,7 @@ message MarketKindSummaryRequest {
 
 message MarketKindSummaryResponse { 
    Retcode                             retcode                           = 1;
-   repeated MarketKindSummary          market_kind_summary               = 2; 
+   repeated MarketKindSummary          markets_kind_summary              = 2; 
    string                              comment                           = 3;   
    string                              elapsed                           = 4;  
 }
@@ -47,7 +47,7 @@ message MarketProductSummaryRequest {
 
 message MarketProductSummaryResponse { 
    Retcode                             retcode                           = 1;
-   repeated MarketProductSummary       market_product_summary           = 2; 
+   repeated MarketProductSummary       markets_product_summary           = 2; 
    string                              comment                           = 3;   
    string                              elapsed                           = 4;  
 }

@@ -23,7 +23,7 @@ message EventRequest {
 
 message EventResponse { 
    Retcode                             retcode                   = 1;
-   repeated Event                      event                     = 2; 
+   repeated Event                      events                    = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
