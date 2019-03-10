@@ -6,10 +6,6 @@ message MarketKindSummary {
   int64                               market_data_id                    = 1;
   string                              product                           = 2;
   int64                               venues_total                      = 3;
-  int64                               products_enabled_total            = 4;
-  int64                               products_disabled_total           = 5;
-  int64                               streaming_save_enabled            = 6;
-  int64                               streaming_save_disabled           = 7;
 };
 
 message MarketKindSummaryRequest { 
