@@ -6,22 +6,23 @@ message Product {
    int64                               product_id                  = 1; 
    int64                               venue_id                    = 2; 
    string                              kind                        = 3;
-   string                              asset_class                 = 4; 
-   int64                               base_currency               = 5; 
-   int64                               quote_currency              = 6; 
-   string                              system_symbol_identifier    = 7; 
-   bool                                individual_connection       = 8; 
-   bool                                streaming_save              = 9; 
-   string                              venue_symbol_identifier     = 10; 
-   double                              minimum_orders_size         = 11; 
-   double                              step_size                   = 12; 
-   int64                               price_precision             = 13; 
-   double                              maker_fee                   = 14; 
-   double                              taker_fee                   = 15; 
-   bool                                enabled                     = 16; 
-   string                              settlement                  = 17; 
-   string                              expiration                  = 18;
-   int64                               deadman                     = 19; 
+   string                              asset_class                 = 4;
+   bool                                synthetic                   = 5; 
+   int64                               base_currency               = 6; 
+   int64                               quote_currency              = 7; 
+   string                              system_symbol_identifier    = 8; 
+   bool                                individual_connection       = 9; 
+   bool                                streaming_save              = 10; 
+   string                              venue_symbol_identifier     = 11; 
+   double                              minimum_orders_size         = 12; 
+   double                              step_size                   = 13; 
+   int64                               price_precision             = 14; 
+   double                              maker_fee                   = 15; 
+   double                              taker_fee                   = 16; 
+   bool                                enabled                     = 17; 
+   string                              settlement                  = 18; 
+   string                              expiration                  = 19;
+   int64                               deadman                     = 20; 
 }
 
 message ProductRequest { 
