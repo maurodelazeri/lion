@@ -27,7 +27,6 @@ message DataFeed {
 
 message DataFeedProduct { 
    int64                               product_id               = 1;   
-   string                              product_description      = 2;   
 }
 message DataFeedEnv { 
    string                              name                     = 1;   
