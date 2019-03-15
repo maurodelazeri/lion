@@ -73,6 +73,7 @@ message ProductDataFeedRequest {
    string                              token                     = 1;  
    int64                               venue_id                  = 2;  
    string                              streaming_server          = 3;
+   string                              event_server              = 4;
 }
 
 message ProductDataFeedResponse { 
