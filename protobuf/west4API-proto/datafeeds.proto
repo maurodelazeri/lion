@@ -48,7 +48,7 @@ message DataFeedResponse {
 
 message DataFeedPostRequest {
    string                              token                     = 1; 
-   DataFeed                            datafeed                 = 2;     
+   DataFeed                            datafeed                  = 2;     
    Action                              action                    = 3;
 }
 
