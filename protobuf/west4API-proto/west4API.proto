@@ -8,6 +8,7 @@ import "servers.proto";
 service west4API {   
   rpc GetDataFeeds(DataFeedRequest) returns (DataFeedResponse) {}
   rpc PostDataFeed(DataFeedPostRequest) returns (DataFeedPostResponse) {}  
+  rpc GetDataFeedProducts(ProductDataFeedRequest) returns (ProductDataFeedResponse) {}
 
   rpc GetServers(ServerRequest) returns (ServerResponse) {}
   rpc PostServer(ServerPostRequest) returns (ServerPostResponse) {}

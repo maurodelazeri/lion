@@ -49,18 +49,3 @@ message ProductPostResponse {
    string                              comment                   = 2;   
    string                              elapsed                   = 3; 
 }
-
-// ---------------------------------------------------------------------- //
-
-message ProductDataFeedRequest { 
-   string                              token                     = 1;  
-   int64                               venue_id                  = 2;  
-   string                              streaming_server          = 3;        
-}
-
-message ProductDataFeedResponse { 
-   Retcode                             retcode                   = 1;
-   repeated Product                    products                  = 2; 
-   string                              comment                   = 3;   
-   string                              elapsed                   = 4;  
-}
