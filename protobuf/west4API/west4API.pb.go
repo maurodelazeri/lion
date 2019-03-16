@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -49,6 +51,10 @@ var fileDescriptor_81ea3877c7e6a19f = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
+
+func errUnimplemented(methodName string) error {
+	return status.Errorf(codes.Unimplemented, "method %s not implemented", methodName)
+}
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -169,6 +175,38 @@ type West4APIServer interface {
 	PostContainer(context.Context, *ContainerPostRequest) (*ContainerPostResponse, error)
 	GetContainersCreate(context.Context, *ContainerCreateRequest) (*ContainerCreateResponse, error)
 	PostContainerCreate(context.Context, *ContainerCreatePostRequest) (*ContainerCreatePostResponse, error)
+}
+
+// UnimplementedWest4APIServer can be embedded to have forward compatible implementations.
+type UnimplementedWest4APIServer struct {
+}
+
+func (*UnimplementedWest4APIServer) GetDataFeeds(ctx context.Context, req *DataFeedRequest) (*DataFeedResponse, error) {
+	return nil, errUnimplemented("GetDataFeeds")
+}
+func (*UnimplementedWest4APIServer) PostDataFeed(ctx context.Context, req *DataFeedPostRequest) (*DataFeedPostResponse, error) {
+	return nil, errUnimplemented("PostDataFeed")
+}
+func (*UnimplementedWest4APIServer) GetDataFeedProducts(ctx context.Context, req *ProductDataFeedRequest) (*ProductDataFeedResponse, error) {
+	return nil, errUnimplemented("GetDataFeedProducts")
+}
+func (*UnimplementedWest4APIServer) GetServers(ctx context.Context, req *ServerRequest) (*ServerResponse, error) {
+	return nil, errUnimplemented("GetServers")
+}
+func (*UnimplementedWest4APIServer) PostServer(ctx context.Context, req *ServerPostRequest) (*ServerPostResponse, error) {
+	return nil, errUnimplemented("PostServer")
+}
+func (*UnimplementedWest4APIServer) GetContainers(ctx context.Context, req *ContainerRequest) (*ContainerResponse, error) {
+	return nil, errUnimplemented("GetContainers")
+}
+func (*UnimplementedWest4APIServer) PostContainer(ctx context.Context, req *ContainerPostRequest) (*ContainerPostResponse, error) {
+	return nil, errUnimplemented("PostContainer")
+}
+func (*UnimplementedWest4APIServer) GetContainersCreate(ctx context.Context, req *ContainerCreateRequest) (*ContainerCreateResponse, error) {
+	return nil, errUnimplemented("GetContainersCreate")
+}
+func (*UnimplementedWest4APIServer) PostContainerCreate(ctx context.Context, req *ContainerCreatePostRequest) (*ContainerCreatePostResponse, error) {
+	return nil, errUnimplemented("PostContainerCreate")
 }
 
 func RegisterWest4APIServer(s *grpc.Server, srv West4APIServer) {
