@@ -23,6 +23,7 @@ message DataFeed {
    string                              restart_policy            = 17;
    repeated DataFeedProduct            products                  = 18;
    string                              env                       = 19;
+   bool                                enabled                   = 20;
 }
 
 message DataFeedProduct { 
@@ -30,10 +31,6 @@ message DataFeedProduct {
    string                              product_description      = 2;
    string                              kind                     = 3;
   
-}
-message DataFeedEnv { 
-   string                              name                     = 1;   
-   string                              value                    = 2;   
 }
 
 message DataFeedRequest { 
