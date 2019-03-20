@@ -32,7 +32,6 @@ service API {
   rpc PostAccount(AccountPostRequest) returns (AccountPostResponse) {}
   
   rpc GetBalances(BalanceRequest) returns (BalanceResponse) {}
-  rpc PostBalance(BalancePostRequest) returns (BalancePostResponse) {}
 
   rpc GetTrades(TradeRequest) returns (TradeResponse) {}
   
