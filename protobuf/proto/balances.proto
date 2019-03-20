@@ -51,7 +51,7 @@ message AccountsBalancesRequest {
 
 message AccountsBalancesResponse { 
    Retcode                             retcode                   = 1;
-   repeated AccountBalance             account_balance           = 2; 
+   repeated AccountBalance             account_balances          = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
