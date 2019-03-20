@@ -7,8 +7,9 @@ message Currency {
    string                              name                     = 2;
    string                              currency_description     = 3; 
    int64                               min_confirmation         = 4; 
-   bool                                enabled                  = 5; 
-   double                              tx_fee                   = 6; 
+   string                              asset_class              = 5; 
+   bool                                enabled                  = 6; 
+   double                              tx_fee                   = 7; 
 }
 
 message CurrencyRequest { 
