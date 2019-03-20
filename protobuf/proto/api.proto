@@ -33,6 +33,9 @@ service API {
   
   rpc GetBalances(BalanceRequest) returns (BalanceResponse) {}
 
+  rpc GetAccountsBalances(AccountsBalancesRequest) returns (AccountsBalancesResponse) {}
+  rpc PostBalance(AccountBalancePostRequest) returns (AccountBalancePostResponse) {}
+ 
   rpc GetTrades(TradeRequest) returns (TradeResponse) {}
   
   rpc GetMarketKindSummary(MarketKindSummaryRequest) returns (MarketKindSummaryResponse) {}
