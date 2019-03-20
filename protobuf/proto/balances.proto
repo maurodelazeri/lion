@@ -27,6 +27,19 @@ message BalanceResponse {
 
 // ####################################################################
 
+message Funding  {
+  int64                                account_id              = 1; 
+  int64                                venue_id                = 2;
+  string                               currency_id             = 3;
+  int64                                amount                  = 4;
+}
+
+message Transfer  {
+  int64                                account_id_origin       = 1; 
+  int64                                account_id_destination  = 2; 
+  int64                                amount                  = 3;
+}
+
 message AccountBalance  {
   int64                                account_balance_id      = 1; 
   int64                                currency_id             = 2;
@@ -56,14 +69,25 @@ message AccountsBalancesResponse {
    string                              elapsed                   = 4;  
 }
 
-
-message AccountBalancePostRequest {
+message AccountBalanceFundRequest {
    string                              token                     = 1; 
-   AccountBalance                      account_balance           = 2;     
+   Funding                             funding                   = 2;     
    Action                              action                    = 3;
 }
 
-message AccountBalancePostResponse { 
+message AccountBalanceFundResponse { 
+   Retcode                             retcode                   = 1; 
+   string                              comment                   = 2;   
+   string                              elapsed                   = 3; 
+}
+
+message AccountBalanceTransferRequest {
+   string                              token                     = 1; 
+   Transfer                            transfer                  = 2;     
+   Action                              action                    = 3;
+}
+
+message AccountBalanceTransferResponse { 
    Retcode                             retcode                   = 1; 
    string                              comment                   = 2;   
    string                              elapsed                   = 3; 
