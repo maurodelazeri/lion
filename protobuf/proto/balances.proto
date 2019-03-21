@@ -27,20 +27,7 @@ message BalanceResponse {
 
 // ####################################################################
 
-message Funding  {
-  int64                                account_id              = 1; 
-  int64                                venue_id                = 2;
-  string                               currency_id             = 3;
-  int64                                amount                  = 4;
-}
-
-message Transfer  {
-  int64                                account_id_origin       = 1; 
-  int64                                account_id_destination  = 2; 
-  int64                                amount                  = 3;
-}
-
-message AccountBalance  {
+message AccountFunds  {
   int64                                account_balance_id      = 1; 
   int64                                currency_id             = 2;
   string                               currency_description    = 3;
@@ -54,7 +41,20 @@ message AccountBalance  {
   double                               hold                    = 11; 
 }
 
-message AccountsBalancesRequest { 
+message Fund  {
+  int64                                account_id              = 1; 
+  int64                                venue_id                = 2;
+  string                               currency_id             = 3;
+  int64                                amount                  = 4;
+}
+
+message Transfer  {
+  int64                                account_id_origin       = 1; 
+  int64                                account_id_destination  = 2; 
+  int64                                amount                  = 3;
+}
+
+message AccountFundsRequest { 
    string                              token                     = 1;  
    int64                               account_balance_id        = 2;
    int64                               account_id                = 3;
@@ -62,32 +62,32 @@ message AccountsBalancesRequest {
    int64                               currency_id               = 5;
 }
 
-message AccountsBalancesResponse { 
+message AccountFundsResponse { 
    Retcode                             retcode                   = 1;
-   repeated AccountBalance             account_balances          = 2; 
+   repeated AccountFunds               account_Funds             = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
 
-message AccountBalanceFundRequest {
+message AccountFundPostRequest {
    string                              token                     = 1; 
-   Funding                             funding                   = 2;     
+   Fund                                fund                      = 2;     
    Action                              action                    = 3;
 }
 
-message AccountBalanceFundResponse { 
+message AccountFundPostResponse { 
    Retcode                             retcode                   = 1; 
    string                              comment                   = 2;   
    string                              elapsed                   = 3; 
 }
 
-message AccountBalanceTransferRequest {
+message AccountTransferPostRequest {
    string                              token                     = 1; 
    Transfer                            transfer                  = 2;     
    Action                              action                    = 3;
 }
 
-message AccountBalanceTransferResponse { 
+message AccountTransferPostResponse { 
    Retcode                             retcode                   = 1; 
    string                              comment                   = 2;   
    string                              elapsed                   = 3; 
