@@ -64,7 +64,7 @@ message AccountFundsRequest {
 
 message AccountFundsResponse { 
    Retcode                             retcode                   = 1;
-   repeated AccountFunds               account_Funds             = 2; 
+   repeated AccountFunds               account_funds             = 2; 
    string                              comment                   = 3;   
    string                              elapsed                   = 4;  
 }
