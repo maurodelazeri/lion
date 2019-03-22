@@ -13,9 +13,10 @@ message Balance  {
 }
 
 message BalanceRequest { 
-   string                              token                     = 1;  
-   int64                               balance_id                = 2;
-   int64                               currency_id               = 3;
+   string                              token                     = 1; 
+   string                              balance_mode              = 2; 
+   int64                               balance_id                = 3;
+   int64                               currency_id               = 4;
 }
 
 message BalanceResponse { 
