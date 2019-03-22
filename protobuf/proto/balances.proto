@@ -33,13 +33,14 @@ message AccountFunds  {
   int64                                currency_id             = 2;
   string                               currency_description    = 3;
   int64                                account_id              = 4;
-  string                               account_description     = 5;    
-  int64                                user_id                 = 6;
-  int64                                venue_id                = 7;
-  string                               venue_description       = 8; 
-  double                               balance                 = 9; 
-  double                               available               = 10; 
-  double                               hold                    = 11; 
+  string                               account_description     = 5;
+  int64                                account_mode            = 6;
+  int64                                user_id                 = 7;
+  int64                                venue_id                = 8;
+  string                               venue_description       = 9; 
+  double                               balance                 = 10; 
+  double                               available               = 11; 
+  double                               hold                    = 12; 
 }
 
 message Fund  {
