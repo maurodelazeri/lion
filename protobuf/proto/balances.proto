@@ -54,8 +54,9 @@ message Transfer  {
   int64                                account_id_origin       = 1; 
   int64                                account_id_destination  = 2; 
   int64                                venue_id                = 3;
-  int64                                currency_id             = 4;
-  double                               amount                  = 5;
+  int64                                venue_id_origin         = 4; 
+  int64                                currency_id             = 5;
+  double                               amount                  = 6;
 }
 
 message AccountFundsRequest { 
