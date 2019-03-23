@@ -34,7 +34,7 @@ message AccountFunds  {
   string                               currency_description    = 3;
   int64                                account_id              = 4;
   string                               account_description     = 5;
-  string                               account_mode            = 6;
+  string                               fund_mode               = 6;
   int64                                user_id                 = 7;
   int64                                venue_id                = 8;
   string                               venue_description       = 9; 
