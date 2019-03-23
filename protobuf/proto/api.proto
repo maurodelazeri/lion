@@ -36,6 +36,7 @@ service API {
   rpc GetAccountsFunds(AccountFundsRequest) returns (AccountFundsResponse) {}
   rpc PostAccountFund(AccountFundPostRequest) returns (AccountFundPostResponse) {}
   rpc PostAccountTransfer(AccountTransferPostRequest) returns (AccountTransferPostResponse) {}
+  rpc PostAccountWithdrawal(AccountWithdrawalPostRequest) returns (AccountWithdrawalPostResponse) {}
 
   rpc GetTrades(TradeRequest) returns (TradeResponse) {}
   
