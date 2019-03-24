@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -432,6 +434,89 @@ type APIServer interface {
 	GetHistoticalTrades(*HistoricalTradesRequest, API_GetHistoticalTradesServer) error
 	GetBacktestingToken(context.Context, *BacktestingTokenRequest) (*BacktestingTokenResponse, error)
 	Backtesting(API_BacktestingServer) error
+}
+
+// UnimplementedAPIServer can be embedded to have forward compatible implementations.
+type UnimplementedAPIServer struct {
+}
+
+func (*UnimplementedAPIServer) Login(ctx context.Context, req *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (*UnimplementedAPIServer) GetCurrencies(ctx context.Context, req *CurrencyRequest) (*CurrencyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCurrencies not implemented")
+}
+func (*UnimplementedAPIServer) PostCurrency(ctx context.Context, req *CurrencyPostRequest) (*CurrencyPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostCurrency not implemented")
+}
+func (*UnimplementedAPIServer) GetVenues(ctx context.Context, req *VenueRequest) (*VenueResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetVenues not implemented")
+}
+func (*UnimplementedAPIServer) PostVenue(ctx context.Context, req *VenuePostRequest) (*VenuePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostVenue not implemented")
+}
+func (*UnimplementedAPIServer) GetProducts(ctx context.Context, req *ProductRequest) (*ProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProducts not implemented")
+}
+func (*UnimplementedAPIServer) PostProduct(ctx context.Context, req *ProductPostRequest) (*ProductPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostProduct not implemented")
+}
+func (*UnimplementedAPIServer) GetAccounts(ctx context.Context, req *AccountRequest) (*AccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccounts not implemented")
+}
+func (*UnimplementedAPIServer) PostAccount(ctx context.Context, req *AccountPostRequest) (*AccountPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostAccount not implemented")
+}
+func (*UnimplementedAPIServer) GetBalances(ctx context.Context, req *BalanceRequest) (*BalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBalances not implemented")
+}
+func (*UnimplementedAPIServer) GetAccountsFunds(ctx context.Context, req *AccountFundsRequest) (*AccountFundsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccountsFunds not implemented")
+}
+func (*UnimplementedAPIServer) PostAccountFund(ctx context.Context, req *AccountFundPostRequest) (*AccountFundPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostAccountFund not implemented")
+}
+func (*UnimplementedAPIServer) PostAccountTransfer(ctx context.Context, req *AccountTransferPostRequest) (*AccountTransferPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostAccountTransfer not implemented")
+}
+func (*UnimplementedAPIServer) PostAccountWithdrawal(ctx context.Context, req *AccountWithdrawalPostRequest) (*AccountWithdrawalPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostAccountWithdrawal not implemented")
+}
+func (*UnimplementedAPIServer) GetTrades(ctx context.Context, req *TradeRequest) (*TradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTrades not implemented")
+}
+func (*UnimplementedAPIServer) GetMarketKindSummary(ctx context.Context, req *MarketKindSummaryRequest) (*MarketKindSummaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMarketKindSummary not implemented")
+}
+func (*UnimplementedAPIServer) GetMarketProductSummary(ctx context.Context, req *MarketProductSummaryRequest) (*MarketProductSummaryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMarketProductSummary not implemented")
+}
+func (*UnimplementedAPIServer) GetTradesDeadman(ctx context.Context, req *TradesDeadmanRequest) (*TradesDeadmanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTradesDeadman not implemented")
+}
+func (*UnimplementedAPIServer) GetOrderbooksDeadman(ctx context.Context, req *OrderbookDeadmanRequest) (*OrderbookDeadmanResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrderbooksDeadman not implemented")
+}
+func (*UnimplementedAPIServer) GetBars(ctx context.Context, req *BarRequest) (*BarResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBars not implemented")
+}
+func (*UnimplementedAPIServer) GetProductWeekSeelWeek(ctx context.Context, req *BuySellWeekRequest) (*BuySellWeekResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductWeekSeelWeek not implemented")
+}
+func (*UnimplementedAPIServer) OrderSend(ctx context.Context, req *OrderRequest) (*OrderResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OrderSend not implemented")
+}
+func (*UnimplementedAPIServer) GetPositions(ctx context.Context, req *PositionRequest) (*PositionsResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPositions not implemented")
+}
+func (*UnimplementedAPIServer) GetHistoticalTrades(req *HistoricalTradesRequest, srv API_GetHistoticalTradesServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetHistoticalTrades not implemented")
+}
+func (*UnimplementedAPIServer) GetBacktestingToken(ctx context.Context, req *BacktestingTokenRequest) (*BacktestingTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBacktestingToken not implemented")
+}
+func (*UnimplementedAPIServer) Backtesting(srv API_BacktestingServer) error {
+	return status.Errorf(codes.Unimplemented, "method Backtesting not implemented")
 }
 
 func RegisterAPIServer(s *grpc.Server, srv APIServer) {

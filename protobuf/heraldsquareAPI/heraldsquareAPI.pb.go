@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -70,6 +72,14 @@ func (c *heraldsquareAPIClient) GetEvents(ctx context.Context, in *EventRequest,
 // HeraldsquareAPIServer is the server API for HeraldsquareAPI service.
 type HeraldsquareAPIServer interface {
 	GetEvents(context.Context, *EventRequest) (*EventResponse, error)
+}
+
+// UnimplementedHeraldsquareAPIServer can be embedded to have forward compatible implementations.
+type UnimplementedHeraldsquareAPIServer struct {
+}
+
+func (*UnimplementedHeraldsquareAPIServer) GetEvents(ctx context.Context, req *EventRequest) (*EventResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetEvents not implemented")
 }
 
 func RegisterHeraldsquareAPIServer(s *grpc.Server, srv HeraldsquareAPIServer) {

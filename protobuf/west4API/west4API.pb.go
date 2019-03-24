@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -169,6 +171,38 @@ type West4APIServer interface {
 	PostContainer(context.Context, *ContainerPostRequest) (*ContainerPostResponse, error)
 	GetContainersCreate(context.Context, *ContainerCreateRequest) (*ContainerCreateResponse, error)
 	PostContainerCreate(context.Context, *ContainerCreatePostRequest) (*ContainerCreatePostResponse, error)
+}
+
+// UnimplementedWest4APIServer can be embedded to have forward compatible implementations.
+type UnimplementedWest4APIServer struct {
+}
+
+func (*UnimplementedWest4APIServer) GetDataFeeds(ctx context.Context, req *DataFeedRequest) (*DataFeedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDataFeeds not implemented")
+}
+func (*UnimplementedWest4APIServer) PostDataFeed(ctx context.Context, req *DataFeedPostRequest) (*DataFeedPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostDataFeed not implemented")
+}
+func (*UnimplementedWest4APIServer) GetDataFeedProducts(ctx context.Context, req *ProductDataFeedRequest) (*ProductDataFeedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDataFeedProducts not implemented")
+}
+func (*UnimplementedWest4APIServer) GetServers(ctx context.Context, req *ServerRequest) (*ServerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServers not implemented")
+}
+func (*UnimplementedWest4APIServer) PostServer(ctx context.Context, req *ServerPostRequest) (*ServerPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostServer not implemented")
+}
+func (*UnimplementedWest4APIServer) GetContainers(ctx context.Context, req *ContainerRequest) (*ContainerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContainers not implemented")
+}
+func (*UnimplementedWest4APIServer) PostContainer(ctx context.Context, req *ContainerPostRequest) (*ContainerPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostContainer not implemented")
+}
+func (*UnimplementedWest4APIServer) GetContainersCreate(ctx context.Context, req *ContainerCreateRequest) (*ContainerCreateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetContainersCreate not implemented")
+}
+func (*UnimplementedWest4APIServer) PostContainerCreate(ctx context.Context, req *ContainerCreatePostRequest) (*ContainerCreatePostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostContainerCreate not implemented")
 }
 
 func RegisterWest4APIServer(s *grpc.Server, srv West4APIServer) {
