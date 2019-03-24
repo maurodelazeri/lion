@@ -8,8 +8,6 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -76,10 +74,6 @@ var fileDescriptor_00212fb1f9d3bf1c = []byte{
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
-
-func errUnimplemented(methodName string) error {
-	return status.Errorf(codes.Unimplemented, "method %s not implemented", methodName)
-}
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
@@ -438,89 +432,6 @@ type APIServer interface {
 	GetHistoticalTrades(*HistoricalTradesRequest, API_GetHistoticalTradesServer) error
 	GetBacktestingToken(context.Context, *BacktestingTokenRequest) (*BacktestingTokenResponse, error)
 	Backtesting(API_BacktestingServer) error
-}
-
-// UnimplementedAPIServer can be embedded to have forward compatible implementations.
-type UnimplementedAPIServer struct {
-}
-
-func (*UnimplementedAPIServer) Login(ctx context.Context, req *LoginRequest) (*LoginResponse, error) {
-	return nil, errUnimplemented("Login")
-}
-func (*UnimplementedAPIServer) GetCurrencies(ctx context.Context, req *CurrencyRequest) (*CurrencyResponse, error) {
-	return nil, errUnimplemented("GetCurrencies")
-}
-func (*UnimplementedAPIServer) PostCurrency(ctx context.Context, req *CurrencyPostRequest) (*CurrencyPostResponse, error) {
-	return nil, errUnimplemented("PostCurrency")
-}
-func (*UnimplementedAPIServer) GetVenues(ctx context.Context, req *VenueRequest) (*VenueResponse, error) {
-	return nil, errUnimplemented("GetVenues")
-}
-func (*UnimplementedAPIServer) PostVenue(ctx context.Context, req *VenuePostRequest) (*VenuePostResponse, error) {
-	return nil, errUnimplemented("PostVenue")
-}
-func (*UnimplementedAPIServer) GetProducts(ctx context.Context, req *ProductRequest) (*ProductResponse, error) {
-	return nil, errUnimplemented("GetProducts")
-}
-func (*UnimplementedAPIServer) PostProduct(ctx context.Context, req *ProductPostRequest) (*ProductPostResponse, error) {
-	return nil, errUnimplemented("PostProduct")
-}
-func (*UnimplementedAPIServer) GetAccounts(ctx context.Context, req *AccountRequest) (*AccountResponse, error) {
-	return nil, errUnimplemented("GetAccounts")
-}
-func (*UnimplementedAPIServer) PostAccount(ctx context.Context, req *AccountPostRequest) (*AccountPostResponse, error) {
-	return nil, errUnimplemented("PostAccount")
-}
-func (*UnimplementedAPIServer) GetBalances(ctx context.Context, req *BalanceRequest) (*BalanceResponse, error) {
-	return nil, errUnimplemented("GetBalances")
-}
-func (*UnimplementedAPIServer) GetAccountsFunds(ctx context.Context, req *AccountFundsRequest) (*AccountFundsResponse, error) {
-	return nil, errUnimplemented("GetAccountsFunds")
-}
-func (*UnimplementedAPIServer) PostAccountFund(ctx context.Context, req *AccountFundPostRequest) (*AccountFundPostResponse, error) {
-	return nil, errUnimplemented("PostAccountFund")
-}
-func (*UnimplementedAPIServer) PostAccountTransfer(ctx context.Context, req *AccountTransferPostRequest) (*AccountTransferPostResponse, error) {
-	return nil, errUnimplemented("PostAccountTransfer")
-}
-func (*UnimplementedAPIServer) PostAccountWithdrawal(ctx context.Context, req *AccountWithdrawalPostRequest) (*AccountWithdrawalPostResponse, error) {
-	return nil, errUnimplemented("PostAccountWithdrawal")
-}
-func (*UnimplementedAPIServer) GetTrades(ctx context.Context, req *TradeRequest) (*TradeResponse, error) {
-	return nil, errUnimplemented("GetTrades")
-}
-func (*UnimplementedAPIServer) GetMarketKindSummary(ctx context.Context, req *MarketKindSummaryRequest) (*MarketKindSummaryResponse, error) {
-	return nil, errUnimplemented("GetMarketKindSummary")
-}
-func (*UnimplementedAPIServer) GetMarketProductSummary(ctx context.Context, req *MarketProductSummaryRequest) (*MarketProductSummaryResponse, error) {
-	return nil, errUnimplemented("GetMarketProductSummary")
-}
-func (*UnimplementedAPIServer) GetTradesDeadman(ctx context.Context, req *TradesDeadmanRequest) (*TradesDeadmanResponse, error) {
-	return nil, errUnimplemented("GetTradesDeadman")
-}
-func (*UnimplementedAPIServer) GetOrderbooksDeadman(ctx context.Context, req *OrderbookDeadmanRequest) (*OrderbookDeadmanResponse, error) {
-	return nil, errUnimplemented("GetOrderbooksDeadman")
-}
-func (*UnimplementedAPIServer) GetBars(ctx context.Context, req *BarRequest) (*BarResponse, error) {
-	return nil, errUnimplemented("GetBars")
-}
-func (*UnimplementedAPIServer) GetProductWeekSeelWeek(ctx context.Context, req *BuySellWeekRequest) (*BuySellWeekResponse, error) {
-	return nil, errUnimplemented("GetProductWeekSeelWeek")
-}
-func (*UnimplementedAPIServer) OrderSend(ctx context.Context, req *OrderRequest) (*OrderResult, error) {
-	return nil, errUnimplemented("OrderSend")
-}
-func (*UnimplementedAPIServer) GetPositions(ctx context.Context, req *PositionRequest) (*PositionsResult, error) {
-	return nil, errUnimplemented("GetPositions")
-}
-func (*UnimplementedAPIServer) GetHistoticalTrades(req *HistoricalTradesRequest, srv API_GetHistoticalTradesServer) error {
-	return errUnimplemented("GetHistoticalTrades")
-}
-func (*UnimplementedAPIServer) GetBacktestingToken(ctx context.Context, req *BacktestingTokenRequest) (*BacktestingTokenResponse, error) {
-	return nil, errUnimplemented("GetBacktestingToken")
-}
-func (*UnimplementedAPIServer) Backtesting(srv API_BacktestingServer) error {
-	return errUnimplemented("Backtesting")
 }
 
 func RegisterAPIServer(s *grpc.Server, srv APIServer) {
