@@ -51,18 +51,16 @@ message Fund  {
 }
 
 message WithdrawalFund  {
-  int64                                account_id              = 1; 
-  int64                                currency_id             = 2;
+  int64                                account_fund_id         = 1; 
+  int64                                account_id              = 2; 
   double                               amount                  = 3;
 }
 
 message Transfer  {
-  int64                                account_id_origin       = 1; 
+  int64                                account_fund_id         = 1; 
   int64                                account_id_destination  = 2; 
-  int64                                venue_id                = 3;
-  int64                                venue_id_origin         = 4; 
-  int64                                currency_id             = 5;
-  double                               amount                  = 6;
+  int64                                venue_id_destination    = 3;
+  double                               amount                  = 4;
 }
 
 message AccountFundsRequest { 
